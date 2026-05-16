@@ -1,0 +1,16 @@
+{
+  "character": "machiavelli",
+  "source": "frames",
+  "orientation_default": "right",
+  "notes": "If not noted otherwise, the character/motion is always oriented to the right.",
+  "frames": [],
+  "clips": {
+    "idle": [1],
+    "fightpose": [2, 3],
+    "run": [5, 6, 7, 8],
+    "jump": [10, 11],
+    "land": [9, 12],
+    "attacks": [13, 14, 15],
+    "special": [16]
+  }
+}

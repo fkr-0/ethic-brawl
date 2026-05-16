@@ -1,0 +1,48 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+node_modules/*
+!node_modules/.bin
+
+
+*.tern-port
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+.npm
+.eslintcache
+dist/
+.serena/
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Runtime/temp
+*.pid
+*.log
+
+# Archive/export bundles (keep source files in repo)
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+
+
+
+*.sha256
+
+# Ignore .env files, which may contain sensitive information
+.env
+.env.local
+.env.development
+
+# Ignore build output directories
+build/
+dist/

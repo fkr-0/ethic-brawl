@@ -1,0 +1,276 @@
+version: 2
+character_id: aristotle
+title: Aristotle
+purpose: Highly distinctive feasible 4x4 sprite-grid prompts for image-rendering LLMs.
+common_prompt_prefix: 'Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: Aristotle.
+
+  Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+
+  Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+
+  Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16
+  cells.
+
+  Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+
+  Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.'
+character_sprite_brief: 'Aristotle — The Peripatetic; role: balanced adaptive fighter.
+
+  Biography: Greek system-builder of logic, ethics, rhetoric, and classification recast as the grounded all-rounder. Every strike has a cause,
+  every guard has a category, and every field seeks the golden mean between offense and defense.
+
+  Appearance: short curled beard, calm teacher expression, white robe/chiton with bronze trim, leather scroll strap, short staff, parchment scroll,
+  simple sandals.
+
+  Palette: robe #EEE8D8, robe shadow #CFC7B2, bronze #B8873A, scroll #C9A96A, lyceum gold #F0C04A, logic blue #5F8FBF.
+
+  Animation identity: teacherly staff-rest idle, calm procession walk, deliberate forceful run, disciplined compact hop, staff category-guard.
+
+  Normals: Golden Mean Jab: short centered staff jab, gold dot at staff tip, safe opener; Syllogism Lance: phalanx-like staff drive, bronze triangle
+  line, mid-range punish; Prime Mover Drop: overhead falling staff strike, gold ring crack, heavy anti-air ender
+
+  Specials: B>A Golden Mean Palm: startup staff draws centerline, active palm and staff strike together, impact two gold impacts, recovery exact
+  centered recovery; B<A Teleology Counter: startup staff crosses chest, active bronze category bracket guard, impact pushback logic pulse, recovery
+  staff vertical rest; B^A Prime Mover Lift: startup knees dip staff down, active upward staff lift, impact gold ring lifts from floor, recovery
+  overhead follow-through; BvJ Virtue Balance Field: startup plants staff opens scroll hand, active gold circle and triangle form, impact symmetrical
+  rings pulse, recovery stands centered'
+negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent
+  background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid,
+  offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom,
+  soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette
+palette_anchors: 'robe #EEE8D8, robe shadow #CFC7B2, bronze #B8873A, scroll #C9A96A, lyceum gold #F0C04A, logic blue #5F8FBF'
+appearance_bible: short curled beard, calm teacher expression, white robe/chiton with bronze trim, leather scroll strap, short staff, parchment
+  scroll, simple sandals
+animation_bible: teacherly staff-rest idle, calm procession walk, deliberate forceful run, disciplined compact hop, staff category-guard
+move_render_descriptions:
+  normal_moves:
+  - name: Golden Mean Jab
+    pose: short centered staff jab
+    vfx: gold dot at staff tip
+    gameplay: safe opener
+  - name: Syllogism Lance
+    pose: phalanx-like staff drive
+    vfx: bronze triangle line
+    gameplay: mid-range punish
+  - name: Prime Mover Drop
+    pose: overhead falling staff strike
+    vfx: gold ring crack
+    gameplay: heavy anti-air ender
+  special_moves:
+  - command: B>A
+    name: Golden Mean Palm
+    startup: staff draws centerline
+    active: palm and staff strike together
+    impact: two gold impacts
+    recovery: exact centered recovery
+  - command: B<A
+    name: Teleology Counter
+    startup: staff crosses chest
+    active: bronze category bracket guard
+    impact: pushback logic pulse
+    recovery: staff vertical rest
+  - command: B^A
+    name: Prime Mover Lift
+    startup: knees dip staff down
+    active: upward staff lift
+    impact: gold ring lifts from floor
+    recovery: overhead follow-through
+  - command: BvJ
+    name: Virtue Balance Field
+    startup: plants staff opens scroll hand
+    active: gold circle and triangle form
+    impact: symmetrical rings pulse
+    recovery: stands centered
+grids:
+- id: aristotle_grid01_movement
+  output: characters/aristotle/sprites/aristotle_grid01_movement.png
+  role: Basic Movement Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 01 MOVEMENT. 1 idle A: teacherly staff-rest idle, calm procession walk, deliberate forceful run, disciplined compact hop, staff category-guard.
+    2 idle B: tiny alternate breath. 3 light hurt, contained recoil. 4 heavy hurt, stronger recoil but identity intact. 5-8 walk cycle: teacherly
+    staff-rest idle, calm procession walk, deliberate forceful run, disciplined compact hop, staff category-guard with four distinct foot phases.
+    9-12 run cycle: role-specific acceleration, longest stride, pass step, push-off. 13 jump takeoff. 14 jump air. 15 running jump. 16 K.O. full
+    body visible. Keep prop/costume readable in every frame; no duplicate silhouettes.'
+- id: aristotle_grid02_fighting
+  output: characters/aristotle/sprites/aristotle_grid02_fighting.png
+  role: Basic Fighting Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 02 FIGHTING. 1 Golden Mean Jab startup: short centered staff jab. 2 Golden Mean Jab impact: gold dot at staff tip. 3 recovery. 4 Syllogism
+    Lance running startup: phalanx-like staff drive. 5 impact: bronze triangle line. 6 recovery. 7 aerial/running attack startup for Prime Mover
+    Drop. 8 impact: overhead falling staff strike, gold ring crack. 9 landing recovery. 10 running evasion start. 11 guarded block using character
+    identity. 12 punish-ready exit. 13 basic block. 14 fortified block. 15 victory pose A. 16 iconic victory pose B. Each 3-frame clip must show
+    anticipation, active, recovery.'
+- id: aristotle_grid03_throws_consumes_swings
+  output: characters/aristotle/sprites/aristotle_grid03_throws_consumes_swings.png
+  role: Throwing / Consuming / Swinging Motions + Character Combos
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 03 INTERACTION AND COMBO KEYS. 1 pickup/ready item: bronze category token / quick scroll consultation / clean staff sweep. 2 throw windup.
+    3 throw release. 4 throw recovery. 5 consume/use start. 6 consume/use active. 7 small effect glint. 8 return stance. 9 swing startup. 10 swing
+    impact. 11 swing follow-through. 12 reset. 13 B>A Golden Mean Palm keypose: palm and staff strike together / two gold impacts. 14 B<A Teleology
+    Counter keypose: bronze category bracket guard / pushback logic pulse. 15 B^A Prime Mover Lift keypose: upward staff lift / gold ring lifts
+    from floor. 16 BvJ Virtue Balance Field keypose: gold circle and triangle form / symmetrical rings pulse. Compact VFX only; caster silhouette
+    first.'
+- id: aristotle_grid04_specials
+  output: characters/aristotle/sprites/aristotle_grid04_specials.png
+  role: Specials Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 04 SPECIALS, four moves, one row per move.
+
+    Row 1, Golden Mean Palm, B>A: 1 startup staff draws centerline; 2 active palm and staff strike together; 3 impact/sustain two gold impacts;
+    4 recovery exact centered recovery.
+
+    Row 2, Teleology Counter, B<A: 5 startup staff crosses chest; 6 active bronze category bracket guard; 7 impact/sustain pushback logic pulse;
+    8 recovery staff vertical rest.
+
+    Row 3, Prime Mover Lift, B^A: 9 startup knees dip staff down; 10 active upward staff lift; 11 impact/sustain gold ring lifts from floor; 12
+    recovery overhead follow-through.
+
+    Row 4, Virtue Balance Field, BvJ: 13 startup plants staff opens scroll hand; 14 active gold circle and triangle form; 15 impact/sustain symmetrical
+    rings pulse; 16 recovery stands centered.
+
+    Each row is a separate 4-frame caster animation; no row blending; VFX stays inside cell and never hides the body.'
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: short curled beard, calm teacher expression, white robe/chiton with bronze trim, leather scroll strap, short staff, parchment
+      scroll, simple sandals
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: balanced adaptive fighter using category traps, golden field, anti-air.; VFX must stay behind
+      or around the silhouette unless it is the impact frame'
+  palette_budget:
+    primary: '#EEE8D8'
+    secondary: '#B8873A'
+    accent: '#C9A96A'
+    vfx_1: '#F0C04A'
+    vfx_2: '#5F8FBF'
+    shadow: '#141414'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Aristotle as balanced adaptive fighter through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Golden Mean Jab: startup, impact, recovery'
+      4-6: 'running Syllogism Lance: run transition, impact, slide/recover'
+      7-9: 'aerial/running Prime Mover Drop: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Golden Mean Palm keypose
+      '14': B<A Teleology Counter keypose
+      '15': B^A Prime Mover Lift keypose
+      '16': BvJ Virtue Balance Field keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize balanced adaptive fighter using category traps, golden field, anti-air.
+    rows:
+      row1_frames_1_4: 'B>A Golden Mean Palm: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Teleology Counter: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B^A Prime Mover Lift: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Virtue Balance Field: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Aristotle
+    role_line: balanced adaptive fighter
+    mechanic_line: balanced adaptive fighter using category traps, golden field, anti-air.
+    color_strip:
+      primary: '#EEE8D8'
+      secondary: '#B8873A'
+      accent: '#C9A96A'
+  ability_icons:
+  - slot: B>A
+    label: Golden Mean Palm
+    icon_read: 'simple silhouette icon for Golden Mean Palm; use palette accent #C9A96A'
+  - slot: B<A
+    label: Teleology Counter
+    icon_read: 'simple silhouette icon for Teleology Counter; use palette accent #F0C04A'
+  - slot: B^A
+    label: Prime Mover Lift
+    icon_read: 'simple silhouette icon for Prime Mover Lift; use palette accent #5F8FBF'
+  - slot: BvJ
+    label: Virtue Balance Field
+    icon_read: 'simple silhouette icon for Virtue Balance Field; use palette accent #EEE8D8'
+  hud_meter:
+    name: Aristotle role meter
+    fill_color: '#C9A96A'
+    empty_color: '#EEE8D8'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#B8873A'
+    special: '#C9A96A'
+    counter_or_field: '#F0C04A'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait

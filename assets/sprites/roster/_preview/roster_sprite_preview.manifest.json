@@ -1,0 +1,17 @@
+{
+  "preview": "assets/sprites/roster/_preview/roster_sprite_preview.png",
+  "source": "roster/roster.sprite-spec.yml",
+  "characters": [
+    "focault",
+    "aristotle",
+    "socrates",
+    "aquinas",
+    "anselm",
+    "marx",
+    "bakunin",
+    "schmitt",
+    "kant",
+    "hegel"
+  ],
+  "size": [786, 1443]
+}

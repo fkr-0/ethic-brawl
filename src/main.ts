@@ -1,0 +1,185 @@
+/**
+ * Ethic Brawl - Main Entry Point
+ */
+
+import { bootstrap, createFightRuntime, createGameLoop, hideLoading } from '@/app';
+import { getCharacterIds } from '@/content/characters/character-data';
+import { createInputManager, createSceneManager } from '@/core';
+import {
+  getCharacterAnimationMap,
+  getGridSpacing,
+  getSpriteScaleFactor,
+  initializeAllCharacterSprites,
+  setChromaKey,
+  setDebugFrameBoundaries,
+  setGridSpacing,
+  setSpriteRendering,
+  setSpriteScaleFactor,
+  validateAllCharacterSprites,
+} from '@/render/sprites';
+import {
+  renderDebugInfo,
+  renderHelpOverlay,
+  renderInputPanels,
+} from '@/ui/screens/app-shell-renderers';
+import { buildAppScenes, createInitialAppShellState } from './app/app-shell/scene-factory';
+
+async function main() {
+  console.info('🎮 Ethic Brawl - Initializing...');
+
+  const { canvas } = await bootstrap();
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to get 2D context');
+  }
+
+  console.info('📦 Loading sprite assets...');
+  await initializeAllCharacterSprites();
+
+  // Debug: Log sprite status after initialization
+  console.info('🔍 Debug: Checking sprite status...');
+  const characterIds = getCharacterIds();
+  for (const id of characterIds) {
+    const animMap = getCharacterAnimationMap(id);
+    if (animMap?.atlas) {
+      console.info(
+        `  ${id}: atlas exists, image=${animMap.atlas.image.width}x${animMap.atlas.image.height}, frames=${animMap.atlas.frames.length}`
+      );
+    } else {
+      console.warn(`  ${id}: no atlas (using procedural fallback)`);
+    }
+  }
+
+  console.info('✓ Sprite assets loaded');
+
+  const inputManager = createInputManager();
+  const keyboard = inputManager.getKeyboard();
+  const fightRuntime = createFightRuntime();
+  const appState = createInitialAppShellState();
+
+  let helpOpen = false;
+  let latestInput = inputManager.getState();
+  let spriteRenderingEnabled = true; // Track local state for toggle
+
+  let sceneManagerRef: ReturnType<typeof createSceneManager> | null = null;
+
+  const sceneManager = createSceneManager({
+    scenes: buildAppScenes(
+      {
+        fightRuntime,
+        getLatestInput: () => latestInput,
+        transitionTo: (target) => sceneManagerRef?.transitionTo(target) ?? Promise.resolve(false),
+      },
+      appState
+    ),
+    initialScene: 'loading',
+  });
+  sceneManagerRef = sceneManager;
+
+  sceneManager.init(ctx);
+  await sceneManager.start();
+
+  const gameLoop = createGameLoop(
+    (deltaTime) => {
+      inputManager.update();
+      latestInput = inputManager.getState();
+
+      if (
+        keyboard.wasJustPressed('Slash') &&
+        (keyboard.isPressed('ShiftLeft') || keyboard.isPressed('ShiftRight'))
+      ) {
+        helpOpen = !helpOpen;
+      }
+
+      if (keyboard.wasJustPressed('F1')) {
+        spriteRenderingEnabled = !spriteRenderingEnabled;
+        setSpriteRendering(spriteRenderingEnabled);
+        console.info(
+          `🎨 Sprite rendering ${spriteRenderingEnabled ? 'enabled' : 'disabled'} (press F1 to toggle)`
+        );
+      }
+
+      if (keyboard.wasJustPressed('F2')) {
+        console.info('🔍 Sprite validation:', validateAllCharacterSprites());
+      }
+
+      if (keyboard.wasJustPressed('F3')) {
+        const newScale = Math.max(0.05, getSpriteScaleFactor() - 0.01);
+        setSpriteScaleFactor(newScale);
+        console.info(`🔍 Sprite scale factor: ${newScale.toFixed(2)}`);
+      }
+
+      if (keyboard.wasJustPressed('F4')) {
+        const newScale = Math.min(1.0, getSpriteScaleFactor() + 0.01);
+        setSpriteScaleFactor(newScale);
+        console.info(`🔍 Sprite scale factor: ${newScale.toFixed(2)}`);
+      }
+
+      if (keyboard.wasJustPressed('F11')) {
+        const newSpacing = Math.max(0, getGridSpacing() - 1);
+        setGridSpacing(newSpacing);
+        console.info(`🔍 Grid spacing: ${newSpacing}px - reload page to see effect`);
+      }
+
+      if (keyboard.wasJustPressed('F12')) {
+        const newSpacing = Math.min(10, getGridSpacing() + 1);
+        setGridSpacing(newSpacing);
+        console.info(`🔍 Grid spacing: ${newSpacing}px - reload page to see effect`);
+      }
+
+      if (keyboard.wasJustPressed('F7')) {
+        // Toggle chroma key to remove white backgrounds
+        setChromaKey(true, 255, 255, 255, 50); // Remove white with threshold 50
+        console.info(
+          '🎨 Chroma key enabled - removing white backgrounds (F8 to disable, enabled by default)'
+        );
+      }
+
+      if (keyboard.wasJustPressed('F8')) {
+        setChromaKey(false);
+        console.info('🎨 Chroma key disabled (F7 to enable, was enabled by default)');
+      }
+
+      if (keyboard.wasJustPressed('F9')) {
+        setDebugFrameBoundaries(true);
+        console.info('🔍 Frame boundaries debug enabled (F10 to disable)');
+      }
+
+      if (keyboard.wasJustPressed('F10')) {
+        setDebugFrameBoundaries(false);
+        console.info('🔍 Frame boundaries debug disabled (F9 to enable)');
+      }
+
+      if (!helpOpen) {
+        sceneManager.update(deltaTime);
+      }
+    },
+    () => {
+      sceneManager.render();
+      if (sceneManager.getCurrentScene() === 'fight') {
+        renderInputPanels(ctx, latestInput.player1, latestInput.player2);
+      }
+      if (helpOpen) {
+        renderHelpOverlay(ctx);
+      }
+      renderDebugInfo(ctx, gameLoop.getFPS(), gameLoop.getFrameCount());
+    }
+  );
+
+  hideLoading();
+  setTimeout(() => {
+    void sceneManager.transitionTo('start');
+  }, 500);
+
+  gameLoop.start();
+  console.info('🎮 Ethic Brawl - Ready!');
+}
+
+main().catch((error) => {
+  console.error('Failed to start game:', error);
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.textContent = `ERROR: ${error instanceof Error ? error.message : 'Unknown error'}`;
+    loading.classList.remove('hidden');
+  }
+});

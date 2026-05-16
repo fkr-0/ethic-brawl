@@ -1,0 +1,352 @@
+version: 1
+id: nietzsche
+title: Friedrich Nietzsche
+subtitle: The Abyssal Bruiser
+role: high-risk bruiser
+source_notes:
+- Consolidated from roster prompt/design notes, LF2 specials roadmap, and available sprite manifests.
+- 'Source status: roadmap-derived visual design; runtime stats and specials are now implemented, source sheet still missing'
+biography:
+  capsule: High-risk bruiser who turns self-overcoming into hammer blows, abyssal counters, and stormy finishers.
+  fantasy: A volatile hammer philosopher whose best moves are dangerous, explosive, and visually mythic.
+  personality:
+  - defiant
+  - volatile
+  - theatrical
+  - high-risk
+stored_stats:
+  prompt_stats:
+    intelligence: 9
+    strength: 8
+    agility: 7
+    vitality: 5
+    energy: 8
+  proposed_runtime_base_stats:
+    health: 90
+    maxHealth: 90
+    strength: 8
+    defense: 5
+    intelligence: 9
+    agility: 7
+    vitality: 5
+    energy: 8
+  implementation_status: runtime-backed in src/content/characters/character-data.ts, src/content/characters/character-loader.ts, and src/content/specials/special-data.ts
+visual_characteristics:
+  build: Lean but forceful bruiser silhouette with unmistakable moustache and hammer profile.
+  appearance: Dark coat, wild moustache, compact hammer, storm-lit silhouette, lunging bruiser posture, abyss and lightning/fire accents.
+  sprite_style: Readable 2D pixel-art fighter, side-view, chibi-to-arcade proportions, transparent alpha, no background.
+  silhouette_hooks:
+  - primary prop or costume detail must remain visible in every frame
+  - 'pose language must match role: high-risk bruiser'
+  - 'VFX should reinforce mechanic: hammer, abyss, lightning/fire storm'
+palette:
+  design_palette:
+    dark_coat: '#1B1A20'
+    moustache_brown: '#4A2B19'
+    hammer_steel: '#80858A'
+    abyss_violet: '#3B235A'
+    storm_gold: '#F0C13B'
+    fire_orange: '#D85A24'
+fighting_characteristics:
+  movement_style: Dark coat, wild moustache, compact hammer, storm-lit silhouette, lunging bruiser posture, abyss and lightning/fire accents.
+  combat_style: high-risk bruiser using hammer, abyss, lightning/fire storm.
+  strengths:
+  - clear role identity
+  - distinct silhouettes
+  - specials mapped to MVP commands
+  weaknesses:
+  - requires new runtime implementation if not in CharacterDefinition
+  - source art may be placeholder/debug quality
+  behavior:
+    neutral: Use movement and safest poke to test space before committing.
+    pressure: Transition into the character's MVP command specials after a confirmed hit or whiff punish.
+    defense: Use the assigned counter/block/special mechanic instead of generic blocking when possible.
+    finisher: Resolve the kit fantasy with the BvJ domain/field/finisher where available.
+ui_details:
+  portrait: wild moustache, storm-lit eyes, hammer crossing foreground
+  ability_icon: hammer over abyss spiral
+  hud_meter: risk meter with abyss edge and overman surge marker
+  roster_card: 'Show role as high-risk bruiser; mechanic line: hammer, abyss, lightning/fire storm.'
+  move_list_badges:
+  - B>A
+  - B<A
+  - B>J
+  - BvJ
+normal_moves:
+- id: nietzsche_hammer_aphorism
+  name: Hammer Aphorism
+  prompt_read: short hammer smash
+- id: nietzsche_eternal_return_counter
+  name: Eternal Return Counter
+  prompt_read: risky counter loop
+- id: nietzsche_overman_rush
+  name: Overman Rush
+  prompt_read: self-damaging forward pressure dash
+specials:
+  mvp_4:
+  - command: B>A
+    commandSlot: BFA
+    id: nietzsche_hammer_aphorism
+    displayName: Hammer Aphorism
+    mechanic: hammer shock strike
+    prompt_read: forward hammer smash with storm-gold crack
+  - command: B<A
+    commandSlot: BBA
+    id: nietzsche_eternal_return_counter
+    displayName: Eternal Return Counter
+    mechanic: high-risk counter
+    prompt_read: abyss-violet circular counter
+  - command: B>J
+    commandSlot: BFJ
+    id: nietzsche_overman_rush
+    displayName: Overman Rush
+    mechanic: reckless mobility rush
+    prompt_read: storm-lit shoulder/hammer dash
+  - command: BvJ
+    commandSlot: BDJ
+    id: nietzsche_will_to_power_storm
+    displayName: Will-to-Power Storm
+    mechanic: lightning/fire storm domain
+    prompt_read: fire-lightning storm field
+  full_8_from_roadmap:
+    B>A: Hammer Aphorism
+    B<A: Eternal Return Counter
+    B^A: Zarathustra Upper
+    BvA: Abyss Field
+    B>J: Overman Rush
+    B<J: Dionysian Fade
+    B^J: Mountain Ascent
+    BvJ: Will-to-Power Storm
+grid_prompt_contract:
+  cell_count: 16
+  arrangement: exact 4x4 grid, left-to-right, top-to-bottom
+  output_constraints:
+  - one sheet image only
+  - identical cell sizes
+  - no gutters, no margins, no borders
+  - true alpha transparent background
+  - consistent scale, camera, lighting, palette, line thickness
+  - character fully inside each cell
+  - right-facing unless a frame explicitly states left-facing recovery
+  - no text or labels
+  negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent
+    background, checkerboard background, text, labels, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent
+    cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased
+    fringe, costume changes, face changes
+sprite_outputs:
+  source_references: []
+  authored_prompt_pack: characters/nietzsche/prompts.yml
+  target_sheets:
+    movement: characters/nietzsche/sprites/nietzsche_grid01_movement.png
+    fighting: characters/nietzsche/sprites/nietzsche_grid02_fighting.png
+    throws_consumes_swings: characters/nietzsche/sprites/nietzsche_grid03_throws_consumes_swings.png
+    specials: characters/nietzsche/sprites/nietzsche_grid04_specials.png
+enhancement_version: 2
+full_biography:
+  summary: 'German philosopher of critique, aphorism, eternal recurrence, the abyss, self-overcoming, and will to power recast as a stormy hammer
+    bruiser. He fights as dangerous becoming: risk first, proof after impact.'
+  combat_read: Distinctive runtime-backed philosopher fighter identity for prompt and UI use.
+appearance_bible:
+  appearance: wild unmistakable moustache, intense eyes, swept hair, dark nineteenth-century coat, high collar, boots, compact philosopher hammer,
+    storm-lit edges
+  palette: 'dark coat #1B1A20, moustache #4A2B19, hammer steel #80858A, abyss violet #3B235A, storm gold #F0C13B, fire orange #D85A24'
+  motion: coiled hammer idle, swaggering walk, reckless forward run, aggressive hammer jump, abyss-ring block, dramatic but defiant hurt
+  items: aphorism shard / tosses scrap into fire spark / hammer arc with storm crack
+move_render_descriptions:
+  normal_moves:
+  - name: Hammer Aphorism
+    pose: short low hammer snap
+    vfx: tiny gold crack
+    gameplay: fast bruiser opener
+  - name: Eternal Return Counter
+    pose: torso curls around hammer
+    vfx: violet abyss loop
+    gameplay: risky counter beat
+  - name: Overman Rush
+    pose: reckless shoulder-hammer drive
+    vfx: gold lightning and orange sparks
+    gameplay: committal heavy rush
+  special_moves:
+  - command: B>A
+    name: Hammer Aphorism
+    startup: hammer drawn back low
+    active: forward smash sends ground crack
+    impact: storm-gold crack orange edge
+    recovery: hammer rebounds
+  - command: B<A
+    name: Eternal Return Counter
+    startup: leans into danger
+    active: violet abyss ring around hammer
+    impact: ring snaps outward
+    recovery: defiant twist
+  - command: B>J
+    name: Overman Rush
+    startup: boots dig in coat lifts
+    active: storm-lit hammer dash
+    impact: gold lightning at shoulder
+    recovery: skids exposed
+  - command: BvJ
+    name: Will-to-Power Storm
+    startup: raises hammer abyss opens
+    active: contained fire-lightning column
+    impact: jagged arcs within cell
+    recovery: storm collapses
+prompt_feasibility_notes:
+- one sheet only
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or text inside image
+- stable palette and costume across all cells
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: wild unmistakable moustache, intense eyes, swept hair, dark nineteenth-century coat, high collar, boots, compact philosopher
+      hammer, storm-lit edges
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: high-risk bruiser using hammer, abyss, lightning/fire storm.; VFX must stay behind or around
+      the silhouette unless it is the impact frame'
+  palette_budget:
+    primary: '#1B1A20'
+    secondary: '#4A2B19'
+    accent: '#80858A'
+    vfx_1: '#3B235A'
+    vfx_2: '#F0C13B'
+    shadow: '#D85A24'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Friedrich Nietzsche as high-risk bruiser through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Hammer Aphorism: startup, impact, recovery'
+      4-6: 'running Eternal Return Counter: run transition, impact, slide/recover'
+      7-9: 'aerial/running Overman Rush: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Hammer Aphorism keypose
+      '14': B<A Eternal Return Counter keypose
+      '15': B>J Overman Rush keypose
+      '16': BvJ Will-to-Power Storm keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize high-risk bruiser using hammer, abyss, lightning/fire storm.
+    rows:
+      row1_frames_1_4: 'B>A Hammer Aphorism: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Eternal Return Counter: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B>J Overman Rush: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Will-to-Power Storm: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Friedrich Nietzsche
+    role_line: high-risk bruiser
+    mechanic_line: high-risk bruiser using hammer, abyss, lightning/fire storm.
+    color_strip:
+      primary: '#1B1A20'
+      secondary: '#4A2B19'
+      accent: '#80858A'
+  ability_icons:
+  - slot: B>A
+    label: Hammer Aphorism
+    icon_read: 'simple silhouette icon for Hammer Aphorism; use palette accent #80858A'
+  - slot: B<A
+    label: Eternal Return Counter
+    icon_read: 'simple silhouette icon for Eternal Return Counter; use palette accent #3B235A'
+  - slot: B>J
+    label: Overman Rush
+    icon_read: 'simple silhouette icon for Overman Rush; use palette accent #F0C13B'
+  - slot: BvJ
+    label: Will-to-Power Storm
+    icon_read: 'simple silhouette icon for Will-to-Power Storm; use palette accent #D85A24'
+  hud_meter:
+    name: Friedrich Nietzsche role meter
+    fill_color: '#80858A'
+    empty_color: '#1B1A20'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#4A2B19'
+    special: '#80858A'
+    counter_or_field: '#3B235A'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/nietzsche/sprites/nietzsche_grid01_movement.png
+  - characters/nietzsche/sprites/nietzsche_grid02_fighting.png
+  - characters/nietzsche/sprites/nietzsche_grid03_throws_consumes_swings.png
+  - characters/nietzsche/sprites/nietzsche_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/nietzsche/sprite-grid-manifest.json
+    prompt_pack: characters/nietzsche/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

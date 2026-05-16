@@ -1,0 +1,275 @@
+version: 2
+character_id: anselm
+title: Anselm of Canterbury
+purpose: Highly distinctive feasible 4x4 sprite-grid prompts for image-rendering LLMs.
+common_prompt_prefix: 'Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: Anselm of Canterbury.
+
+  Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+
+  Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+
+  Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16
+  cells.
+
+  Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+
+  Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.'
+character_sprite_brief: 'Anselm of Canterbury — The Ontological Proof; role: proof mage.
+
+  Biography: Medieval monk and philosopher of the Proslogion recast as a narrow proof-mage. His combat rhythm is premise, gesture, conclusion:
+  quiet prayer-hand starts become unavoidable lines of manuscript light.
+
+  Appearance: narrow hooded monk face, intent eyes, brown robe, cord belt, illuminated manuscript talisman, prayer-hand posture, parchment seal
+  glow.
+
+  Palette: monk brown #4B3325, robe shadow #2D1F19, parchment #DCC99B, manuscript red #A33A32, holy ivory #F8EDC6, logic blue #7FA9D8.
+
+  Animation identity: prayer-hand idle, restrained gliding walk, compact robe-ribbon run, seal-flash jump, crossed-hand proof shield.
+
+  Normals: Proslogion Pierce: two-finger or talisman thrust, tiny ivory-blue point, precise opener; Ontological Ray: hands open from prayer, thin
+  ivory ray with red fleck, linear control; Credo Dive: descending prayer-hand strike, small seal burst, aerial ender
+
+  Specials: B>A Ontological Ray: startup talisman brightens, active narrow ivory-blue beam, impact glyph flecks no text, recovery hands close;
+  B<A Greater-Than Counter: startup humble exposed stance, active proof seal unfolds, impact riposte pulse snaps, recovery robe settles; B^J Proslogion
+  Rise: startup knees dip talisman up, active vertical manuscript seal lifts, impact rising shoulder ring, recovery hands close overhead; BvJ
+  That-Than-Which Field: startup talisman near ground, active parchment ring expands, impact ivory-blue ticks pulse, recovery prayer at center'
+negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent
+  background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid,
+  offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom,
+  soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette
+palette_anchors: 'monk brown #4B3325, robe shadow #2D1F19, parchment #DCC99B, manuscript red #A33A32, holy ivory #F8EDC6, logic blue #7FA9D8'
+appearance_bible: narrow hooded monk face, intent eyes, brown robe, cord belt, illuminated manuscript talisman, prayer-hand posture, parchment
+  seal glow
+animation_bible: prayer-hand idle, restrained gliding walk, compact robe-ribbon run, seal-flash jump, crossed-hand proof shield
+move_render_descriptions:
+  normal_moves:
+  - name: Proslogion Pierce
+    pose: two-finger or talisman thrust
+    vfx: tiny ivory-blue point
+    gameplay: precise opener
+  - name: Ontological Ray
+    pose: hands open from prayer
+    vfx: thin ivory ray with red fleck
+    gameplay: linear control
+  - name: Credo Dive
+    pose: descending prayer-hand strike
+    vfx: small seal burst
+    gameplay: aerial ender
+  special_moves:
+  - command: B>A
+    name: Ontological Ray
+    startup: talisman brightens
+    active: narrow ivory-blue beam
+    impact: glyph flecks no text
+    recovery: hands close
+  - command: B<A
+    name: Greater-Than Counter
+    startup: humble exposed stance
+    active: proof seal unfolds
+    impact: riposte pulse snaps
+    recovery: robe settles
+  - command: B^J
+    name: Proslogion Rise
+    startup: knees dip talisman up
+    active: vertical manuscript seal lifts
+    impact: rising shoulder ring
+    recovery: hands close overhead
+  - command: BvJ
+    name: That-Than-Which Field
+    startup: talisman near ground
+    active: parchment ring expands
+    impact: ivory-blue ticks pulse
+    recovery: prayer at center
+grids:
+- id: anselm_grid01_movement
+  output: characters/anselm/sprites/anselm_grid01_movement.png
+  role: Basic Movement Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 01 MOVEMENT. 1 idle A: prayer-hand idle, restrained gliding walk, compact robe-ribbon run, seal-flash jump, crossed-hand proof shield.
+    2 idle B: tiny alternate breath. 3 light hurt, contained recoil. 4 heavy hurt, stronger recoil but identity intact. 5-8 walk cycle: prayer-hand
+    idle, restrained gliding walk, compact robe-ribbon run, seal-flash jump, crossed-hand proof shield with four distinct foot phases. 9-12 run
+    cycle: role-specific acceleration, longest stride, pass step, push-off. 13 jump takeoff. 14 jump air. 15 running jump. 16 K.O. full body visible.
+    Keep prop/costume readable in every frame; no duplicate silhouettes.'
+- id: anselm_grid02_fighting
+  output: characters/anselm/sprites/anselm_grid02_fighting.png
+  role: Basic Fighting Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 02 FIGHTING. 1 Proslogion Pierce startup: two-finger or talisman thrust. 2 Proslogion Pierce impact: tiny ivory-blue point. 3 recovery.
+    4 Ontological Ray running startup: hands open from prayer. 5 impact: thin ivory ray with red fleck. 6 recovery. 7 aerial/running attack startup
+    for Credo Dive. 8 impact: descending prayer-hand strike, small seal burst. 9 landing recovery. 10 running evasion start. 11 guarded block
+    using character identity. 12 punish-ready exit. 13 basic block. 14 fortified block. 15 victory pose A. 16 iconic victory pose B. Each 3-frame
+    clip must show anticipation, active, recovery.'
+- id: anselm_grid03_throws_consumes_swings
+  output: characters/anselm/sprites/anselm_grid03_throws_consumes_swings.png
+  role: Throwing / Consuming / Swinging Motions + Character Combos
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 03 INTERACTION AND COMBO KEYS. 1 pickup/ready item: parchment seal token / brief talisman prayer / robe-and-hand crescent sweep. 2 throw
+    windup. 3 throw release. 4 throw recovery. 5 consume/use start. 6 consume/use active. 7 small effect glint. 8 return stance. 9 swing startup.
+    10 swing impact. 11 swing follow-through. 12 reset. 13 B>A Ontological Ray keypose: narrow ivory-blue beam / glyph flecks no text. 14 B<A
+    Greater-Than Counter keypose: proof seal unfolds / riposte pulse snaps. 15 B^J Proslogion Rise keypose: vertical manuscript seal lifts / rising
+    shoulder ring. 16 BvJ That-Than-Which Field keypose: parchment ring expands / ivory-blue ticks pulse. Compact VFX only; caster silhouette
+    first.'
+- id: anselm_grid04_specials
+  output: characters/anselm/sprites/anselm_grid04_specials.png
+  role: Specials Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 04 SPECIALS, four moves, one row per move.
+
+    Row 1, Ontological Ray, B>A: 1 startup talisman brightens; 2 active narrow ivory-blue beam; 3 impact/sustain glyph flecks no text; 4 recovery
+    hands close.
+
+    Row 2, Greater-Than Counter, B<A: 5 startup humble exposed stance; 6 active proof seal unfolds; 7 impact/sustain riposte pulse snaps; 8 recovery
+    robe settles.
+
+    Row 3, Proslogion Rise, B^J: 9 startup knees dip talisman up; 10 active vertical manuscript seal lifts; 11 impact/sustain rising shoulder
+    ring; 12 recovery hands close overhead.
+
+    Row 4, That-Than-Which Field, BvJ: 13 startup talisman near ground; 14 active parchment ring expands; 15 impact/sustain ivory-blue ticks pulse;
+    16 recovery prayer at center.
+
+    Each row is a separate 4-frame caster animation; no row blending; VFX stays inside cell and never hides the body.'
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: narrow hooded monk face, intent eyes, brown robe, cord belt, illuminated manuscript talisman, prayer-hand posture, parchment
+      seal glow
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: proof mage using unavoidable logic rays, seals.; VFX must stay behind or around the silhouette
+      unless it is the impact frame'
+  palette_budget:
+    primary: '#4B3325'
+    secondary: '#DCC99B'
+    accent: '#A33A32'
+    vfx_1: '#F8EDC6'
+    vfx_2: '#7FA9D8'
+    shadow: '#141414'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Anselm of Canterbury as proof mage through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Proslogion Pierce: startup, impact, recovery'
+      4-6: 'running Ontological Ray: run transition, impact, slide/recover'
+      7-9: 'aerial/running Credo Dive: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Ontological Ray keypose
+      '14': B<A Greater-Than Counter keypose
+      '15': B^J Proslogion Rise keypose
+      '16': BvJ That-Than-Which Field keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize proof mage using unavoidable logic rays, seals.
+    rows:
+      row1_frames_1_4: 'B>A Ontological Ray: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Greater-Than Counter: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B^J Proslogion Rise: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ That-Than-Which Field: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Anselm of Canterbury
+    role_line: proof mage
+    mechanic_line: proof mage using unavoidable logic rays, seals.
+    color_strip:
+      primary: '#4B3325'
+      secondary: '#DCC99B'
+      accent: '#A33A32'
+  ability_icons:
+  - slot: B>A
+    label: Ontological Ray
+    icon_read: 'simple silhouette icon for Ontological Ray; use palette accent #A33A32'
+  - slot: B<A
+    label: Greater-Than Counter
+    icon_read: 'simple silhouette icon for Greater-Than Counter; use palette accent #F8EDC6'
+  - slot: B^J
+    label: Proslogion Rise
+    icon_read: 'simple silhouette icon for Proslogion Rise; use palette accent #7FA9D8'
+  - slot: BvJ
+    label: That-Than-Which Field
+    icon_read: 'simple silhouette icon for That-Than-Which Field; use palette accent #4B3325'
+  hud_meter:
+    name: Anselm of Canterbury role meter
+    fill_color: '#A33A32'
+    empty_color: '#4B3325'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#DCC99B'
+    special: '#A33A32'
+    counter_or_field: '#F8EDC6'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait

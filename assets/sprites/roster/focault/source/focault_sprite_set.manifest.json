@@ -1,0 +1,67 @@
+{
+  "id": "focault",
+  "title": "Michel Foucault",
+  "source": "roster/roster.sprite-spec.yml",
+  "character_sheet": "roster/characters/focault.md",
+  "style": "programmatic pixel-art placeholder sheets for gameplay/debug iteration",
+  "sheets": {
+    "core_4x4": {
+      "path": "assets/sprites/roster/focault/source/focault_core_4x4.png",
+      "layout": [
+        "Standing_Idle_A",
+        "Standing_Idle_B",
+        "Standing_Breathe_In",
+        "Standing_Breathe_Out",
+        "Walking_1",
+        "Walking_2",
+        "Running_1",
+        "Running_2",
+        "Jump_Start",
+        "Jump_Air",
+        "Jump_Forward",
+        "Land_Recover",
+        "Attack_Jab",
+        "Attack_Swing",
+        "Attack_Kick",
+        "Special_Charge"
+      ],
+      "cell": 128,
+      "image_size": [512, 546]
+    },
+    "extended_4x4": {
+      "path": "assets/sprites/roster/focault/source/focault_extended_4x4.png",
+      "layout": [
+        "Run_Attack_Start",
+        "Run_Attack_Hit",
+        "Run_Attack_Recovery",
+        "Run_Stop",
+        "Run_Jump_Start",
+        "Run_Jump_Air",
+        "Run_Jump_Attack",
+        "Run_Jump_Land",
+        "Block_Stand",
+        "Block_Hit",
+        "Hurt_Light",
+        "Hurt_Heavy",
+        "Knockdown",
+        "Getup_1",
+        "Getup_2",
+        "Victory_Pose"
+      ],
+      "cell": 128,
+      "image_size": [512, 546]
+    }
+  },
+  "specials": [
+    "Panopticon Arc",
+    "Archive Burst",
+    "Discipline Break",
+    "Biopower Lash",
+    "Corridor Sweep",
+    "Tower Drop"
+  ],
+  "visual_notes": [
+    "Slim silhouette, bald head, black turtleneck under long coat; hand gesture like tracing diagrams in air.",
+    "Measured stalking steps, coat flare on run, containment-rush attacks."
+  ]
+}

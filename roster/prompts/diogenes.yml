@@ -1,0 +1,54 @@
+Create a pixel-art sprite sheet for ETHIC BRAWL.
+
+  HARD FORMAT REQUIREMENTS:
+  - Output EXACTLY one sprite sheet image, arranged as an exact 4x4 grid (16 frames).
+  - Every cell must be identical size and perfectly aligned.
+  - No gutters, no margins, no decorative borders.
+  - Transparent background must be TRUE alpha transparency.
+  - Character must stay fully inside each cell with no clipping.
+  - Keep character scale, camera angle, and lighting consistent in all frames.
+
+  FRAME MAP (left-to-right, top-to-bottom):
+  Row 1: idle, fight pose, fortified stance, signature gesture
+  Row 2: run_1, run_2, run_3, run_4 (fluid run cycle)
+  Row 3: landing ducked, jump in air, jump kick, landing ducked (left-facing recovery)
+  Row 4: strike swing, strike jab, standing kick, special attack key pose
+
+  CHARACTER BRIEF:
+  {{character_brief}}
+
+  ANIMATION BRIEF:
+  {{animation_brief}}
+
+  SPECIAL ATTACK BRIEF:
+  {{special_attack_brief}}
+
+  QUALITY BAR:
+  - Motions must read immediately at small size.
+  - Poses must be distinct frame-to-frame; no near-duplicate run frames.
+  - No extra objects unless part of core silhouette.
+  - Output must be production-ready for automatic 4x4 slicing.
+
+negative_prompt: |
+  blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading,
+  multiple characters, busy background, non-transparent background, checkerboard background,
+  text, labels, speech bubbles, UI elements, watermark, logo,
+  uneven grid, broken grid, offset cells, inconsistent cell sizes,
+  cropped limbs, cut-off feet, motion trails across cells, duplicate frames,
+  heavy glow, bloom, soft shadow halos, anti-aliased fringe
+ - id: diogenes
+    title: "Diogenes"
+    character_brief: |
+      Cynic street-fighter philosopher.
+      Lean, wiry, rugged beard, intense eyes.
+      Wears tattered cloak over simple tunic, rope belt, bare or sandal-clad feet.
+      Carries a small lantern motif integrated near hand/hip silhouette.
+      Palette: dusty earth tones, muted bronze highlights.
+    animation_brief: |
+      Movement style: erratic, feral, low-to-ground.
+      Run cycle has long forward lean and abrupt cadence changes.
+      Strikes are hooking swats and body-check momentum.
+      Kick is a scrappy rising knee-to-shin style attack.
+    special_attack_brief: |
+      "Lantern of Truth": lunging shove with lantern-forward feint,
+      ending in a disruptive close-range burst pose.

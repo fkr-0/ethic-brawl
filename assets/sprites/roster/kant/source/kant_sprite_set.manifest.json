@@ -1,0 +1,67 @@
+{
+  "id": "kant",
+  "title": "Immanuel Kant",
+  "source": "roster/roster.sprite-spec.yml",
+  "character_sheet": "roster/characters/kant.md",
+  "style": "programmatic pixel-art placeholder sheets for gameplay/debug iteration",
+  "sheets": {
+    "core_4x4": {
+      "path": "assets/sprites/roster/kant/source/kant_core_4x4.png",
+      "layout": [
+        "Standing_Idle_A",
+        "Standing_Idle_B",
+        "Standing_Breathe_In",
+        "Standing_Breathe_Out",
+        "Walking_1",
+        "Walking_2",
+        "Running_1",
+        "Running_2",
+        "Jump_Start",
+        "Jump_Air",
+        "Jump_Forward",
+        "Land_Recover",
+        "Attack_Jab",
+        "Attack_Swing",
+        "Attack_Kick",
+        "Special_Charge"
+      ],
+      "cell": 128,
+      "image_size": [512, 546]
+    },
+    "extended_4x4": {
+      "path": "assets/sprites/roster/kant/source/kant_extended_4x4.png",
+      "layout": [
+        "Run_Attack_Start",
+        "Run_Attack_Hit",
+        "Run_Attack_Recovery",
+        "Run_Stop",
+        "Run_Jump_Start",
+        "Run_Jump_Air",
+        "Run_Jump_Attack",
+        "Run_Jump_Land",
+        "Block_Stand",
+        "Block_Hit",
+        "Hurt_Light",
+        "Hurt_Heavy",
+        "Knockdown",
+        "Getup_1",
+        "Getup_2",
+        "Victory_Pose"
+      ],
+      "cell": 128,
+      "image_size": [512, 546]
+    }
+  },
+  "specials": [
+    "Categorical Jab",
+    "Pure Reason Arc",
+    "Duty Stance",
+    "Noumenon Split",
+    "Konigsberg Dash",
+    "Transcendental Drop"
+  ],
+  "visual_notes": [
+    "18th-century coat, powdered hair, compact rapier-cane silhouette.",
+    "Formal posture, controlled quickstep, geometric thrusts."
+  ]
+}

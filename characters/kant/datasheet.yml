@@ -1,0 +1,238 @@
+version: 1
+enhancement_version: 2
+id: kant
+title: Immanuel Kant
+subtitle: The Categorical Lawgiver
+role: lawful control mage
+element_mechanic: beams, constraints, reflective duty
+source_notes:
+- prompt-first with roster placeholder source sheet
+full_biography:
+  summary: Prussian critical philosopher recast as a lawful control mage. Kant constrains motion with duty sigils, reflects phenomena at the noumenal
+    boundary, and fires universal law as clean geometric beams.
+  combat_read: Prompt-first spriteless character bible intended to guide high-consistency grid rendering.
+stored_stats:
+  proposed_prompt_stats:
+    intelligence: 10
+    strength: 3
+    agility: 3
+    vitality: 7
+    energy: 10
+appearance_bible:
+  appearance: small precise professor silhouette, powdered wig or tied white hair, dark Prussian coat, waistcoat, cane or book, starry-heavens
+    lining and law-sigil geometry
+  palette: 'prussian navy #17223B, wig white #E7E4DA, waistcoat gray #8A8F99, duty gold #DAB85C, noumenal violet #6E5BFF, law blue #4FA3FF'
+  motion: clockwork idle, tiny exact walk, stiff controlled run, small precise jump, reflective book/cane block, starry-heavens victory glance
+  items: pocket watch or book page / adjusts watch or reads critique / cane-law sweep
+move_render_descriptions:
+  normal_moves:
+  - name: Maxim Jab
+    pose: small exact cane poke
+    vfx: blue law tick
+    gameplay: precise opener
+  - name: Duty Palm
+    pose: rigid palm/book push
+    vfx: gold constraint bracket
+    gameplay: control pressure
+  - name: Sublime Kick
+    pose: stiff upward kick with coat flare
+    vfx: violet star spark
+    gameplay: anti-air ender
+  special_moves:
+  - command: B>A
+    commandSlot: BFA
+    name: Universal Law Beam
+    startup: cane/book aligns with perfect posture
+    active: straight law-blue beam fires forward
+    impact: gold duty brackets frame beam
+    recovery: returns to clockwork stance
+  - command: B<A
+    commandSlot: BBA
+    name: Noumenal Reflect
+    startup: book closes over chest
+    active: violet reflective plane appears
+    impact: incoming force bends off invisible boundary
+    recovery: plane folds into book
+  - command: BvA
+    commandSlot: BDA
+    name: Duty Sigil
+    startup: sets cane tip to floor
+    active: gold duty sigil appears under target lane
+    impact: constraint lines lock low space
+    recovery: cane lifts precisely
+  - command: BvJ
+    commandSlot: BDJ
+    name: Kingdom of Ends
+    startup: raises book toward starry lining
+    active: blue-gold moral geometry field expands
+    impact: starry duty nodes orbit once
+    recovery: field resolves into calm stance
+prompt_feasibility_notes:
+- one exact 4x4 sheet per prompt
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or readable text inside image
+- stable costume/palette across all cells
+sprite_outputs:
+  source_references:
+  - assets/sprites/roster/kant/source/kant_core_4x4.png
+  - assets/sprites/roster/kant/source/kant_extended_4x4.png
+  authored_prompt_pack: characters/kant/prompts.yml
+  target_sheets:
+    movement: characters/kant/sprites/kant_grid01_movement.png
+    fighting: characters/kant/sprites/kant_grid02_fighting.png
+    throws_consumes_swings: characters/kant/sprites/kant_grid03_throws_consumes_swings.png
+    specials: characters/kant/sprites/kant_grid04_specials.png
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: small precise professor silhouette, powdered wig or tied white hair, dark Prussian coat, waistcoat, cane or book, starry-heavens
+      lining and law-sigil geometry
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: beams, constraints, reflective duty; VFX must stay behind or around the silhouette unless it
+      is the impact frame'
+  palette_budget:
+    primary: '#17223B'
+    secondary: '#E7E4DA'
+    accent: '#8A8F99'
+    vfx_1: '#DAB85C'
+    vfx_2: '#6E5BFF'
+    shadow: '#4FA3FF'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Immanuel Kant as lawful control mage through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Maxim Jab: startup, impact, recovery'
+      4-6: 'running Duty Palm: run transition, impact, slide/recover'
+      7-9: 'aerial/running Sublime Kick: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Universal Law Beam keypose
+      '14': B<A Noumenal Reflect keypose
+      '15': BvA Duty Sigil keypose
+      '16': BvJ Kingdom of Ends keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize beams, constraints, reflective duty
+    rows:
+      row1_frames_1_4: 'B>A Universal Law Beam: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Noumenal Reflect: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'BvA Duty Sigil: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Kingdom of Ends: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Immanuel Kant
+    role_line: lawful control mage
+    mechanic_line: beams, constraints, reflective duty
+    color_strip:
+      primary: '#17223B'
+      secondary: '#E7E4DA'
+      accent: '#8A8F99'
+  ability_icons:
+  - slot: B>A
+    label: Universal Law Beam
+    icon_read: 'simple silhouette icon for Universal Law Beam; use palette accent #8A8F99'
+  - slot: B<A
+    label: Noumenal Reflect
+    icon_read: 'simple silhouette icon for Noumenal Reflect; use palette accent #DAB85C'
+  - slot: BvA
+    label: Duty Sigil
+    icon_read: 'simple silhouette icon for Duty Sigil; use palette accent #6E5BFF'
+  - slot: BvJ
+    label: Kingdom of Ends
+    icon_read: 'simple silhouette icon for Kingdom of Ends; use palette accent #4FA3FF'
+  hud_meter:
+    name: Immanuel Kant role meter
+    fill_color: '#8A8F99'
+    empty_color: '#17223B'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#E7E4DA'
+    special: '#8A8F99'
+    counter_or_field: '#DAB85C'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/kant/sprites/kant_grid01_movement.png
+  - characters/kant/sprites/kant_grid02_fighting.png
+  - characters/kant/sprites/kant_grid03_throws_consumes_swings.png
+  - characters/kant/sprites/kant_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/kant/sprite-grid-manifest.json
+    prompt_pack: characters/kant/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

@@ -1,0 +1,239 @@
+version: 1
+enhancement_version: 2
+id: marx
+title: Karl Marx
+subtitle: The Revolutionary Pressure Engine
+role: pressure scaler
+element_mechanic: shockwaves, factory hazards, revolution buffs
+source_notes:
+- prompt-first with roster placeholder source sheet
+full_biography:
+  summary: Critic of capital and theorist of class struggle recast as a pressure scaler. Marx advances with manifesto shockwaves, factory-floor
+    hazards, and collective red-banner momentum that grows more threatening the longer he controls space.
+  combat_read: Prompt-first spriteless character bible intended to guide high-consistency grid rendering.
+stored_stats:
+  proposed_prompt_stats:
+    intelligence: 9
+    strength: 7
+    agility: 4
+    vitality: 8
+    energy: 7
+appearance_bible:
+  appearance: large iconic beard, heavy brow, dark coat, red scarf or sash, rolled manuscript, sturdy boots, factory soot edges, red banner fragments
+    and gear silhouettes
+  palette: 'coat black #1B1B1D, beard gray #B7B0A6, manuscript tan #D6C39A, revolution red #D21F2B, factory iron #666B70, ember orange #D86A28'
+  motion: heavy lecturing idle with manuscript hand, trudging worker march walk, pressure-forward run, weighty jump, crossed-arm red guard, banner-raised
+    victory
+  items: manifesto page bundle / reads manifesto beat / rolled-manuscript swing
+move_render_descriptions:
+  normal_moves:
+  - name: Manifesto Jab
+    pose: rolled paper straight punch
+    vfx: small red paper spark
+    gameplay: pressure starter
+  - name: Dialectic Hook
+    pose: broad coat-and-beard hook
+    vfx: red/iron crescent
+    gameplay: mid pressure
+  - name: Factory Stomp
+    pose: heavy boot stomp
+    vfx: soot and gear spark
+    gameplay: grounded ender
+  special_moves:
+  - command: B>A
+    commandSlot: BFA
+    name: Manifesto Shockwave
+    startup: unrolls manifesto with red flash
+    active: forward shout/palm sends red ground shockwave
+    impact: paper-and-soot wave rolls low
+    recovery: manuscript snaps back
+  - command: BvA
+    commandSlot: BDA
+    name: Factory Floor Hazard
+    startup: stomps boot into floor
+    active: iron gear hazard sparks under opponent lane
+    impact: low factory plate glows red-orange
+    recovery: steps forward through soot
+  - command: B^J
+    commandSlot: BUJ
+    name: Red Banner Rise
+    startup: grips invisible banner pole low
+    active: red banner surges upward behind body
+    impact: banner lift buff pulse rises vertically
+    recovery: banner folds into scarf
+  - command: BvJ
+    commandSlot: BDJ
+    name: Revolution Field
+    startup: raises fist and manifesto
+    active: large red circular field spreads at feet
+    impact: gear silhouettes and banner motes pulse
+    recovery: stands in collective momentum aura
+prompt_feasibility_notes:
+- one exact 4x4 sheet per prompt
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or readable text inside image
+- stable costume/palette across all cells
+sprite_outputs:
+  source_references:
+  - assets/sprites/roster/marx/source/marx_core_4x4.png
+  - assets/sprites/roster/marx/source/marx_extended_4x4.png
+  authored_prompt_pack: characters/marx/prompts.yml
+  target_sheets:
+    movement: characters/marx/sprites/marx_grid01_movement.png
+    fighting: characters/marx/sprites/marx_grid02_fighting.png
+    throws_consumes_swings: characters/marx/sprites/marx_grid03_throws_consumes_swings.png
+    specials: characters/marx/sprites/marx_grid04_specials.png
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: large iconic beard, heavy brow, dark coat, red scarf or sash, rolled manuscript, sturdy boots, factory soot edges, red banner
+      fragments and gear silhouettes
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: shockwaves, factory hazards, revolution buffs; VFX must stay behind or around the silhouette
+      unless it is the impact frame'
+  palette_budget:
+    primary: '#1B1B1D'
+    secondary: '#B7B0A6'
+    accent: '#D6C39A'
+    vfx_1: '#D21F2B'
+    vfx_2: '#666B70'
+    shadow: '#D86A28'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Karl Marx as pressure scaler through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Manifesto Jab: startup, impact, recovery'
+      4-6: 'running Dialectic Hook: run transition, impact, slide/recover'
+      7-9: 'aerial/running Factory Stomp: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Manifesto Shockwave keypose
+      '14': BvA Factory Floor Hazard keypose
+      '15': B^J Red Banner Rise keypose
+      '16': BvJ Revolution Field keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize shockwaves, factory hazards, revolution buffs
+    rows:
+      row1_frames_1_4: 'B>A Manifesto Shockwave: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'BvA Factory Floor Hazard: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B^J Red Banner Rise: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Revolution Field: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Karl Marx
+    role_line: pressure scaler
+    mechanic_line: shockwaves, factory hazards, revolution buffs
+    color_strip:
+      primary: '#1B1B1D'
+      secondary: '#B7B0A6'
+      accent: '#D6C39A'
+  ability_icons:
+  - slot: B>A
+    label: Manifesto Shockwave
+    icon_read: 'simple silhouette icon for Manifesto Shockwave; use palette accent #D6C39A'
+  - slot: BvA
+    label: Factory Floor Hazard
+    icon_read: 'simple silhouette icon for Factory Floor Hazard; use palette accent #D21F2B'
+  - slot: B^J
+    label: Red Banner Rise
+    icon_read: 'simple silhouette icon for Red Banner Rise; use palette accent #666B70'
+  - slot: BvJ
+    label: Revolution Field
+    icon_read: 'simple silhouette icon for Revolution Field; use palette accent #D86A28'
+  hud_meter:
+    name: Karl Marx role meter
+    fill_color: '#D6C39A'
+    empty_color: '#1B1B1D'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#B7B0A6'
+    special: '#D6C39A'
+    counter_or_field: '#D21F2B'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/marx/sprites/marx_grid01_movement.png
+  - characters/marx/sprites/marx_grid02_fighting.png
+  - characters/marx/sprites/marx_grid03_throws_consumes_swings.png
+  - characters/marx/sprites/marx_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/marx/sprite-grid-manifest.json
+    prompt_pack: characters/marx/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

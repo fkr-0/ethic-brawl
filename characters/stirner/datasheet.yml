@@ -1,0 +1,237 @@
+version: 1
+enhancement_version: 2
+id: stirner
+title: Max Stirner
+subtitle: The Unique
+role: egoist trickster
+element_mechanic: unique/ridiculous moves that break design rules
+source_notes:
+- fully spriteless prompt-first; no source sheet found
+full_biography:
+  summary: Egoist provocateur recast as a rule-breaking trickster. Stirner attacks concepts as “spooks,” steals pose language from other fighters
+    for a frame, and treats the arena like property to be appropriated.
+  combat_read: Prompt-first spriteless character bible intended to guide high-consistency grid rendering.
+stored_stats:
+  proposed_prompt_stats:
+    intelligence: 8
+    strength: 5
+    agility: 8
+    vitality: 5
+    energy: 8
+appearance_bible:
+  appearance: sharp mischievous face, high forehead, unruly dark hair, small glasses or glinting eyes, dark shabby academic coat, mismatched gloves,
+    torn manifesto scraps, chalk outlines and absurd little prop switches
+  palette: 'ego black #101014, paper yellow #D8C171, chalk white #EDE6D0, spook violet #8C4DFF, absurd lime #A6FF3D, trick red #D94A4A'
+  motion: fidgety self-owned idle, lopsided walk, sudden zigzag run, ridiculous but readable jump, shrugging anti-guard block, mocking victory
+    pose
+  items: stolen sign token with no letters / pockets a prop / crooked cane-or-scrap swing
+move_render_descriptions:
+  normal_moves:
+  - name: Unique Jab
+    pose: odd off-angle jab from too-relaxed stance
+    vfx: lime chalk tick
+    gameplay: awkward opener
+  - name: Spook Slap
+    pose: backhand through a ghostly concept outline
+    vfx: violet pop
+    gameplay: anti-guard pressure
+  - name: Ownness Kick
+    pose: self-satisfied sideways kick
+    vfx: red-lime spark
+    gameplay: trick ender
+  special_moves:
+  - command: B>A
+    commandSlot: BFA
+    name: Egoist Appropriation
+    startup: reaches as if taking ownership of space
+    active: snatches a small lime-violet arc forward
+    impact: target space gets a chalk ownership bracket with no text
+    recovery: pockets the stolen arc
+  - command: B<A
+    commandSlot: BBA
+    name: Spook Reversal
+    startup: points at an imaginary authority
+    active: violet spook mask appears as counter guard
+    impact: mask bursts backward into riposte
+    recovery: shrugs as if nothing happened
+  - command: B>J
+    commandSlot: BFJ
+    name: Ownness Dash
+    startup: leans the wrong way first
+    active: zigzag dash violates normal anticipation
+    impact: afterimage briefly mocks another stance
+    recovery: lands with smug off-balance pose
+  - command: BvJ
+    commandSlot: BDJ
+    name: Union of Egoists Domain
+    startup: drops torn paper scraps around feet
+    active: absurd lime/violet domain forms from mismatched shapes
+    impact: tiny autonomous scraps orbit as temporary allies
+    recovery: domain folds into coat pocket
+prompt_feasibility_notes:
+- one exact 4x4 sheet per prompt
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or readable text inside image
+- stable costume/palette across all cells
+sprite_outputs:
+  source_references: []
+  authored_prompt_pack: characters/stirner/prompts.yml
+  target_sheets:
+    movement: characters/stirner/sprites/stirner_grid01_movement.png
+    fighting: characters/stirner/sprites/stirner_grid02_fighting.png
+    throws_consumes_swings: characters/stirner/sprites/stirner_grid03_throws_consumes_swings.png
+    specials: characters/stirner/sprites/stirner_grid04_specials.png
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: sharp mischievous face, high forehead, unruly dark hair, small glasses or glinting eyes, dark shabby academic coat, mismatched
+      gloves, torn manifesto scraps, chalk outlines and absurd little prop switches
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: unique/ridiculous moves that break design rules; VFX must stay behind or around the silhouette
+      unless it is the impact frame'
+  palette_budget:
+    primary: '#101014'
+    secondary: '#D8C171'
+    accent: '#EDE6D0'
+    vfx_1: '#8C4DFF'
+    vfx_2: '#A6FF3D'
+    shadow: '#D94A4A'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Max Stirner as egoist trickster through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Unique Jab: startup, impact, recovery'
+      4-6: 'running Spook Slap: run transition, impact, slide/recover'
+      7-9: 'aerial/running Ownness Kick: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Egoist Appropriation keypose
+      '14': B<A Spook Reversal keypose
+      '15': B>J Ownness Dash keypose
+      '16': BvJ Union of Egoists Domain keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize unique/ridiculous moves that break design rules
+    rows:
+      row1_frames_1_4: 'B>A Egoist Appropriation: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Spook Reversal: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B>J Ownness Dash: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Union of Egoists Domain: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Max Stirner
+    role_line: egoist trickster
+    mechanic_line: unique/ridiculous moves that break design rules
+    color_strip:
+      primary: '#101014'
+      secondary: '#D8C171'
+      accent: '#EDE6D0'
+  ability_icons:
+  - slot: B>A
+    label: Egoist Appropriation
+    icon_read: 'simple silhouette icon for Egoist Appropriation; use palette accent #EDE6D0'
+  - slot: B<A
+    label: Spook Reversal
+    icon_read: 'simple silhouette icon for Spook Reversal; use palette accent #8C4DFF'
+  - slot: B>J
+    label: Ownness Dash
+    icon_read: 'simple silhouette icon for Ownness Dash; use palette accent #A6FF3D'
+  - slot: BvJ
+    label: Union of Egoists Domain
+    icon_read: 'simple silhouette icon for Union of Egoists Domain; use palette accent #D94A4A'
+  hud_meter:
+    name: Max Stirner role meter
+    fill_color: '#EDE6D0'
+    empty_color: '#101014'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#D8C171'
+    special: '#EDE6D0'
+    counter_or_field: '#8C4DFF'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/stirner/sprites/stirner_grid01_movement.png
+  - characters/stirner/sprites/stirner_grid02_fighting.png
+  - characters/stirner/sprites/stirner_grid03_throws_consumes_swings.png
+  - characters/stirner/sprites/stirner_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/stirner/sprite-grid-manifest.json
+    prompt_pack: characters/stirner/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

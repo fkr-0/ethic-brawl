@@ -1,0 +1,31 @@
+{
+  "id": "hollow_debug",
+  "purpose": "transparent hollow figure sprite grid for renderer, collision, alpha, origin, and animation debugging",
+  "grid": {
+    "cols": 4,
+    "rows": 4,
+    "cell": 128,
+    "header": 32,
+    "image_size": [512, 544]
+  },
+  "origin_per_cell": [64, 104],
+  "motions": [
+    "Standing_Idle",
+    "Standing_Fightpose",
+    "Standing_Fortified",
+    "Standing_Gesture",
+    "Running_1",
+    "Running_2",
+    "Running_3",
+    "Running_4",
+    "Landing_Ducked",
+    "Jumping_In_Air",
+    "Jumping_Kick",
+    "Landing_Ducked_LeftOriented",
+    "Standing_Strike_Swing",
+    "Standing_Strike_Jab",
+    "Standing_Kick",
+    "Standing_Special"
+  ],
+  "output": "assets/sprites/debug/source/hollow_debug_4x4_sprite_grid.png"
+}

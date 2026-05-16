@@ -1,0 +1,58 @@
+{
+  "character": "machiavelli",
+  "orientationDefault": "right",
+  "promptPack": "characters/machiavelli/prompts.yml",
+  "datasheet": "characters/machiavelli/datasheet.yml",
+  "sourceReferences": [
+    "public/assets/sprites/machiavelli/source/machiavelli.png",
+    "machiavelli.png",
+    "machiavelli2.png"
+  ],
+  "grids": [
+    {
+      "id": "machiavelli_grid01_movement",
+      "output": "characters/machiavelli/sprites/machiavelli_grid01_movement.png",
+      "clips": {
+        "idle": [1, 2],
+        "hurt": [3, 4],
+        "walk": [5, 6, 7, 8],
+        "run": [9, 10, 11, 12],
+        "jump": [13, 14],
+        "run_jump": [15],
+        "ko": [16]
+      }
+    },
+    {
+      "id": "machiavelli_grid02_fighting",
+      "output": "characters/machiavelli/sprites/machiavelli_grid02_fighting.png",
+      "clips": {
+        "basic_attack": [1, 2, 3],
+        "running_attack": [4, 5, 6],
+        "jumping_running_attack": [7, 8, 9],
+        "running_evasion_block": [10, 11, 12],
+        "block": [13, 14],
+        "win": [15, 16]
+      }
+    },
+    {
+      "id": "machiavelli_grid03_throws_consumes_swings",
+      "output": "characters/machiavelli/sprites/machiavelli_grid03_throws_consumes_swings.png",
+      "clips": {
+        "throw": [1, 2, 3, 4],
+        "consume_use": [5, 6, 7, 8],
+        "swing": [9, 10, 11, 12],
+        "special_keyposes": [13, 14, 15, 16]
+      }
+    },
+    {
+      "id": "machiavelli_grid04_specials",
+      "output": "characters/machiavelli/sprites/machiavelli_grid04_specials.png",
+      "clips": {
+        "BFA_princes_gambit_lunge": [1, 2, 3, 4],
+        "BBA_court_intrigue_parry": [5, 6, 7, 8],
+        "BDA_coup_trap": [9, 10, 11, 12],
+        "BFJ_opportunist_dash": [13, 14, 15, 16]
+      }
+    }
+  ]
+}

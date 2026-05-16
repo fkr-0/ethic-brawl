@@ -1,0 +1,73 @@
+version: 2
+purpose: "Enhanced prompt pack + gameplay metadata for Ethic Brawl"
+
+stats_schema:
+  intelligence: {min: 1, max: 10}
+  strength: {min: 1, max: 10}
+  agility: {min: 1, max: 10}
+  vitality: {min: 1, max: 10}
+  energy: {min: 1, max: 10}
+
+characters:
+  - id: focault
+    title: "Michel Foucault"
+    stats: {intelligence: 10, strength: 4, agility: 6, vitality: 6, energy: 8}
+  - id: aristotle
+    title: "Aristotle"
+    stats: {intelligence: 9, strength: 7, agility: 5, vitality: 8, energy: 6}
+  - id: socrates
+    title: "Socrates"
+    stats: {intelligence: 10, strength: 3, agility: 5, vitality: 7, energy: 9}
+  - id: aquinas
+    title: "Thomas Aquinas"
+    stats: {intelligence: 8, strength: 8, agility: 3, vitality: 10, energy: 7}
+  - id: anselm
+    title: "Anselm of Canterbury"
+    stats: {intelligence: 9, strength: 4, agility: 4, vitality: 6, energy: 9}
+  - id: marx
+    title: "Karl Marx"
+    stats: {intelligence: 9, strength: 7, agility: 4, vitality: 8, energy: 7}
+  - id: bakunin
+    title: "Mikhail Bakunin"
+    stats: {intelligence: 7, strength: 8, agility: 7, vitality: 7, energy: 6}
+  - id: schmitt
+    title: "Carl Schmitt"
+    stats: {intelligence: 8, strength: 7, agility: 4, vitality: 9, energy: 6}
+  - id: kant
+    title: "Immanuel Kant"
+    stats: {intelligence: 10, strength: 5, agility: 5, vitality: 7, energy: 8}
+  - id: hegel
+    title: "Hegel"
+    stats: {intelligence: 10, strength: 6, agility: 5, vitality: 8, energy: 8}
+
+stages:
+  - id: panopticon
+  - id: agora
+  - id: cathedral
+  - id: factory
+  - id: void_dialectic
+
+items:
+  - id: book
+  - id: hammer
+  - id: lantern
+
+story_mode:
+  arcs:
+    - name: "Foundations"
+      fighters: [socrates, aristotle, anselm]
+    - name: "Faith vs Reason"
+      fighters: [aquinas, kant]
+    - name: "Power"
+      fighters: [focault, schmitt]
+    - name: "Revolution"
+      fighters: [marx, bakunin]
+    - name: "Synthesis"
+      fighters: [hegel]
+
+roadmap:
+  - "core combat + stats"
+  - "abilities + VFX"
+  - "story mode"
+  - "multiplayer"
+  - "polish"

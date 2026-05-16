@@ -1,0 +1,283 @@
+version: 2
+character_id: deleuze_guattari
+title: Gilles Deleuze / Félix Guattari
+purpose: Highly distinctive feasible 4x4 sprite-grid prompts for spriteless/prompt-first characters.
+common_prompt_prefix: 'Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: Gilles Deleuze / Félix Guattari.
+
+  Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom. Every cell must be same size,
+  perfectly aligned, no gutters, no margins, no border, no labels, no text. Use true alpha transparency only. Keep the same character identity,
+  costume, palette, scale, side-view camera, lighting, and pixel density in all 16 cells. Right-facing side-view fighter poses unless explicitly
+  stated. Full body inside every cell. Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Compact VFX secondary to body pose
+  clarity.'
+character_sprite_brief: 'Gilles Deleuze / Félix Guattari — The Rhizome Engine; role: swarm / field chaos; mechanic: rhizome chains, assemblage
+  cyclones.
+
+  Biography/combat fantasy: A duo reimagined as one playable assemblage: two thinkers expressed as a single unstable fighter silhouette of scarf,
+  coat, masks, papers, and living rhizome lines. Their combat dissolves clean categories into swarms, chains, and fields of becoming.
+
+  Appearance: duo-as-one silhouette, one main body with a secondary shoulder-mask/echo rather than two independent characters, layered coats and
+  scarves, wild hair outlines, notebooks, rhizome root-vines and machine-cog motes.
+
+  Palette: ink black #15151A, paper cream #E7DCC4, rhizome green #39FF14, machine magenta #FF4DCC, plateau blue #4AA3FF, cyclone violet #6B4DFF.
+
+  Animation identity: restless double-beat idle, skittering sideways walk, line-of-flight dash run, scarf-and-root aerial shapes, tangled assemblage
+  block, chaotic but readable victory swirl.
+
+  Normals: Concept Jab: two-beat asymmetrical jab from main hand and echo shoulder, green rhizome tick, trick opener; Assemblage Sweep: scarf-and-root
+  side sweep, magenta-green arc, chaos pressure; Plateau Kick: rising knee with paper burst, blue plateau spark, launcher-flavored ender
+
+  Specials: B>A Rhizome Lash: startup root-lines coil around the lead arm, active green chain lashes forward in one clear strand, impact small
+  branching roots bite the floor, recovery root strand retracts into sleeve; B^A Thousand Plateaus Rise: startup papers and roots gather under
+  feet, active vertical layered platform/rhizome lift rises, impact blue-green staircase burst pops upward, recovery falls back into unstable
+  stance; B>J Line-of-Flight Dash: startup body leans toward escape vector, active fast diagonal dash with scarf-root afterimage, impact magenta/green
+  line cuts across cell, recovery reassembles as one fighter silhouette; BvJ Body-without-Organs Domain: startup silhouette loosens as root-cog
+  motes orbit, active flat violet-green field spreads under feet, impact assemblage cyclone forms behind but body stays readable, recovery motes
+  collapse into coat folds'
+negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters unless the character is
+  explicitly a duo-as-one silhouette, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech
+  bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion
+  trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes,
+  weapon changes, prop disappears, unreadable silhouette
+palette_anchors: 'ink black #15151A, paper cream #E7DCC4, rhizome green #39FF14, machine magenta #FF4DCC, plateau blue #4AA3FF, cyclone violet
+  #6B4DFF'
+appearance_bible: duo-as-one silhouette, one main body with a secondary shoulder-mask/echo rather than two independent characters, layered coats
+  and scarves, wild hair outlines, notebooks, rhizome root-vines and machine-cog motes
+animation_bible: restless double-beat idle, skittering sideways walk, line-of-flight dash run, scarf-and-root aerial shapes, tangled assemblage
+  block, chaotic but readable victory swirl
+move_render_descriptions:
+  normal_moves:
+  - name: Concept Jab
+    pose: two-beat asymmetrical jab from main hand and echo shoulder
+    vfx: green rhizome tick
+    gameplay: trick opener
+  - name: Assemblage Sweep
+    pose: scarf-and-root side sweep
+    vfx: magenta-green arc
+    gameplay: chaos pressure
+  - name: Plateau Kick
+    pose: rising knee with paper burst
+    vfx: blue plateau spark
+    gameplay: launcher-flavored ender
+  special_moves:
+  - command: B>A
+    commandSlot: BFA
+    name: Rhizome Lash
+    startup: root-lines coil around the lead arm
+    active: green chain lashes forward in one clear strand
+    impact: small branching roots bite the floor
+    recovery: root strand retracts into sleeve
+  - command: B^A
+    commandSlot: BUA
+    name: Thousand Plateaus Rise
+    startup: papers and roots gather under feet
+    active: vertical layered platform/rhizome lift rises
+    impact: blue-green staircase burst pops upward
+    recovery: falls back into unstable stance
+  - command: B>J
+    commandSlot: BFJ
+    name: Line-of-Flight Dash
+    startup: body leans toward escape vector
+    active: fast diagonal dash with scarf-root afterimage
+    impact: magenta/green line cuts across cell
+    recovery: reassembles as one fighter silhouette
+  - command: BvJ
+    commandSlot: BDJ
+    name: Body-without-Organs Domain
+    startup: silhouette loosens as root-cog motes orbit
+    active: flat violet-green field spreads under feet
+    impact: assemblage cyclone forms behind but body stays readable
+    recovery: motes collapse into coat folds
+grids:
+- id: deleuze_guattari_grid01_movement
+  output: characters/deleuze_guattari/sprites/deleuze_guattari_grid01_movement.png
+  role: Basic Movement Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 01 MOVEMENT. 1 idle A: restless double-beat idle, skittering sideways walk, line-of-flight dash run, scarf-and-root aerial shapes, tangled
+    assemblage block, chaotic but readable victory swirl. 2 idle B tiny alternate breath/weight shift. 3 light hurt contained recoil. 4 heavy
+    hurt stronger recoil but identity intact. 5-8 walk cycle with four distinct foot phases and prop/costume lag. 9-12 run cycle: acceleration,
+    longest stride, pass step, push-off. 13 vertical jump takeoff. 14 jump in air. 15 running jump arc. 16 K.O. full body visible. Keep prop/costume
+    readable in every frame; no duplicate silhouettes; no cross-cell trails.'
+- id: deleuze_guattari_grid02_fighting
+  output: characters/deleuze_guattari/sprites/deleuze_guattari_grid02_fighting.png
+  role: Basic Fighting Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 02 FIGHTING. 1 Concept Jab startup: two-beat asymmetrical jab from main hand and echo shoulder. 2 Concept Jab impact: green rhizome tick.
+    3 recovery. 4 Assemblage Sweep running startup: scarf-and-root side sweep. 5 impact: magenta-green arc. 6 slide/recovery. 7 aerial/running
+    startup for Plateau Kick. 8 aerial impact: rising knee with paper burst, blue plateau spark. 9 landing recovery. 10 running evasion/block
+    start. 11 character-specific guarded block. 12 punish-ready exit. 13 basic block. 14 fortified block. 15 victory pose A. 16 iconic victory
+    pose B. Each 3-frame clip must show anticipation, active, recovery.'
+- id: deleuze_guattari_grid03_throws_consumes_swings
+  output: characters/deleuze_guattari/sprites/deleuze_guattari_grid03_throws_consumes_swings.png
+  role: Throwing / Consuming / Swinging Motions + Character Combos
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 03 INTERACTION AND COMBO KEYS. 1 pickup/ready item: notebook scrap / machine-part spark use / scarf-rhizome lash swing. 2 throw windup.
+    3 throw release. 4 throw recovery. 5 consume/use start. 6 consume/use active. 7 small effect glint. 8 return stance. 9 swing startup. 10 swing
+    impact. 11 swing follow-through. 12 reset. 13 B>A Rhizome Lash keypose: green chain lashes forward in one clear strand / small branching roots
+    bite the floor. 14 B^A Thousand Plateaus Rise keypose: vertical layered platform/rhizome lift rises / blue-green staircase burst pops upward.
+    15 B>J Line-of-Flight Dash keypose: fast diagonal dash with scarf-root afterimage / magenta/green line cuts across cell. 16 BvJ Body-without-Organs
+    Domain keypose: flat violet-green field spreads under feet / assemblage cyclone forms behind but body stays readable. Compact VFX only; caster
+    silhouette first.'
+- id: deleuze_guattari_grid04_specials
+  output: characters/deleuze_guattari/sprites/deleuze_guattari_grid04_specials.png
+  role: Specials Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 04 SPECIALS, four moves, one row per move.
+
+    Row 1, Rhizome Lash, B>A: 1 startup root-lines coil around the lead arm; 2 active green chain lashes forward in one clear strand; 3 impact/sustain
+    small branching roots bite the floor; 4 recovery root strand retracts into sleeve.
+
+    Row 2, Thousand Plateaus Rise, B^A: 5 startup papers and roots gather under feet; 6 active vertical layered platform/rhizome lift rises; 7
+    impact/sustain blue-green staircase burst pops upward; 8 recovery falls back into unstable stance.
+
+    Row 3, Line-of-Flight Dash, B>J: 9 startup body leans toward escape vector; 10 active fast diagonal dash with scarf-root afterimage; 11 impact/sustain
+    magenta/green line cuts across cell; 12 recovery reassembles as one fighter silhouette.
+
+    Row 4, Body-without-Organs Domain, BvJ: 13 startup silhouette loosens as root-cog motes orbit; 14 active flat violet-green field spreads under
+    feet; 15 impact/sustain assemblage cyclone forms behind but body stays readable; 16 recovery motes collapse into coat folds.
+
+    Each row is a separate 4-frame caster animation; no row blending; VFX stays inside cell and never hides the body.'
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: duo-as-one silhouette, one main body with a secondary shoulder-mask/echo rather than two independent characters, layered coats
+      and scarves, wild hair outlines, notebooks, rhizome root-vines and machine-cog motes
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: rhizome chains, assemblage cyclones; VFX must stay behind or around the silhouette unless it
+      is the impact frame'
+  palette_budget:
+    primary: '#15151A'
+    secondary: '#E7DCC4'
+    accent: '#39FF14'
+    vfx_1: '#FF4DCC'
+    vfx_2: '#4AA3FF'
+    shadow: '#6B4DFF'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Gilles Deleuze / Félix Guattari as swarm / field chaos through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Concept Jab: startup, impact, recovery'
+      4-6: 'running Assemblage Sweep: run transition, impact, slide/recover'
+      7-9: 'aerial/running Plateau Kick: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Rhizome Lash keypose
+      '14': B^A Thousand Plateaus Rise keypose
+      '15': B>J Line-of-Flight Dash keypose
+      '16': BvJ Body-without-Organs Domain keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize rhizome chains, assemblage cyclones
+    rows:
+      row1_frames_1_4: 'B>A Rhizome Lash: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B^A Thousand Plateaus Rise: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B>J Line-of-Flight Dash: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Body-without-Organs Domain: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Gilles Deleuze / Félix Guattari
+    role_line: swarm / field chaos
+    mechanic_line: rhizome chains, assemblage cyclones
+    color_strip:
+      primary: '#15151A'
+      secondary: '#E7DCC4'
+      accent: '#39FF14'
+  ability_icons:
+  - slot: B>A
+    label: Rhizome Lash
+    icon_read: 'simple silhouette icon for Rhizome Lash; use palette accent #39FF14'
+  - slot: B^A
+    label: Thousand Plateaus Rise
+    icon_read: 'simple silhouette icon for Thousand Plateaus Rise; use palette accent #FF4DCC'
+  - slot: B>J
+    label: Line-of-Flight Dash
+    icon_read: 'simple silhouette icon for Line-of-Flight Dash; use palette accent #4AA3FF'
+  - slot: BvJ
+    label: Body-without-Organs Domain
+    icon_read: 'simple silhouette icon for Body-without-Organs Domain; use palette accent #6B4DFF'
+  hud_meter:
+    name: Gilles Deleuze / Félix Guattari role meter
+    fill_color: '#39FF14'
+    empty_color: '#15151A'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#E7DCC4'
+    special: '#39FF14'
+    counter_or_field: '#FF4DCC'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait

@@ -1,0 +1,280 @@
+version: 2
+character_id: schmitt
+title: Carl Schmitt
+purpose: Highly distinctive feasible 4x4 sprite-grid prompts for spriteless/prompt-first characters.
+common_prompt_prefix: 'Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: Carl Schmitt.
+
+  Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom. Every cell must be same size,
+  perfectly aligned, no gutters, no margins, no border, no labels, no text. Use true alpha transparency only. Keep the same character identity,
+  costume, palette, scale, side-view camera, lighting, and pixel density in all 16 cells. Right-facing side-view fighter poses unless explicitly
+  stated. Full body inside every cell. Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Compact VFX secondary to body pose
+  clarity.'
+character_sprite_brief: 'Carl Schmitt — The State of Exception; role: armored rule-breaker; mechanic: borders, beam authority, exception state.
+
+  Biography/combat fantasy: Jurist of sovereignty and exception recast as an armored rule-breaker. Schmitt defines borders, suspends ordinary
+  rules, and advances behind hard rectangular authority effects.
+
+  Appearance: stern jurist face, slick hair, dark formal coat fused with angular armor plates, red legal sash, heavy boots, law tablet, hard border-wall
+  VFX.
+
+  Palette: legal black #111217, armor gray #50545C, decree parchment #C8B98C, authority red #B51624, border white #E8E8E8, emergency gold #D6A536.
+
+  Animation identity: rigid decree idle, heavy marching walk, armored emergency advance run, low heavy jump, rectangular border block, decree-raised
+  victory.
+
+  Normals: Decision Jab: short armored decree punch, white border tick, solid opener; Jurist Crush: tablet forearm smash, red authority slash,
+  pressure hit; Border Kick: stiff boot through rectangle line, gray-white wall crack, heavy ender
+
+  Specials: B>A Sovereign Beam: startup decree tablet rises to eye level, active straight red-white authority beam projects forward, impact beam
+  has hard rectangular edges, recovery tablet lowers slowly; B<A Exception Counter: startup arms cross behind border rectangle, active incoming
+  force caught by emergency frame, impact red counter judgment flash, recovery returns armored and stern; BvA Border Wall Field: startup stamps
+  boot and tablet downward, active low rectangular wall rises from floor, impact white-gray border blocks space, recovery wall fades like closing
+  law book; BvJ State of Exception: startup raises decree overhead, active red-gold emergency aura overrides grid, impact hard borders pulse around
+  body, recovery aura contracts into armor plates'
+negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters unless the character is
+  explicitly a duo-as-one silhouette, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech
+  bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion
+  trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes,
+  weapon changes, prop disappears, unreadable silhouette
+palette_anchors: 'legal black #111217, armor gray #50545C, decree parchment #C8B98C, authority red #B51624, border white #E8E8E8, emergency gold
+  #D6A536'
+appearance_bible: stern jurist face, slick hair, dark formal coat fused with angular armor plates, red legal sash, heavy boots, law tablet, hard
+  border-wall VFX
+animation_bible: rigid decree idle, heavy marching walk, armored emergency advance run, low heavy jump, rectangular border block, decree-raised
+  victory
+move_render_descriptions:
+  normal_moves:
+  - name: Decision Jab
+    pose: short armored decree punch
+    vfx: white border tick
+    gameplay: solid opener
+  - name: Jurist Crush
+    pose: tablet forearm smash
+    vfx: red authority slash
+    gameplay: pressure hit
+  - name: Border Kick
+    pose: stiff boot through rectangle line
+    vfx: gray-white wall crack
+    gameplay: heavy ender
+  special_moves:
+  - command: B>A
+    commandSlot: BFA
+    name: Sovereign Beam
+    startup: decree tablet rises to eye level
+    active: straight red-white authority beam projects forward
+    impact: beam has hard rectangular edges
+    recovery: tablet lowers slowly
+  - command: B<A
+    commandSlot: BBA
+    name: Exception Counter
+    startup: arms cross behind border rectangle
+    active: incoming force caught by emergency frame
+    impact: red counter judgment flash
+    recovery: returns armored and stern
+  - command: BvA
+    commandSlot: BDA
+    name: Border Wall Field
+    startup: stamps boot and tablet downward
+    active: low rectangular wall rises from floor
+    impact: white-gray border blocks space
+    recovery: wall fades like closing law book
+  - command: BvJ
+    commandSlot: BDJ
+    name: State of Exception
+    startup: raises decree overhead
+    active: red-gold emergency aura overrides grid
+    impact: hard borders pulse around body
+    recovery: aura contracts into armor plates
+grids:
+- id: schmitt_grid01_movement
+  output: characters/schmitt/sprites/schmitt_grid01_movement.png
+  role: Basic Movement Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 01 MOVEMENT. 1 idle A: rigid decree idle, heavy marching walk, armored emergency advance run, low heavy jump, rectangular border block,
+    decree-raised victory. 2 idle B tiny alternate breath/weight shift. 3 light hurt contained recoil. 4 heavy hurt stronger recoil but identity
+    intact. 5-8 walk cycle with four distinct foot phases and prop/costume lag. 9-12 run cycle: acceleration, longest stride, pass step, push-off.
+    13 vertical jump takeoff. 14 jump in air. 15 running jump arc. 16 K.O. full body visible. Keep prop/costume readable in every frame; no duplicate
+    silhouettes; no cross-cell trails.'
+- id: schmitt_grid02_fighting
+  output: characters/schmitt/sprites/schmitt_grid02_fighting.png
+  role: Basic Fighting Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 02 FIGHTING. 1 Decision Jab startup: short armored decree punch. 2 Decision Jab impact: white border tick. 3 recovery. 4 Jurist Crush
+    running startup: tablet forearm smash. 5 impact: red authority slash. 6 slide/recovery. 7 aerial/running startup for Border Kick. 8 aerial
+    impact: stiff boot through rectangle line, gray-white wall crack. 9 landing recovery. 10 running evasion/block start. 11 character-specific
+    guarded block. 12 punish-ready exit. 13 basic block. 14 fortified block. 15 victory pose A. 16 iconic victory pose B. Each 3-frame clip must
+    show anticipation, active, recovery.'
+- id: schmitt_grid03_throws_consumes_swings
+  output: characters/schmitt/sprites/schmitt_grid03_throws_consumes_swings.png
+  role: Throwing / Consuming / Swinging Motions + Character Combos
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 03 INTERACTION AND COMBO KEYS. 1 pickup/ready item: legal seal / decree stamp use / tablet-edge swing. 2 throw windup. 3 throw release.
+    4 throw recovery. 5 consume/use start. 6 consume/use active. 7 small effect glint. 8 return stance. 9 swing startup. 10 swing impact. 11 swing
+    follow-through. 12 reset. 13 B>A Sovereign Beam keypose: straight red-white authority beam projects forward / beam has hard rectangular edges.
+    14 B<A Exception Counter keypose: incoming force caught by emergency frame / red counter judgment flash. 15 BvA Border Wall Field keypose:
+    low rectangular wall rises from floor / white-gray border blocks space. 16 BvJ State of Exception keypose: red-gold emergency aura overrides
+    grid / hard borders pulse around body. Compact VFX only; caster silhouette first.'
+- id: schmitt_grid04_specials
+  output: characters/schmitt/sprites/schmitt_grid04_specials.png
+  role: Specials Prompt
+  prompt: '{{common_prompt_prefix}}
+
+    {{character_sprite_brief}}
+
+
+    GRID 04 SPECIALS, four moves, one row per move.
+
+    Row 1, Sovereign Beam, B>A: 1 startup decree tablet rises to eye level; 2 active straight red-white authority beam projects forward; 3 impact/sustain
+    beam has hard rectangular edges; 4 recovery tablet lowers slowly.
+
+    Row 2, Exception Counter, B<A: 5 startup arms cross behind border rectangle; 6 active incoming force caught by emergency frame; 7 impact/sustain
+    red counter judgment flash; 8 recovery returns armored and stern.
+
+    Row 3, Border Wall Field, BvA: 9 startup stamps boot and tablet downward; 10 active low rectangular wall rises from floor; 11 impact/sustain
+    white-gray border blocks space; 12 recovery wall fades like closing law book.
+
+    Row 4, State of Exception, BvJ: 13 startup raises decree overhead; 14 active red-gold emergency aura overrides grid; 15 impact/sustain hard
+    borders pulse around body; 16 recovery aura contracts into armor plates.
+
+    Each row is a separate 4-frame caster animation; no row blending; VFX stays inside cell and never hides the body.'
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: stern jurist face, slick hair, dark formal coat fused with angular armor plates, red legal sash, heavy boots, law tablet, hard
+      border-wall VFX
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: borders, beam authority, exception state; VFX must stay behind or around the silhouette unless
+      it is the impact frame'
+  palette_budget:
+    primary: '#111217'
+    secondary: '#50545C'
+    accent: '#C8B98C'
+    vfx_1: '#B51624'
+    vfx_2: '#E8E8E8'
+    shadow: '#D6A536'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Carl Schmitt as armored rule-breaker through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Decision Jab: startup, impact, recovery'
+      4-6: 'running Jurist Crush: run transition, impact, slide/recover'
+      7-9: 'aerial/running Border Kick: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Sovereign Beam keypose
+      '14': B<A Exception Counter keypose
+      '15': BvA Border Wall Field keypose
+      '16': BvJ State of Exception keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize borders, beam authority, exception state
+    rows:
+      row1_frames_1_4: 'B>A Sovereign Beam: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Exception Counter: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'BvA Border Wall Field: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ State of Exception: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Carl Schmitt
+    role_line: armored rule-breaker
+    mechanic_line: borders, beam authority, exception state
+    color_strip:
+      primary: '#111217'
+      secondary: '#50545C'
+      accent: '#C8B98C'
+  ability_icons:
+  - slot: B>A
+    label: Sovereign Beam
+    icon_read: 'simple silhouette icon for Sovereign Beam; use palette accent #C8B98C'
+  - slot: B<A
+    label: Exception Counter
+    icon_read: 'simple silhouette icon for Exception Counter; use palette accent #B51624'
+  - slot: BvA
+    label: Border Wall Field
+    icon_read: 'simple silhouette icon for Border Wall Field; use palette accent #E8E8E8'
+  - slot: BvJ
+    label: State of Exception
+    icon_read: 'simple silhouette icon for State of Exception; use palette accent #D6A536'
+  hud_meter:
+    name: Carl Schmitt role meter
+    fill_color: '#C8B98C'
+    empty_color: '#111217'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#50545C'
+    special: '#C8B98C'
+    counter_or_field: '#B51624'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait

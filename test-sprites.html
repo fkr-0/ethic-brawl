@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprite Rendering Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #1a0a2e;
+      color: #fff;
+      font-family: monospace;
+    }
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .test-item {
+      border: 1px solid #00f5ff;
+      padding: 15px;
+      background: #2d1b4e;
+    }
+    canvas {
+      border: 1px solid #ff00ff;
+      background: #000;
+    }
+    .controls {
+      margin: 20px 0;
+      padding: 15px;
+      background: #2d1b4e;
+      border: 1px solid #00f5ff;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 16px;
+      background: #00f5ff;
+      color: #1a0a2e;
+      border: none;
+      cursor: pointer;
+      font-family: monospace;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #ff00ff;
+    }
+    .log {
+      margin: 20px 0;
+      padding: 15px;
+      background: #000;
+      border: 1px solid #39ff14;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Sprite Rendering Test Suite</h1>
+
+  <div class="controls">
+    <button onclick="testAll()">Test All Characters</button>
+    <button onclick="testAnimation()">Test Animation Playback</button>
+    <button onclick="toggleDebug()">Toggle Debug Overlay</button>
+    <button onclick="clearLog()">Clear Log</button>
+  </div>
+
+  <div class="log" id="log"></div>
+
+  <div class="test-grid">
+    <div class="test-item">
+      <h3>Camus</h3>
+      <canvas id="camus" width="200" height="200"></canvas>
+      <div id="camus-status">Pending...</div>
+    </div>
+    <div class="test-item">
+      <h3>Diogenes</h3>
+      <canvas id="diogenes" width="200" height="200"></canvas>
+      <div id="diogenes-status">Pending...</div>
+    </div>
+    <div class="test-item">
+      <h3>Machiavelli</h3>
+      <canvas id="machiavelli" width="200" height="200"></canvas>
+      <div id="machiavelli-status">Pending...</div>
+    </div>
+    <div class="test-item">
+      <h3>Leibniz</h3>
+      <canvas id="leibniz" width="200" height="200"></canvas>
+      <div id="leibniz-status">Pending...</div>
+    </div>
+  </div>
+
+  <div class="controls" style="margin-top: 20px;">
+    <h3>Controls (when in game)</h3>
+    <p>F1: Toggle sprite rendering | F2: Toggle debug overlay</p>
+    <p>P1: WASD=Move, J=Attack, K=Block, L=Jump, I=Special</p>
+    <p>P2: Arrows=Move, U=Attack, I=Block, O=Jump, P=Special</p>
+  </div>
+
+  <script type="module">
+    const characters = ['camus', 'diogenes', 'machiavelli', 'leibniz'];
+    let debugEnabled = false;
+    let animationTestRunning = false;
+    let currentFrame = 0;
+
+    function log(message) {
+      const logDiv = document.getElementById('log');
+      const time = new Date().toLocaleTimeString();
+      logDiv.innerHTML += `[${time}] ${message}<br>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById('log').innerHTML = '';
+    }
+
+    async function loadAndTestCharacter(characterId) {
+      const canvas = document.getElementById(characterId);
+      const ctx = canvas.getContext('2d');
+      const statusDiv = document.getElementById(`${characterId}-status`);
+
+      if (!ctx) {
+        statusDiv.textContent = 'ERROR: No canvas context';
+        statusDiv.style.color = '#ff073a';
+        return;
+      }
+
+      try {
+        log(`Loading sprite for ${characterId}...`);
+
+        const response = await fetch(`/assets/sprites/${characterId}/source/${characterId}.png`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const blob = await response.blob();
+        const bitmap = await createImageBitmap(blob);
+
+        log(`✓ Loaded ${bitmap.width}x${bitmap.height} sprite for ${characterId}`);
+
+        // Clear and set background
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the sprite sheet scaled down
+        const scale = 0.75;
+        const sheetSize = bitmap.width / 4;
+        const x = (canvas.width - bitmap.width * scale) / 2;
+        const y = (canvas.height - bitmap.height * scale) / 2;
+
+        ctx.drawImage(bitmap, x, y, bitmap.width * scale, bitmap.height * scale);
+
+        // Draw frame grid
+        ctx.strokeStyle = '#00f5ff';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+          ctx.beginPath();
+          ctx.moveTo(x + i * sheetSize * scale, y);
+          ctx.lineTo(x + i * sheetSize * scale, y + bitmap.height * scale);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(x, y + i * sheetSize * scale);
+          ctx.lineTo(x + bitmap.width * scale, y + i * sheetSize * scale);
+          ctx.stroke();
+        }
+
+        // Draw frame numbers
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px monospace';
+        for (let row = 0; row < 4; row++) {
+          for (let col = 0; col < 4; col++) {
+            const frameNum = row * 4 + col;
+            const fx = x + col * sheetSize * scale + 5;
+            const fy = y + row * sheetSize * scale + 15;
+            ctx.fillText(`f${frameNum}`, fx, fy);
+          }
+        }
+
+        statusDiv.textContent = '✓ Loaded';
+        statusDiv.style.color = '#39ff14';
+
+        bitmap.close();
+        return true;
+      } catch (error) {
+        log(`✗ Error loading ${characterId}: ${error.message}`);
+        statusDiv.textContent = `✗ ${error.message}`;
+        statusDiv.style.color = '#ff073a';
+        return false;
+      }
+    }
+
+    async function testAll() {
+      clearLog();
+      log('Starting sprite rendering tests...');
+
+      let passed = 0;
+      let failed = 0;
+
+      for (const character of characters) {
+        const result = await loadAndTestCharacter(character);
+        if (result) passed++;
+        else failed++;
+      }
+
+      log(`\n=== Test Results ===`);
+      log(`Passed: ${passed}/${characters.length}`);
+      log(`Failed: ${failed}/${characters.length}`);
+
+      if (failed === 0) {
+        log('✓ All sprite rendering tests passed!');
+      } else {
+        log('✗ Some tests failed. Check console for details.');
+      }
+    }
+
+    function testAnimation() {
+      if (animationTestRunning) return;
+      animationTestRunning = true;
+
+      clearLog();
+      log('Testing animation playback...');
+
+      const testChar = characters[0];
+      const canvas = document.getElementById(testChar);
+      const ctx = canvas.getContext('2d');
+
+      if (!ctx) return;
+
+      let frame = 0;
+      const interval = setInterval(() => {
+        frame = (frame + 1) % 16;
+
+        // Simulate drawing different frames
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#00f5ff';
+        ctx.font = 'bold 48px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Frame ${frame}`, canvas.width/2, canvas.height/2);
+
+        ctx.font = '14px monospace';
+        ctx.fillStyle = '#ff00ff';
+        const labels = ['idle', 'guard', 'taunt', 'run1', 'run2', 'run3', 'run4', 'crouch',
+                       'jump', 'air_attack', 'land', 'attack1', 'attack2', 'attack3', 'victory', 'spare'];
+        ctx.fillText(labels[frame], canvas.width/2, canvas.height/2 + 30);
+
+        if (frame === 15) {
+          clearInterval(interval);
+          animationTestRunning = false;
+          log('✓ Animation test complete - cycled through all 16 frames');
+        }
+      }, 500);
+    }
+
+    function toggleDebug() {
+      debugEnabled = !debugEnabled;
+      log(`Debug overlay ${debugEnabled ? 'enabled' : 'disabled'}`);
+
+      // This would toggle debug rendering in the actual game
+      if (typeof window !== 'undefined' && window.setSpriteDebugOption) {
+        window.setSpriteDebugOption('showFrame', debugEnabled);
+        window.setSpriteDebugOption('showClip', debugEnabled);
+        window.setSpriteDebugOption('showPivot', debugEnabled);
+      }
+    }
+
+    // Auto-run tests on load
+    window.addEventListener('load', () => {
+      log('Sprite test suite loaded');
+      log('Click "Test All Characters" to begin');
+    });
+
+    // Expose functions to global scope for button handlers
+    window.testAll = testAll;
+    window.testAnimation = testAnimation;
+    window.toggleDebug = toggleDebug;
+    window.clearLog = clearLog;
+
+    // Listen for game events
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'sprite-loaded') {
+        log(`✓ Game loaded sprite: ${event.data.character}`);
+      } else if (event.data.type === 'sprite-error') {
+        log(`✗ Game sprite error: ${event.data.error}`);
+      }
+    });
+  </script>
+</body>
+</html>

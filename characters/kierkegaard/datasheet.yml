@@ -1,0 +1,236 @@
+version: 1
+enhancement_version: 2
+id: kierkegaard
+title: Søren Kierkegaard
+subtitle: The Knight of Faith
+role: risk / leap specialist
+element_mechanic: anxiety pools, faith leaps
+source_notes:
+- fully spriteless prompt-first; no source sheet found
+full_biography:
+  summary: 'Danish existential writer recast as a risk/leap specialist. Kierkegaard weaponizes anxiety, irony, and the impossible leap: hesitant
+    in posture, sudden in commitment, fragile unless faith carries him through.'
+  combat_read: Prompt-first spriteless character bible intended to guide high-consistency grid rendering.
+stored_stats:
+  proposed_prompt_stats:
+    intelligence: 8
+    strength: 4
+    agility: 8
+    vitality: 5
+    energy: 9
+appearance_bible:
+  appearance: melancholy dandy silhouette, swept hair, long dark coat, high collar, narrow trousers, walking cane or small book, ink-blue anxiety
+    pools and white-gold faith sparks
+  palette: 'copenhagen black #171820, coat blue #202A44, paper cream #E5D8BA, anxiety ink #263B8F, faith gold #F3D66B, irony pink #C85C9E'
+  motion: nervous fidget idle, hesitant walk, sudden leap-run, dramatic airborne faith arc, cane/book guarded block, relieved hand-to-heart victory
+  items: folded letter / reads Either-Or page / cane swing
+move_render_descriptions:
+  normal_moves:
+  - name: Irony Jab
+    pose: small hesitant cane poke that commits late
+    vfx: pink irony tick
+    gameplay: tricky opener
+  - name: Anxiety Cut
+    pose: quick diagonal coat-and-cane slash
+    vfx: ink-blue smear
+    gameplay: risk pressure
+  - name: Faith Heel
+    pose: sudden committed leap kick
+    vfx: gold spark at foot
+    gameplay: leap ender
+  special_moves:
+  - command: B>A
+    commandSlot: BFA
+    name: Leap-of-Faith Strike
+    startup: hesitates with cane/book close
+    active: sudden forward faith-lit strike
+    impact: gold spark at committed impact
+    recovery: lands fragile but resolved
+  - command: B^A
+    commandSlot: BUA
+    name: Either/Or Upper
+    startup: two ghosted choices split around him
+    active: chooses upward cane/book uppercut
+    impact: blue-pink fork collapses into hit
+    recovery: recovers with hand to chest
+  - command: B>J
+    commandSlot: BFJ
+    name: Faith Dash
+    startup: low anxious crouch
+    active: white-gold dash leap forward
+    impact: body crosses a small abyss gap inside cell
+    recovery: lands in resolved stance
+  - command: BvJ
+    commandSlot: BDJ
+    name: Knight of Faith
+    startup: anxiety pool forms under shoes
+    active: gold light rises through dark pool
+    impact: protective faith aura stabilizes body
+    recovery: aura fades to trembling calm
+prompt_feasibility_notes:
+- one exact 4x4 sheet per prompt
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or readable text inside image
+- stable costume/palette across all cells
+sprite_outputs:
+  source_references: []
+  authored_prompt_pack: characters/kierkegaard/prompts.yml
+  target_sheets:
+    movement: characters/kierkegaard/sprites/kierkegaard_grid01_movement.png
+    fighting: characters/kierkegaard/sprites/kierkegaard_grid02_fighting.png
+    throws_consumes_swings: characters/kierkegaard/sprites/kierkegaard_grid03_throws_consumes_swings.png
+    specials: characters/kierkegaard/sprites/kierkegaard_grid04_specials.png
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: melancholy dandy silhouette, swept hair, long dark coat, high collar, narrow trousers, walking cane or small book, ink-blue
+      anxiety pools and white-gold faith sparks
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: anxiety pools, faith leaps; VFX must stay behind or around the silhouette unless it is the impact
+      frame'
+  palette_budget:
+    primary: '#171820'
+    secondary: '#202A44'
+    accent: '#E5D8BA'
+    vfx_1: '#263B8F'
+    vfx_2: '#F3D66B'
+    shadow: '#C85C9E'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Søren Kierkegaard as risk / leap specialist through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Irony Jab: startup, impact, recovery'
+      4-6: 'running Anxiety Cut: run transition, impact, slide/recover'
+      7-9: 'aerial/running Faith Heel: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Leap-of-Faith Strike keypose
+      '14': B^A Either/Or Upper keypose
+      '15': B>J Faith Dash keypose
+      '16': BvJ Knight of Faith keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize anxiety pools, faith leaps
+    rows:
+      row1_frames_1_4: 'B>A Leap-of-Faith Strike: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B^A Either/Or Upper: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B>J Faith Dash: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Knight of Faith: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Søren Kierkegaard
+    role_line: risk / leap specialist
+    mechanic_line: anxiety pools, faith leaps
+    color_strip:
+      primary: '#171820'
+      secondary: '#202A44'
+      accent: '#E5D8BA'
+  ability_icons:
+  - slot: B>A
+    label: Leap-of-Faith Strike
+    icon_read: 'simple silhouette icon for Leap-of-Faith Strike; use palette accent #E5D8BA'
+  - slot: B^A
+    label: Either/Or Upper
+    icon_read: 'simple silhouette icon for Either/Or Upper; use palette accent #263B8F'
+  - slot: B>J
+    label: Faith Dash
+    icon_read: 'simple silhouette icon for Faith Dash; use palette accent #F3D66B'
+  - slot: BvJ
+    label: Knight of Faith
+    icon_read: 'simple silhouette icon for Knight of Faith; use palette accent #C85C9E'
+  hud_meter:
+    name: Søren Kierkegaard role meter
+    fill_color: '#E5D8BA'
+    empty_color: '#171820'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#202A44'
+    special: '#E5D8BA'
+    counter_or_field: '#263B8F'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/kierkegaard/sprites/kierkegaard_grid01_movement.png
+  - characters/kierkegaard/sprites/kierkegaard_grid02_fighting.png
+  - characters/kierkegaard/sprites/kierkegaard_grid03_throws_consumes_swings.png
+  - characters/kierkegaard/sprites/kierkegaard_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/kierkegaard/sprite-grid-manifest.json
+    prompt_pack: characters/kierkegaard/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

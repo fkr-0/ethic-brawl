@@ -1,0 +1,352 @@
+version: 1
+id: hegel
+title: G.W.F. Hegel
+subtitle: The Dialectician
+role: evolving combo engine
+source_notes:
+- Consolidated from roster prompt/design notes, LF2 specials roadmap, and available sprite manifests.
+- 'Source status: has existing programmatic placeholder source sheets'
+biography:
+  capsule: Momentum orchestrator who chains stance transitions into escalating synthesis finishers.
+  fantasy: A three-state combo engine whose attacks evolve from thesis to antithesis to synthesis as pressure builds.
+  personality:
+  - grand
+  - methodical
+  - escalating
+  - argumentative
+stored_stats:
+  prompt_stats:
+    intelligence: 10
+    strength: 6
+    agility: 5
+    vitality: 8
+    energy: 8
+  proposed_runtime_base_stats:
+    health: 100
+    maxHealth: 100
+    strength: 6
+    defense: 8
+    intelligence: 10
+    agility: 5
+    vitality: 8
+    energy: 8
+  implementation_status: runtime-backed in src/content/characters/character-data.ts, src/content/characters/character-loader.ts, and src/content/specials/special-data.ts
+visual_characteristics:
+  build: Broad professor silhouette with cane/book weapon and visible three-beat rhythm.
+  appearance: Academic coat, broad stance, book-and-cane hybrid weapon, three-beat torso sway, accelerating argumentative run, synthesis impacts.
+  sprite_style: Readable 2D pixel-art fighter, side-view, chibi-to-arcade proportions, transparent alpha, no background.
+  silhouette_hooks:
+  - primary prop or costume detail must remain visible in every frame
+  - 'pose language must match role: evolving combo engine'
+  - 'VFX should reinforce mechanic: thesis/antithesis/synthesis states'
+palette:
+  design_palette:
+    academic_coat: '#2A2625'
+    waistcoat_warm: '#6B4A35'
+    book_ivory: '#D8C7A1'
+    dialectic_blue: '#4F7DB5'
+    synthesis_gold: '#E0B84D'
+fighting_characteristics:
+  movement_style: Academic coat, broad stance, book-and-cane hybrid weapon, three-beat torso sway, accelerating argumentative run, synthesis impacts.
+  combat_style: evolving combo engine using thesis/antithesis/synthesis states.
+  strengths:
+  - clear role identity
+  - distinct silhouettes
+  - specials mapped to MVP commands
+  weaknesses:
+  - requires new runtime implementation if not in CharacterDefinition
+  - source art may be placeholder/debug quality
+  behavior:
+    neutral: Use movement and safest poke to test space before committing.
+    pressure: Transition into the character's MVP command specials after a confirmed hit or whiff punish.
+    defense: Use the assigned counter/block/special mechanic instead of generic blocking when possible.
+    finisher: Resolve the kit fantasy with the BvJ domain/field/finisher where available.
+ui_details:
+  portrait: stern professor with book-and-cane crossing frame
+  ability_icon: 'three linked nodes: thesis, antithesis, synthesis'
+  hud_meter: three-state dialectic meter with synthesis crown pulse
+  roster_card: 'Show role as evolving combo engine; mechanic line: thesis/antithesis/synthesis states.'
+  move_list_badges:
+  - B>A
+  - B<A
+  - B>J
+  - BvJ
+normal_moves:
+- id: hegel_thesis_tap
+  name: Thesis Tap
+  prompt_read: starter hit that opens branch
+- id: hegel_antithesis_break
+  name: Antithesis Break
+  prompt_read: advancing breaker slash
+- id: hegel_synthesis_crown
+  name: Synthesis Crown
+  prompt_read: confirmed-hit ender with crown flash
+specials:
+  mvp_4:
+  - command: B>A
+    commandSlot: BFA
+    id: hegel_thesis_bolt
+    displayName: Thesis Bolt
+    mechanic: starter projectile / state one
+    prompt_read: blue thesis bolt
+  - command: B<A
+    commandSlot: BBA
+    id: hegel_antithesis_reversal
+    displayName: Antithesis Reversal
+    mechanic: counter / state inversion
+    prompt_read: counter pulse
+  - command: B>J
+    commandSlot: BFJ
+    id: hegel_synthesis_dash
+    displayName: Synthesis Dash
+    mechanic: evolving dash combo
+    prompt_read: three-step dash strike
+  - command: BvJ
+    commandSlot: BDJ
+    id: hegel_world_spirit_domain
+    displayName: World-Spirit Domain
+    mechanic: state-evolution field
+    prompt_read: gold-blue dialectic field
+  full_8_from_roadmap:
+    B>A: Thesis Bolt
+    B<A: Antithesis Reversal
+    B^A: Negation Upper
+    BvA: Dialectic Ground
+    B>J: Synthesis Dash
+    B<J: Spirit Retreat
+    B^J: Absolute Rise
+    BvJ: World-Spirit Domain
+grid_prompt_contract:
+  cell_count: 16
+  arrangement: exact 4x4 grid, left-to-right, top-to-bottom
+  output_constraints:
+  - one sheet image only
+  - identical cell sizes
+  - no gutters, no margins, no borders
+  - true alpha transparent background
+  - consistent scale, camera, lighting, palette, line thickness
+  - character fully inside each cell
+  - right-facing unless a frame explicitly states left-facing recovery
+  - no text or labels
+  negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent
+    background, checkerboard background, text, labels, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent
+    cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased
+    fringe, costume changes, face changes
+sprite_outputs:
+  source_references:
+  - assets/sprites/roster/hegel/source/hegel_core_4x4.png
+  - assets/sprites/roster/hegel/source/hegel_extended_4x4.png
+  authored_prompt_pack: characters/hegel/prompts.yml
+  target_sheets:
+    movement: characters/hegel/sprites/hegel_grid01_movement.png
+    fighting: characters/hegel/sprites/hegel_grid02_fighting.png
+    throws_consumes_swings: characters/hegel/sprites/hegel_grid03_throws_consumes_swings.png
+    specials: characters/hegel/sprites/hegel_grid04_specials.png
+enhancement_version: 2
+full_biography:
+  summary: German idealist of dialectic, history, contradiction, and Geist recast as a three-beat combo professor. One motion asserts, the next
+    negates, the third resolves into synthesis.
+  combat_read: Distinctive runtime-backed philosopher fighter identity for prompt and UI use.
+appearance_bible:
+  appearance: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes
+  palette: 'academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D'
+  motion: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction
+    block
+  items: chalk or page token / turn page in book / cane sweep with book counterbalance
+move_render_descriptions:
+  normal_moves:
+  - name: Thesis Tap
+    pose: short cane assertion
+    vfx: blue thesis spark
+    gameplay: starter
+  - name: Antithesis Break
+    pose: cross-body cane/book strike
+    vfx: blue-gold crossing slash
+    gameplay: advancing pressure
+  - name: Synthesis Crown
+    pose: cane rises book opens
+    vfx: small crown flash
+    gameplay: launcher ender
+  special_moves:
+  - command: B>A
+    name: Thesis Bolt
+    startup: book opens to blue point
+    active: cane releases compact bolt
+    impact: simple moving node
+    recovery: book half-closes
+  - command: B<A
+    name: Antithesis Reversal
+    startup: book raised cane back
+    active: blue counter pulse crosses body
+    impact: gold flash snaps outward
+    recovery: twist resolves
+  - command: B>J
+    name: Synthesis Dash
+    startup: three motes align at feet
+    active: dash in three beats
+    impact: third beat gold hit
+    recovery: cane planted
+  - command: BvJ
+    name: World-Spirit Domain
+    startup: book opens both hands
+    active: blue-gold spiral field
+    impact: three linked nodes orbit
+    recovery: crown glint fades
+prompt_feasibility_notes:
+- one sheet only
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or text inside image
+- stable palette and costume across all cells
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: evolving combo engine using thesis/antithesis/synthesis states.; VFX must stay behind or around
+      the silhouette unless it is the impact frame'
+  palette_budget:
+    primary: '#2A2625'
+    secondary: '#6B4A35'
+    accent: '#D8C7A1'
+    vfx_1: '#4F7DB5'
+    vfx_2: '#E0B84D'
+    shadow: '#141414'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish G.W.F. Hegel as evolving combo engine through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Thesis Tap: startup, impact, recovery'
+      4-6: 'running Antithesis Break: run transition, impact, slide/recover'
+      7-9: 'aerial/running Synthesis Crown: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Thesis Bolt keypose
+      '14': B<A Antithesis Reversal keypose
+      '15': B>J Synthesis Dash keypose
+      '16': BvJ World-Spirit Domain keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize evolving combo engine using thesis/antithesis/synthesis states.
+    rows:
+      row1_frames_1_4: 'B>A Thesis Bolt: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Antithesis Reversal: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B>J Synthesis Dash: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ World-Spirit Domain: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: G.W.F. Hegel
+    role_line: evolving combo engine
+    mechanic_line: evolving combo engine using thesis/antithesis/synthesis states.
+    color_strip:
+      primary: '#2A2625'
+      secondary: '#6B4A35'
+      accent: '#D8C7A1'
+  ability_icons:
+  - slot: B>A
+    label: Thesis Bolt
+    icon_read: 'simple silhouette icon for Thesis Bolt; use palette accent #D8C7A1'
+  - slot: B<A
+    label: Antithesis Reversal
+    icon_read: 'simple silhouette icon for Antithesis Reversal; use palette accent #4F7DB5'
+  - slot: B>J
+    label: Synthesis Dash
+    icon_read: 'simple silhouette icon for Synthesis Dash; use palette accent #E0B84D'
+  - slot: BvJ
+    label: World-Spirit Domain
+    icon_read: 'simple silhouette icon for World-Spirit Domain; use palette accent #2A2625'
+  hud_meter:
+    name: G.W.F. Hegel role meter
+    fill_color: '#D8C7A1'
+    empty_color: '#2A2625'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#6B4A35'
+    special: '#D8C7A1'
+    counter_or_field: '#4F7DB5'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/hegel/sprites/hegel_grid01_movement.png
+  - characters/hegel/sprites/hegel_grid02_fighting.png
+  - characters/hegel/sprites/hegel_grid03_throws_consumes_swings.png
+  - characters/hegel/sprites/hegel_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/hegel/sprite-grid-manifest.json
+    prompt_pack: characters/hegel/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

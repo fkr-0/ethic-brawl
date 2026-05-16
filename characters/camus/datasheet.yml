@@ -1,0 +1,465 @@
+version: 1
+id: camus
+title: Albert Camus
+subtitle: The Absurdist
+role: evasive counter duelist
+source_notes:
+- Consolidated from roster/prompts/camus.yml, src/content/characters/character-data.ts, src/content/characters/character-loader.ts, src/content/specials/special-data.ts,
+  docs/superpowers/specs/2026-05-04-camus-asset-intake-notes.md, and docs/plans/2026-05-05-lf2-skill-tree-specials-roadmap.md.
+- 'Existing production source sheet: public/assets/sprites/camus/source/camus.png.'
+- 'Existing root draft sheets: camus.png, camus2.png.'
+biography:
+  capsule: French-Algerian absurdist philosopher recast as a calm, elegant duelist who weaponizes revolt, smoke, sun, and void shockwaves.
+  fantasy: A cigarette-lit counter fighter who appears resigned, then slips through pressure and answers with a clean, compact rebellion.
+  personality:
+  - ironic
+  - controlled
+  - elegant
+  - defiant
+  - quietly fatalistic
+  quotes:
+    intro:
+    - I rebel, therefore we exist.
+    - The absurd is the essential concept.
+    - One must imagine Sisyphus happy... and furious.
+    victory:
+    - The struggle itself is enough.
+    - In the midst of winter, I found an invincible summer.
+    - Your defeat was always meaningless. Sorry.
+    defeat:
+    - Perhaps this too is absurd...
+    - At least I imagined myself happy.
+    special:
+    - ABSURD REVOLT!
+    - EMBRACE THE VOID!
+stored_stats:
+  prompt_stats:
+    intelligence: 8
+    strength: 6
+    agility: 8
+    vitality: 6
+    energy: 7
+  runtime_base_stats:
+    health: 100
+    maxHealth: 100
+    strength: 6
+    defense: 6
+    intelligence: 8
+    agility: 8
+    vitality: 6
+    energy: 7
+visual_characteristics:
+  build: Slim-to-average, upright but loose, dancer-like balance.
+  face_hair: Sharp jawline, short dark hair, no exaggerated facial hair.
+  clothing: Fitted mid-century suit adapted for combat, loosened tie, rolled sleeves, narrow trousers, polished dancing shoes.
+  silhouette_hooks:
+  - cigarette hand near face or trailing smoke arc
+  - narrow charcoal suit silhouette
+  - relaxed shoulders with sudden precise extensions
+  - clean lateral snap kicks and compact counter turns
+  sprite_style: Readable 2D pixel-art fighter, side-view, chibi-to-arcade proportions, transparent alpha, no background.
+  visual_seed: 0.35
+  ambient_preset: absurd_motes
+palette:
+  design_palette:
+    charcoal_suit: '#24272B'
+    off_white_shirt: '#E8E1D2'
+    muted_blue_gray: '#5B7186'
+    smoke_gray: '#AEB5B8'
+    sun_gold: '#F6C453'
+    void_teal: '#00F5FF'
+  runtime_colors:
+    primary: '#00F5FF'
+    secondary: '#FF00FF'
+    accent: '#39FF14'
+fighting_characteristics:
+  movement_style: Calm, light-footed, elegant, evasive; runs like a dancer slipping between strikes.
+  combat_style: Compact jab/backfist/heel chain, precise counters, shockwave zoning, mobility dash, slow domain.
+  strengths:
+  - air control
+  - counter timing
+  - mid-range shockwave
+  - safe repositioning
+  - clean recovery
+  weaknesses:
+  - moderate raw vitality
+  - needs timing
+  - less brute-force pressure than rushdown characters
+  behavior:
+    neutral: Bait with idle calm, probe with Absurd Jab, step just outside threat range.
+    pressure: Use Rebel Backfist into Sisyphus Heel after whiff punish or guarded jab.
+    defense: Prefer Rebel Reversal and Invincible Summer Dash over hard blocking.
+    finisher: The Absurd Domain creates a slow field, then Camus advances with measured strikes.
+runtime_profiles:
+  movement:
+    walkMultiplier: 1.0
+    runMultiplier: 1.0
+    accelerationMultiplier: 1.05
+    decelerationMultiplier: 1.05
+    jumpMultiplier: 1.0
+    airControlMultiplier: 1.05
+    weight: 1.0
+  animation:
+    silhouetteWidth: 0.97
+    silhouetteHeight: 1.04
+    headScaleX: 1.0
+    headScaleY: 1.05
+    armReach: 1.02
+    legStride: 1.0
+    idleSway: 1.12
+    idleBreath: 1.08
+    anticipation: 1.08
+    recoverySpring: 0.95
+    turnaroundEmphasis: 1.05
+    recoilEmphasis: 0.92
+    airborneFloat: 1.05
+ui_details:
+  portrait: sharp jawline, short dark hair, charcoal suit, cigarette smoke silhouette
+  ability_icon: cigarette smoke spiral crossing a void-teal sun
+  hud_meter: absurdity/revolt meter with smoke motes and sun flash on full charge
+  roster_card: 'Show role as evasive counter duelist; mechanic line: smoke, sun, void shockwaves.'
+  move_list_badges:
+  - B>A
+  - B<A
+  - B>J
+  - BvJ
+normal_moves:
+- id: camus_absurd_jab
+  name: Absurd Jab
+  class: light
+  damage: 9
+  startup: 5
+  active: 4
+  recovery: 11
+  presentationPreset: jab_snap
+  prompt_read: short, efficient lead-hand jab with almost no wasted motion
+- id: camus_rebel_backfist
+  name: Rebel Backfist
+  class: medium
+  damage: 11
+  hitstun: 15
+  range: 68
+  moveClassPreset: pressure_string
+  presentationPreset: rebel_wave
+  prompt_read: half-turn backfist with cigarette smoke crescent
+- id: camus_sisyphus_heel
+  name: Sisyphus Heel
+  class: heavy
+  damage: 16
+  hitstun: 21
+  knockbackX: 6
+  knockbackY: 2
+  range: 58
+  startup: 9
+  active: 6
+  recovery: 18
+  presentationPreset: heel_drop
+  prompt_read: sharp heel drop or lateral heel kick, composed landing
+specials:
+  mvp_4:
+  - command: B>A
+    commandSlot: BFA
+    id: camus_absurd_revolt_wave
+    displayName: Absurd Revolt Wave
+    mechanic: shockwave projectile
+    energyCost: 18
+    cooldownFrames: 90
+    tags:
+    - projectile
+    - shock
+    vfx: shockwave_base
+    prompt_read: forward palm/backfist sends a low void-sun shockwave ribbon
+  - command: B<A
+    commandSlot: BBA
+    id: camus_rebel_reversal
+    displayName: Rebel Reversal
+    mechanic: counter/reflect
+    energyCost: 16
+    cooldownFrames: 110
+    tags:
+    - counter
+    - reflect
+    statusEffects:
+    - id: reflect
+      durationFrames: 30
+      magnitude: 1
+    vfx: counter_flash_base
+    prompt_read: smoke-wrapped shoulder turn into reflective counter flash
+  - command: B>J
+    commandSlot: BFJ
+    id: camus_invincible_summer_dash
+    displayName: Invincible Summer Dash
+    mechanic: mobility iframe dash / armor proxy
+    energyCost: 14
+    cooldownFrames: 80
+    tags:
+    - dash
+    - buff
+    statusEffects:
+    - id: armor
+      durationFrames: 18
+      magnitude: 1
+    vfx: dash_afterimage_base
+    prompt_read: sunlit side dash with thin smoke afterimages
+  - command: BvJ
+    commandSlot: BDJ
+    id: camus_absurd_domain
+    displayName: The Absurd Domain
+    mechanic: short slow/debuff field
+    energyCost: 35
+    cooldownFrames: 260
+    tags:
+    - field
+    - slow
+    - debuff
+    field:
+      id: camus_absurd_domain_field
+      radius: 150
+      durationFrames: 180
+      tickRate: 30
+      followsCaster: false
+    vfx: field_domain_base
+    prompt_read: low stance invoking a circular void/sun field from cigarette ash
+  full_8_from_roadmap:
+    B>A: Absurd Revolt Wave
+    B<A: Rebel Reversal
+    B^A: Sisyphus Uppercut
+    BvA: Void Groundbreak
+    B>J: Invincible Summer Dash
+    B<J: Cigarette Fade
+    B^J: Desert Sun Lift
+    BvJ: The Absurd Domain
+grid_prompt_contract:
+  cell_count: 16
+  arrangement: exact 4x4 grid, left-to-right, top-to-bottom
+  output_constraints:
+  - one sheet image only
+  - identical cell sizes
+  - no gutters, no margins, no borders
+  - true alpha transparent background
+  - consistent scale, camera, lighting, palette, line thickness
+  - character fully inside each cell
+  - right-facing unless a frame explicitly states left-facing recovery
+  - no text or labels
+  negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent
+    background, checkerboard background, text, labels, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent
+    cell sizes, cropped limbs, cut-off feet, motion trails across cells, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased
+    fringe
+sprite_outputs:
+  source_reference: public/assets/sprites/camus/source/camus.png
+  authored_prompt_pack: characters/camus/prompts.yml
+  target_sheets:
+    movement: characters/camus/sprites/camus_grid01_movement.png
+    fighting: characters/camus/sprites/camus_grid02_fighting.png
+    throws_consumes_swings: characters/camus/sprites/camus_grid03_throws_consumes_swings.png
+    specials: characters/camus/sprites/camus_grid04_specials.png
+enhancement_version: 2
+full_biography:
+  summary: French-Algerian absurdist writer and moral rebel recast as a calm cigarette-lit duelist. He fights not because the universe gives meaning,
+    but because revolt is the only honest answer to meaninglessness. His round arc moves from detached observer, to precise counter-rebel, to
+    a quiet victory gesture that refuses melodrama.
+  combat_read: Distinctive runtime-backed philosopher fighter identity for prompt and UI use.
+appearance_bible:
+  appearance: sharp jaw, short dark hair, tired eyes, charcoal mid-century suit, off-white shirt, loosened tie, rolled sleeves, polished shoes,
+    thin cigarette and controlled smoke ribbons
+  palette: 'charcoal #24272B, off-white #E8E1D2, smoke #AEB5B8, sun gold #F6C453, void teal #00F5FF'
+  motion: elegant dancer balance, small cigarette inhale idle, compact sidestep run, composed airborne tuck, forearm smoke-veil block
+  items: cigarette case or ash pebble / brief inhale / coat-assisted backfist sweep
+move_render_descriptions:
+  normal_moves:
+  - name: Absurd Jab
+    pose: economical lead jab
+    vfx: tiny smoke snap
+    gameplay: fast interrupting poke
+  - name: Rebel Backfist
+    pose: half-turn backfist with smoke crescent
+    vfx: gray arc with void-teal edge
+    gameplay: mid pressure and whiff punish
+  - name: Sisyphus Heel
+    pose: precise lateral heel or heel-drop
+    vfx: sun glint at heel
+    gameplay: heavy chain finisher
+  special_moves:
+  - command: B>A
+    name: Absurd Revolt Wave
+    startup: smoke gathers in palm
+    active: low void-teal shockwave with sun rim
+    impact: ground ribbon wave
+    recovery: exhale recovery
+  - command: B<A
+    name: Rebel Reversal
+    startup: exposed shoulder bait
+    active: smoke crescent mirror guard
+    impact: compact riposte flash
+    recovery: shield dissolves
+  - command: B>J
+    name: Invincible Summer Dash
+    startup: low loaded sunlit step
+    active: thin dash with smoke afterimages
+    impact: reappears balanced
+    recovery: tie settles
+  - command: BvJ
+    name: The Absurd Domain
+    startup: ash drops to ground
+    active: void-teal ring expands
+    impact: quiet sun motes orbit
+    recovery: open-palm sustain
+prompt_feasibility_notes:
+- one sheet only
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or text inside image
+- stable palette and costume across all cells
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: sharp jaw, short dark hair, tired eyes, charcoal mid-century suit, off-white shirt, loosened tie, rolled sleeves, polished shoes,
+      thin cigarette and controlled smoke ribbons
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: Compact jab/backfist/heel chain, precise counters, shockwave zoning, mobility dash, slow domain.;
+      VFX must stay behind or around the silhouette unless it is the impact frame'
+  palette_budget:
+    primary: '#24272B'
+    secondary: '#E8E1D2'
+    accent: '#5B7186'
+    vfx_1: '#AEB5B8'
+    vfx_2: '#F6C453'
+    shadow: '#00F5FF'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Albert Camus as evasive counter duelist through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Absurd Jab: startup, impact, recovery'
+      4-6: 'running Rebel Backfist: run transition, impact, slide/recover'
+      7-9: 'aerial/running Sisyphus Heel: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Absurd Revolt Wave keypose
+      '14': B<A Rebel Reversal keypose
+      '15': B>J Invincible Summer Dash keypose
+      '16': BvJ The Absurd Domain keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize Compact jab/backfist/heel chain, precise counters, shockwave zoning, mobility dash, slow domain.
+    rows:
+      row1_frames_1_4: 'B>A Absurd Revolt Wave: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Rebel Reversal: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B>J Invincible Summer Dash: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ The Absurd Domain: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Albert Camus
+    role_line: evasive counter duelist
+    mechanic_line: Compact jab/backfist/heel chain, precise counters, shockwave zoning, mobility dash, slow domain.
+    color_strip:
+      primary: '#24272B'
+      secondary: '#E8E1D2'
+      accent: '#5B7186'
+  ability_icons:
+  - slot: B>A
+    label: Absurd Revolt Wave
+    icon_read: 'simple silhouette icon for Absurd Revolt Wave; use palette accent #5B7186'
+  - slot: B<A
+    label: Rebel Reversal
+    icon_read: 'simple silhouette icon for Rebel Reversal; use palette accent #AEB5B8'
+  - slot: B>J
+    label: Invincible Summer Dash
+    icon_read: 'simple silhouette icon for Invincible Summer Dash; use palette accent #F6C453'
+  - slot: BvJ
+    label: The Absurd Domain
+    icon_read: 'simple silhouette icon for The Absurd Domain; use palette accent #00F5FF'
+  hud_meter:
+    name: Albert Camus role meter
+    fill_color: '#5B7186'
+    empty_color: '#24272B'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#E8E1D2'
+    special: '#5B7186'
+    counter_or_field: '#AEB5B8'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/camus/sprites/camus_grid01_movement.png
+  - characters/camus/sprites/camus_grid02_fighting.png
+  - characters/camus/sprites/camus_grid03_throws_consumes_swings.png
+  - characters/camus/sprites/camus_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/camus/sprite-grid-manifest.json
+    prompt_pack: characters/camus/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

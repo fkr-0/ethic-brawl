@@ -1,0 +1,77 @@
+version: 1
+purpose: "Current character role/mechanic/MVP-command roster for sprite prompt expansion."
+characters:
+  - id: camus
+    role: "evasive counter duelist"
+    element_mechanic: "smoke, sun, void shockwaves"
+    first_4_mvp_moves: ["B>A", "B<A", "B>J", "BvJ"]
+  - id: machiavelli
+    role: "feint assassin"
+    element_mechanic: "trap, lunge, counter execution"
+    first_4_mvp_moves: ["B>A", "B<A", "BvA", "B>J"]
+  - id: diogenes
+    role: "scrappy disruptor"
+    element_mechanic: "lantern flash, barrel physics, shame debuff"
+    first_4_mvp_moves: ["B>A", "BvA", "B>J", "B<J"]
+  - id: leibniz
+    role: "orb / math projectile mage"
+    element_mechanic: "monads, chain logic, mirrors"
+    first_4_mvp_moves: ["B>A", "B<A", "B^J", "BvJ"]
+  - id: foucault
+    role: "control zoner"
+    element_mechanic: "beams, grids, reveal/silence"
+    first_4_mvp_moves: ["B>A", "BvA", "B<J", "BvJ"]
+    note: "Existing repo spelling also contains focault; normalize future character pack to foucault while preserving aliases."
+  - id: deleuze_guattari
+    role: "swarm / field chaos"
+    element_mechanic: "rhizome chains, assemblage cyclones"
+    first_4_mvp_moves: ["B>A", "B^A", "B>J", "BvJ"]
+  - id: marx
+    role: "pressure scaler"
+    element_mechanic: "shockwaves, factory hazards, revolution buffs"
+    first_4_mvp_moves: ["B>A", "BvA", "B^J", "BvJ"]
+  - id: bakunin
+    role: "explosive rushdown"
+    element_mechanic: "bombs, firestorm, armor break"
+    first_4_mvp_moves: ["B>A", "BvA", "B>J", "BvJ"]
+  - id: schmitt
+    role: "armored rule-breaker"
+    element_mechanic: "borders, beam authority, exception state"
+    first_4_mvp_moves: ["B>A", "B<A", "BvA", "BvJ"]
+  - id: aristotle
+    role: "balanced adaptive fighter"
+    element_mechanic: "category traps, golden field, anti-air"
+    first_4_mvp_moves: ["B>A", "B<A", "B^A", "BvJ"]
+  - id: socrates
+    role: "question/counter trickster"
+    element_mechanic: "reflection, stun, dialogue trap"
+    first_4_mvp_moves: ["B>A", "B<A", "BvA", "B<J"]
+  - id: kant
+    role: "lawful control mage"
+    element_mechanic: "beams, constraints, reflective duty"
+    first_4_mvp_moves: ["B>A", "B<A", "BvA", "BvJ"]
+  - id: kierkegaard
+    role: "risk / leap specialist"
+    element_mechanic: "anxiety pools, faith leaps"
+    first_4_mvp_moves: ["B>A", "B^A", "B>J", "BvJ"]
+  - id: stirner
+    role: "egoist trickster"
+    element_mechanic: "unique/ridiculous moves that break design rules"
+    first_4_mvp_moves: ["B>A", "B<A", "B>J", "BvJ"]
+  - id: aquinas
+    role: "holy tank"
+    element_mechanic: "divine rays, shields, consecrated ground"
+    first_4_mvp_moves: ["B>A", "B<A", "BvA", "BvJ"]
+  - id: anselm
+    role: "proof mage"
+    element_mechanic: "unavoidable logic rays, seals"
+    first_4_mvp_moves: ["B>A", "B<A", "B^J", "BvJ"]
+  - id: hegel
+    role: "evolving combo engine"
+    element_mechanic: "thesis/antithesis/synthesis states"
+    first_4_mvp_moves: ["B>A", "B<A", "B>J", "BvJ"]
+  - id: nietzsche
+    role: "high-risk bruiser"
+    element_mechanic: "hammer, abyss, lightning/fire storm"
+    first_4_mvp_moves: ["B>A", "B<A", "B>J", "BvJ"]
+    note: "roadmap-derived only; no existing source sheet or prompt stats were found in repo"

@@ -1,0 +1,27 @@
+{
+  "orientation_default": "right",
+  "notes": "If not noted otherwise, the character/motion is always oriented to the right.",
+  "frames": [
+    { "index": 1, "file": "01.png", "motion": "Standing_Idle" },
+    { "index": 2, "file": "02.png", "motion": "Standing_Fightpose" },
+    { "index": 3, "file": "03.png", "motion": "Standing_Fortified" },
+    { "index": 4, "file": "04.png", "motion": "Standing_Gesture" },
+    { "index": 5, "file": "05.png", "motion": "Running_1" },
+    { "index": 6, "file": "06.png", "motion": "Running_2" },
+    { "index": 7, "file": "07.png", "motion": "Running_3" },
+    { "index": 8, "file": "08.png", "motion": "Running_4" },
+    { "index": 9, "file": "09.png", "motion": "Landing_Ducked" },
+    { "index": 10, "file": "10.png", "motion": "Jumping_In_Air" },
+    { "index": 11, "file": "11.png", "motion": "Jumping_Kick" },
+    {
+      "index": 12,
+      "file": "12.png",
+      "motion": "Landing_Ducked_LeftOriented",
+      "orientation": "left"
+    },
+    { "index": 13, "file": "13.png", "motion": "Standing_Strike_Swing" },
+    { "index": 14, "file": "14.png", "motion": "Standing_Strike_Jab" },
+    { "index": 15, "file": "15.png", "motion": "Standing_Kick" },
+    { "index": 16, "file": "16.png", "motion": "Standing_Special" }
+  ]
+}

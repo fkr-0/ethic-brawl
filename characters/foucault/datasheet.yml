@@ -1,0 +1,240 @@
+version: 1
+enhancement_version: 2
+id: foucault
+title: Michel Foucault
+subtitle: The Panopticon Archivist
+role: control zoner
+element_mechanic: beams, grids, reveal/silence
+source_notes:
+- prompt-first; alias preserves existing focault asset spelling
+full_biography:
+  summary: Historian of power, discipline, clinics, prisons, sexuality, and discourse recast as a control zoner who turns the arena into an archive
+    of visible bodies. He does not overpower opponents; he frames them, reveals them, silences their options, and lets the grid do the punishment.
+  combat_read: Prompt-first spriteless character bible intended to guide high-consistency grid rendering.
+stored_stats:
+  proposed_prompt_stats:
+    intelligence: 9
+    strength: 4
+    agility: 6
+    vitality: 6
+    energy: 9
+appearance_bible:
+  appearance: bald head, round glasses, severe eyes, black turtleneck and long academic coat, narrow trousers, gloved or ink-stained hands, file-folder
+    or archive cards, thin surveillance grid VFX
+  palette: 'black coat #101114, clinic white #DDE6E8, archive paper #C9B88A, panopticon teal #39C5BB, surveillance blue #4A7DFF, warning red #C23B3B'
+  motion: still analytical idle, clipped institutional walk, sliding grid-step run, compact vertical jump, forearm-plus-grid block, cold reveal
+    gesture victory
+  items: archive card / file stamp use / clipboard-edge sweep
+move_render_descriptions:
+  normal_moves:
+  - name: Disciplinary Tap
+    pose: short baton-like finger or folder jab
+    vfx: tiny teal grid tick
+    gameplay: fast spacing poke
+  - name: Archive Hook
+    pose: hooking forearm with file-card fan
+    vfx: paper-teal crescent
+    gameplay: mid pressure
+  - name: Clinic Sweep
+    pose: low precise kick through floor grid
+    vfx: blue-white diagnostic spark
+    gameplay: control ender
+  special_moves:
+  - command: B>A
+    commandSlot: BFA
+    name: Discipline Beam
+    startup: lens/glasses catch a teal light
+    active: thin horizontal blue-teal beam fires from pointing hand
+    impact: target framed by small grid brackets
+    recovery: hand lowers as beam line fades
+  - command: BvA
+    commandSlot: BDA
+    name: Prison Grid Field
+    startup: steps down and stamps an archive card
+    active: floor grid rises as square prison bars
+    impact: short boxed field locks space without covering body
+    recovery: grid retracts to the floor
+  - command: B<J
+    commandSlot: BBJ
+    name: Discourse Escape
+    startup: coat folds inward like a file closing
+    active: backstep slide through a broken sentence-like line with no readable text
+    impact: afterimage becomes a torn archive silhouette
+    recovery: reappears calm and angled away
+  - command: BvJ
+    commandSlot: BDJ
+    name: Biopower Zone
+    startup: raises both hands as measuring marks appear
+    active: large transparent clinic grid forms around feet
+    impact: pulse reveals bodies with teal brackets and red warning ticks
+    recovery: stands at center of fading institution grid
+prompt_feasibility_notes:
+- one exact 4x4 sheet per prompt
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or readable text inside image
+- stable costume/palette across all cells
+sprite_outputs:
+  source_references:
+  - assets/sprites/roster/focault/source/focault_core_4x4.png
+  - assets/sprites/roster/focault/source/focault_extended_4x4.png
+  - focault.png
+  authored_prompt_pack: characters/foucault/prompts.yml
+  target_sheets:
+    movement: characters/foucault/sprites/foucault_grid01_movement.png
+    fighting: characters/foucault/sprites/foucault_grid02_fighting.png
+    throws_consumes_swings: characters/foucault/sprites/foucault_grid03_throws_consumes_swings.png
+    specials: characters/foucault/sprites/foucault_grid04_specials.png
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: bald head, round glasses, severe eyes, black turtleneck and long academic coat, narrow trousers, gloved or ink-stained hands,
+      file-folder or archive cards, thin surveillance grid VFX
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: beams, grids, reveal/silence; VFX must stay behind or around the silhouette unless it is the
+      impact frame'
+  palette_budget:
+    primary: '#101114'
+    secondary: '#DDE6E8'
+    accent: '#C9B88A'
+    vfx_1: '#39C5BB'
+    vfx_2: '#4A7DFF'
+    shadow: '#C23B3B'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Michel Foucault as control zoner through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Disciplinary Tap: startup, impact, recovery'
+      4-6: 'running Archive Hook: run transition, impact, slide/recover'
+      7-9: 'aerial/running Clinic Sweep: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Discipline Beam keypose
+      '14': BvA Prison Grid Field keypose
+      '15': B<J Discourse Escape keypose
+      '16': BvJ Biopower Zone keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize beams, grids, reveal/silence
+    rows:
+      row1_frames_1_4: 'B>A Discipline Beam: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'BvA Prison Grid Field: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'B<J Discourse Escape: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'BvJ Biopower Zone: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Michel Foucault
+    role_line: control zoner
+    mechanic_line: beams, grids, reveal/silence
+    color_strip:
+      primary: '#101114'
+      secondary: '#DDE6E8'
+      accent: '#C9B88A'
+  ability_icons:
+  - slot: B>A
+    label: Discipline Beam
+    icon_read: 'simple silhouette icon for Discipline Beam; use palette accent #C9B88A'
+  - slot: BvA
+    label: Prison Grid Field
+    icon_read: 'simple silhouette icon for Prison Grid Field; use palette accent #39C5BB'
+  - slot: B<J
+    label: Discourse Escape
+    icon_read: 'simple silhouette icon for Discourse Escape; use palette accent #4A7DFF'
+  - slot: BvJ
+    label: Biopower Zone
+    icon_read: 'simple silhouette icon for Biopower Zone; use palette accent #C23B3B'
+  hud_meter:
+    name: Michel Foucault role meter
+    fill_color: '#C9B88A'
+    empty_color: '#101114'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#DDE6E8'
+    special: '#C9B88A'
+    counter_or_field: '#39C5BB'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/foucault/sprites/foucault_grid01_movement.png
+  - characters/foucault/sprites/foucault_grid02_fighting.png
+  - characters/foucault/sprites/foucault_grid03_throws_consumes_swings.png
+  - characters/foucault/sprites/foucault_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/foucault/sprite-grid-manifest.json
+    prompt_pack: characters/foucault/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency

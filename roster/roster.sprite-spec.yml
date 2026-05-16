@@ -1,0 +1,84 @@
+version: 1
+source: assets/sprites/prompt.yml
+purpose: Full roster animation and sprite-sheet prompt pack
+
+controls:
+  style: little-fighter-classic
+  tokens:
+    block: DEF
+    jump: JMP
+    attack: ATK
+    direction_forward: F
+    direction_back: B
+    direction_down: D
+    run: F,F
+  combo_examples:
+    - "ATK"
+    - "D + ATK"
+    - "D + F + ATK"
+    - "D + B + ATK"
+    - "RUN + ATK"
+    - "RUN + JMP + ATK"
+
+sprite_sheets:
+  core_4x4:
+    frame_count: 16
+    layout:
+      - [Standing_Idle_A, Standing_Idle_B, Standing_Breathe_In, Standing_Breathe_Out]
+      - [Walking_1, Walking_2, Running_1, Running_2]
+      - [Jump_Start, Jump_Air, Jump_Forward, Land_Recover]
+      - [Attack_Jab, Attack_Swing, Attack_Kick, Special_Charge]
+  extended_4x4:
+    frame_count: 16
+    layout:
+      - [Run_Attack_Start, Run_Attack_Hit, Run_Attack_Recovery, Run_Stop]
+      - [Run_Jump_Start, Run_Jump_Air, Run_Jump_Attack, Run_Jump_Land]
+      - [Block_Stand, Block_Hit, Hurt_Light, Hurt_Heavy]
+      - [Knockdown, Getup_1, Getup_2, Victory_Pose]
+
+global_animation_guidelines:
+  fps:
+    idle_breathe: 5-7
+    walk: 8-10
+    run: 10-14
+    attacks: 12
+  readability:
+    - Keep silhouettes distinct per philosopher.
+    - Exaggerate anticipation and follow-through on all hit frames.
+    - Ensure run-attack and run-jump-attack have unique key poses.
+  style:
+    - Pixel-art, arcade brawler readability first.
+    - Strong 1-2px outline, high-contrast costume accents.
+    - No modern logos; period-inspired props and symbols only.
+
+roster:
+  - id: focault
+    title: Michel Foucault
+    file: characters/focault.md
+  - id: aristotle
+    title: Aristotle
+    file: characters/aristotle.md
+  - id: socrates
+    title: Socrates
+    file: characters/socrates.md
+  - id: aquinas
+    title: Thomas Aquinas
+    file: characters/aquinas.md
+  - id: anselm
+    title: Anselm of Canterbury
+    file: characters/anselm.md
+  - id: marx
+    title: Karl Marx
+    file: characters/marx.md
+  - id: bakunin
+    title: Mikhail Bakunin
+    file: characters/bakunin.md
+  - id: schmitt
+    title: Carl Schmitt
+    file: characters/schmitt.md
+  - id: kant
+    title: Immanuel Kant
+    file: characters/kant.md
+  - id: hegel
+    title: Hegel
+    file: characters/hegel.md

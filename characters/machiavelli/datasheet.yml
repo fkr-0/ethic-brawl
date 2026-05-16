@@ -1,0 +1,465 @@
+version: 1
+id: machiavelli
+title: Niccolò Machiavelli
+subtitle: The Strategist
+role: feint assassin
+source_notes:
+- Consolidated from roster/prompts/machiavelli.yml, src/content/characters/character-data.ts, src/content/characters/character-loader.ts, src/content/specials/special-data.ts,
+  and docs/plans/2026-05-05-lf2-skill-tree-specials-roadmap.md.
+- 'Existing production source sheet: public/assets/sprites/machiavelli/source/machiavelli.png.'
+- 'Existing root draft sheets: machiavelli.png, machiavelli2.png.'
+biography:
+  capsule: Renaissance political strategist recast as a predatory feint assassin who wins through position, traps, counters, and ruthless lunges.
+  fantasy: A courtly assassin who uses cloak misdirection, sudden acceleration, and tactical cruelty to make every exchange feel planned.
+  personality:
+  - calculating
+  - predatory
+  - composed
+  - opportunistic
+  - ruthless
+  quotes:
+    intro:
+    - It is better to be feared than loved.
+    - The ends justify the means.
+    - Politics have no relation to morals.
+    victory:
+    - Men are so simple.
+    - Fortune favors the bold.
+    - You were useful. Briefly.
+    defeat:
+    - Even the Prince can fall...
+    - The conspiracy succeeded.
+    special:
+    - THE ENDS JUSTIFY!
+    - RETRIBUTION!
+stored_stats:
+  prompt_stats:
+    intelligence: 8
+    strength: 7
+    agility: 9
+    vitality: 5
+    energy: 6
+  runtime_base_stats:
+    health: 85
+    maxHealth: 85
+    strength: 7
+    defense: 5
+    intelligence: 8
+    agility: 9
+    vitality: 5
+    energy: 6
+visual_characteristics:
+  build: Narrow, wiry, low-center silhouette with sudden forward reach.
+  face_hair: Sharp features, slicked dark hair, pointed beard.
+  clothing: Dark renaissance doublet fused with tactical tailoring, gloves, hard-soled boots, cloak panels for misdirection.
+  silhouette_hooks:
+  - pointed beard and slicked head profile
+  - dark cloak or doublet panel slicing diagonally through poses
+  - hidden dagger/thrust hand kept close until the attack frame
+  - low oblique kicks and abrupt diagonal lunges
+  sprite_style: Readable 2D pixel-art fighter, side-view, chibi-to-arcade proportions, transparent alpha, no background.
+  visual_seed: 2.1
+  ambient_preset: scheme_smoke
+palette:
+  design_palette:
+    black_doublet: '#111014'
+    oxblood_trim: '#6E1720'
+    desaturated_steel: '#6F7880'
+    parchment_skin_light: '#D4B48C'
+    scheme_smoke: '#47424B'
+    trap_glyph_magenta: '#FF00FF'
+  runtime_colors:
+    primary: '#FF00FF'
+    secondary: '#FF073A'
+    accent: '#00F5FF'
+fighting_characteristics:
+  movement_style: Deceptive stop-start rhythm; stalking acceleration into sudden bursts.
+  combat_style: Feints, cloak-assisted strikes, hidden thrusts, launchers, counter stance, ground trap, cross-up dash.
+  strengths:
+  - high agility
+  - burst engage
+  - counter punishment
+  - trap setup
+  - launcher pressure
+  weaknesses:
+  - low vitality
+  - committal schemes if read
+  - relies on positioning and cooldown timing
+  behavior:
+    neutral: Stalk just outside range, bait reactions with micro-feints and cloak movement.
+    pressure: Court Feint opens into Prince's Edict and Palace Coup launcher when the opponent freezes.
+    defense: Court Intrigue Parry and Opportunist Dash replace honest blocking.
+    finisher: Root with Coup Trap or expose with Prince's Gambit Lunge before close execution poses.
+runtime_profiles:
+  movement:
+    walkMultiplier: 1.04
+    runMultiplier: 1.12
+    accelerationMultiplier: 1.2
+    decelerationMultiplier: 0.92
+    jumpMultiplier: 1.0
+    airControlMultiplier: 1.0
+    weight: 0.92
+  animation:
+    silhouetteWidth: 1.02
+    silhouetteHeight: 0.96
+    headScaleX: 0.96
+    headScaleY: 1.0
+    armReach: 1.14
+    legStride: 1.08
+    idleSway: 0.84
+    idleBreath: 0.92
+    anticipation: 1.18
+    recoverySpring: 1.02
+    turnaroundEmphasis: 1.18
+    recoilEmphasis: 1.05
+    airborneFloat: 0.94
+ui_details:
+  portrait: slicked hair, pointed beard, dark doublet, cloak edge, predatory court stare
+  ability_icon: oxblood dagger and magenta coup trap sigil
+  hud_meter: scheme meter with trap pip, counter flash, and cross-up dash marker
+  roster_card: 'Show role as feint assassin; mechanic line: trap, lunge, counter execution.'
+  move_list_badges:
+  - B>A
+  - B<A
+  - BvA
+  - B>J
+normal_moves:
+- id: machiavelli_court_feint
+  name: Court Feint
+  class: light
+  damage: 8
+  startup: 5
+  recovery: 10
+  presentationPreset: jab_snap
+  prompt_read: small misleading shoulder fake into quick hidden-hand poke
+- id: machiavelli_princes_edict
+  name: Prince's Edict
+  class: medium
+  damage: 11
+  hitstun: 15
+  hitPolicyPreset: double_tap
+  moveClassPreset: launcher
+  presentationPreset: rebel_wave
+  prompt_read: commanding diagonal cloak slash with secondary thrust beat
+- id: machiavelli_palace_coup
+  name: Palace Coup
+  class: heavy
+  damage: 17
+  hitstun: 22
+  knockbackX: 7
+  knockbackY: 3
+  startup: 8
+  active: 6
+  recovery: 19
+  moveClassPreset: launcher
+  presentationPreset: launcher_crack
+  prompt_read: low-to-high coup strike that launches, cloak opening like a black banner
+specials:
+  mvp_4:
+  - command: B>A
+    commandSlot: BFA
+    id: machiavelli_princes_gambit_lunge
+    displayName: Prince's Gambit Lunge
+    mechanic: dash strike / expose debuff
+    energyCost: 18
+    cooldownFrames: 80
+    tags:
+    - dash
+    - debuff
+    statusEffects:
+    - id: exposed
+      durationFrames: 90
+      magnitude: 0.15
+    vfx: dash_afterimage_base
+    prompt_read: false retreat into abrupt diagonal lunge with oxblood slash angle
+  - command: B<A
+    commandSlot: BBA
+    id: machiavelli_court_intrigue_parry
+    displayName: Court Intrigue Parry
+    mechanic: counter
+    energyCost: 16
+    cooldownFrames: 105
+    tags:
+    - counter
+    statusEffects:
+    - id: armor
+      durationFrames: 22
+      magnitude: 1
+    vfx: counter_flash_base
+    prompt_read: cloak closes like a curtain, then dagger/hand riposte snaps out
+  - command: BvA
+    commandSlot: BDA
+    id: machiavelli_coup_trap
+    displayName: Coup Trap
+    mechanic: ground mine / rooted debuff
+    energyCost: 20
+    cooldownFrames: 130
+    tags:
+    - trap
+    - debuff
+    projectile:
+      id: machiavelli_coup_trap_mine
+      kind: trap_mine
+      lifetimeFrames: 240
+      collision: circle
+    statusEffects:
+    - id: rooted
+      durationFrames: 45
+      magnitude: 1
+    vfx: trap_glyph_base
+    prompt_read: kneeling hand plants a small magenta court sigil mine at the feet
+  - command: B>J
+    commandSlot: BFJ
+    id: machiavelli_opportunist_dash
+    displayName: Opportunist Dash
+    mechanic: cross-up dash / teleport-like reposition
+    energyCost: 14
+    cooldownFrames: 70
+    tags:
+    - dash
+    - teleport
+    vfx: dash_afterimage_base
+    prompt_read: low sidestep dash with cloak afterimage crossing through opponent space
+  full_8_from_roadmap:
+    B>A: Prince's Gambit Lunge
+    B<A: Court Intrigue Parry
+    B^A: Assassin's Ascension
+    BvA: Coup Trap
+    B>J: Opportunist Dash
+    B<J: Diplomatic Exit
+    B^J: Black Banner Rise
+    BvJ: Statecraft Execution
+grid_prompt_contract:
+  cell_count: 16
+  arrangement: exact 4x4 grid, left-to-right, top-to-bottom
+  output_constraints:
+  - one sheet image only
+  - identical cell sizes
+  - no gutters, no margins, no borders
+  - true alpha transparent background
+  - consistent scale, camera, lighting, palette, line thickness
+  - character fully inside each cell
+  - right-facing unless a frame explicitly states left-facing recovery
+  - no text or labels
+  negative_prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent
+    background, checkerboard background, text, labels, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent
+    cell sizes, cropped limbs, cut-off feet, motion trails across cells, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased
+    fringe
+sprite_outputs:
+  source_reference: public/assets/sprites/machiavelli/source/machiavelli.png
+  authored_prompt_pack: characters/machiavelli/prompts.yml
+  target_sheets:
+    movement: characters/machiavelli/sprites/machiavelli_grid01_movement.png
+    fighting: characters/machiavelli/sprites/machiavelli_grid02_fighting.png
+    throws_consumes_swings: characters/machiavelli/sprites/machiavelli_grid03_throws_consumes_swings.png
+    specials: characters/machiavelli/sprites/machiavelli_grid04_specials.png
+enhancement_version: 2
+full_biography:
+  summary: 'Florentine diplomat and author of The Prince recast as a courtly assassin of tactics. He treats combat as statecraft: a retreat is
+    a lunge, a bow hides a blade, and a trap is simply policy made visible. His arc is observation, conspiracy, execution.'
+  combat_read: Distinctive runtime-backed philosopher fighter identity for prompt and UI use.
+appearance_bible:
+  appearance: slick dark hair, pointed beard, narrow calculating eyes, dark renaissance doublet, black cloak wedges, oxblood trim, gloves, hard
+    boots, hidden dagger and parchment seal
+  palette: 'black #111014, cloak #07070A, oxblood #6E1720, steel #6F7880, parchment #D4B48C, trap magenta #FF00FF'
+  motion: predatory stillness, stalking walk, sudden low burst run, compact tactical jump, cloak-curtain block
+  items: dagger coin or trap token / sealing parchment decree / cloak sweep into hidden thrust
+move_render_descriptions:
+  normal_moves:
+  - name: Court Feint
+    pose: false bow into hidden-hand poke
+    vfx: tiny oxblood slash
+    gameplay: deceptive opener
+  - name: Prince's Edict
+    pose: diagonal cloak slash plus thrust
+    vfx: oxblood slash and steel glint
+    gameplay: launcher pressure
+  - name: Palace Coup
+    pose: low-to-high cloak-banner strike
+    vfx: magenta crack
+    gameplay: heavy launcher
+  special_moves:
+  - command: B>A
+    name: Prince's Gambit Lunge
+    startup: false retreat cloak hides arm
+    active: abrupt diagonal blade lunge
+    impact: magenta exposed mark
+    recovery: slides past line
+  - command: B<A
+    name: Court Intrigue Parry
+    startup: smug exposed shoulder
+    active: cloak curtain shield
+    impact: dagger riposte from darkness
+    recovery: cloak closes
+  - command: BvA
+    name: Coup Trap
+    startup: kneeling gloved setup
+    active: small magenta floor sigil
+    impact: root spark arms
+    recovery: withdraws without looking
+  - command: B>J
+    name: Opportunist Dash
+    startup: low loaded boot
+    active: black afterimage cross-up
+    impact: reappears behind-angle
+    recovery: cloak settles
+prompt_feasibility_notes:
+- one sheet only
+- one pose per frame
+- compact VFX secondary to silhouette
+- no labels or text inside image
+- stable palette and costume across all cells
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent ground baseline
+    pixel_density: crisp pixel-art edges; avoid painterly gradients and anti-aliased glow fringes
+    silhouette_rule: full body stays inside every cell; primary prop/costume hook visible in major frames
+  texture_materials:
+    base_costume: slick dark hair, pointed beard, narrow calculating eyes, dark renaissance doublet, black cloak wedges, oxblood trim, gloves,
+      hard boots, hidden dagger and parchment seal
+    cloth: '2-3 tone clusters: hard shadow, midtone, one highlight; folds should support the pose and not become noise'
+    skin_hair: small readable clusters; face identity should survive at gameplay scale
+    metal_or_prop: use one bright edge highlight and one dark underside; prop should not change size between frames
+    vfx: 'compact effects derived from mechanic: Feints, cloak-assisted strikes, hidden thrusts, launchers, counter stance, ground trap, cross-up
+      dash.; VFX must stay behind or around the silhouette unless it is the impact frame'
+  palette_budget:
+    primary: '#111014'
+    secondary: '#6E1720'
+    accent: '#6F7880'
+    vfx_1: '#D4B48C'
+    vfx_2: '#47424B'
+    shadow: '#FF00FF'
+    rule: do not introduce more than two new bright VFX colors beyond these anchors
+  edge_and_shadow_rules:
+  - Use a stable one-pixel dark outline around the readable silhouette.
+  - Keep feet aligned to a common baseline except jump/KO frames.
+  - No cast shadow that merges cells; if needed, use tiny semi-transparent contact shadow inside each cell.
+  - Motion trails must fit fully inside the active frame cell and never connect neighboring cells.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay/runtime validation only
+    replacement_ready: final generated sheets should preserve this texture bible and use the same manifest output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Niccolò Machiavelli as feint assassin through readable locomotion and damage states
+    beats:
+      1-2: 'idle A/B: two breathing/weight-shift variants, no costume change'
+      3-4: 'hurt light/heavy: impact recoil while preserving face/prop identity'
+      5-8: 'walk cycle: contact, passing, plant, recovery; loopable'
+      9-12: 'run cycle: load, longest stride, pass, push-off; loopable and role-specific'
+      13-15: jump takeoff, jump apex, running jump; clear feet and landing direction
+      '16': 'KO/downed: full body visible, unmistakably same character'
+    continuity_notes:
+    - same scale in every cell
+    - same ground baseline for grounded frames
+    - no duplicate idle/run poses
+  grid02_fighting_storyboard:
+    intent: show the core combat vocabulary before specials
+    beats:
+      1-3: 'Court Feint: startup, impact, recovery'
+      4-6: 'running Prince''s Edict: run transition, impact, slide/recover'
+      7-9: 'aerial/running Palace Coup: approach, hit, landing recovery'
+      10-12: 'running evasion/block: enter guard, guarded frame, punish-ready exit'
+      13-14: basic block and fortified block, with one compact defensive accent
+      15-16: victory pose A/B, character-specific and readable at small size
+    continuity_notes:
+    - attacks must not look like specials
+    - impact frame is the clearest silhouette
+    - recovery always returns toward idle stance
+  grid03_interaction_storyboard:
+    intent: cover object interactions and four MVP combo keyposes
+    beats:
+      1-4: 'throw: pickup/ready, windup, release, recovery'
+      5-8: 'consume/use: raise item, active use, glint/effect, return'
+      9-12: 'swing: startup, impact, follow-through, reset'
+      '13': B>A Prince's Gambit Lunge keypose
+      '14': B<A Court Intrigue Parry keypose
+      '15': BvA Coup Trap keypose
+      '16': B>J Opportunist Dash keypose
+    continuity_notes:
+    - combo keyposes are caster silhouettes, not full projectile renders
+    - item size remains consistent
+    - compact VFX only
+  grid04_specials_storyboard:
+    intent: one row per MVP special; emphasize Feints, cloak-assisted strikes, hidden thrusts, launchers, counter stance, ground trap, cross-up
+      dash.
+    rows:
+      row1_frames_1_4: 'B>A Prince''s Gambit Lunge: startup, release, impact/sustain, recovery'
+      row2_frames_5_8: 'B<A Court Intrigue Parry: startup, release, impact/sustain, recovery'
+      row3_frames_9_12: 'BvA Coup Trap: startup, release, impact/sustain, recovery'
+      row4_frames_13_16: 'B>J Opportunist Dash: startup, release, impact/sustain, recovery'
+    continuity_notes:
+    - each row is independent
+    - do not blend VFX between rows
+    - final frame of each row should be reusable as recovery/landing candidate
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, three-quarter or side-facing toward opponent, no background clutter
+    must_show:
+    - face identity
+    - primary costume collar/shoulder shape
+    - one role-defining prop or VFX accent
+    avoid:
+    - full-body pose in portrait
+    - text labels
+    - busy scenery
+    - excessive glow
+  roster_card:
+    display_name: Niccolò Machiavelli
+    role_line: feint assassin
+    mechanic_line: Feints, cloak-assisted strikes, hidden thrusts, launchers, counter stance, ground trap, cross-up dash.
+    color_strip:
+      primary: '#111014'
+      secondary: '#6E1720'
+      accent: '#6F7880'
+  ability_icons:
+  - slot: B>A
+    label: Prince's Gambit Lunge
+    icon_read: 'simple silhouette icon for Prince''s Gambit Lunge; use palette accent #6F7880'
+  - slot: B<A
+    label: Court Intrigue Parry
+    icon_read: 'simple silhouette icon for Court Intrigue Parry; use palette accent #D4B48C'
+  - slot: BvA
+    label: Coup Trap
+    icon_read: 'simple silhouette icon for Coup Trap; use palette accent #47424B'
+  - slot: B>J
+    label: Opportunist Dash
+    icon_read: 'simple silhouette icon for Opportunist Dash; use palette accent #FF00FF'
+  hud_meter:
+    name: Niccolò Machiavelli role meter
+    fill_color: '#6F7880'
+    empty_color: '#111014'
+    readability: must remain legible over dark and bright stages; avoid relying only on hue
+  hit_spark_family:
+    normal: '#6E1720'
+    special: '#6F7880'
+    counter_or_field: '#D4B48C'
+    rule: sparks should inherit character palette so screenshots identify the fighter even without portrait
+production_checklist:
+  asset_files_expected:
+  - characters/machiavelli/sprites/machiavelli_grid01_movement.png
+  - characters/machiavelli/sprites/machiavelli_grid02_fighting.png
+  - characters/machiavelli/sprites/machiavelli_grid03_throws_consumes_swings.png
+  - characters/machiavelli/sprites/machiavelli_grid04_specials.png
+  validation:
+  - image dimensions divisible by 4 in both axes
+  - alpha background present and not replaced by checkerboard
+  - 16 cells detected with equal width/height
+  - grounded frames share a stable foot baseline
+  - no text, labels, captions, UI, watermark, or speech bubbles inside the image
+  - no limb/prop cropping at cell boundaries
+  - character scale drift across cells less than roughly 10 percent
+  runtime_binding:
+    manifest: characters/machiavelli/sprite-grid-manifest.json
+    prompt_pack: characters/machiavelli/prompts.yml
+    placeholder_ok: true
+    replace_placeholder_when: a final generated sheet passes validation and preserves clip ordering
+  review_priority:
+  - grid01 movement loop quality
+  - grid02 attack readability
+  - grid04 special VFX containment
+  - UI portrait consistency
