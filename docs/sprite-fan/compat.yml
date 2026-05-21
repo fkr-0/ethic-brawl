@@ -1,0 +1,82 @@
+schema_version: 1.0.0
+project: ethic-brawl
+source_spec: ../sprite-fan/reqs/animation.yml
+purpose: >-
+  Sprite Fan compatibility overlay for Ethic Brawl roster sprite sheets.
+  It maps the existing 4x4 fighter prompt grids to the sprites.json
+  grid/animations/frame metadata exported by Sprite Fan.
+
+sprite_fan_contract:
+  grid_vs_individual: atlas-grid
+  transparent_background: true
+  stable_frame_size: true
+  max_prompt_grid:
+    columns: 4
+    rows: 4
+    frames: 16
+  metadata_policy: export-grid-animations-order-loop-anchor-empty-gameplay-slots
+
+source_specs:
+  roster_prompt_pack: assets/sprites/roster/roster.sprite-spec.yml
+  asset_prompt_pack: assets/sprites/prompt.yml
+  mirrored_roster_pack: roster/roster.sprite-spec.yml
+
+sheet_profiles:
+  core_4x4:
+    frame_count: 16
+    grid: { columns: 4, rows: 4 }
+    default_fps: 10
+    animation_tags: [fighter, core, postprocessed, atlas-grid]
+    order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    loop: true
+  extended_4x4:
+    frame_count: 16
+    grid: { columns: 4, rows: 4 }
+    default_fps: 12
+    animation_tags: [fighter, extended, postprocessed, atlas-grid]
+    order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    loop: true
+
+export_fields_required:
+  grid:
+    - columns
+    - rows
+    - padding
+    - frameWidth
+    - frameHeight
+    - cellWidth
+    - cellHeight
+    - sheetWidth
+    - sheetHeight
+  animations:
+    - order
+    - loop
+    - anchor
+    - tags
+    - events
+    - hitboxes
+    - hurtboxes
+  frames:
+    - index
+    - col
+    - row
+    - sheetRect
+    - hash
+    - bbox
+    - alphaPixels
+    - softAlphaPixels
+    - strayPixels
+    - pinholePixels
+    - issues
+
+runtime_import_notes:
+  sprite_fan_manifest: sprites.json
+  roster_sheet_kind: philosopher_fighter_4x4
+  anchor_policy: import_from_sprite_fan_or_default_feet_center
+  gameplay_boxes: import_empty_slots_first_then_author_per_character
+
+adaptation_status:
+  roster_4x4_sheets_mapped: true
+  sprite_fan_manifest_fields_mapped: true
+  generated_sheets_should_be_reviewed_in_sprite_fan: true
+  runtime_importer_todo: true
