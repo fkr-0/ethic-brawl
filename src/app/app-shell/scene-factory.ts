@@ -416,7 +416,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
     input: deps.getLatestInput(),
     transitionTo: deps.transitionTo,
     fightRuntime: deps.fightRuntime,
-    onSettingsChanged: deps.onSettingsChanged,
+    ...(deps.onSettingsChanged && { onSettingsChanged: deps.onSettingsChanged }),
   });
 
   return [
