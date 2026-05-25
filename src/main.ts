@@ -3,7 +3,11 @@
  */
 
 import { bootstrap, createFightRuntime, createGameLoop, hideLoading } from '@/app';
+import { captureKeybindingEdit } from '@/app/app-shell/scene-factory';
+import { loadAppSettings, saveAppSettings } from '@/app/settings-persistence';
 import { getCharacterIds } from '@/content/characters/character-data';
+import { installE2EProbe, updateE2EStatus } from '@/app/e2e-probe';
+import type { E2EProbeSnapshot } from '@/app/e2e-probe';
 import { createInputManager, createSceneManager } from '@/core';
 import {
   getCharacterAnimationMap,
@@ -56,10 +60,12 @@ async function main() {
   const keyboard = inputManager.getKeyboard();
   const fightRuntime = createFightRuntime();
   const appState = createInitialAppShellState();
+  appState.settings = loadAppSettings(appState.settings);
+  inputManager.setBindings(appState.settings.bindings);
 
-  let helpOpen = false;
   let latestInput = inputManager.getState();
   let spriteRenderingEnabled = true; // Track local state for toggle
+  let helpOpen = false;
 
   let sceneManagerRef: ReturnType<typeof createSceneManager> | null = null;
 
@@ -69,6 +75,10 @@ async function main() {
         fightRuntime,
         getLatestInput: () => latestInput,
         transitionTo: (target) => sceneManagerRef?.transitionTo(target) ?? Promise.resolve(false),
+        onSettingsChanged: (settings) => {
+          inputManager.setBindings(settings.bindings);
+          saveAppSettings(settings);
+        },
       },
       appState
     ),
@@ -83,6 +93,21 @@ async function main() {
     (deltaTime) => {
       inputManager.update();
       latestInput = inputManager.getState();
+
+      if (sceneManager.getCurrentScene() === 'settings' && appState.settings.keybindingEdit) {
+        const keyCode = keyboard.consumeLatestPressedKey([
+          'Enter',
+          'Space',
+          'Backspace',
+          'Escape',
+          'ShiftLeft',
+          'ShiftRight',
+        ]);
+        if (keyCode && captureKeybindingEdit(appState.settings, keyCode)) {
+          inputManager.setBindings(appState.settings.bindings);
+          saveAppSettings(appState.settings);
+        }
+      }
 
       if (
         keyboard.wasJustPressed('Slash') &&
@@ -163,8 +188,48 @@ async function main() {
         renderHelpOverlay(ctx);
       }
       renderDebugInfo(ctx, gameLoop.getFPS(), gameLoop.getFrameCount());
+      updateE2EStatus(getE2ESnapshot());
     }
   );
+
+  const getE2ESnapshot = (): E2EProbeSnapshot => ({
+    ready: sceneManager.getCurrentScene() !== 'loading',
+    currentScene: sceneManager.getCurrentScene(),
+    helpOpen,
+    frameCount: gameLoop.getFrameCount(),
+    fps: gameLoop.getFPS(),
+    canvas: {
+      width: canvas.width,
+      height: canvas.height,
+      clientWidth: canvas.clientWidth,
+      clientHeight: canvas.clientHeight,
+    },
+    app: {
+      startMenuIndex: appState.startMenuIndex,
+      characterSelectPhase: appState.characterSelectPhase,
+      player1SelectIndex: appState.player1SelectIndex,
+      player2SelectIndex: appState.player2SelectIndex,
+      stageNumber: appState.stageNumber,
+      gameMode: appState.gameMode,
+      skipStageIntro: appState.settings.skipStageIntro,
+      settingsTab: appState.settings.menuTab,
+      settingsSelectedIndex: appState.settings.selectedIndex,
+      editingKeybinding: appState.settings.keybindingEdit,
+      player1AttackBinding: appState.settings.bindings.player1.keys.get('attack') ?? [],
+      fightResolvedThisMatch: appState.fightResolvedThisMatch,
+      hasLatestResult: appState.latestResult !== null,
+      pendingSelection: appState.pendingSelection,
+    },
+    sprites: {
+      renderingEnabled: spriteRenderingEnabled,
+      loadedCharacters: characterIds.length,
+    },
+  });
+
+  installE2EProbe({
+    getSnapshot: getE2ESnapshot,
+    transitionTo: (scene) => sceneManager.transitionTo(scene),
+  });
 
   hideLoading();
   setTimeout(() => {

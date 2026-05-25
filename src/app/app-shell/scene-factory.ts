@@ -1,6 +1,12 @@
 import type { FightRuntime } from '@/app/fight-runtime';
 import { type CharacterId, getCharacterIds } from '@/content/characters/character-data';
 import { type Scene, type SceneName, createScene } from '@/core';
+import {
+  GAME_ACTIONS,
+  type GameAction,
+  resetBindingForPlayer,
+  updateBindingForAction,
+} from '@/core/input/input-binding';
 import type { InputState } from '@/core/input/input-manager';
 import {
   renderCharacterSelect,
@@ -23,6 +29,7 @@ interface SceneUpdateContext {
   input: InputState;
   transitionTo: (target: SceneName) => Promise<boolean>;
   fightRuntime: FightRuntime;
+  onSettingsChanged?: (settings: SettingsState) => void;
 }
 
 /**
@@ -63,13 +70,101 @@ function updateStartScene(ctx: SceneUpdateContext): void {
 /**
  * Update settings scene
  */
+const SETTINGS_GAMEPLAY_ROWS = 2;
+
+function commitSettingsChange(ctx: SceneUpdateContext): void {
+  ctx.onSettingsChanged?.(ctx.appState.settings);
+}
+
+export function captureKeybindingEdit(
+  settings: SettingsState,
+  keyCode: string,
+  options: { replace?: boolean; removeConflicts?: boolean } = { replace: true, removeConflicts: true }
+): boolean {
+  if (!settings.keybindingEdit) return false;
+  const { playerId, action } = settings.keybindingEdit;
+  const source = playerId === 1 ? settings.bindings.player1 : settings.bindings.player2;
+  const updated = updateBindingForAction(source, action, keyCode, options);
+  settings.bindings = {
+    ...settings.bindings,
+    [playerId === 1 ? 'player1' : 'player2']: updated,
+  };
+  settings.keybindingEdit = null;
+  return true;
+}
+
+/**
+ * Update settings scene
+ */
 function updateSettingsScene(ctx: SceneUpdateContext): void {
   const { appState, input, transitionTo } = ctx;
+  const rowCount = appState.settings.menuTab === 'gameplay' ? SETTINGS_GAMEPLAY_ROWS : GAME_ACTIONS.length + 1;
 
-  if (input.player1.confirm) {
-    appState.settings.skipStageIntro = !appState.settings.skipStageIntro;
+  if (appState.settings.keybindingEdit) {
+    if (input.player1.cancel || input.player1.pause) {
+      appState.settings.keybindingEdit = null;
+      commitSettingsChange(ctx);
+    }
+    return;
   }
+
+  if (input.player1.moveUp && !appState.menuUpLatch) {
+    appState.settings.selectedIndex = (appState.settings.selectedIndex - 1 + rowCount) % rowCount;
+    appState.menuUpLatch = true;
+  }
+  if (!input.player1.moveUp) {
+    appState.menuUpLatch = false;
+  }
+
+  if (input.player1.moveDown && !appState.menuDownLatch) {
+    appState.settings.selectedIndex = (appState.settings.selectedIndex + 1) % rowCount;
+    appState.menuDownLatch = true;
+  }
+  if (!input.player1.moveDown) {
+    appState.menuDownLatch = false;
+  }
+
+  if ((input.player1.moveLeft || input.player1.moveRight) && !appState.settingsTabLatch) {
+    appState.settings.menuTab = appState.settings.menuTab === 'gameplay' ? 'keybindings' : 'gameplay';
+    appState.settings.selectedIndex = 0;
+    appState.settingsTabLatch = true;
+    commitSettingsChange(ctx);
+  }
+  if (!input.player1.moveLeft && !input.player1.moveRight) {
+    appState.settingsTabLatch = false;
+  }
+
+  if (input.player1.confirm || input.player1.attack) {
+    if (appState.settings.menuTab === 'gameplay') {
+      if (appState.settings.selectedIndex === 0) {
+        appState.settings.skipStageIntro = !appState.settings.skipStageIntro;
+      } else {
+        appState.settings.menuTab = 'keybindings';
+        appState.settings.selectedIndex = 0;
+      }
+      commitSettingsChange(ctx);
+      return;
+    }
+
+    if (appState.settings.selectedIndex === GAME_ACTIONS.length) {
+      appState.settings.bindings = {
+        player1: resetBindingForPlayer(1),
+        player2: resetBindingForPlayer(2),
+      };
+      commitSettingsChange(ctx);
+      return;
+    }
+
+    const action = GAME_ACTIONS[appState.settings.selectedIndex] as GameAction | undefined;
+    if (action) {
+      appState.settings.keybindingEdit = { playerId: 1, action };
+      commitSettingsChange(ctx);
+    }
+  }
+
   if (input.player1.cancel || input.player1.pause) {
+    appState.settings.keybindingEdit = null;
+    commitSettingsChange(ctx);
     void transitionTo('start');
   }
 }
@@ -250,6 +345,7 @@ interface BuildScenesDeps {
   getLatestInput: () => InputState;
   transitionTo: (target: SceneName) => Promise<boolean>;
   getCharacterIdsList?: () => ReturnType<typeof getCharacterIds>;
+  onSettingsChanged?: (settings: SettingsState) => void;
 }
 
 export interface AppShellState {
@@ -268,6 +364,7 @@ export interface AppShellState {
   startMenuIndex: number;
   menuUpLatch: boolean;
   menuDownLatch: boolean;
+  settingsTabLatch: boolean;
   settings: SettingsState;
 }
 
@@ -296,8 +393,16 @@ export function createInitialAppShellState(): AppShellState {
     startMenuIndex: 0,
     menuUpLatch: false,
     menuDownLatch: false,
+    settingsTabLatch: false,
     settings: {
       skipStageIntro: false,
+      menuTab: 'gameplay',
+      selectedIndex: 0,
+      keybindingEdit: null,
+      bindings: {
+        player1: resetBindingForPlayer(1),
+        player2: resetBindingForPlayer(2),
+      },
     },
   };
 }
@@ -311,6 +416,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
     input: deps.getLatestInput(),
     transitionTo: deps.transitionTo,
     fightRuntime: deps.fightRuntime,
+    onSettingsChanged: deps.onSettingsChanged,
   });
 
   return [
@@ -335,7 +441,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         updateSettingsScene(createUpdateContext());
       },
       render: (ctx) => {
-        renderSettings(ctx, appState.settings.skipStageIntro);
+        renderSettings(ctx, appState.settings);
       },
     }),
     createScene('character-select', {

@@ -22,6 +22,7 @@ export function createKeyboard() {
     pressed: new Set<string>(),
     released: new Set<string>(),
   };
+  const latestPressedKeys: string[] = [];
 
   /**
    * Handle key down event
@@ -32,6 +33,7 @@ export function createKeyboard() {
     // Prevent repeated events while key is held
     if (!keyStates.get(code)?.isPressed) {
       frameKeyEvents.pressed.add(code);
+      latestPressedKeys.push(code);
     }
   }
 
@@ -147,6 +149,14 @@ export function createKeyboard() {
     return 0;
   }
 
+  function consumeLatestPressedKey(exclusions: string[] = []): string | null {
+    while (latestPressedKeys.length > 0) {
+      const key = latestPressedKeys.shift();
+      if (key && !exclusions.includes(key)) return key;
+    }
+    return null;
+  }
+
   /**
    * Clear all key states
    */
@@ -154,6 +164,7 @@ export function createKeyboard() {
     keyStates.clear();
     frameKeyEvents.pressed.clear();
     frameKeyEvents.released.clear();
+    latestPressedKeys.length = 0;
   }
 
   // Bind event listeners
@@ -167,6 +178,7 @@ export function createKeyboard() {
     wasJustPressed,
     wasJustReleased,
     getHoldDuration,
+    consumeLatestPressedKey,
     reset,
     destroy: () => {
       window.removeEventListener('keydown', onKeyDown);

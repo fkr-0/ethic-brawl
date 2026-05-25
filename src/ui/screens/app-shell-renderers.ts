@@ -1,8 +1,15 @@
-import type { FightOutcomeSummary } from '@/app/app-shell/types';
+import type { FightOutcomeSummary, SettingsState } from '@/app/app-shell/types';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { CharacterId } from '@/content/characters/character-data';
 import { getCharacter } from '@/content/characters/character-data';
-import { PLAYER1_BINDINGS, PLAYER2_BINDINGS, type PlayerInput } from '@/core';
+import {
+  GAME_ACTIONS,
+  GAME_ACTION_LABELS,
+  PLAYER1_BINDINGS,
+  PLAYER2_BINDINGS,
+  formatBindingForDisplay,
+  type PlayerInput,
+} from '@/core';
 
 export function renderLoading(ctx: CanvasRenderingContext2D): void {
   ctx.fillStyle = '#1A0A2E';
@@ -71,22 +78,87 @@ export function renderMainMenu(ctx: CanvasRenderingContext2D, selectedIndex: num
   ctx.fillText('W/S move | ENTER confirm | Shift+/ (?) help', CANVAS_WIDTH / 2, 500);
 }
 
-export function renderSettings(ctx: CanvasRenderingContext2D, skipStageIntro: boolean): void {
+export function renderSettings(ctx: CanvasRenderingContext2D, settings: SettingsState): void {
   ctx.fillStyle = '#12091F';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.textAlign = 'center';
 
   ctx.font = 'bold 42px "Courier New", monospace';
   ctx.fillStyle = '#39FF14';
-  ctx.fillText('SETTINGS', CANVAS_WIDTH / 2, 120);
-
-  ctx.font = '24px "Courier New", monospace';
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillText(`Skip Stage Intro: ${skipStageIntro ? 'ON' : 'OFF'}`, CANVAS_WIDTH / 2, 240);
+  ctx.fillText('SETTINGS', CANVAS_WIDTH / 2, 88);
 
   ctx.font = '18px "Courier New", monospace';
+  ctx.fillStyle = settings.menuTab === 'gameplay' ? '#FFFFFF' : '#817597';
+  ctx.fillText('[ GAMEPLAY ]', CANVAS_WIDTH / 2 - 120, 130);
+  ctx.fillStyle = settings.menuTab === 'keybindings' ? '#FFFFFF' : '#817597';
+  ctx.fillText('[ KEYBINDINGS ]', CANVAS_WIDTH / 2 + 120, 130);
+
+  if (settings.menuTab === 'gameplay') {
+    const rows = [
+      `Skip Stage Intro: ${settings.skipStageIntro ? 'ON' : 'OFF'}`,
+      'Open Keybinding Menu',
+    ];
+    ctx.font = '24px "Courier New", monospace';
+    rows.forEach((label, index) => {
+      const active = settings.selectedIndex === index;
+      ctx.fillStyle = active ? '#FFFFFF' : '#B8A9C9';
+      ctx.fillText(active ? `> ${label} <` : label, CANVAS_WIDTH / 2, 220 + index * 52);
+    });
+  } else {
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 15px "Courier New", monospace';
+    ctx.fillStyle = '#00F5FF';
+    ctx.fillText('ACTION', 96, 178);
+    ctx.fillStyle = '#39FF14';
+    ctx.fillText('PLAYER 1', 370, 178);
+    ctx.fillStyle = '#FF9F1C';
+    ctx.fillText('PLAYER 2', 560, 178);
+
+    ctx.font = '14px "Courier New", monospace';
+    GAME_ACTIONS.forEach((action, index) => {
+      const y = 210 + index * 27;
+      const active = settings.selectedIndex === index;
+      ctx.fillStyle = active ? '#FFFFFF' : '#B8A9C9';
+      ctx.fillText(active ? `> ${GAME_ACTION_LABELS[action]}` : GAME_ACTION_LABELS[action], 96, y);
+      ctx.fillStyle = active ? '#FFFFFF' : '#39FF14';
+      ctx.fillText(formatBindingForDisplay(settings.bindings.player1, action), 370, y);
+      ctx.fillStyle = '#FF9F1C';
+      ctx.fillText(formatBindingForDisplay(settings.bindings.player2, action), 560, y);
+    });
+
+    const resetY = 210 + GAME_ACTIONS.length * 27;
+    ctx.fillStyle = settings.selectedIndex === GAME_ACTIONS.length ? '#FFFFFF' : '#B8A9C9';
+    ctx.fillText(
+      settings.selectedIndex === GAME_ACTIONS.length ? '> Reset All Bindings' : 'Reset All Bindings',
+      96,
+      resetY
+    );
+
+    if (settings.keybindingEdit) {
+      ctx.fillStyle = 'rgba(8, 5, 16, 0.9)';
+      ctx.fillRect(120, 210, CANVAS_WIDTH - 240, 180);
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(120, 210, CANVAS_WIDTH - 240, 180);
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 24px "Courier New", monospace';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('PRESS A NEW KEY', CANVAS_WIDTH / 2, 270);
+      ctx.font = '18px "Courier New", monospace';
+      ctx.fillStyle = '#B8A9C9';
+      ctx.fillText(
+        `P${settings.keybindingEdit.playerId} ${GAME_ACTION_LABELS[settings.keybindingEdit.action]}`,
+        CANVAS_WIDTH / 2,
+        312
+      );
+      ctx.fillText('CANCEL keeps the current binding', CANVAS_WIDTH / 2, 350);
+    }
+  }
+
+  ctx.textAlign = 'center';
+  ctx.font = '16px "Courier New", monospace';
   ctx.fillStyle = '#B8A9C9';
-  ctx.fillText('CONFIRM toggle | CANCEL back', CANVAS_WIDTH / 2, 330);
+  ctx.fillText('W/S select | A/D tab | ENTER edit/toggle | BACKSPACE/ESC back', CANVAS_WIDTH / 2, 555);
 }
 
 export function renderCharacterSelect(

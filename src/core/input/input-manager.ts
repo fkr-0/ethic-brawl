@@ -5,6 +5,8 @@
 import {
   PLAYER1_BINDINGS,
   PLAYER2_BINDINGS,
+  cloneInputBinding,
+  type InputBinding,
   type PlayerInput,
   readPlayerInput,
 } from './input-binding';
@@ -23,8 +25,8 @@ export interface InputState {
  */
 export function createInputManager() {
   const keyboard = createKeyboard();
-  let player1Binding = PLAYER1_BINDINGS;
-  let player2Binding = PLAYER2_BINDINGS;
+  let player1Binding = cloneInputBinding(PLAYER1_BINDINGS);
+  let player2Binding = cloneInputBinding(PLAYER2_BINDINGS);
 
   /**
    * Update input state (call each frame)
@@ -68,20 +70,32 @@ export function createInputManager() {
   /**
    * Set custom bindings
    */
-  function setPlayer1Binding(binding: typeof PLAYER1_BINDINGS): void {
-    player1Binding = binding;
+  function setPlayer1Binding(binding: InputBinding): void {
+    player1Binding = cloneInputBinding(binding);
   }
 
-  function setPlayer2Binding(binding: typeof PLAYER2_BINDINGS): void {
-    player2Binding = binding;
+  function setPlayer2Binding(binding: InputBinding): void {
+    player2Binding = cloneInputBinding(binding);
+  }
+
+  function setBindings(bindings: { player1?: InputBinding; player2?: InputBinding }): void {
+    if (bindings.player1) setPlayer1Binding(bindings.player1);
+    if (bindings.player2) setPlayer2Binding(bindings.player2);
+  }
+
+  function getBindings(): { player1: InputBinding; player2: InputBinding } {
+    return {
+      player1: cloneInputBinding(player1Binding),
+      player2: cloneInputBinding(player2Binding),
+    };
   }
 
   /**
    * Reset bindings to defaults
    */
   function resetBindings(): void {
-    player1Binding = PLAYER1_BINDINGS;
-    player2Binding = PLAYER2_BINDINGS;
+    player1Binding = cloneInputBinding(PLAYER1_BINDINGS);
+    player2Binding = cloneInputBinding(PLAYER2_BINDINGS);
   }
 
   /**
@@ -113,6 +127,8 @@ export function createInputManager() {
     isPausePressed,
     setPlayer1Binding,
     setPlayer2Binding,
+    setBindings,
+    getBindings,
     resetBindings,
     getKeyboard,
     reset,

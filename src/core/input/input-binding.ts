@@ -89,6 +89,121 @@ export const PLAYER2_BINDINGS: InputBinding = {
   ]),
 };
 
+export const GAME_ACTIONS: GameAction[] = [
+  'moveLeft',
+  'moveRight',
+  'moveUp',
+  'moveDown',
+  'jump',
+  'attack',
+  'block',
+  'special',
+  'pause',
+  'confirm',
+  'cancel',
+];
+
+export const GAME_ACTION_LABELS: Record<GameAction, string> = {
+  moveLeft: 'Move Left',
+  moveRight: 'Move Right',
+  moveUp: 'Move Up',
+  moveDown: 'Move Down',
+  jump: 'Jump',
+  attack: 'Attack',
+  block: 'Block',
+  special: 'Special',
+  pause: 'Pause',
+  confirm: 'Confirm',
+  cancel: 'Cancel',
+};
+
+export type SerializedInputBinding = Record<GameAction, string[]>;
+
+function cloneKeys(keys: Map<GameAction, string[]>): Map<GameAction, string[]> {
+  return new Map(GAME_ACTIONS.map((action) => [action, [...(keys.get(action) ?? [])]]));
+}
+
+export function cloneInputBinding(binding: InputBinding): InputBinding {
+  return {
+    playerId: binding.playerId,
+    keys: cloneKeys(binding.keys),
+  };
+}
+
+export function serializeInputBinding(binding: InputBinding): SerializedInputBinding {
+  const serialized = {} as SerializedInputBinding;
+  for (const action of GAME_ACTIONS) {
+    serialized[action] = [...(binding.keys.get(action) ?? [])];
+  }
+  return serialized;
+}
+
+export function deserializeInputBinding(
+  playerId: 1 | 2,
+  serialized: Partial<Record<GameAction, string[]>> | null | undefined,
+  fallback: InputBinding = playerId === 1 ? PLAYER1_BINDINGS : PLAYER2_BINDINGS
+): InputBinding {
+  const keys = cloneKeys(fallback.keys);
+  if (serialized) {
+    for (const action of GAME_ACTIONS) {
+      const customKeys = serialized[action];
+      if (Array.isArray(customKeys) && customKeys.length > 0) {
+        keys.set(
+          action,
+          [...new Set(customKeys.filter((key) => typeof key === 'string' && key.length > 0))]
+        );
+      }
+    }
+  }
+  return { playerId, keys };
+}
+
+export function updateBindingForAction(
+  binding: InputBinding,
+  action: GameAction,
+  keyCode: string,
+  options: { replace?: boolean; removeConflicts?: boolean } = {}
+): InputBinding {
+  const next = cloneInputBinding(binding);
+  const normalizedCode = keyCode.trim();
+  if (!normalizedCode) return next;
+
+  if (options.removeConflicts ?? true) {
+    for (const candidate of GAME_ACTIONS) {
+      const candidateKeys = next.keys.get(candidate) ?? [];
+      next.keys.set(
+        candidate,
+        candidateKeys.filter((key) => key !== normalizedCode)
+      );
+    }
+  }
+
+  const current = options.replace ? [] : [...(next.keys.get(action) ?? [])];
+  next.keys.set(action, [...new Set([...current, normalizedCode])]);
+  return next;
+}
+
+export function resetBindingForPlayer(playerId: 1 | 2): InputBinding {
+  return cloneInputBinding(playerId === 1 ? PLAYER1_BINDINGS : PLAYER2_BINDINGS);
+}
+
+export function formatKeyCodeForDisplay(keyCode: string): string {
+  return keyCode
+    .replace(/^Key/, '')
+    .replace(/^Digit/, '')
+    .replace(/^Arrow/, '')
+    .replace(/^Numpad/, 'Num')
+    .replace('Backspace', 'Bksp')
+    .replace('Escape', 'Esc')
+    .replace('Space', 'Space')
+    .replace('Enter', 'Enter');
+}
+
+export function formatBindingForDisplay(binding: InputBinding, action: GameAction): string {
+  const keys = binding.keys.get(action) ?? [];
+  return keys.length > 0 ? keys.map(formatKeyCodeForDisplay).join(' / ') : 'Unbound';
+}
+
 /**
  * Create empty player input state
  */
