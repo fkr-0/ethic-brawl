@@ -237,6 +237,8 @@ async function main() {
         player2Character: fightState?.player2.characterId ?? null,
         player1Health: fightState?.player1.health ?? null,
         player2Health: fightState?.player2.health ?? null,
+        player1X: fightState?.player1.x ?? null,
+        player2X: fightState?.player2.x ?? null,
         round: fightState?.round.number ?? null,
         hasResult: fightState?.result !== null,
       },

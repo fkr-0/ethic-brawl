@@ -44,6 +44,8 @@ export interface E2EProbeSnapshot {
     player2Character: string | null;
     player1Health: number | null;
     player2Health: number | null;
+    player1X: number | null;
+    player2X: number | null;
     round: number | null;
     hasResult: boolean;
   };
