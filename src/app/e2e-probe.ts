@@ -20,6 +20,8 @@ export interface E2EProbeSnapshot {
     | 'player1SelectIndex'
     | 'player2SelectIndex'
     | 'stageNumber'
+    | 'stageEncounterIndex'
+    | 'stageEncounterWins'
     | 'gameMode'
   > & {
     skipStageIntro: boolean;
@@ -33,13 +35,24 @@ export interface E2EProbeSnapshot {
   };
   sprites: {
     renderingEnabled: boolean;
+    requestedCharacters: number;
     loadedCharacters: number;
+    failedCharacters: string[];
+  };
+  fight: {
+    player1Character: string | null;
+    player2Character: string | null;
+    player1Health: number | null;
+    player2Health: number | null;
+    round: number | null;
+    hasResult: boolean;
   };
 }
 
 export interface E2EProbeApi {
   getSnapshot: () => E2EProbeSnapshot;
   transitionTo: (scene: SceneName) => Promise<boolean>;
+  resolveCurrentMatch: (winner: 1 | 2) => void;
 }
 
 declare global {
@@ -89,6 +102,12 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
     : 'none';
   element.dataset.player1AttackBinding = snapshot.app.player1AttackBinding.join(',');
   element.dataset.stageNumber = String(snapshot.app.stageNumber);
+  element.dataset.stageEncounterIndex = String(snapshot.app.stageEncounterIndex);
+  element.dataset.stageEncounterWins = String(snapshot.app.stageEncounterWins);
+  element.dataset.loadedCharacters = String(snapshot.sprites.loadedCharacters);
+  element.dataset.failedCharacters = snapshot.sprites.failedCharacters.join(',');
+  element.dataset.player1Health = String(snapshot.fight.player1Health ?? 'none');
+  element.dataset.player2Health = String(snapshot.fight.player2Health ?? 'none');
   element.dataset.frameCount = String(snapshot.frameCount);
   element.textContent = JSON.stringify(snapshot);
 }

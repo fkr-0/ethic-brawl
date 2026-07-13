@@ -1,5 +1,15 @@
 import type { FightRuntime } from '@/app/fight-runtime';
-import { type CharacterId, getCharacterIds } from '@/content/characters/character-data';
+import {
+  type CharacterId,
+  getCharacter,
+  getCharacterIds,
+} from '@/content/characters/character-data';
+import {
+  STAGE_ONE,
+  STAGE_ONE_ENCOUNTERS,
+  getStageOneEncounter,
+  isFinalStageOneEncounter,
+} from '@/content/stages/stage-one-vertical-slice';
 import { type Scene, type SceneName, createScene } from '@/core';
 import {
   GAME_ACTIONS,
@@ -16,6 +26,7 @@ import {
   renderResults,
   renderSettings,
   renderStageIntro,
+  renderStageProgress,
   renderTrial,
   renderUpgrade,
 } from '@/ui/screens/app-shell-renderers';
@@ -211,6 +222,19 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
 
   if (input.player1.confirm) {
     if (appState.characterSelectPhase === 1) {
+      if (appState.gameMode === 'stage') {
+        const selectedP1 = selectCharacterByIndex(appState.player1SelectIndex, 'camus');
+        const encounter = getStageOneEncounter(0);
+        appState.stageNumber = 1;
+        appState.stageEncounterIndex = 0;
+        appState.stageEncounterWins = 0;
+        appState.pendingSelection = {
+          player1: selectedP1,
+          player2: encounter.enemyCharacterId,
+        };
+        void transitionTo(appState.settings.skipStageIntro ? 'fight' : 'stage-intro');
+        return;
+      }
       appState.characterSelectPhase = 2;
       return;
     }
@@ -225,11 +249,7 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
 
     appState.pendingSelection = { player1: selectedP1, player2: selectedP2 };
     appState.stageNumber = 1;
-    if (appState.settings.skipStageIntro) {
-      void transitionTo('fight');
-    } else {
-      void transitionTo('stage-intro');
-    }
+    void transitionTo('fight');
   }
 }
 
@@ -273,7 +293,19 @@ function updateFightScene(ctx: SceneUpdateContext, deltaTime: number): void {
     appState.fightResolvedThisMatch = true;
 
     if (appState.gameMode === 'stage' && result.winner === 1) {
-      void transitionTo('trial');
+      appState.stageEncounterWins++;
+      if (isFinalStageOneEncounter(appState.stageEncounterIndex)) {
+        void transitionTo('trial');
+      } else {
+        appState.stageEncounterIndex++;
+        const nextEncounter = getStageOneEncounter(appState.stageEncounterIndex);
+        appState.pendingSelection = {
+          player1: appState.pendingSelection.player1,
+          player2: nextEncounter.enemyCharacterId,
+        };
+        appState.latestResult = null;
+        void transitionTo(appState.settings.skipStageIntro ? 'fight' : 'stage-intro');
+      }
     } else {
       void transitionTo('results');
     }
@@ -355,6 +387,8 @@ export interface AppShellState {
   charSelectLeftLatch: boolean;
   charSelectRightLatch: boolean;
   stageNumber: number;
+  stageEncounterIndex: number;
+  stageEncounterWins: number;
   stageIntroTimerFrames: number;
   roundEndTimerFrames: number;
   latestResult: FightOutcomeSummary | null;
@@ -381,6 +415,8 @@ export function createInitialAppShellState(): AppShellState {
     charSelectLeftLatch: false,
     charSelectRightLatch: false,
     stageNumber: 1,
+    stageEncounterIndex: 0,
+    stageEncounterWins: 0,
     stageIntroTimerFrames: 0,
     roundEndTimerFrames: 0,
     latestResult: null,
@@ -459,7 +495,8 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
           characterIds,
           appState.player1SelectIndex,
           appState.player2SelectIndex,
-          appState.characterSelectPhase
+          appState.characterSelectPhase,
+          appState.gameMode
         );
       },
     }),
@@ -471,7 +508,18 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         updateStageIntroScene(createUpdateContext());
       },
       render: (ctx) => {
-        renderStageIntro(ctx, appState.stageNumber);
+        const encounter = getStageOneEncounter(appState.stageEncounterIndex);
+        renderStageIntro(ctx, {
+          stageNumber: appState.stageNumber,
+          stageName: STAGE_ONE.name,
+          tagline: STAGE_ONE.tagline,
+          wave: encounter.wave,
+          waveCount: STAGE_ONE_ENCOUNTERS.length,
+          encounterTitle: encounter.title,
+          enemyName: getCharacter(encounter.enemyCharacterId).name,
+          enemyArchetypes: encounter.enemyArchetypes,
+          note: encounter.note,
+        });
       },
     }),
     createScene('fight', {
@@ -485,6 +533,15 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
       },
       render: (ctx) => {
         deps.fightRuntime.render(ctx);
+        if (appState.gameMode === 'stage') {
+          const encounter = getStageOneEncounter(appState.stageEncounterIndex);
+          renderStageProgress(ctx, {
+            stageNumber: appState.stageNumber,
+            stageName: STAGE_ONE.name,
+            wave: encounter.wave,
+            waveCount: STAGE_ONE_ENCOUNTERS.length,
+          });
+        }
       },
     }),
     createScene('trial', {

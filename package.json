@@ -18,11 +18,18 @@
     "test:simulation": "vitest run tests/unit/*runtime*.test.ts tests/unit/*system*.test.ts tests/unit/gameplay-architecture.test.ts",
     "release:check": "node scripts/release-check.mjs"
   },
-  "keywords": ["game", "brawler", "cyberpunk", "philosophy", "canvas"],
+  "keywords": [
+    "game",
+    "brawler",
+    "cyberpunk",
+    "philosophy",
+    "canvas"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
+    "@playwright/test": "1.60.0",
     "@vitest/ui": "^2.1.9",
     "jsdom": "^29.1.1",
     "typescript": "^5.5.3",

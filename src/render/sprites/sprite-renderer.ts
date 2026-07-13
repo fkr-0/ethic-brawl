@@ -2,7 +2,7 @@
  * Sprite renderer for fighter sprites
  */
 
-import type { CharacterId } from '@/content/characters/character-data';
+import { type CharacterId, getCharacterIds } from '@/content/characters/character-data';
 import { markSpriteFallback, shouldUseSpriteFallback } from './sprite-fallback';
 import type {
   AnimationClip,
@@ -32,13 +32,10 @@ let chromaKeySettings: ChromaKeySettings = {
   b: 255, // Remove white background by default
 };
 
+const PLAYABLE_CHARACTER_IDS = new Set<string>(getCharacterIds());
+
 function isPlayableCharacterId(characterId: string): characterId is CharacterId {
-  return (
-    characterId === 'camus' ||
-    characterId === 'diogenes' ||
-    characterId === 'leibniz' ||
-    characterId === 'machiavelli'
-  );
+  return PLAYABLE_CHARACTER_IDS.has(characterId);
 }
 
 export function setChromaKey(enabled: boolean, r = 255, g = 255, b = 255, threshold = 30): void {
@@ -437,7 +434,10 @@ export function canRenderSprites(animMap: CharacterAnimationMap, characterId?: s
     return false;
   }
   // Check if the image is actually loaded (complete property)
-  if (!(animMap.atlas.image instanceof HTMLImageElement) || !animMap.atlas.image.complete) {
+  if (
+    animMap.atlas.image instanceof HTMLImageElement &&
+    !animMap.atlas.image.complete
+  ) {
     return false;
   }
   return animMap.manifest.clips.length > 0;

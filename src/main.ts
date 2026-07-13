@@ -12,6 +12,7 @@ import { createInputManager, createSceneManager } from '@/core';
 import {
   getCharacterAnimationMap,
   getGridSpacing,
+  getSpriteLoadReport,
   getSpriteScaleFactor,
   initializeAllCharacterSprites,
   setChromaKey,
@@ -192,43 +193,60 @@ async function main() {
     }
   );
 
-  const getE2ESnapshot = (): E2EProbeSnapshot => ({
-    ready: sceneManager.getCurrentScene() !== 'loading',
-    currentScene: sceneManager.getCurrentScene(),
-    helpOpen,
-    frameCount: gameLoop.getFrameCount(),
-    fps: gameLoop.getFPS(),
-    canvas: {
-      width: canvas.width,
-      height: canvas.height,
-      clientWidth: canvas.clientWidth,
-      clientHeight: canvas.clientHeight,
-    },
-    app: {
-      startMenuIndex: appState.startMenuIndex,
-      characterSelectPhase: appState.characterSelectPhase,
-      player1SelectIndex: appState.player1SelectIndex,
-      player2SelectIndex: appState.player2SelectIndex,
-      stageNumber: appState.stageNumber,
-      gameMode: appState.gameMode,
-      skipStageIntro: appState.settings.skipStageIntro,
-      settingsTab: appState.settings.menuTab,
-      settingsSelectedIndex: appState.settings.selectedIndex,
-      editingKeybinding: appState.settings.keybindingEdit,
-      player1AttackBinding: appState.settings.bindings.player1.keys.get('attack') ?? [],
-      fightResolvedThisMatch: appState.fightResolvedThisMatch,
-      hasLatestResult: appState.latestResult !== null,
-      pendingSelection: appState.pendingSelection,
-    },
-    sprites: {
-      renderingEnabled: spriteRenderingEnabled,
-      loadedCharacters: characterIds.length,
-    },
-  });
+  const getE2ESnapshot = (): E2EProbeSnapshot => {
+    const spriteReport = getSpriteLoadReport();
+    const fightState = fightRuntime.getState();
+    return {
+      ready: sceneManager.getCurrentScene() !== 'loading',
+      currentScene: sceneManager.getCurrentScene(),
+      helpOpen,
+      frameCount: gameLoop.getFrameCount(),
+      fps: gameLoop.getFPS(),
+      canvas: {
+        width: canvas.width,
+        height: canvas.height,
+        clientWidth: canvas.clientWidth,
+        clientHeight: canvas.clientHeight,
+      },
+      app: {
+        startMenuIndex: appState.startMenuIndex,
+        characterSelectPhase: appState.characterSelectPhase,
+        player1SelectIndex: appState.player1SelectIndex,
+        player2SelectIndex: appState.player2SelectIndex,
+        stageNumber: appState.stageNumber,
+        stageEncounterIndex: appState.stageEncounterIndex,
+        stageEncounterWins: appState.stageEncounterWins,
+        gameMode: appState.gameMode,
+        skipStageIntro: appState.settings.skipStageIntro,
+        settingsTab: appState.settings.menuTab,
+        settingsSelectedIndex: appState.settings.selectedIndex,
+        editingKeybinding: appState.settings.keybindingEdit,
+        player1AttackBinding: appState.settings.bindings.player1.keys.get('attack') ?? [],
+        fightResolvedThisMatch: appState.fightResolvedThisMatch,
+        hasLatestResult: appState.latestResult !== null,
+        pendingSelection: appState.pendingSelection,
+      },
+      sprites: {
+        renderingEnabled: spriteRenderingEnabled,
+        requestedCharacters: spriteReport.requested,
+        loadedCharacters: spriteReport.loaded.length,
+        failedCharacters: spriteReport.failed.map(({ characterId }) => characterId),
+      },
+      fight: {
+        player1Character: fightState?.player1.characterId ?? null,
+        player2Character: fightState?.player2.characterId ?? null,
+        player1Health: fightState?.player1.health ?? null,
+        player2Health: fightState?.player2.health ?? null,
+        round: fightState?.round.number ?? null,
+        hasResult: fightState?.result !== null,
+      },
+    };
+  };
 
   installE2EProbe({
     getSnapshot: getE2ESnapshot,
     transitionTo: (scene) => sceneManager.transitionTo(scene),
+    resolveCurrentMatch: (winner) => fightRuntime.resolveMatchForTesting(winner),
   });
 
   hideLoading();

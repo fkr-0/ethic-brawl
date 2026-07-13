@@ -1,4 +1,4 @@
-import type { FightOutcomeSummary, SettingsState } from '@/app/app-shell/types';
+import type { FightOutcomeSummary, GameMode, SettingsState } from '@/app/app-shell/types';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { CharacterId } from '@/content/characters/character-data';
 import { getCharacter } from '@/content/characters/character-data';
@@ -166,7 +166,8 @@ export function renderCharacterSelect(
   characterIds: CharacterId[],
   player1SelectIndex: number,
   player2SelectIndex: number,
-  phase: 1 | 2
+  phase: 1 | 2,
+  gameMode: GameMode = 'vs'
 ): void {
   ctx.fillStyle = '#1A0A2E';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -174,16 +175,26 @@ export function renderCharacterSelect(
   ctx.font = '32px "Courier New", monospace';
   ctx.fillStyle = '#FF00FF';
   ctx.textAlign = 'center';
-  ctx.fillText(phase === 1 ? 'SELECT PLAYER 1' : 'SELECT PLAYER 2', CANVAS_WIDTH / 2, 80);
+  const title =
+    gameMode === 'stage'
+      ? 'SELECT YOUR PHILOSOPHER — BABYLON'
+      : phase === 1
+        ? 'SELECT PLAYER 1'
+        : 'SELECT PLAYER 2';
+  ctx.fillText(title, CANVAS_WIDTH / 2, 54);
 
   const colors = ['#00F5FF', '#39FF14', '#FF00FF', '#FF073A'];
-  const startX = 100;
-  const cardWidth = 180;
-  const cardHeight = 250;
+  const columns = 6;
+  const cardWidth = 138;
+  const cardHeight = 112;
+  const gapX = 12;
+  const gapY = 14;
+  const startX = 36;
+  const startY = 82;
 
   for (let i = 0; i < characterIds.length; i++) {
-    const x = startX + i * (cardWidth + 20);
-    const y = 150;
+    const x = startX + (i % columns) * (cardWidth + gapX);
+    const y = startY + Math.floor(i / columns) * (cardHeight + gapY);
     const characterId = characterIds[i];
     if (!characterId) continue;
     const character = getCharacter(characterId);
@@ -200,43 +211,99 @@ export function renderCharacterSelect(
     ctx.lineWidth = isActive ? 4 : 2;
     ctx.strokeRect(x, y, cardWidth, cardHeight);
 
-    ctx.font = 'bold 18px "Courier New", monospace';
+    ctx.font = 'bold 12px "Courier New", monospace';
     ctx.fillStyle = accentColor;
     ctx.textAlign = 'center';
-    ctx.fillText(character.name.toUpperCase(), x + cardWidth / 2, y + cardHeight - 22);
+    ctx.fillText(character.name.toUpperCase().slice(0, 18), x + cardWidth / 2, y + cardHeight - 12);
 
     ctx.fillStyle = accentColor;
-    ctx.fillRect(x + 50, y + 30, 80, 150);
+    ctx.fillRect(x + 42, y + 22, 54, 62);
 
     if (isP1) {
       ctx.fillStyle = '#00F5FF';
-      ctx.fillText('P1', x + 28, y + 24);
+      ctx.fillText('P1', x + 18, y + 16);
     }
-    if (isP2) {
+    if (isP2 && gameMode === 'vs') {
       ctx.fillStyle = '#FF9F1C';
-      ctx.fillText('P2', x + cardWidth - 28, y + 24);
+      ctx.fillText('P2', x + cardWidth - 18, y + 16);
     }
   }
 
   ctx.font = '18px "Courier New", monospace';
   ctx.fillStyle = '#B8A9C9';
   ctx.fillText(
-    'LEFT/RIGHT choose | CONFIRM lock | CANCEL back | Shift+/ (?) help',
+    gameMode === 'stage'
+      ? 'LEFT/RIGHT choose | CONFIRM enter Babylon | CANCEL back | Shift+/ (?) help'
+      : 'LEFT/RIGHT choose | CONFIRM lock | CANCEL back | Shift+/ (?) help',
     CANVAS_WIDTH / 2,
-    450
+    492
   );
 }
 
-export function renderStageIntro(ctx: CanvasRenderingContext2D, stage: number): void {
+export interface StageIntroViewModel {
+  stageNumber: number;
+  stageName: string;
+  tagline: string;
+  wave: number;
+  waveCount: number;
+  encounterTitle: string;
+  enemyName: string;
+  enemyArchetypes: readonly string[];
+  note: string;
+}
+
+export function renderStageIntro(
+  ctx: CanvasRenderingContext2D,
+  stage: StageIntroViewModel
+): void {
   ctx.fillStyle = '#12091F';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.textAlign = 'center';
+  ctx.font = 'bold 26px "Courier New", monospace';
+  ctx.fillStyle = '#FF9F1C';
+  ctx.fillText(
+    `STAGE ${stage.stageNumber} · WAVE ${stage.wave}/${stage.waveCount}`,
+    CANVAS_WIDTH / 2,
+    76
+  );
   ctx.font = 'bold 56px "Courier New", monospace';
   ctx.fillStyle = '#00F5FF';
-  ctx.fillText(`STAGE ${stage}`, CANVAS_WIDTH / 2, 220);
+  ctx.fillText(stage.stageName.toUpperCase(), CANVAS_WIDTH / 2, 150);
   ctx.font = '22px "Courier New", monospace';
   ctx.fillStyle = '#B8A9C9';
-  ctx.fillText('Prepare your argument...', CANVAS_WIDTH / 2, 280);
+  ctx.fillText(stage.tagline, CANVAS_WIDTH / 2, 196);
+  ctx.font = 'bold 28px "Courier New", monospace';
+  ctx.fillStyle = '#FF00FF';
+  ctx.fillText(stage.encounterTitle, CANVAS_WIDTH / 2, 270);
+  ctx.font = '20px "Courier New", monospace';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(`Opponent: ${stage.enemyName}`, CANVAS_WIDTH / 2, 310);
+  ctx.font = '16px "Courier New", monospace';
+  ctx.fillStyle = '#39FF14';
+  ctx.fillText(stage.enemyArchetypes.join(' · ').replaceAll('_', ' '), CANVAS_WIDTH / 2, 350);
+  ctx.fillStyle = '#B8A9C9';
+  ctx.fillText(stage.note, CANVAS_WIDTH / 2, 390);
+  ctx.fillText('Press CONFIRM to fight', CANVAS_WIDTH / 2, 462);
+}
+
+export function renderStageProgress(
+  ctx: CanvasRenderingContext2D,
+  stage: Pick<StageIntroViewModel, 'stageNumber' | 'stageName' | 'wave' | 'waveCount'>
+): void {
+  ctx.save();
+  ctx.fillStyle = 'rgba(18, 9, 31, 0.78)';
+  ctx.fillRect(CANVAS_WIDTH / 2 - 150, 8, 300, 42);
+  ctx.strokeStyle = '#FF9F1C';
+  ctx.strokeRect(CANVAS_WIDTH / 2 - 150, 8, 300, 42);
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 14px "Courier New", monospace';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(
+    `STAGE ${stage.stageNumber}: ${stage.stageName.toUpperCase()} · WAVE ${stage.wave}/${stage.waveCount}`,
+    CANVAS_WIDTH / 2,
+    34
+  );
+  ctx.restore();
 }
 
 export function renderTrial(ctx: CanvasRenderingContext2D): void {

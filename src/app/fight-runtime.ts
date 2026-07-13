@@ -1,4 +1,5 @@
 import { type CharacterId, getCharacter } from '@/content/characters/character-data';
+import { ROUNDS_TO_WIN } from '@/app/config';
 import type { PlayerInput as CorePlayerInput } from '@/core/input/input-binding';
 import { type FightState, Fighter, type PlayerInput, createFightController } from '@/game';
 import {
@@ -39,6 +40,21 @@ export interface FightRuntimeStatus {
 const DEFAULT_SELECTION: FightCharacterSelection = {
   player1: 'camus',
   player2: 'machiavelli',
+};
+
+const EMPTY_FIGHT_INPUT: PlayerInput = {
+  moveLeft: false,
+  moveRight: false,
+  moveUp: false,
+  moveDown: false,
+  jump: false,
+  jumpPressed: false,
+  attack: false,
+  attackPressed: false,
+  block: false,
+  blockPressed: false,
+  special: false,
+  specialPressed: false,
 };
 
 function createInitialFighters(selection: FightCharacterSelection) {
@@ -111,6 +127,18 @@ export function createFightRuntime() {
     return controller.getState();
   }
 
+  /** Deterministic browser-test seam; normal gameplay never calls this. */
+  function resolveMatchForTesting(winner: 1 | 2): void {
+    const state = controller.getState();
+    if (!state || state.result) return;
+    state.scores[winner - 1] = ROUNDS_TO_WIN - 1;
+    const winningFighter = winner === 1 ? state.player1 : state.player2;
+    const losingFighter = winner === 1 ? state.player2 : state.player1;
+    winningFighter.health = Math.max(1, winningFighter.health);
+    losingFighter.health = 0;
+    controller.update(0, EMPTY_FIGHT_INPUT, EMPTY_FIGHT_INPUT);
+  }
+
   return {
     update,
     render,
@@ -119,6 +147,7 @@ export function createFightRuntime() {
     hasRoundWinner,
     getResult,
     getState,
+    resolveMatchForTesting,
   };
 }
 
