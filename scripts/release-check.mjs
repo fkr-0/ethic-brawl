@@ -6,6 +6,7 @@ const commands = [
   ['pnpm', ['typecheck']],
   ['pnpm', ['test:run']],
   ['pnpm', ['build']],
+  ['pnpm', ['test:e2e']],
 ];
 
 for (const [command, args] of commands) {
@@ -21,4 +22,4 @@ for (const [command, args] of commands) {
   }
 }
 
-console.info('\nRelease check passed. Run the manual browser smoke test before tagging.');
+console.info('\nRelease check passed, including the Stage 1 browser E2E slice.');
