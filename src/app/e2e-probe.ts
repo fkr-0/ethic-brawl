@@ -1,4 +1,6 @@
 import type { SceneName } from '@/core';
+import type { FighterAnimationSnapshot } from '@/render';
+import type { SpriteValidationReport } from '@/render/sprites';
 import type { AppShellState } from './app-shell/scene-factory';
 
 export interface E2EProbeSnapshot {
@@ -39,6 +41,13 @@ export interface E2EProbeSnapshot {
     loadedCharacters: number;
     failedCharacters: string[];
   };
+  renderer: {
+    backend: 'canvas2d';
+    pixiInstalled: false;
+    rendererNeutralPresentation: true;
+    theme: 'neon_arena' | 'babylon';
+    profileId: string;
+  };
   fight: {
     player1Character: string | null;
     player2Character: string | null;
@@ -46,8 +55,24 @@ export interface E2EProbeSnapshot {
     player2Health: number | null;
     player1X: number | null;
     player2X: number | null;
+    player1Lane: number | null;
+    player2Lane: number | null;
+    player1State: string | null;
+    player2State: string | null;
+    particleCapacity: number;
+    activeParticles: number;
+    emittedParticleBursts: number;
+    recycledParticles: number;
+    rulesId: string;
+    roundTimeSeconds: number;
+    player1Energy: number | null;
+    player2Energy: number | null;
+    player2MaxHealth: number | null;
     round: number | null;
     hasResult: boolean;
+    player2AIDifficulty: 'easy' | 'medium' | 'hard';
+    player1Animation: FighterAnimationSnapshot | null;
+    player2Animation: FighterAnimationSnapshot | null;
   };
 }
 
@@ -55,6 +80,7 @@ export interface E2EProbeApi {
   getSnapshot: () => E2EProbeSnapshot;
   transitionTo: (scene: SceneName) => Promise<boolean>;
   resolveCurrentMatch: (winner: 1 | 2) => void;
+  getSpriteValidation: () => SpriteValidationReport;
 }
 
 declare global {
@@ -108,8 +134,20 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
   element.dataset.stageEncounterWins = String(snapshot.app.stageEncounterWins);
   element.dataset.loadedCharacters = String(snapshot.sprites.loadedCharacters);
   element.dataset.failedCharacters = snapshot.sprites.failedCharacters.join(',');
+  element.dataset.rendererBackend = snapshot.renderer.backend;
+  element.dataset.graphicsTheme = snapshot.renderer.theme;
+  element.dataset.graphicsProfile = snapshot.renderer.profileId;
+  element.dataset.activeParticles = String(snapshot.fight.activeParticles);
+  element.dataset.emittedParticleBursts = String(snapshot.fight.emittedParticleBursts);
+  element.dataset.recycledParticles = String(snapshot.fight.recycledParticles);
+  element.dataset.fightRules = snapshot.fight.rulesId;
+  element.dataset.roundTimeSeconds = String(snapshot.fight.roundTimeSeconds);
   element.dataset.player1Health = String(snapshot.fight.player1Health ?? 'none');
   element.dataset.player2Health = String(snapshot.fight.player2Health ?? 'none');
+  element.dataset.player1Clip = snapshot.fight.player1Animation?.clipId ?? 'none';
+  element.dataset.player1AtlasFrame = String(
+    snapshot.fight.player1Animation?.atlasFrameIndex ?? 'none'
+  );
   element.dataset.frameCount = String(snapshot.frameCount);
   element.textContent = JSON.stringify(snapshot);
 }

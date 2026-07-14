@@ -2,6 +2,9 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  // The artifacts hub mounts this build below /ethic-brawl/. Relative bundle
+  // URLs keep both the standalone preview and the deployed subpath working.
+  base: './',
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),

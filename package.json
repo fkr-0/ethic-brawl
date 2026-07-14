@@ -20,13 +20,7 @@
     "test:simulation": "vitest run tests/unit/*runtime*.test.ts tests/unit/*system*.test.ts tests/unit/gameplay-architecture.test.ts",
     "release:check": "node scripts/release-check.mjs"
   },
-  "keywords": [
-    "game",
-    "brawler",
-    "cyberpunk",
-    "philosophy",
-    "canvas"
-  ],
+  "keywords": ["game", "brawler", "cyberpunk", "philosophy", "canvas"],
   "author": "",
   "license": "MIT",
   "devDependencies": {

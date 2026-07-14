@@ -40,77 +40,77 @@ export function getSpriteLoadReport(): SpriteLoadReport {
 }
 
 const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescriptor> = {
-  camus: { corePath: '/assets/sprites/camus/source/camus.png', layout: 'legacy' },
-  leibniz: { corePath: '/assets/sprites/leibniz/source/leibniz.png', layout: 'legacy' },
+  camus: { corePath: 'assets/sprites/camus/source/camus.png', layout: 'legacy' },
+  leibniz: { corePath: 'assets/sprites/leibniz/source/leibniz.png', layout: 'legacy' },
   machiavelli: {
-    corePath: '/assets/sprites/machiavelli/source/machiavelli.png',
+    corePath: 'assets/sprites/machiavelli/source/machiavelli.png',
     layout: 'legacy',
   },
-  diogenes: { corePath: '/assets/sprites/diogenes/source/diogenes.png', layout: 'legacy' },
+  diogenes: { corePath: 'assets/sprites/diogenes/source/diogenes.png', layout: 'legacy' },
   aristotle: {
-    corePath: '/assets/sprites/roster/aristotle/source/aristotle_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png',
+    corePath: 'assets/sprites/roster/aristotle/source/aristotle_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png',
     layout: 'roster',
   },
   aquinas: {
-    corePath: '/assets/sprites/roster/aquinas/source/aquinas_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png',
+    corePath: 'assets/sprites/roster/aquinas/source/aquinas_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png',
     layout: 'roster',
   },
   anselm: {
-    corePath: '/assets/sprites/roster/anselm/source/anselm_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/anselm/source/anselm_extended_4x4.png',
+    corePath: 'assets/sprites/roster/anselm/source/anselm_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/anselm/source/anselm_extended_4x4.png',
     layout: 'roster',
   },
   hegel: {
-    corePath: '/assets/sprites/roster/hegel/source/hegel_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/hegel/source/hegel_extended_4x4.png',
+    corePath: 'assets/sprites/roster/hegel/source/hegel_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/hegel/source/hegel_extended_4x4.png',
     layout: 'roster',
   },
   nietzsche: {
-    corePath: '/assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png',
+    corePath: 'assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png',
     layout: 'roster',
   },
   foucault: {
-    corePath: '/assets/sprites/roster/foucault/source/foucault_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/foucault/source/foucault_extended_4x4.png',
+    corePath: 'assets/sprites/roster/foucault/source/foucault_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/foucault/source/foucault_extended_4x4.png',
     layout: 'roster',
   },
   deleuze_guattari: {
-    corePath: '/assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png',
+    corePath: 'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png',
     layout: 'roster',
   },
   marx: {
-    corePath: '/assets/sprites/roster/marx/source/marx_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/marx/source/marx_extended_4x4.png',
+    corePath: 'assets/sprites/roster/marx/source/marx_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/marx/source/marx_extended_4x4.png',
     layout: 'roster',
   },
   bakunin: {
-    corePath: '/assets/sprites/roster/bakunin/source/bakunin_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png',
+    corePath: 'assets/sprites/roster/bakunin/source/bakunin_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png',
     layout: 'roster',
   },
   schmitt: {
-    corePath: '/assets/sprites/roster/schmitt/source/schmitt_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png',
+    corePath: 'assets/sprites/roster/schmitt/source/schmitt_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png',
     layout: 'roster',
   },
   socrates: {
-    corePath: '/assets/sprites/roster/socrates/source/socrates_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/socrates/source/socrates_extended_4x4.png',
+    corePath: 'assets/sprites/roster/socrates/source/socrates_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/socrates/source/socrates_extended_4x4.png',
     layout: 'roster',
   },
   kant: {
-    corePath: '/assets/sprites/roster/kant/source/kant_core_4x4.png',
-    extendedPath: '/assets/sprites/roster/kant/source/kant_extended_4x4.png',
+    corePath: 'assets/sprites/roster/kant/source/kant_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/kant/source/kant_extended_4x4.png',
     layout: 'roster',
   },
   kierkegaard: {
-    corePath: '/assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png',
+    corePath: 'assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png',
     layout: 'roster',
   },
   stirner: {
-    corePath: '/assets/sprites/roster/stirner/source/stirner_core_4x4.png',
+    corePath: 'assets/sprites/roster/stirner/source/stirner_core_4x4.png',
     layout: 'roster',
   },
 };
@@ -173,6 +173,18 @@ function createDiogenesManifest(): SpriteManifest {
 function createRosterManifest(characterId: CharacterId, hasExtended: boolean): SpriteManifest {
   const manifest = createDefaultManifest(characterId);
   const runLabels = ['run_1', 'run_2', 'run_3', 'run_4'] as const;
+  const lightStartup = hasExtended ? [0, 16] : [0, 12];
+  const lightActive = hasExtended ? [16, 17] : [12, 13];
+  const lightRecovery = hasExtended ? [17, 0] : [13, 0];
+  const mediumStartup = hasExtended ? [0, 18] : [0, 13];
+  const mediumActive = hasExtended ? [18, 19] : [13, 14];
+  const mediumRecovery = hasExtended ? [19, 11, 0] : [14, 11, 0];
+  const heavyStartup = hasExtended ? [11, 20] : [11, 14];
+  const heavyActive = hasExtended ? [20, 21] : [14, 10];
+  const heavyRecovery = hasExtended ? [21, 22, 0] : [10, 11, 0];
+  const specialStartup = hasExtended ? [15, 22, 23] : [0, 15];
+  const specialActive = hasExtended ? [23, 20, 21] : [15, 14];
+  const specialRecovery = hasExtended ? [21, 22, 15, 0] : [14, 15, 0];
   manifest.frames = Array.from({ length: hasExtended ? 32 : 16 }, (_, index) => ({
     index,
     label:
@@ -204,10 +216,22 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
     createClip('jump_rise', 'Jump', [8, 9], 'once', 4),
     createClip('air_attack', 'Air Attack', [10], 'once', 4),
     createClip('land', 'Land', [11], 'once', 4),
-    createClip('attack_1', 'Jab', [12], 'once', 4),
-    createClip('attack_2', 'Swing', [13], 'once', 4),
-    createClip('attack_3', 'Kick', [14], 'once', 4),
-    createClip('special', 'Special Charge', [15], 'once', 5),
+    createClip('attack_light_startup', 'Light Wind-Up', lightStartup, 'once', 3),
+    createClip('attack_light_active', 'Light Strike', lightActive, 'once', 2),
+    createClip('attack_light_recovery', 'Light Recovery', lightRecovery, 'once', 3),
+    createClip('attack_medium_startup', 'Medium Wind-Up', mediumStartup, 'once', 3),
+    createClip('attack_medium_active', 'Medium Strike', mediumActive, 'once', 2),
+    createClip('attack_medium_recovery', 'Medium Recovery', mediumRecovery, 'once', 3),
+    createClip('attack_heavy_startup', 'Heavy Wind-Up', heavyStartup, 'once', 4),
+    createClip('attack_heavy_active', 'Heavy Strike', heavyActive, 'once', 3),
+    createClip('attack_heavy_recovery', 'Heavy Recovery', heavyRecovery, 'once', 4),
+    createClip('attack_special_startup', 'Special Invocation', specialStartup, 'once', 4),
+    createClip('attack_special_active', 'Special Release', specialActive, 'once', 3),
+    createClip('attack_special_recovery', 'Special Recovery', specialRecovery, 'once', 4),
+    createClip('attack_1', 'Jab Fallback', [12], 'once', 4),
+    createClip('attack_2', 'Swing Fallback', [13], 'once', 4),
+    createClip('attack_3', 'Kick Fallback', [14], 'once', 4),
+    createClip('special', 'Special Charge Fallback', [15], 'once', 5),
     createClip('guard', 'Guard', [hasExtended ? 24 : 1], 'loop', 4),
     createClip('hitstun', 'Hurt', hasExtended ? [26, 27] : [11], 'once', 3),
     createClip('knockdown', 'Knockdown', [hasExtended ? 28 : 11], 'once', 5),
@@ -232,6 +256,18 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
     { state: 'defeat', clipId: 'knockdown' },
   ];
   manifest.attackPhaseMappings = [
+    { attackId: '@light', phase: 'startup', clipId: 'attack_light_startup' },
+    { attackId: '@light', phase: 'active', clipId: 'attack_light_active' },
+    { attackId: '@light', phase: 'recovery', clipId: 'attack_light_recovery' },
+    { attackId: '@medium', phase: 'startup', clipId: 'attack_medium_startup' },
+    { attackId: '@medium', phase: 'active', clipId: 'attack_medium_active' },
+    { attackId: '@medium', phase: 'recovery', clipId: 'attack_medium_recovery' },
+    { attackId: '@heavy', phase: 'startup', clipId: 'attack_heavy_startup' },
+    { attackId: '@heavy', phase: 'active', clipId: 'attack_heavy_active' },
+    { attackId: '@heavy', phase: 'recovery', clipId: 'attack_heavy_recovery' },
+    { attackId: '@special', phase: 'startup', clipId: 'attack_special_startup' },
+    { attackId: '@special', phase: 'active', clipId: 'attack_special_active' },
+    { attackId: '@special', phase: 'recovery', clipId: 'attack_special_recovery' },
     { attackId: '*', phase: 'startup', clipId: 'attack_1' },
     { attackId: '*', phase: 'active', clipId: 'attack_2' },
     { attackId: '*', phase: 'recovery', clipId: 'attack_3' },

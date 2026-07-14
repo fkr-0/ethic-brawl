@@ -12,6 +12,16 @@ export type AttackPresentationPresetId =
   | 'special_invocation'
   | 'counter_riposte';
 
+export type AttackChoreographyId =
+  | 'straight'
+  | 'sweep'
+  | 'heel'
+  | 'orbit'
+  | 'launcher'
+  | 'flurry'
+  | 'invocation'
+  | 'riposte';
+
 export interface AttackPresentationCue {
   frame: number;
   effectPreset?: FightVisualEffectPresetId;
@@ -27,6 +37,10 @@ export interface AttackPresentationCue {
   cameraTtl?: number;
 }
 
+export function resolveAttackChoreography(attack: AttackData): AttackChoreographyId {
+  return resolveAttackPresentationProfile(attack).choreography;
+}
+
 export interface AttackMicroTimingProfile {
   startupShift: number;
   activeShift: number;
@@ -40,6 +54,7 @@ export interface AttackMicroTimingProfile {
 export interface AttackPresentationProfile {
   cues: AttackPresentationCue[];
   microTiming: AttackMicroTimingProfile;
+  choreography: AttackChoreographyId;
 }
 
 export interface AttackMotionVariation {
@@ -72,6 +87,7 @@ const DEFAULT_MICRO_TIMING: AttackMicroTimingProfile = {
 
 const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentationProfile> = {
   jab_snap: {
+    choreography: 'straight',
     cues: [
       {
         frame: 0,
@@ -99,6 +115,7 @@ const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentatio
     },
   },
   rebel_wave: {
+    choreography: 'sweep',
     cues: [
       {
         frame: 1,
@@ -136,6 +153,7 @@ const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentatio
     },
   },
   heel_drop: {
+    choreography: 'heel',
     cues: [
       {
         frame: 1,
@@ -173,6 +191,7 @@ const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentatio
     },
   },
   monad_sweep: {
+    choreography: 'orbit',
     cues: [
       {
         frame: 1,
@@ -200,6 +219,7 @@ const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentatio
     },
   },
   launcher_crack: {
+    choreography: 'launcher',
     cues: [
       {
         frame: 1,
@@ -241,6 +261,7 @@ const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentatio
     },
   },
   cynic_flurry: {
+    choreography: 'flurry',
     cues: [
       {
         frame: 0,
@@ -278,6 +299,7 @@ const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentatio
     },
   },
   special_invocation: {
+    choreography: 'invocation',
     cues: [
       {
         frame: 0,
@@ -320,6 +342,7 @@ const PRESENTATION_PRESETS: Record<AttackPresentationPresetId, AttackPresentatio
     },
   },
   counter_riposte: {
+    choreography: 'riposte',
     cues: [
       {
         frame: 0,

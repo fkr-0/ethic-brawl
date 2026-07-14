@@ -1,10 +1,23 @@
-import { type CharacterId, getCharacter } from '@/content/characters/character-data';
 import { ROUNDS_TO_WIN } from '@/app/config';
+import { type CharacterId, getCharacter } from '@/content/characters/character-data';
 import type { PlayerInput as CorePlayerInput } from '@/core/input/input-binding';
-import { type FightState, Fighter, type PlayerInput, createFightController } from '@/game';
 import {
+  type FightRuleSet,
+  type FightState,
+  Fighter,
+  type PlayerInput,
+  createFightController,
+} from '@/game';
+import {
+  type AIDifficulty,
+  AI_DIFFICULTY_CONFIG,
+  createAIController,
+} from '@/game/ai/ai-controller';
+import {
+  type FightPresentationOptions,
   applyFightCameraEffects,
   cameraFollowTargets,
+  clearFighterAnimationCache,
   createCamera,
   renderFightScene,
   updateCamera,
@@ -25,6 +38,11 @@ function toFightInput(input: CorePlayerInput): PlayerInput {
     special: input.special,
     specialPressed: input.specialPressed,
   };
+}
+
+export interface FightRuntimeOptions {
+  player2AIDifficulty?: AIDifficulty;
+  fightRules?: FightRuleSet;
 }
 
 export interface FightCharacterSelection {
@@ -66,10 +84,22 @@ function createInitialFighters(selection: FightCharacterSelection) {
 export function createFightRuntime() {
   const controller = createFightController();
   const camera = createCamera();
+  let player2AIDifficulty: AIDifficulty = 'medium';
+  let player2AI = createAIController(AI_DIFFICULTY_CONFIG[player2AIDifficulty]);
 
-  const initialize = (selection: FightCharacterSelection = DEFAULT_SELECTION): FightState => {
+  const initialize = (
+    selection: FightCharacterSelection = DEFAULT_SELECTION,
+    options: FightRuntimeOptions = {}
+  ): FightState => {
+    const requestedDifficulty = options.player2AIDifficulty ?? player2AIDifficulty;
+    if (requestedDifficulty !== player2AIDifficulty) {
+      player2AIDifficulty = requestedDifficulty;
+      player2AI = createAIController(AI_DIFFICULTY_CONFIG[player2AIDifficulty]);
+    }
     const { player1, player2 } = createInitialFighters(selection);
-    controller.init(player1, player2);
+    clearFighterAnimationCache();
+    player2AI.reset();
+    controller.init(player1, player2, options.fightRules);
     const state = controller.getState();
     if (!state) {
       throw new Error('fight controller failed to initialize');
@@ -79,8 +109,18 @@ export function createFightRuntime() {
 
   initialize(DEFAULT_SELECTION);
 
-  function update(deltaTime: number, input1: CorePlayerInput, input2: CorePlayerInput): void {
-    controller.update(deltaTime, toFightInput(input1), toFightInput(input2));
+  function update(
+    deltaTime: number,
+    input1: CorePlayerInput,
+    input2: CorePlayerInput,
+    computerControlledPlayer2 = false
+  ): void {
+    const beforeUpdate = controller.getState();
+    const player2Input =
+      computerControlledPlayer2 && beforeUpdate
+        ? player2AI.update(beforeUpdate.player2, beforeUpdate.player1, beforeUpdate.frameCount + 1)
+        : toFightInput(input2);
+    controller.update(deltaTime, toFightInput(input1), player2Input);
     const state = controller.getState();
     if (!state) {
       return;
@@ -98,17 +138,24 @@ export function createFightRuntime() {
     applyFightCameraEffects(camera, state.cameraEffects);
   }
 
-  function render(ctx: CanvasRenderingContext2D): void {
+  function getPlayer2AIDifficulty(): AIDifficulty {
+    return player2AIDifficulty;
+  }
+
+  function render(
+    ctx: CanvasRenderingContext2D,
+    presentation: FightPresentationOptions = {}
+  ): void {
     const state = controller.getState();
     if (!state) {
       return;
     }
 
-    renderFightScene(ctx, state, camera);
+    renderFightScene(ctx, state, camera, presentation);
   }
 
-  function reset(selection?: FightCharacterSelection): void {
-    initialize(selection ?? DEFAULT_SELECTION);
+  function reset(selection?: FightCharacterSelection, options: FightRuntimeOptions = {}): void {
+    initialize(selection ?? DEFAULT_SELECTION, options);
   }
 
   function getResult() {
@@ -147,6 +194,7 @@ export function createFightRuntime() {
     hasRoundWinner,
     getResult,
     getState,
+    getPlayer2AIDifficulty,
     resolveMatchForTesting,
   };
 }

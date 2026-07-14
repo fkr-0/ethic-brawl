@@ -2,6 +2,5 @@
  * Render effects module exports
  */
 
-export * from './particles';
-export * from './hit-sparks';
+export * from './combat-vfx-pool';
 export * from './screen-effects';

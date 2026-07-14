@@ -41,7 +41,7 @@ export const ITEM_VISUAL_SHEET_ROWS = 2;
 export const ITEM_VISUAL_FRAME_WIDTH = 96;
 export const ITEM_VISUAL_FRAME_HEIGHT = 96;
 
-export const ITEM_VISUAL_SPRITE_ROOT = '/assets/sprites/items';
+export const ITEM_VISUAL_SPRITE_ROOT = 'assets/sprites/items';
 
 const LIGHT_CARRY_AND_SWING = ['carry_light', 'swing_light', 'pickup_drop'] as const;
 const THROWABLE = ['carry_light', 'throw_light', 'pickup_drop'] as const;
@@ -203,7 +203,8 @@ export const ITEM_VISUALS: Record<ItemVisualId, ItemVisualDefinition> = {
     requiresCustomBodyPose: true,
     projectileId: 'low_orbit_ion_cannon_marker',
     vfxId: 'terminal_hack_pulse',
-    notes: 'Multipurpose prop: hack held in both hands, deploy ion-cannon target, or smash as heavy object.',
+    notes:
+      'Multipurpose prop: hack held in both hands, deploy ion-cannon target, or smash as heavy object.',
   }),
   sniper_rifle: sheetVisual('sniper_rifle', {
     kind: 'ranged_overlay',
@@ -227,7 +228,8 @@ export const ITEM_VISUALS: Record<ItemVisualId, ItemVisualDefinition> = {
     requiresCustomBodyPose: true,
     projectileId: 'arrow',
     vfxId: 'bow_release_snap',
-    notes: 'Needs a draw-string body pose for best readability; overlay still supports rough prototyping.',
+    notes:
+      'Needs a draw-string body pose for best readability; overlay still supports rough prototyping.',
   }),
   foldable_chair: sheetVisual('foldable_chair', {
     kind: 'melee_overlay',

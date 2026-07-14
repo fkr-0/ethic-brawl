@@ -22,6 +22,7 @@ describe('major release readiness assets', () => {
       'pnpm typecheck',
       'pnpm test:run',
       'pnpm build',
+      'pnpm test:e2e',
       'pnpm release:check',
     ]) {
       expect(testingGuide).toContain(command);
@@ -32,7 +33,13 @@ describe('major release readiness assets', () => {
     expect(releaseScript).toContain('spawnSync');
     expect(packageJson).toContain('"release:check"');
 
-    for (const command of ['pnpm lint', 'pnpm typecheck', 'pnpm test:run', 'pnpm build']) {
+    for (const command of [
+      'pnpm lint',
+      'pnpm typecheck',
+      'pnpm test:run',
+      'pnpm build',
+      'pnpm test:e2e',
+    ]) {
       expect(workflow).toContain(command);
     }
   });

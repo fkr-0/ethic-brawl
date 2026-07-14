@@ -2,7 +2,7 @@
 
 ## Current release status
 
-- Automated gate: green as of the latest local `pnpm release:check` run.
+- Automated gate includes lint, typecheck, 75 unit tests, production build, and the Babylon Stage 1 Chromium E2E slice.
 - Remaining blocker: manual browser/canvas validation and release packaging notes.
 - Release rule: do not tag `v1.0.0` until every item in `Release-blocking manual validation` is checked.
 
@@ -18,12 +18,26 @@
   - Added `.github/workflows/release-check.yml` for push, pull request, and manual verification.
 - [x] Add a scripted local release check
   - Added `pnpm release:check` via `scripts/release-check.mjs`.
+- [x] Complete the Babylon Stage 1 vertical slice
+  - Added three sequential AI-driven encounters, stage/wave presentation, trial, upgrade, results, and return-to-menu routing.
+- [x] Repair and validate the runtime sprite roster
+  - Added missing Anselm, Aquinas, and Hegel sheets; wired available extended sheets; corrected legacy/roster frame mappings and non-even grid slicing.
+- [x] Add browser E2E coverage
+  - Chromium verifies all 18 sprite atlases, 2D roster navigation, real keyboard movement/attack damage, defeat/retry, escalating encounter AI, three encounter wins, and the complete Stage 1 route.
+- [x] Improve the playable Stage 1 UX
+  - Added live roster sprite previews and character details, conviction/special HUD meters, threat-level briefings, corrected result verdicts, and current-wave retry after defeat.
+- [x] Converge graphics concepts with Badger Sprawl Runner
+  - Added renderer-neutral presentation profiles, three Babylon parallax treatments, attack telegraphs, low-health/impact feedback, sprite placards, and renderer/profile E2E metadata.
+  - Replaced per-hit particle-system allocation with a fixed-capacity combat VFX pool and added encounter-specific foreground layers.
+  - Added combat-synchronized multi-frame sprite attacks, eight attack choreography families, adaptive locomotion, afterimages, and per-wave atmospheric parallax.
+  - Added Market Procession, Archive Lockdown, and Gate Judgment rule presets with distinct timers, durability, conviction, and special readiness.
+  - PixiJS remains intentionally uninstalled until both projects have a concrete reason to replace their complete Canvas2D backends.
 
 ## Release-blocking manual validation
 
 - [ ] Run the automated gate one final time on the release candidate
   - Command: `pnpm release:check`
-  - Expected result: lint exits zero, typecheck exits zero, all unit tests pass, and production build succeeds.
+  - Expected result: lint exits zero, typecheck exits zero, all unit tests pass, production build succeeds, and Stage 1 E2E passes.
   - Record in release notes: command, exit status, test count, build artifact names, date, and commit SHA.
 
 - [ ] Manual browser smoke test before tagging
@@ -63,11 +77,8 @@
   - Inspect: `dist/index.html` and `dist/assets/*` exist.
   - Confirm no unexpected huge bundle or missing asset warning appears in the build output.
 
-- [ ] Review known warnings before release
-  - Current known warning source: archived `tests.bak` files use `any` in old test scaffolding.
-  - Decision needed:
-    - [ ] Accept warnings for v1.0 because release gate exits zero.
-    - [ ] Or exclude / clean `tests.bak` before tagging if a warning-free release is desired.
+- [x] Exclude archived test scaffolding from active lint/release checks
+  - `tests.bak`, Playwright reports, and generated test results are excluded from Biome and Git tracking.
 
 - [ ] Capture v1.0 release notes
   - Include summary of shipped systems:
@@ -82,8 +93,8 @@
     - build artifact names
   - Include known limitations:
     - no online multiplayer
-    - manual browser smoke still required for canvas/input regressions
-    - `tests.bak` warnings remain unless cleaned
+    - manual visual review is still recommended for canvas composition and animation quality
+    - later authored stages are not yet connected to true multi-enemy combat
 
 - [ ] Prepare the release commit
   - Command: `git status --short`
@@ -104,11 +115,6 @@
   - Push only after reviewing the final diff and release notes.
 
 ## Nice-to-have before v1.0, only if time allows
-
-- [ ] Decide whether to clean or exclude `tests.bak` warnings
-  - Benefit: warning-free lint output.
-  - Risk: touching archived tests could expand scope.
-  - Recommendation: defer unless warning-free output is a hard requirement.
 
 - [ ] Add a short `docs/release-notes-v1.0.md`
   - Benefit: release evidence lives in-repo.

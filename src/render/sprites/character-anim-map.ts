@@ -2,6 +2,7 @@
  * Character animation map - state/phase to clip resolution
  */
 
+import type { AttackType } from '@/game/fight/fighter-state';
 import { getAtlas, getManifest } from './sprite-assets';
 import type {
   AnimationClip,
@@ -64,6 +65,21 @@ export function buildCharacterAnimationMap(
   };
 }
 
+export function resolveAttackPhaseProgress(
+  attackFrame: number,
+  startup: number,
+  active: number,
+  recovery: number
+): number {
+  if (attackFrame < startup) {
+    return Math.max(0, Math.min(1, attackFrame / Math.max(1, startup - 1)));
+  }
+  if (attackFrame < startup + active) {
+    return Math.max(0, Math.min(1, (attackFrame - startup) / Math.max(1, active - 1)));
+  }
+  return Math.max(0, Math.min(1, (attackFrame - startup - active) / Math.max(1, recovery - 1)));
+}
+
 /**
  * Load character animation map by character ID
  */
@@ -104,10 +120,16 @@ export function getStateClip(
 export function getAttackPhaseClip(
   animMap: CharacterAnimationMap,
   attackId: string,
-  phase: AttackPhase
+  phase: AttackPhase,
+  attackType?: AttackType
 ): AnimationClip | null {
   const phaseMap = animMap.attackPhaseToClip.get(attackId);
   if (!phaseMap) {
+    const typeMap = attackType ? animMap.attackPhaseToClip.get(`@${attackType}`) : undefined;
+    const typeClip = typeMap?.get(phase);
+    if (typeClip) {
+      return typeClip;
+    }
     const wildcardMap = animMap.attackPhaseToClip.get('*');
     return wildcardMap?.get(phase) ?? animMap.fallbackClip;
   }

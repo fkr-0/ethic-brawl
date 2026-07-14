@@ -6,19 +6,22 @@ A 2.5D cyberpunk philosophical arena-brawler with absurdist humor. Battle as neo
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Start development server
-npm run dev
+pnpm dev
 
 # Build for production
-npm run build
+pnpm build
 
 # Run type checking
-npm run typecheck
+pnpm typecheck
 
 # Run tests
-npm test
+pnpm test:run
+
+# Run the Babylon Stage 1 browser slice
+pnpm test:e2e
 ```
 
 ## Controls
@@ -77,13 +80,41 @@ npm test
 - **Attack Chain:** Press attack repeatedly for 3-hit combo
 - **Block:** Hold block to reduce damage by 60%
 - **Perfect Block:** Block within 8 frames of impact for 100% reduction + riposte advantage
-- **Roll:** Run + Block for evasive roll with invulnerability frames
+- **Roll:** Reserved input combination; full evasive-roll behavior remains planned
 - **Special:** Character-unique attack with cooldown
 
 ### Combo System
 - Consecutive hits within 30 frames extend combo
 - Damage scaling increases with combo count
 - Combo breaks after 30 frames without hit or when opponent touches ground
+
+## Stage 1 Vertical Slice: Babylon
+
+Stage Mode now ships a complete first campaign slice using the existing focused two-fighter combat engine:
+
+1. Select one philosopher from the full 18-character roster.
+2. Use the full 6×3 roster grid with live sprite previews, core stats, special descriptions, and character gimmicks.
+3. Fight three AI-driven Babylon encounters representing the stage's market, archive-security, and ziggurat-gate waves; threat ramps from easy to medium to hard and each wave uses a distinct combat mode.
+4. Preserve the selected protagonist across encounters and retry the current wave after a defeat.
+5. Clear the final encounter to reach the trial, upgrade, results, and return-to-menu flow.
+
+Combat presentation now includes conviction energy, special-cooldown readiness, corrected victory/defeat/aborted verdicts, and a stage-progress strip that no longer obscures the health HUD.
+
+The three Stage 1 modes now change actual fight rules as well as presentation: Market Procession gives a longer public opening and delays the examiner's special, Archive Lockdown shortens the clock and fortifies the enforcer, and Gate Judgment becomes a 72-second final verdict against a reinforced opponent with immediate special access. The active mode and its rule summary appear on the encounter placard and fight HUD.
+
+The Babylon fights now use three encounter-specific graphics profiles with independently tuned parallax speeds, moving dust, cuneiform-style propaganda signs, attack wind-up telegraphs, and low-health/impact screen feedback. Stage introductions use the actual selected and opposing sprites in a theatrical placard layout. Near-camera layers distinguish the waves with market stalls and awnings, archive columns and scanning light, or gate braziers and crowd silhouettes; atmospheric layers add market streamers, falling archive data, and gate embers.
+
+Sprite attacks are synchronized directly to combat startup, active, and recovery frames. Light, medium, heavy, and special attacks use multi-frame pose sequences on both legacy and extended sprite sheets, while eight choreography families add distinct straight punches, sweeps, heel attacks, orbiting motions, launchers, flurries, invocations, and ripostes. Movement speed drives locomotion playback, and sprites now receive lane depth, squash/stretch, recoil, hit flashes, shadows, and restrained afterimages.
+
+Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.
+
+The browser E2E test mounts a production build at `/ethic-brawl/`, covering deployed bundle and sprite URLs, two-dimensional roster navigation, real keyboard combat, defeat/retry behavior, escalating AI, all three encounters, and the complete campaign route.
+
+## Graphics Architecture and PixiJS
+
+PixiJS is **not currently installed**. Ethic Brawl and Badger Sprawl Runner both still use Canvas2D, and this pass deliberately converges their graphics concepts before changing render backends.
+
+Ethic Brawl now has a renderer-neutral fight-presentation contract in `src/render/fight-presentation.ts`. It carries stage themes and encounter profiles independently from the Canvas drawing code, providing a clean future seam for a complete PixiJS v8 adapter. See `docs/graphics-convergence.md` for the comparison and migration criteria.
 
 ## Project Structure
 
@@ -153,8 +184,9 @@ ethic-brawl/
 
 - No online multiplayer (local only)
 - No save state for mid-campaign progress
-- Limited trial content (expansion ready)
-- Basic AI (improvement opportunities)
+- Stage campaign currently contains the Babylon vertical slice; later stages remain data-authored but are not yet connected to multi-enemy runtime encounters
+- Heuristic AI now has encounter-specific difficulty profiles, but does not yet learn or adapt across matches
+- PixiJS/WebGL is not yet active; the renderer-neutral presentation seam is prepared, but Canvas2D remains the only production backend
 
 ## Future Extensions
 
@@ -162,7 +194,7 @@ ethic-brawl/
 2. **Expanded Roster** - More philosophers and thinkers
 3. **Ability DSL** - Custom ability creation system
 4. **Environmental Hazards** - Interactive stage elements
-5. **Story Mode** - Extended narrative campaign
+5. **Expanded Story Mode** - Connect later authored stages and true multi-enemy waves
 6. **Spectator Mode** - Replay and watch matches
 
 ## License

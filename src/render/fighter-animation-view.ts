@@ -1,3 +1,4 @@
+import { resolveAttackChoreography } from '@/game/fight/attack-presentation-presets';
 import type { Fighter } from '@/game/fight/fighter';
 import type { AttackData } from '@/game/fight/fighter-state';
 import { FRAME_DATA } from '@/game/fight/fighter-state';
@@ -276,6 +277,109 @@ export function createFighterAnimationView(
     rearLegAngle = lerp(-0.2, 0.02, settle);
     frontShinAngle = lerp(0.72, 0.46, settle);
     rearShinAngle = lerp(0.18, 0.38, settle);
+  }
+
+  if (attackPhase && fighter.currentAttack) {
+    const choreography = resolveAttackChoreography(fighter.currentAttack);
+    const phaseProgress = clamp(basePhaseProgress, 0, 1);
+    const phasePulse = Math.sin(phaseProgress * Math.PI);
+
+    switch (choreography) {
+      case 'straight':
+        if (attackPhase === 'active') {
+          frontArmReach += 0.22;
+          frontForeArmAngle = lerp(0.2, 0.62, phaseProgress);
+          bodyLean += 0.08 * phasePulse;
+          headOffsetX += 4 * phasePulse;
+        }
+        break;
+      case 'sweep':
+        bodyTwist +=
+          attackPhase === 'startup'
+            ? lerp(-0.32, -0.12, phaseProgress)
+            : attackPhase === 'active'
+              ? lerp(0.44, 0.08, phaseProgress)
+              : lerp(0.18, 0, phaseProgress);
+        frontArmAngle -= 0.38 * phasePulse;
+        rearArmAngle += 0.34 * phasePulse;
+        frontArmReach += 0.12 * phasePulse;
+        rearArmReach += 0.16 * phasePulse;
+        break;
+      case 'heel':
+        if (attackPhase === 'startup') {
+          bodyHeightScale -= 0.08 * phaseProgress;
+          frontLegAngle = lerp(-0.12, 0.86, phaseProgress);
+          frontShinAngle = lerp(0.42, 1.44, phaseProgress);
+        } else if (attackPhase === 'active') {
+          bodyLean -= 0.14;
+          bodyTwist += 0.14;
+          frontLegAngle = lerp(1.3, 0.68, phaseProgress);
+          frontShinAngle = lerp(0.32, 1.2, phaseProgress);
+          headOffsetY -= 4 * phasePulse;
+        }
+        break;
+      case 'orbit': {
+        const orbit = fighter.attackFrame * 0.48;
+        frontArmAngle = -0.5 + Math.sin(orbit) * 0.74;
+        rearArmAngle = 0.42 + Math.sin(orbit + Math.PI) * 0.68;
+        frontForeArmAngle = frontArmAngle + 0.72;
+        rearForeArmAngle = rearArmAngle - 0.68;
+        bodyTwist += Math.sin(orbit * 0.7) * 0.16;
+        auraAlpha = Math.max(auraAlpha, 0.2 + phasePulse * 0.14);
+        break;
+      }
+      case 'launcher':
+        if (attackPhase === 'startup') {
+          bodyHeightScale -= 0.18 * phaseProgress;
+          bodyWidthScale += 0.12 * phaseProgress;
+          bobOffsetY += 6 * phaseProgress;
+          frontArmAngle = lerp(-0.86, -0.28, phaseProgress);
+          frontForeArmAngle = lerp(-1.3, -0.62, phaseProgress);
+        } else if (attackPhase === 'active') {
+          bodyHeightScale += 0.14 * phasePulse;
+          bobOffsetY -= 7 * phasePulse;
+          frontArmAngle = lerp(-0.12, -1.42, phaseProgress);
+          frontForeArmAngle = lerp(0.22, -1.7, phaseProgress);
+          frontArmReach += 0.24;
+          headOffsetY -= 5 * phasePulse;
+        }
+        break;
+      case 'flurry': {
+        const alternation = Math.sin(fighter.attackFrame * Math.PI * 0.72);
+        frontArmAngle += alternation * 0.58;
+        rearArmAngle -= alternation * 0.52;
+        frontForeArmAngle += alternation * 0.72;
+        rearForeArmAngle -= alternation * 0.68;
+        bodyTwist += alternation * 0.15;
+        afterImageAlpha = Math.max(afterImageAlpha, 0.18 + phasePulse * 0.16);
+        break;
+      }
+      case 'invocation':
+        frontArmAngle = lerp(-0.8, -1.38, phaseProgress);
+        rearArmAngle = lerp(0.72, 1.34, phaseProgress);
+        frontForeArmAngle = frontArmAngle - 0.42;
+        rearForeArmAngle = rearArmAngle + 0.4;
+        bodyHeightScale += 0.1 * phasePulse;
+        bobOffsetY -= 6 * phasePulse;
+        headOffsetY -= 4 * phasePulse;
+        auraAlpha = Math.max(auraAlpha, 0.42 + phasePulse * 0.2);
+        afterImageAlpha = Math.max(afterImageAlpha, 0.2);
+        break;
+      case 'riposte':
+        if (attackPhase === 'startup') {
+          bodyLean = lerp(-0.34, -0.18, phaseProgress);
+          headOffsetX -= 5;
+          frontArmReach = 0.38;
+        } else if (attackPhase === 'active') {
+          bodyLean += 0.22;
+          frontArmReach += 0.3;
+          frontArmAngle = -0.08;
+          frontForeArmAngle = 0.22;
+          rearArmAngle = -0.84;
+          afterImageAlpha = Math.max(afterImageAlpha, 0.22);
+        }
+        break;
+    }
   }
 
   if (fighter.state === 'knockdown') {

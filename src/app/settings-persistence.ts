@@ -1,8 +1,5 @@
 import type { SerializableSettingsState, SettingsState } from '@/app/app-shell/types';
-import {
-  deserializeInputBinding,
-  serializeInputBinding,
-} from '@/core/input/input-binding';
+import { deserializeInputBinding, serializeInputBinding } from '@/core/input/input-binding';
 import { STORAGE_KEYS } from './config';
 
 export function toSerializableSettings(settings: SettingsState): SerializableSettingsState {
@@ -34,7 +31,10 @@ export function loadAppSettings(base: SettingsState): SettingsState {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (!stored) return base;
-    return applySerializableSettings(base, JSON.parse(stored) as Partial<SerializableSettingsState>);
+    return applySerializableSettings(
+      base,
+      JSON.parse(stored) as Partial<SerializableSettingsState>
+    );
   } catch (error) {
     console.error('Failed to load app settings:', error);
     return base;

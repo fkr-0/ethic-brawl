@@ -16,6 +16,10 @@ yarn-error.log*
 .npm
 .eslintcache
 dist/
+.e2e-dist/
+.ws-bridge/
+playwright-report/
+test-results/
 .serena/
 # OS/editor noise
 .DS_Store

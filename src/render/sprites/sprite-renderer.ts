@@ -16,20 +16,35 @@ import type {
 /**
  * Chroma key settings for removing sprite backgrounds
  */
-interface ChromaKeySettings {
+export type ChromaKeyMode = 'adaptive-edge' | 'fixed-color';
+
+export interface ChromaKeySettings {
   enabled: boolean;
+  mode: ChromaKeyMode;
   threshold: number;
   r: number;
   g: number;
   b: number;
 }
 
+export interface SpriteFrameInspection {
+  frameIndex: number;
+  width: number;
+  height: number;
+  opaqueCoverage: number;
+  topAndSideEdgeCoverage: number;
+  boundsValid: boolean;
+  blank: boolean;
+  backgroundLeak: boolean;
+}
+
 let chromaKeySettings: ChromaKeySettings = {
   enabled: true,
-  threshold: 30,
+  mode: 'adaptive-edge',
+  threshold: 46,
   r: 255,
   g: 255,
-  b: 255, // Remove white background by default
+  b: 255,
 };
 
 const PLAYABLE_CHARACTER_IDS = new Set<string>(getCharacterIds());
@@ -38,10 +53,19 @@ function isPlayableCharacterId(characterId: string): characterId is CharacterId 
   return PLAYABLE_CHARACTER_IDS.has(characterId);
 }
 
-export function setChromaKey(enabled: boolean, r = 255, g = 255, b = 255, threshold = 30): void {
-  chromaKeySettings = { enabled, r, g, b, threshold };
+export function setChromaKey(
+  enabled: boolean,
+  r = 255,
+  g = 255,
+  b = 255,
+  threshold = 46,
+  mode: ChromaKeyMode = 'adaptive-edge'
+): void {
+  chromaKeySettings = { enabled, mode, r, g, b, threshold };
+  chromaKeyCanvasCache.clear();
+  processedChromaKeyFrames.clear();
   console.info(
-    `🎨 Chroma key ${enabled ? 'enabled' : 'disabled'}: RGB(${r}, ${g}, ${b}) threshold: ${threshold}`
+    `🎨 Chroma key ${enabled ? 'enabled' : 'disabled'}: ${mode}, RGB(${r}, ${g}, ${b}), threshold ${threshold}`
   );
 }
 
@@ -98,9 +122,9 @@ export function calculatePivotOffset(
 }
 
 /**
- * Apply chroma key to a canvas context
+ * Apply a fixed chroma key to every matching pixel.
  */
-function applyChromaKey(imageData: ImageData, settings: ChromaKeySettings): void {
+function applyFixedChromaKey(imageData: ImageData, settings: ChromaKeySettings): void {
   const data = imageData.data;
   const { r, g, b, threshold } = settings;
 
@@ -108,21 +132,122 @@ function applyChromaKey(imageData: ImageData, settings: ChromaKeySettings): void
     const pixelR = data[i] ?? 0;
     const pixelG = data[i + 1] ?? 0;
     const pixelB = data[i + 2] ?? 0;
-
-    // Calculate color distance
-    const distance = Math.sqrt((pixelR - r) ** 2 + (pixelG - g) ** 2 + (pixelB - b) ** 2);
-
-    if (distance < threshold) {
-      // Make pixel transparent
-      data[i + 3] = 0;
-    }
+    const distance = Math.hypot(pixelR - r, pixelG - g, pixelB - b);
+    if (distance < threshold) data[i + 3] = 0;
   }
+}
+
+function median(values: number[]): number {
+  if (values.length === 0) return 0;
+  values.sort((a, b) => a - b);
+  return values[Math.floor(values.length / 2)] ?? 0;
+}
+
+/**
+ * Remove only edge-connected background pixels. Each scanline derives its
+ * background colour from both side margins, which handles the white legacy
+ * sheets as well as the dark vertical gradients used by newer roster sheets
+ * without erasing light clothing or dark interior line work.
+ */
+function applyAdaptiveEdgeKey(imageData: ImageData, settings: ChromaKeySettings): void {
+  const { data, width, height } = imageData;
+  const pixelCount = width * height;
+  const borderSampleWidth = Math.min(5, Math.max(1, Math.floor(width / 8)));
+  const rowBackground = new Uint8ClampedArray(height * 3);
+
+  for (let y = 0; y < height; y += 1) {
+    const channels: [number[], number[], number[]] = [[], [], []];
+    for (let sample = 0; sample < borderSampleWidth; sample += 1) {
+      for (const x of [sample, width - 1 - sample]) {
+        const offset = (y * width + x) * 4;
+        const alpha = data[offset + 3] ?? 0;
+        if (alpha <= 16) continue;
+        channels[0].push(data[offset] ?? settings.r);
+        channels[1].push(data[offset + 1] ?? settings.g);
+        channels[2].push(data[offset + 2] ?? settings.b);
+      }
+    }
+    const rowOffset = y * 3;
+    rowBackground[rowOffset] = channels[0].length > 0 ? median(channels[0]) : settings.r;
+    rowBackground[rowOffset + 1] = channels[1].length > 0 ? median(channels[1]) : settings.g;
+    rowBackground[rowOffset + 2] = channels[2].length > 0 ? median(channels[2]) : settings.b;
+  }
+
+  const visited = new Uint8Array(pixelCount);
+  const queue = new Int32Array(pixelCount);
+  let queueStart = 0;
+  let queueEnd = 0;
+
+  const isBackgroundCandidate = (pixelIndex: number, previousPixelIndex = -1): boolean => {
+    const offset = pixelIndex * 4;
+    const alpha = data[offset + 3] ?? 0;
+    if (alpha <= 16) return true;
+
+    const y = Math.floor(pixelIndex / width);
+    const rowOffset = y * 3;
+    const r = data[offset] ?? 0;
+    const g = data[offset + 1] ?? 0;
+    const b = data[offset + 2] ?? 0;
+    const rowDistance = Math.hypot(
+      r - (rowBackground[rowOffset] ?? settings.r),
+      g - (rowBackground[rowOffset + 1] ?? settings.g),
+      b - (rowBackground[rowOffset + 2] ?? settings.b)
+    );
+    if (rowDistance <= settings.threshold) return true;
+
+    if (previousPixelIndex >= 0 && rowDistance <= settings.threshold * 1.75) {
+      const previousOffset = previousPixelIndex * 4;
+      const localDistance = Math.hypot(
+        r - (data[previousOffset] ?? r),
+        g - (data[previousOffset + 1] ?? g),
+        b - (data[previousOffset + 2] ?? b)
+      );
+      return localDistance <= 18;
+    }
+    return false;
+  };
+
+  const enqueue = (pixelIndex: number, previousPixelIndex = -1): void => {
+    if (pixelIndex < 0 || pixelIndex >= pixelCount || visited[pixelIndex] === 1) return;
+    if (!isBackgroundCandidate(pixelIndex, previousPixelIndex)) return;
+    visited[pixelIndex] = 1;
+    queue[queueEnd++] = pixelIndex;
+  };
+
+  for (let x = 0; x < width; x += 1) {
+    enqueue(x);
+    enqueue((height - 1) * width + x);
+  }
+  for (let y = 0; y < height; y += 1) {
+    enqueue(y * width);
+    enqueue(y * width + width - 1);
+  }
+
+  while (queueStart < queueEnd) {
+    const pixelIndex = queue[queueStart++] ?? 0;
+    const x = pixelIndex % width;
+    const y = Math.floor(pixelIndex / width);
+    if (x > 0) enqueue(pixelIndex - 1, pixelIndex);
+    if (x + 1 < width) enqueue(pixelIndex + 1, pixelIndex);
+    if (y > 0) enqueue(pixelIndex - width, pixelIndex);
+    if (y + 1 < height) enqueue(pixelIndex + width, pixelIndex);
+  }
+
+  for (let pixelIndex = 0; pixelIndex < pixelCount; pixelIndex += 1) {
+    if (visited[pixelIndex] === 1) data[pixelIndex * 4 + 3] = 0;
+  }
+}
+
+function applyChromaKey(imageData: ImageData, settings: ChromaKeySettings): void {
+  if (settings.mode === 'fixed-color') applyFixedChromaKey(imageData, settings);
+  else applyAdaptiveEdgeKey(imageData, settings);
 }
 
 /**
  * Get or create an offscreen canvas for chroma key processing
  */
 const chromaKeyCanvasCache = new Map<string, HTMLCanvasElement>();
+const processedChromaKeyFrames = new Set<string>();
 
 /**
  * Debug mode for showing frame boundaries
@@ -141,8 +266,104 @@ function getChromaKeyCanvas(key: string, width: number, height: number): HTMLCan
     canvas.width = width;
     canvas.height = height;
     chromaKeyCanvasCache.set(key, canvas);
+    processedChromaKeyFrames.delete(key);
   }
   return canvas;
+}
+
+export function getProcessedSpriteFrameCanvas(
+  atlas: SpriteAtlas,
+  atlasFrame: AtlasFrame
+): HTMLCanvasElement | null {
+  if (!atlas.image || atlas.image.width === 0 || atlas.image.height === 0) return null;
+
+  const cacheKey = `${atlas.characterId}_${atlasFrame.index}`;
+  const canvas = getChromaKeyCanvas(cacheKey, atlasFrame.frameWidth, atlasFrame.frameHeight);
+  const context = canvas.getContext('2d', { willReadFrequently: true });
+  if (!context) return null;
+
+  if (!processedChromaKeyFrames.has(cacheKey)) {
+    context.clearRect(0, 0, atlasFrame.frameWidth, atlasFrame.frameHeight);
+    context.drawImage(
+      atlas.image,
+      atlasFrame.x,
+      atlasFrame.y,
+      atlasFrame.frameWidth,
+      atlasFrame.frameHeight,
+      0,
+      0,
+      atlasFrame.frameWidth,
+      atlasFrame.frameHeight
+    );
+
+    if (chromaKeySettings.enabled) {
+      const imageData = context.getImageData(0, 0, atlasFrame.frameWidth, atlasFrame.frameHeight);
+      applyChromaKey(imageData, chromaKeySettings);
+      context.putImageData(imageData, 0, 0);
+    }
+    processedChromaKeyFrames.add(cacheKey);
+  }
+
+  return canvas;
+}
+
+export function inspectSpriteFrame(
+  atlas: SpriteAtlas,
+  atlasFrame: AtlasFrame
+): SpriteFrameInspection {
+  const boundsValid =
+    atlasFrame.x >= 0 &&
+    atlasFrame.y >= 0 &&
+    atlasFrame.frameWidth > 0 &&
+    atlasFrame.frameHeight > 0 &&
+    atlasFrame.x + atlasFrame.frameWidth <= atlas.image.width &&
+    atlasFrame.y + atlasFrame.frameHeight <= atlas.image.height;
+  const canvas = boundsValid ? getProcessedSpriteFrameCanvas(atlas, atlasFrame) : null;
+  const context = canvas?.getContext('2d', { willReadFrequently: true }) ?? null;
+  if (!canvas || !context) {
+    return {
+      frameIndex: atlasFrame.index,
+      width: atlasFrame.frameWidth,
+      height: atlasFrame.frameHeight,
+      opaqueCoverage: 0,
+      topAndSideEdgeCoverage: 0,
+      boundsValid,
+      blank: true,
+      backgroundLeak: false,
+    };
+  }
+
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const { data, width, height } = imageData;
+  let opaquePixels = 0;
+  let edgePixels = 0;
+  let opaqueEdgePixels = 0;
+  const edgeWidth = Math.min(2, Math.max(1, Math.floor(Math.min(width, height) / 16)));
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const alpha = data[(y * width + x) * 4 + 3] ?? 0;
+      if (alpha > 16) opaquePixels += 1;
+      const onTopOrSide = y < edgeWidth || x < edgeWidth || x >= width - edgeWidth;
+      if (onTopOrSide) {
+        edgePixels += 1;
+        if (alpha > 16) opaqueEdgePixels += 1;
+      }
+    }
+  }
+
+  const opaqueCoverage = opaquePixels / Math.max(1, width * height);
+  const topAndSideEdgeCoverage = opaqueEdgePixels / Math.max(1, edgePixels);
+  return {
+    frameIndex: atlasFrame.index,
+    width,
+    height,
+    opaqueCoverage,
+    topAndSideEdgeCoverage,
+    boundsValid,
+    blank: opaqueCoverage < 0.01,
+    backgroundLeak: opaqueCoverage > 0.72 || topAndSideEdgeCoverage > 0.58,
+  };
 }
 
 /**
@@ -177,54 +398,12 @@ export function renderSpriteFrame(
   const pivotOffset = calculatePivotOffset(atlasFrame, 1);
   ctx.translate(pivotOffset.x, pivotOffset.y);
 
-  // Apply chroma key if enabled
-  if (chromaKeySettings.enabled) {
-    // Use offscreen canvas for chroma key processing
-    const cacheKey = `${atlas.characterId}_${atlasFrame.index}`;
-    const chromaCanvas = getChromaKeyCanvas(
-      cacheKey,
-      atlasFrame.frameWidth,
-      atlasFrame.frameHeight
-    );
-    const chromaCtx = chromaCanvas.getContext('2d');
-
-    if (chromaCtx) {
-      // Draw the sprite frame to the offscreen canvas
-      chromaCtx.clearRect(0, 0, atlasFrame.frameWidth, atlasFrame.frameHeight);
-      chromaCtx.drawImage(
-        atlas.image,
-        atlasFrame.x,
-        atlasFrame.y,
-        atlasFrame.frameWidth,
-        atlasFrame.frameHeight,
-        0,
-        0,
-        atlasFrame.frameWidth,
-        atlasFrame.frameHeight
-      );
-
-      // Apply chroma key
-      const imageData = chromaCtx.getImageData(0, 0, atlasFrame.frameWidth, atlasFrame.frameHeight);
-      applyChromaKey(imageData, chromaKeySettings);
-      chromaCtx.putImageData(imageData, 0, 0);
-
-      // Draw the processed image
-      ctx.drawImage(chromaCanvas, 0, 0);
-    }
-  } else {
-    // Draw directly without chroma key
-    ctx.drawImage(
-      atlas.image,
-      atlasFrame.x,
-      atlasFrame.y,
-      atlasFrame.frameWidth,
-      atlasFrame.frameHeight,
-      0,
-      0,
-      atlasFrame.frameWidth,
-      atlasFrame.frameHeight
-    );
+  const processedFrame = getProcessedSpriteFrameCanvas(atlas, atlasFrame);
+  if (!processedFrame) {
+    ctx.restore();
+    return false;
   }
+  ctx.drawImage(processedFrame, 0, 0);
 
   ctx.restore();
   return true;
@@ -434,10 +613,7 @@ export function canRenderSprites(animMap: CharacterAnimationMap, characterId?: s
     return false;
   }
   // Check if the image is actually loaded (complete property)
-  if (
-    animMap.atlas.image instanceof HTMLImageElement &&
-    !animMap.atlas.image.complete
-  ) {
+  if (animMap.atlas.image instanceof HTMLImageElement && !animMap.atlas.image.complete) {
     return false;
   }
   return animMap.manifest.clips.length > 0;

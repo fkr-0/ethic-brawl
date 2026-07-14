@@ -137,6 +137,21 @@ export function createDefaultClips(): AnimationClip[] {
     createClip('attack_2', 'Attack 2', [13], 'loop', 4),
     createClip('attack_3', 'Attack 3', [14], 'loop', 4),
     createClip('special', 'Special', [15], 'loop', 5),
+    createClip('hitstun', 'Hit Reaction', [11, 8], 'once', 3),
+    createClip('knockdown', 'Knockdown', [10, 11], 'once', 5),
+    createClip('getup', 'Get Up', [11, 8, 0], 'once', 4),
+    createClip('attack_light_startup', 'Light Wind-Up', [0, 12], 'once', 3),
+    createClip('attack_light_active', 'Light Strike', [12, 13], 'once', 2),
+    createClip('attack_light_recovery', 'Light Recovery', [13, 0], 'once', 3),
+    createClip('attack_medium_startup', 'Medium Wind-Up', [0, 13], 'once', 3),
+    createClip('attack_medium_active', 'Medium Strike', [13, 14], 'once', 2),
+    createClip('attack_medium_recovery', 'Medium Recovery', [14, 11, 0], 'once', 3),
+    createClip('attack_heavy_startup', 'Heavy Wind-Up', [11, 14], 'once', 4),
+    createClip('attack_heavy_active', 'Heavy Strike', [14, 10], 'once', 3),
+    createClip('attack_heavy_recovery', 'Heavy Recovery', [10, 11, 0], 'once', 4),
+    createClip('attack_special_startup', 'Special Invocation', [0, 15], 'once', 4),
+    createClip('attack_special_active', 'Special Release', [15, 14], 'once', 3),
+    createClip('attack_special_recovery', 'Special Recovery', [14, 15, 0], 'once', 4),
     createClip('victory', 'Victory / Gesture', [3], 'loop', 8),
     createSingleFrameClip('spare', 'Spare', 2, 1),
   ];
@@ -201,7 +216,13 @@ export function createAtlasFramesFromGrid(
 export async function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
+    const timeoutId = window.setTimeout(() => {
+      img.src = '';
+      reject(new Error(`Timed out loading image after 12 seconds: ${src}`));
+    }, 12_000);
+
     img.onload = () => {
+      window.clearTimeout(timeoutId);
       // Verify the image actually loaded by checking dimensions
       if (img.width === 0 || img.height === 0) {
         reject(new Error(`Image loaded but has zero dimensions: ${src}`));
@@ -209,7 +230,10 @@ export async function loadImage(src: string): Promise<HTMLImageElement> {
         resolve(img);
       }
     };
-    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    img.onerror = () => {
+      window.clearTimeout(timeoutId);
+      reject(new Error(`Failed to load image: ${src}`));
+    };
     img.src = src;
   });
 }
@@ -299,13 +323,25 @@ export function createDefaultManifest(characterId: string): SpriteManifest {
       { state: 'blocking', clipId: 'guard' },
       { state: 'attacking', clipId: 'attack_1' },
       { state: 'special', clipId: 'special' },
-      { state: 'hitstun', clipId: 'idle' },
-      { state: 'knockdown', clipId: 'land' },
-      { state: 'gettingUp', clipId: 'land' },
+      { state: 'hitstun', clipId: 'hitstun' },
+      { state: 'knockdown', clipId: 'knockdown' },
+      { state: 'gettingUp', clipId: 'getup' },
       { state: 'victory', clipId: 'victory' },
       { state: 'defeat', clipId: 'land' },
     ],
     attackPhaseMappings: [
+      { attackId: '@light', phase: 'startup', clipId: 'attack_light_startup' },
+      { attackId: '@light', phase: 'active', clipId: 'attack_light_active' },
+      { attackId: '@light', phase: 'recovery', clipId: 'attack_light_recovery' },
+      { attackId: '@medium', phase: 'startup', clipId: 'attack_medium_startup' },
+      { attackId: '@medium', phase: 'active', clipId: 'attack_medium_active' },
+      { attackId: '@medium', phase: 'recovery', clipId: 'attack_medium_recovery' },
+      { attackId: '@heavy', phase: 'startup', clipId: 'attack_heavy_startup' },
+      { attackId: '@heavy', phase: 'active', clipId: 'attack_heavy_active' },
+      { attackId: '@heavy', phase: 'recovery', clipId: 'attack_heavy_recovery' },
+      { attackId: '@special', phase: 'startup', clipId: 'attack_special_startup' },
+      { attackId: '@special', phase: 'active', clipId: 'attack_special_active' },
+      { attackId: '@special', phase: 'recovery', clipId: 'attack_special_recovery' },
       { attackId: '*', phase: 'startup', clipId: 'attack_1' },
       { attackId: '*', phase: 'active', clipId: 'attack_2' },
       { attackId: '*', phase: 'recovery', clipId: 'attack_3' },

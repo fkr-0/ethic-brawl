@@ -7,9 +7,69 @@ import {
   GAME_ACTION_LABELS,
   PLAYER1_BINDINGS,
   PLAYER2_BINDINGS,
-  formatBindingForDisplay,
   type PlayerInput,
+  formatBindingForDisplay,
 } from '@/core';
+import {
+  getAtlasFrame,
+  getCharacterAnimationMap,
+  getStateClip,
+  renderSpriteFrame,
+} from '@/render/sprites';
+
+function drawWrappedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+  maxLines = 3
+): number {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let line = '';
+
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (ctx.measureText(candidate).width <= maxWidth || !line) {
+      line = candidate;
+      continue;
+    }
+    lines.push(line);
+    line = word;
+    if (lines.length === maxLines - 1) break;
+  }
+  if (line && lines.length < maxLines) lines.push(line);
+
+  lines.forEach((value, index) => ctx.fillText(value, x, y + index * lineHeight));
+  return lines.length * lineHeight;
+}
+
+function renderCharacterSpritePreview(
+  ctx: CanvasRenderingContext2D,
+  characterId: CharacterId,
+  centerX: number,
+  baselineY: number,
+  maxWidth: number,
+  maxHeight: number,
+  opacity = 1,
+  flipX = false
+): boolean {
+  const animMap = getCharacterAnimationMap(characterId);
+  if (!animMap?.atlas) return false;
+  const idleClip = getStateClip(animMap, 'idle');
+  const clipFrame = idleClip?.frames[0];
+  if (!clipFrame) return false;
+  const atlasFrame = getAtlasFrame(animMap, clipFrame);
+  if (!atlasFrame) return false;
+  const scale = Math.min(maxWidth / atlasFrame.frameWidth, maxHeight / atlasFrame.frameHeight);
+  return renderSpriteFrame(ctx, animMap.atlas, atlasFrame, centerX, baselineY, {
+    flipX,
+    opacity,
+    scale,
+  });
+}
 
 export function renderLoading(ctx: CanvasRenderingContext2D): void {
   ctx.fillStyle = '#1A0A2E';
@@ -129,7 +189,9 @@ export function renderSettings(ctx: CanvasRenderingContext2D, settings: Settings
     const resetY = 210 + GAME_ACTIONS.length * 27;
     ctx.fillStyle = settings.selectedIndex === GAME_ACTIONS.length ? '#FFFFFF' : '#B8A9C9';
     ctx.fillText(
-      settings.selectedIndex === GAME_ACTIONS.length ? '> Reset All Bindings' : 'Reset All Bindings',
+      settings.selectedIndex === GAME_ACTIONS.length
+        ? '> Reset All Bindings'
+        : 'Reset All Bindings',
       96,
       resetY
     );
@@ -158,7 +220,11 @@ export function renderSettings(ctx: CanvasRenderingContext2D, settings: Settings
   ctx.textAlign = 'center';
   ctx.font = '16px "Courier New", monospace';
   ctx.fillStyle = '#B8A9C9';
-  ctx.fillText('W/S select | A/D tab | ENTER edit/toggle | BACKSPACE/ESC back', CANVAS_WIDTH / 2, 555);
+  ctx.fillText(
+    'W/S select | A/D tab | ENTER edit/toggle | BACKSPACE/ESC back',
+    CANVAS_WIDTH / 2,
+    555
+  );
 }
 
 export function renderCharacterSelect(
@@ -183,14 +249,14 @@ export function renderCharacterSelect(
         : 'SELECT PLAYER 2';
   ctx.fillText(title, CANVAS_WIDTH / 2, 54);
 
-  const colors = ['#00F5FF', '#39FF14', '#FF00FF', '#FF073A'];
   const columns = 6;
-  const cardWidth = 138;
-  const cardHeight = 112;
-  const gapX = 12;
-  const gapY = 14;
-  const startX = 36;
-  const startY = 82;
+  const cardWidth = 96;
+  const cardHeight = 104;
+  const gapX = 8;
+  const gapY = 10;
+  const startX = 22;
+  const startY = 86;
+  const activeIndex = phase === 1 ? player1SelectIndex : player2SelectIndex;
 
   for (let i = 0; i < characterIds.length; i++) {
     const x = startX + (i % columns) * (cardWidth + gapX);
@@ -198,7 +264,6 @@ export function renderCharacterSelect(
     const characterId = characterIds[i];
     if (!characterId) continue;
     const character = getCharacter(characterId);
-    const activeIndex = phase === 1 ? player1SelectIndex : player2SelectIndex;
     const isActive = i === activeIndex;
     const isP1 = i === player1SelectIndex;
     const isP2 = i === player2SelectIndex;
@@ -206,18 +271,29 @@ export function renderCharacterSelect(
     ctx.fillStyle = isActive ? '#3A2361' : '#2D1B4E';
     ctx.fillRect(x, y, cardWidth, cardHeight);
 
-    const accentColor = colors[i] ?? '#FFFFFF';
+    const accentColor = character.colors.primary;
     ctx.strokeStyle = isActive ? '#FFFFFF' : accentColor;
     ctx.lineWidth = isActive ? 4 : 2;
     ctx.strokeRect(x, y, cardWidth, cardHeight);
 
-    ctx.font = 'bold 12px "Courier New", monospace';
+    const spriteRendered = renderCharacterSpritePreview(
+      ctx,
+      characterId,
+      x + cardWidth / 2,
+      y + 78,
+      72,
+      70,
+      isActive ? 1 : 0.82
+    );
+    if (!spriteRendered) {
+      ctx.fillStyle = accentColor;
+      ctx.fillRect(x + 32, y + 20, 32, 56);
+    }
+
+    ctx.font = 'bold 10px "Courier New", monospace';
     ctx.fillStyle = accentColor;
     ctx.textAlign = 'center';
-    ctx.fillText(character.name.toUpperCase().slice(0, 18), x + cardWidth / 2, y + cardHeight - 12);
-
-    ctx.fillStyle = accentColor;
-    ctx.fillRect(x + 42, y + 22, 54, 62);
+    ctx.fillText(character.name.toUpperCase().slice(0, 14), x + cardWidth / 2, y + cardHeight - 9);
 
     if (isP1) {
       ctx.fillStyle = '#00F5FF';
@@ -229,14 +305,85 @@ export function renderCharacterSelect(
     }
   }
 
+  const selectedId = characterIds[activeIndex];
+  if (selectedId) {
+    const selected = getCharacter(selectedId);
+    const panelX = 662;
+    const panelY = 86;
+    const panelWidth = 276;
+    const panelHeight = 332;
+    ctx.fillStyle = 'rgba(13, 5, 24, 0.92)';
+    ctx.fillRect(panelX, panelY, panelWidth, panelHeight);
+    ctx.strokeStyle = selected.colors.primary;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(panelX, panelY, panelWidth, panelHeight);
+
+    renderCharacterSpritePreview(ctx, selectedId, panelX + 58, panelY + 128, 102, 120);
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 13px "Courier New", monospace';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(selected.name.toUpperCase(), panelX + 112, panelY + 34);
+    ctx.font = '11px "Courier New", monospace';
+    ctx.fillStyle = selected.colors.accent;
+    ctx.fillText(selected.subtitle.toUpperCase(), panelX + 112, panelY + 56);
+
+    const stats = [
+      ['POW', selected.baseStats.strength],
+      ['DEF', selected.baseStats.defense],
+      ['INT', selected.baseStats.intelligence],
+      ['AGI', selected.baseStats.agility],
+    ] as const;
+    stats.forEach(([label, value], index) => {
+      const y = panelY + 82 + index * 22;
+      ctx.font = 'bold 11px "Courier New", monospace';
+      ctx.fillStyle = '#B8A9C9';
+      ctx.fillText(label, panelX + 112, y);
+      ctx.fillStyle = '#281A3E';
+      ctx.fillRect(panelX + 146, y - 9, 106, 10);
+      ctx.fillStyle = selected.colors.primary;
+      ctx.fillRect(panelX + 146, y - 9, Math.min(106, value * 10.6), 10);
+    });
+
+    ctx.font = 'bold 14px "Courier New", monospace';
+    ctx.fillStyle = selected.colors.primary;
+    ctx.fillText(selected.special.name.toUpperCase(), panelX + 18, panelY + 170);
+    ctx.font = '12px "Courier New", monospace';
+    ctx.fillStyle = '#D7CDE2';
+    drawWrappedText(
+      ctx,
+      selected.special.description,
+      panelX + 18,
+      panelY + 191,
+      panelWidth - 36,
+      16,
+      3
+    );
+
+    ctx.font = 'bold 13px "Courier New", monospace';
+    ctx.fillStyle = selected.colors.accent;
+    ctx.fillText(selected.gimmick.name.toUpperCase(), panelX + 18, panelY + 254);
+    ctx.font = '12px "Courier New", monospace';
+    ctx.fillStyle = '#B8A9C9';
+    drawWrappedText(
+      ctx,
+      selected.gimmick.description,
+      panelX + 18,
+      panelY + 275,
+      panelWidth - 36,
+      16,
+      3
+    );
+  }
+
   ctx.font = '18px "Courier New", monospace';
   ctx.fillStyle = '#B8A9C9';
+  ctx.textAlign = 'center';
   ctx.fillText(
     gameMode === 'stage'
-      ? 'LEFT/RIGHT choose | CONFIRM enter Babylon | CANCEL back | Shift+/ (?) help'
-      : 'LEFT/RIGHT choose | CONFIRM lock | CANCEL back | Shift+/ (?) help',
+      ? 'D-PAD choose | CONFIRM enter Babylon | CANCEL back | Shift+/ (?) help'
+      : 'D-PAD choose | CONFIRM lock | CANCEL back | Shift+/ (?) help',
     CANVAS_WIDTH / 2,
-    492
+    510
   );
 }
 
@@ -247,61 +394,149 @@ export interface StageIntroViewModel {
   wave: number;
   waveCount: number;
   encounterTitle: string;
+  playerCharacterId: CharacterId;
+  playerName: string;
+  enemyCharacterId: CharacterId;
   enemyName: string;
   enemyArchetypes: readonly string[];
   note: string;
+  aiDifficulty: 'easy' | 'medium' | 'hard';
+  modeLabel: string;
+  modeDescription: string;
+  ruleSummary: string;
 }
 
-export function renderStageIntro(
-  ctx: CanvasRenderingContext2D,
-  stage: StageIntroViewModel
-): void {
-  ctx.fillStyle = '#12091F';
+export function renderStageIntro(ctx: CanvasRenderingContext2D, stage: StageIntroViewModel): void {
+  const enemy = getCharacter(stage.enemyCharacterId);
+  const player = getCharacter(stage.playerCharacterId);
+  const background = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
+  background.addColorStop(0, '#080511');
+  background.addColorStop(0.58, '#18102B');
+  background.addColorStop(1, '#2B1822');
+  ctx.fillStyle = background;
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.fillStyle = player.colors.primary;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(430, 0);
+  ctx.lineTo(290, CANVAS_HEIGHT);
+  ctx.lineTo(0, CANVAS_HEIGHT);
+  ctx.fill();
+  ctx.fillStyle = enemy.colors.primary;
+  ctx.beginPath();
+  ctx.moveTo(CANVAS_WIDTH - 430, 0);
+  ctx.lineTo(CANVAS_WIDTH, 0);
+  ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.lineTo(CANVAS_WIDTH - 290, CANVAS_HEIGHT);
+  ctx.fill();
+  ctx.restore();
+
   ctx.textAlign = 'center';
-  ctx.font = 'bold 26px "Courier New", monospace';
+  ctx.font = 'bold 19px "Courier New", monospace';
   ctx.fillStyle = '#FF9F1C';
   ctx.fillText(
     `STAGE ${stage.stageNumber} · WAVE ${stage.wave}/${stage.waveCount}`,
     CANVAS_WIDTH / 2,
-    76
+    42
   );
-  ctx.font = 'bold 56px "Courier New", monospace';
+  ctx.font = 'bold 42px "Courier New", monospace';
   ctx.fillStyle = '#00F5FF';
-  ctx.fillText(stage.stageName.toUpperCase(), CANVAS_WIDTH / 2, 150);
-  ctx.font = '22px "Courier New", monospace';
+  ctx.fillText(stage.stageName.toUpperCase(), CANVAS_WIDTH / 2, 88);
+  ctx.font = '17px "Courier New", monospace';
   ctx.fillStyle = '#B8A9C9';
-  ctx.fillText(stage.tagline, CANVAS_WIDTH / 2, 196);
-  ctx.font = 'bold 28px "Courier New", monospace';
+  ctx.fillText(stage.tagline, CANVAS_WIDTH / 2, 116);
+  ctx.font = '10px "Courier New", monospace';
+  ctx.fillStyle = '#817597';
+  drawWrappedText(ctx, stage.modeDescription, CANVAS_WIDTH / 2, 133, 410, 12, 2);
+
+  renderCharacterSpritePreview(ctx, stage.playerCharacterId, 210, 406, 210, 250, 1, false);
+  renderCharacterSpritePreview(ctx, stage.enemyCharacterId, 750, 406, 210, 250, 1, true);
+
+  ctx.font = 'bold 15px "Courier New", monospace';
+  ctx.fillStyle = player.colors.primary;
+  ctx.fillText(stage.playerName.toUpperCase(), 210, 446);
+  ctx.font = '11px "Courier New", monospace';
+  ctx.fillStyle = player.colors.accent;
+  ctx.fillText(player.subtitle.toUpperCase(), 210, 464);
+
+  ctx.font = 'bold 15px "Courier New", monospace';
+  ctx.fillStyle = enemy.colors.primary;
+  ctx.fillText(stage.enemyName.toUpperCase(), 750, 446);
+  ctx.font = '11px "Courier New", monospace';
+  ctx.fillStyle = enemy.colors.accent;
+  ctx.fillText(enemy.subtitle.toUpperCase(), 750, 464);
+
+  ctx.fillStyle = 'rgba(5, 3, 12, 0.82)';
+  ctx.fillRect(340, 152, 280, 280);
+  ctx.strokeStyle = '#FF9F1C';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(340, 152, 280, 280);
+
+  ctx.font = 'bold 25px "Courier New", monospace';
   ctx.fillStyle = '#FF00FF';
-  ctx.fillText(stage.encounterTitle, CANVAS_WIDTH / 2, 270);
-  ctx.font = '20px "Courier New", monospace';
+  drawWrappedText(ctx, stage.encounterTitle.toUpperCase(), CANVAS_WIDTH / 2, 196, 240, 30, 2);
+  ctx.font = 'bold 34px "Courier New", monospace';
   ctx.fillStyle = '#FFFFFF';
-  ctx.fillText(`Opponent: ${stage.enemyName}`, CANVAS_WIDTH / 2, 310);
-  ctx.font = '16px "Courier New", monospace';
+  ctx.fillText('VS', CANVAS_WIDTH / 2, 270);
+  ctx.font = '13px "Courier New", monospace';
   ctx.fillStyle = '#39FF14';
-  ctx.fillText(stage.enemyArchetypes.join(' · ').replaceAll('_', ' '), CANVAS_WIDTH / 2, 350);
+  drawWrappedText(
+    ctx,
+    stage.enemyArchetypes.join(' · ').replaceAll('_', ' ').toUpperCase(),
+    CANVAS_WIDTH / 2,
+    308,
+    240,
+    17,
+    2
+  );
+  ctx.fillStyle =
+    stage.aiDifficulty === 'hard'
+      ? '#FF073A'
+      : stage.aiDifficulty === 'medium'
+        ? '#FF9F1C'
+        : '#39FF14';
+  ctx.fillText(`THREAT: ${stage.aiDifficulty.toUpperCase()}`, CANVAS_WIDTH / 2, 358);
   ctx.fillStyle = '#B8A9C9';
-  ctx.fillText(stage.note, CANVAS_WIDTH / 2, 390);
-  ctx.fillText('Press CONFIRM to fight', CANVAS_WIDTH / 2, 462);
+  drawWrappedText(ctx, stage.note, CANVAS_WIDTH / 2, 382, 240, 16, 2);
+
+  ctx.font = 'bold 12px "Courier New", monospace';
+  ctx.fillStyle = '#00F5FF';
+  ctx.fillText(stage.modeLabel.toUpperCase(), CANVAS_WIDTH / 2, 414);
+  ctx.font = '10px "Courier New", monospace';
+  ctx.fillStyle = '#FF9F1C';
+  ctx.fillText(stage.ruleSummary.toUpperCase(), CANVAS_WIDTH / 2, 430);
+
+  ctx.font = 'bold 15px "Courier New", monospace';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText('CONFIRM TO FIGHT', CANVAS_WIDTH / 2, 474);
+  ctx.font = '11px "Courier New", monospace';
+  ctx.fillStyle = '#817597';
+  ctx.fillText(
+    'The placard is propaganda. The fists are unfortunately real.',
+    CANVAS_WIDTH / 2,
+    506
+  );
 }
 
 export function renderStageProgress(
   ctx: CanvasRenderingContext2D,
-  stage: Pick<StageIntroViewModel, 'stageNumber' | 'stageName' | 'wave' | 'waveCount'>
+  stage: Pick<StageIntroViewModel, 'stageNumber' | 'stageName' | 'wave' | 'waveCount' | 'modeLabel'>
 ): void {
   ctx.save();
   ctx.fillStyle = 'rgba(18, 9, 31, 0.78)';
-  ctx.fillRect(CANVAS_WIDTH / 2 - 150, 8, 300, 42);
+  ctx.fillRect(CANVAS_WIDTH / 2 - 170, CANVAS_HEIGHT - 48, 340, 36);
   ctx.strokeStyle = '#FF9F1C';
-  ctx.strokeRect(CANVAS_WIDTH / 2 - 150, 8, 300, 42);
+  ctx.strokeRect(CANVAS_WIDTH / 2 - 170, CANVAS_HEIGHT - 48, 340, 36);
   ctx.textAlign = 'center';
   ctx.font = 'bold 14px "Courier New", monospace';
   ctx.fillStyle = '#FFFFFF';
   ctx.fillText(
-    `STAGE ${stage.stageNumber}: ${stage.stageName.toUpperCase()} · WAVE ${stage.wave}/${stage.waveCount}`,
+    `STAGE ${stage.stageNumber}: ${stage.stageName.toUpperCase()} · ${stage.modeLabel.toUpperCase()} · WAVE ${stage.wave}/${stage.waveCount}`,
     CANVAS_WIDTH / 2,
-    34
+    CANVAS_HEIGHT - 25
   );
   ctx.restore();
 }
@@ -351,21 +586,71 @@ export function renderPauseScreen(ctx: CanvasRenderingContext2D): void {
   ctx.fillText('Press Shift+/ (?) for controls', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 80);
 }
 
+export interface ResultsViewModel {
+  gameMode: GameMode;
+  player1Name: string;
+  player2Name: string;
+  stageNumber: number;
+  stageEncounterIndex: number;
+  stageEncounterWins: number;
+  stageEncounterCount: number;
+}
+
 export function renderResults(
   ctx: CanvasRenderingContext2D,
-  result: FightOutcomeSummary | null
+  result: FightOutcomeSummary | null,
+  view: ResultsViewModel
 ): void {
   ctx.fillStyle = '#1A0A2E';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+  const stageDefeat = view.gameMode === 'stage' && result?.winner === 2;
+  const aborted = result === null;
+  const stageCleared =
+    view.gameMode === 'stage' &&
+    !aborted &&
+    !stageDefeat &&
+    view.stageEncounterWins >= view.stageEncounterCount;
+  const winnerName = result?.winner === 2 ? view.player2Name : view.player1Name;
+
   ctx.font = 'bold 48px "Courier New", monospace';
-  ctx.fillStyle = '#FF00FF';
+  ctx.fillStyle = aborted
+    ? '#B8A9C9'
+    : stageDefeat
+      ? '#FF073A'
+      : stageCleared
+        ? '#39FF14'
+        : '#FF00FF';
   ctx.textAlign = 'center';
-  ctx.fillText('VICTORY!', CANVAS_WIDTH / 2, 150);
+  ctx.fillText(
+    aborted
+      ? 'MATCH ABORTED'
+      : stageDefeat
+        ? 'DEFEAT'
+        : stageCleared
+          ? 'BABYLON CLEARED'
+          : 'VICTORY',
+    CANVAS_WIDTH / 2,
+    140
+  );
 
   ctx.font = '24px "Courier New", monospace';
   ctx.fillStyle = '#00F5FF';
-  ctx.fillText(`PLAYER ${result?.winner ?? 1} WINS`, CANVAS_WIDTH / 2, 220);
+  ctx.fillText(
+    aborted ? 'NO VERDICT REACHED' : `${winnerName.toUpperCase()} PREVAILS`,
+    CANVAS_WIDTH / 2,
+    205
+  );
+
+  if (view.gameMode === 'stage') {
+    ctx.font = '16px "Courier New", monospace';
+    ctx.fillStyle = '#FF9F1C';
+    ctx.fillText(
+      `STAGE ${Math.max(1, view.stageNumber - (stageCleared ? 1 : 0))} · WAVE ${view.stageEncounterIndex + 1}/${view.stageEncounterCount} · ${view.stageEncounterWins} CLEARED`,
+      CANVAS_WIDTH / 2,
+      240
+    );
+  }
 
   ctx.font = '18px "Courier New", monospace';
   ctx.fillStyle = '#FFFFFF';
@@ -374,17 +659,24 @@ export function renderResults(
         .toString()
         .padStart(2, '0')}`
     : '0:00';
-  ctx.fillText(`Time: ${time}`, CANVAS_WIDTH / 2, 300);
-  ctx.fillText(`Max Combo: ${result?.maxCombo ?? 0}`, CANVAS_WIDTH / 2, 330);
-  ctx.fillText(`Score: ${result?.score ?? 0}`, CANVAS_WIDTH / 2, 360);
+  ctx.fillText(`Time: ${time}`, CANVAS_WIDTH / 2, 292);
+  ctx.fillText(`Max Combo: ${result?.maxCombo ?? 0}`, CANVAS_WIDTH / 2, 322);
+  ctx.fillText(`Score: ${result?.score ?? 0}`, CANVAS_WIDTH / 2, 352);
   if (result?.perfect) {
     ctx.fillStyle = '#FFD700';
-    ctx.fillText('PERFECT!', CANVAS_WIDTH / 2, 390);
+    ctx.fillText('PERFECT!', CANVAS_WIDTH / 2, 382);
   }
 
   ctx.font = '20px "Courier New", monospace';
-  ctx.fillStyle = '#39FF14';
-  ctx.fillText('Press ENTER to continue', CANVAS_WIDTH / 2, 450);
+  if (stageDefeat) {
+    ctx.fillStyle = '#39FF14';
+    ctx.fillText('CONFIRM: Retry this wave', CANVAS_WIDTH / 2, 442);
+    ctx.fillStyle = '#B8A9C9';
+    ctx.fillText('CANCEL: Return to menu', CANVAS_WIDTH / 2, 478);
+  } else {
+    ctx.fillStyle = '#39FF14';
+    ctx.fillText('Press CONFIRM to continue', CANVAS_WIDTH / 2, 458);
+  }
 }
 
 function formatBindingKeys(keys: string[]): string {

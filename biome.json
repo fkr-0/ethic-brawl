@@ -48,6 +48,6 @@
     }
   },
   "files": {
-    "ignore": ["dist", "tests.bak", "playwright-report", "test-results"]
+    "ignore": ["dist", ".e2e-dist", "tests.bak", "playwright-report", "test-results"]
   }
 }

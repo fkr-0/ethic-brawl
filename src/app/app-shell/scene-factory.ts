@@ -90,7 +90,10 @@ function commitSettingsChange(ctx: SceneUpdateContext): void {
 export function captureKeybindingEdit(
   settings: SettingsState,
   keyCode: string,
-  options: { replace?: boolean; removeConflicts?: boolean } = { replace: true, removeConflicts: true }
+  options: { replace?: boolean; removeConflicts?: boolean } = {
+    replace: true,
+    removeConflicts: true,
+  }
 ): boolean {
   if (!settings.keybindingEdit) return false;
   const { playerId, action } = settings.keybindingEdit;
@@ -109,7 +112,8 @@ export function captureKeybindingEdit(
  */
 function updateSettingsScene(ctx: SceneUpdateContext): void {
   const { appState, input, transitionTo } = ctx;
-  const rowCount = appState.settings.menuTab === 'gameplay' ? SETTINGS_GAMEPLAY_ROWS : GAME_ACTIONS.length + 1;
+  const rowCount =
+    appState.settings.menuTab === 'gameplay' ? SETTINGS_GAMEPLAY_ROWS : GAME_ACTIONS.length + 1;
 
   if (appState.settings.keybindingEdit) {
     if (input.player1.cancel || input.player1.pause) {
@@ -136,7 +140,8 @@ function updateSettingsScene(ctx: SceneUpdateContext): void {
   }
 
   if ((input.player1.moveLeft || input.player1.moveRight) && !appState.settingsTabLatch) {
-    appState.settings.menuTab = appState.settings.menuTab === 'gameplay' ? 'keybindings' : 'gameplay';
+    appState.settings.menuTab =
+      appState.settings.menuTab === 'gameplay' ? 'keybindings' : 'gameplay';
     appState.settings.selectedIndex = 0;
     appState.settingsTabLatch = true;
     commitSettingsChange(ctx);
@@ -185,6 +190,8 @@ function updateSettingsScene(ctx: SceneUpdateContext): void {
  */
 function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: CharacterId[]): void {
   const { appState, input, transitionTo } = ctx;
+  const activeIndexKey =
+    appState.characterSelectPhase === 1 ? 'player1SelectIndex' : 'player2SelectIndex';
 
   if (input.player1.moveLeft && !appState.charSelectLeftLatch) {
     if (appState.characterSelectPhase === 1) {
@@ -210,6 +217,30 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
   }
   if (!input.player1.moveRight) {
     appState.charSelectRightLatch = false;
+  }
+
+  if (input.player1.moveUp && !appState.charSelectUpLatch) {
+    appState[activeIndexKey] = moveCharacterSelectGridIndex(
+      appState[activeIndexKey],
+      'up',
+      characterIds.length
+    );
+    appState.charSelectUpLatch = true;
+  }
+  if (!input.player1.moveUp) {
+    appState.charSelectUpLatch = false;
+  }
+
+  if (input.player1.moveDown && !appState.charSelectDownLatch) {
+    appState[activeIndexKey] = moveCharacterSelectGridIndex(
+      appState[activeIndexKey],
+      'down',
+      characterIds.length
+    );
+    appState.charSelectDownLatch = true;
+  }
+  if (!input.player1.moveDown) {
+    appState.charSelectDownLatch = false;
   }
 
   if (input.player1.cancel) {
@@ -278,7 +309,7 @@ function updateFightScene(ctx: SceneUpdateContext, deltaTime: number): void {
     void transitionTo('results');
   }
 
-  fightRuntime.update(deltaTime, input.player1, input.player2);
+  fightRuntime.update(deltaTime, input.player1, input.player2, appState.gameMode === 'stage');
 
   const result = fightRuntime.getResult();
   if (result && !appState.fightResolvedThisMatch) {
@@ -364,10 +395,22 @@ function updatePauseScene(ctx: SceneUpdateContext): void {
  * Update results scene
  */
 function updateResultsScene(ctx: SceneUpdateContext): void {
-  const { transitionTo } = ctx;
-  const { input } = ctx;
+  const { appState, input, transitionTo } = ctx;
 
   if (input.player1.confirm) {
+    if (appState.gameMode === 'stage' && appState.latestResult?.winner === 2) {
+      appState.latestResult = null;
+      void transitionTo(appState.settings.skipStageIntro ? 'fight' : 'stage-intro');
+      return;
+    }
+    void transitionTo('start');
+  }
+
+  if (
+    input.player1.cancel &&
+    appState.gameMode === 'stage' &&
+    appState.latestResult?.winner === 2
+  ) {
     void transitionTo('start');
   }
 }
@@ -386,6 +429,8 @@ export interface AppShellState {
   characterSelectPhase: 1 | 2;
   charSelectLeftLatch: boolean;
   charSelectRightLatch: boolean;
+  charSelectUpLatch: boolean;
+  charSelectDownLatch: boolean;
   stageNumber: number;
   stageEncounterIndex: number;
   stageEncounterWins: number;
@@ -406,6 +451,19 @@ function selectCharacterByIndex(index: number, fallback: MatchSelection['player1
   return getCharacterIds()[index] ?? fallback;
 }
 
+export const CHARACTER_SELECT_COLUMNS = 6;
+
+export function moveCharacterSelectGridIndex(
+  index: number,
+  direction: 'up' | 'down',
+  itemCount: number,
+  columns = CHARACTER_SELECT_COLUMNS
+): number {
+  if (itemCount <= 0) return 0;
+  const delta = direction === 'up' ? -columns : columns;
+  return (index + delta + itemCount) % itemCount;
+}
+
 export function createInitialAppShellState(): AppShellState {
   const characterIds = getCharacterIds();
   return {
@@ -414,6 +472,8 @@ export function createInitialAppShellState(): AppShellState {
     characterSelectPhase: 1,
     charSelectLeftLatch: false,
     charSelectRightLatch: false,
+    charSelectUpLatch: false,
+    charSelectDownLatch: false,
     stageNumber: 1,
     stageEncounterIndex: 0,
     stageEncounterWins: 0,
@@ -485,6 +545,8 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         appState.characterSelectPhase = 1;
         appState.charSelectLeftLatch = false;
         appState.charSelectRightLatch = false;
+        appState.charSelectUpLatch = false;
+        appState.charSelectDownLatch = false;
       },
       update: () => {
         updateCharacterSelectScene(createUpdateContext(), characterIds);
@@ -516,9 +578,16 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
           wave: encounter.wave,
           waveCount: STAGE_ONE_ENCOUNTERS.length,
           encounterTitle: encounter.title,
+          playerCharacterId: appState.pendingSelection.player1,
+          playerName: getCharacter(appState.pendingSelection.player1).name,
+          enemyCharacterId: encounter.enemyCharacterId,
           enemyName: getCharacter(encounter.enemyCharacterId).name,
           enemyArchetypes: encounter.enemyArchetypes,
           note: encounter.note,
+          aiDifficulty: encounter.aiDifficulty,
+          modeLabel: encounter.mode.label,
+          modeDescription: encounter.mode.description,
+          ruleSummary: encounter.mode.ruleSummary,
         });
       },
     }),
@@ -526,13 +595,20 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
       enter: () => {
         appState.fightResolvedThisMatch = false;
         appState.roundEndTimerFrames = 0;
-        deps.fightRuntime.reset(appState.pendingSelection);
+        const encounter = getStageOneEncounter(appState.stageEncounterIndex);
+        deps.fightRuntime.reset(appState.pendingSelection, {
+          player2AIDifficulty: appState.gameMode === 'stage' ? encounter.aiDifficulty : 'medium',
+          ...(appState.gameMode === 'stage' ? { fightRules: encounter.mode.fightRules } : {}),
+        });
       },
       update: (deltaTime) => {
         updateFightScene(createUpdateContext(), deltaTime);
       },
       render: (ctx) => {
-        deps.fightRuntime.render(ctx);
+        deps.fightRuntime.render(ctx, {
+          theme: appState.gameMode === 'stage' ? 'babylon' : 'neon_arena',
+          encounterIndex: appState.stageEncounterIndex,
+        });
         if (appState.gameMode === 'stage') {
           const encounter = getStageOneEncounter(appState.stageEncounterIndex);
           renderStageProgress(ctx, {
@@ -540,6 +616,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
             stageName: STAGE_ONE.name,
             wave: encounter.wave,
             waveCount: STAGE_ONE_ENCOUNTERS.length,
+            modeLabel: encounter.mode.label,
           });
         }
       },
@@ -573,7 +650,17 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         updateResultsScene(createUpdateContext());
       },
       render: (ctx) => {
-        renderResults(ctx, appState.latestResult);
+        const player1 = getCharacter(appState.pendingSelection.player1);
+        const player2 = getCharacter(appState.pendingSelection.player2);
+        renderResults(ctx, appState.latestResult, {
+          gameMode: appState.gameMode,
+          player1Name: player1.name,
+          player2Name: player2.name,
+          stageNumber: appState.stageNumber,
+          stageEncounterIndex: appState.stageEncounterIndex,
+          stageEncounterWins: appState.stageEncounterWins,
+          stageEncounterCount: STAGE_ONE_ENCOUNTERS.length,
+        });
       },
     }),
   ];

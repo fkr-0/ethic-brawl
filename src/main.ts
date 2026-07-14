@@ -2,13 +2,18 @@
  * Ethic Brawl - Main Entry Point
  */
 
-import { bootstrap, createFightRuntime, createGameLoop, hideLoading } from '@/app';
+import { bootstrap, createFightRuntime, createGameLoop, hideLoading, showLoading } from '@/app';
 import { captureKeybindingEdit } from '@/app/app-shell/scene-factory';
-import { loadAppSettings, saveAppSettings } from '@/app/settings-persistence';
-import { getCharacterIds } from '@/content/characters/character-data';
 import { installE2EProbe, updateE2EStatus } from '@/app/e2e-probe';
 import type { E2EProbeSnapshot } from '@/app/e2e-probe';
+import { loadAppSettings, saveAppSettings } from '@/app/settings-persistence';
+import { getCharacterIds } from '@/content/characters/character-data';
 import { createInputManager, createSceneManager } from '@/core';
+import {
+  getFighterAnimationSnapshot,
+  getGraphicsBackendStatus,
+  resolveFightGraphicsProfile,
+} from '@/render';
 import {
   getCharacterAnimationMap,
   getGridSpacing,
@@ -38,6 +43,7 @@ async function main() {
     throw new Error('Failed to get 2D context');
   }
 
+  showLoading('LOADING PHILOSOPHER SPRITES...');
   console.info('📦 Loading sprite assets...');
   await initializeAllCharacterSprites();
 
@@ -55,7 +61,14 @@ async function main() {
     }
   }
 
-  console.info('✓ Sprite assets loaded');
+  const spriteValidationReport = validateAllCharacterSprites();
+  console.info(
+    `✓ Sprite assets loaded and validated: ${spriteValidationReport.totalFrames} frames across ${spriteValidationReport.characterCount} characters`
+  );
+  if (!spriteValidationReport.valid) {
+    console.warn('Sprite validation issues:', spriteValidationReport.invalidCharacters);
+  }
+  showLoading('PREPARING BABYLON...');
 
   const inputManager = createInputManager();
   const keyboard = inputManager.getKeyboard();
@@ -154,11 +167,8 @@ async function main() {
       }
 
       if (keyboard.wasJustPressed('F7')) {
-        // Toggle chroma key to remove white backgrounds
-        setChromaKey(true, 255, 255, 255, 50); // Remove white with threshold 50
-        console.info(
-          '🎨 Chroma key enabled - removing white backgrounds (F8 to disable, enabled by default)'
-        );
+        setChromaKey(true, 255, 255, 255, 46, 'adaptive-edge');
+        console.info('🎨 Adaptive edge key enabled (F8 to disable, enabled by default)');
       }
 
       if (keyboard.wasJustPressed('F8')) {
@@ -196,6 +206,12 @@ async function main() {
   const getE2ESnapshot = (): E2EProbeSnapshot => {
     const spriteReport = getSpriteLoadReport();
     const fightState = fightRuntime.getState();
+    const graphicsBackend = getGraphicsBackendStatus();
+    const graphicsProfile = resolveFightGraphicsProfile({
+      theme: appState.gameMode === 'stage' ? 'babylon' : 'neon_arena',
+      encounterIndex: appState.stageEncounterIndex,
+    });
+    const particleStats = fightState?.particlePool.getStats();
     return {
       ready: sceneManager.getCurrentScene() !== 'loading',
       currentScene: sceneManager.getCurrentScene(),
@@ -232,6 +248,11 @@ async function main() {
         loadedCharacters: spriteReport.loaded.length,
         failedCharacters: spriteReport.failed.map(({ characterId }) => characterId),
       },
+      renderer: {
+        ...graphicsBackend,
+        theme: graphicsProfile.theme,
+        profileId: graphicsProfile.id,
+      },
       fight: {
         player1Character: fightState?.player1.characterId ?? null,
         player2Character: fightState?.player2.characterId ?? null,
@@ -239,8 +260,24 @@ async function main() {
         player2Health: fightState?.player2.health ?? null,
         player1X: fightState?.player1.x ?? null,
         player2X: fightState?.player2.x ?? null,
+        player1Lane: fightState?.player1.lane ?? null,
+        player2Lane: fightState?.player2.lane ?? null,
+        player1State: fightState?.player1.state ?? null,
+        player2State: fightState?.player2.state ?? null,
+        particleCapacity: particleStats?.capacity ?? 0,
+        activeParticles: particleStats?.activeParticles ?? 0,
+        emittedParticleBursts: particleStats?.emittedBursts ?? 0,
+        recycledParticles: particleStats?.recycledParticles ?? 0,
+        rulesId: fightState?.rules.id ?? 'none',
+        roundTimeSeconds: fightState?.rules.roundTimeSeconds ?? 0,
+        player1Energy: fightState?.player1.specialState.currentEnergy ?? null,
+        player2Energy: fightState?.player2.specialState.currentEnergy ?? null,
+        player2MaxHealth: fightState?.player2.stats.maxHealth ?? null,
         round: fightState?.round.number ?? null,
         hasResult: fightState?.result !== null,
+        player2AIDifficulty: fightRuntime.getPlayer2AIDifficulty(),
+        player1Animation: getFighterAnimationSnapshot('p1'),
+        player2Animation: getFighterAnimationSnapshot('p2'),
       },
     };
   };
@@ -248,7 +285,12 @@ async function main() {
   installE2EProbe({
     getSnapshot: getE2ESnapshot,
     transitionTo: (scene) => sceneManager.transitionTo(scene),
-    resolveCurrentMatch: (winner) => fightRuntime.resolveMatchForTesting(winner),
+    getSpriteValidation: () => spriteValidationReport,
+    resolveCurrentMatch: (winner) => {
+      if (import.meta.env.DEV || import.meta.env.VITE_E2E === 'true') {
+        fightRuntime.resolveMatchForTesting(winner);
+      }
+    },
   });
 
   hideLoading();

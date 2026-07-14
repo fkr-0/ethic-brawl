@@ -65,7 +65,9 @@ export {
   type PlayerInput,
   type FightResult,
   type RoundState,
+  type FightRuleSet,
   type FightState,
+  DEFAULT_FIGHT_RULE_SET,
   createFightController,
   getLaneGroundY,
 } from './fight/fight-controller';

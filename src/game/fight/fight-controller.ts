@@ -26,10 +26,7 @@ import {
   hasStatusEffect,
   tickStatusEffects,
 } from '@/game/specials/status-effects';
-import type { HitSparkConfig } from '@/render/effects/hit-sparks';
-import { createHitSparks } from '@/render/effects/hit-sparks';
-import type { ParticleSystem } from '@/render/effects/particles';
-import { createLandingDust as createLandingDustParticles } from '@/render/effects/particles';
+import { CombatVfxPool, type HitSparkConfig } from '@/render/effects/combat-vfx-pool';
 import type { ScreenEffect } from '@/render/effects/screen-effects';
 import { createFlashEffect, createGlitchEffect } from '@/render/effects/screen-effects';
 import { type FightCameraEffect, stepFightCameraEffects } from './attack-presentation-presets';
@@ -66,6 +63,30 @@ export interface PlayerInput {
   special: boolean;
   specialPressed: boolean;
 }
+
+export interface FightRuleSet {
+  id: string;
+  label: string;
+  roundTimeSeconds: number;
+  player1StartEnergyRatio: number;
+  player2StartEnergyRatio: number;
+  player1StartSpecialCooldownRatio: number;
+  player2StartSpecialCooldownRatio: number;
+  player1HealthMultiplier: number;
+  player2HealthMultiplier: number;
+}
+
+export const DEFAULT_FIGHT_RULE_SET: FightRuleSet = {
+  id: 'standard_duel',
+  label: 'Standard Duel',
+  roundTimeSeconds: ROUND_TIME,
+  player1StartEnergyRatio: 1,
+  player2StartEnergyRatio: 1,
+  player1StartSpecialCooldownRatio: 0,
+  player2StartSpecialCooldownRatio: 0,
+  player1HealthMultiplier: 1,
+  player2HealthMultiplier: 1,
+};
 
 /**
  * Fight result
@@ -106,10 +127,11 @@ export interface FightState {
   hitFreezeFrames: number;
   visualEffects: FightVisualEffect[];
   cameraEffects: FightCameraEffect[];
-  particleSystems: ParticleSystem[];
+  particlePool: CombatVfxPool;
   screenEffects: ScreenEffect[];
   projectiles: ProjectileState[];
   fields: FieldState[];
+  rules: FightRuleSet;
 }
 
 /**
@@ -132,14 +154,54 @@ export function createFightController() {
   /**
    * Initialize a new fight
    */
-  function init(player1: Fighter, player2: Fighter): void {
+  function applyOpeningRules(
+    fighter: Fighter,
+    healthMultiplier: number,
+    energyRatio: number,
+    cooldownRatio: number
+  ): void {
+    const clampedHealthMultiplier = Math.max(0.25, healthMultiplier);
+    fighter.stats = {
+      ...fighter.stats,
+      maxHealth: Math.max(1, Math.round(fighter.stats.maxHealth * clampedHealthMultiplier)),
+    };
+    fighter.health = fighter.stats.maxHealth;
+    fighter.specialState = {
+      ...fighter.specialState,
+      currentEnergy: Math.round(
+        fighter.specialState.maxEnergy * Math.max(0, Math.min(1, energyRatio))
+      ),
+    };
+    fighter.specialCooldown = Math.round(
+      fighter.specialMaxCooldown * Math.max(0, Math.min(1, cooldownRatio))
+    );
+  }
+
+  function init(
+    player1: Fighter,
+    player2: Fighter,
+    rules: FightRuleSet = DEFAULT_FIGHT_RULE_SET
+  ): void {
+    const resolvedRules = { ...DEFAULT_FIGHT_RULE_SET, ...rules };
+    applyOpeningRules(
+      player1,
+      resolvedRules.player1HealthMultiplier,
+      resolvedRules.player1StartEnergyRatio,
+      resolvedRules.player1StartSpecialCooldownRatio
+    );
+    applyOpeningRules(
+      player2,
+      resolvedRules.player2HealthMultiplier,
+      resolvedRules.player2StartEnergyRatio,
+      resolvedRules.player2StartSpecialCooldownRatio
+    );
     state = {
       player1,
       player2,
       round: {
         number: 1,
         winner: null,
-        time: ROUND_TIME,
+        time: resolvedRules.roundTimeSeconds,
         isActive: true,
       },
       scores: [0, 0],
@@ -155,10 +217,11 @@ export function createFightController() {
       hitFreezeFrames: 0,
       visualEffects: [],
       cameraEffects: [],
-      particleSystems: [],
+      particlePool: new CombatVfxPool(),
       screenEffects: [],
       projectiles: [],
       fields: [],
+      rules: resolvedRules,
     };
   }
 
@@ -175,12 +238,7 @@ export function createFightController() {
     ]);
     state.cameraEffects = stepFightCameraEffects(state.cameraEffects);
 
-    // Update particle systems
-    for (const system of state.particleSystems) {
-      system.update();
-    }
-    // Remove empty particle systems
-    state.particleSystems = state.particleSystems.filter((s) => s.getParticleCount() > 0);
+    state.particlePool.update();
 
     // Update screen effects
     state.screenEffects = state.screenEffects.filter((effect) => effect.update());
@@ -239,23 +297,21 @@ export function createFightController() {
 
     if (state.player1.landingFrames > player1LandingBefore && state.player1.landingFrames > 0) {
       state.visualEffects.push(createLandingDustEffect(state.player1, state.frameCount));
-      state.particleSystems.push(
-        createLandingDustParticles(
-          state.player1.x,
-          state.player1.getWorldY(),
-          state.player1.character.colors.secondary
-        )
+      state.particlePool.emitLandingDust(
+        state.player1.x,
+        state.player1.getWorldY(),
+        state.player1.character.colors.secondary,
+        state.player1.landingFrames / 8
       );
     }
 
     if (state.player2.landingFrames > player2LandingBefore && state.player2.landingFrames > 0) {
       state.visualEffects.push(createLandingDustEffect(state.player2, state.frameCount));
-      state.particleSystems.push(
-        createLandingDustParticles(
-          state.player2.x,
-          state.player2.getWorldY(),
-          state.player2.character.colors.secondary
-        )
+      state.particlePool.emitLandingDust(
+        state.player2.x,
+        state.player2.getWorldY(),
+        state.player2.character.colors.secondary,
+        state.player2.landingFrames / 8
       );
     }
 
@@ -504,7 +560,7 @@ export function createFightController() {
         size: 'large',
         type: 'perfect_block',
       };
-      state.particleSystems.push(createHitSparks(sparkConfig));
+      state.particlePool.emitImpact(sparkConfig);
     } else if (result.type === 'blocked') {
       const sparkConfig: HitSparkConfig = {
         x: hitCenterX,
@@ -514,7 +570,7 @@ export function createFightController() {
         size: 'small',
         type: 'block',
       };
-      state.particleSystems.push(createHitSparks(sparkConfig));
+      state.particlePool.emitImpact(sparkConfig);
     } else if (result.type === 'hit') {
       const sparkConfig: HitSparkConfig = {
         x: hitCenterX,
@@ -524,7 +580,7 @@ export function createFightController() {
         size: result.attackType === 'heavy' || result.attackType === 'special' ? 'large' : 'medium',
         type: result.attackType === 'special' ? 'special' : 'hit',
       };
-      state.particleSystems.push(createHitSparks(sparkConfig));
+      state.particlePool.emitImpact(sparkConfig);
 
       // Add screen flash for heavy hits
       if (result.attackType === 'heavy' || result.attackType === 'special') {
@@ -816,7 +872,7 @@ export function createFightController() {
         winner,
         perfect,
         rounds: state.round.number,
-        totalTime: ROUND_TIME * state.round.number - state.round.time,
+        totalTime: state.rules.roundTimeSeconds * state.round.number - state.round.time,
         maxCombo: Math.max(state.maxCombos[0], state.maxCombos[1]),
         score: calculateScore(winner),
       };
@@ -855,7 +911,7 @@ export function createFightController() {
 
     state.round.number++;
     state.round.winner = null;
-    state.round.time = ROUND_TIME;
+    state.round.time = state.rules.roundTimeSeconds;
     state.round.isActive = true;
 
     // Reset fighters
@@ -873,7 +929,7 @@ export function createFightController() {
     ];
     state.visualEffects = [];
     state.cameraEffects = [];
-    state.particleSystems = [];
+    state.particlePool.clear();
     state.screenEffects = [];
     state.hitFreezeFrames = 0;
   }

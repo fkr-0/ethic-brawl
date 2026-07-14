@@ -7,8 +7,16 @@ import { CHARACTERS } from '@/content/characters/character-data';
 import { getComboDisplayText } from '@/game/fight/combo';
 import { type FightState, getLaneGroundY } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
-import { DEFAULT_BACKGROUND_SCENE } from './background-scene';
-import { type Camera, getCameraTransform } from './camera';
+import type { Camera } from './camera';
+import {
+  type FightGraphicsProfile,
+  type FightPresentationOptions,
+  renderAttackTelegraph,
+  renderCombatScreenFeedback,
+  renderFightBackdrop,
+  renderFightForeground,
+  resolveFightGraphicsProfile,
+} from './fight-presentation';
 import { createFighterAnimationView } from './fighter-animation-view';
 import {
   canRenderSprites,
@@ -20,9 +28,11 @@ import {
   playClip,
   renderFighterSprite,
   resolveAttackPhase,
+  resolveAttackPhaseProgress,
+  seekToProgress,
   updateAnimationPlayer,
 } from './sprites';
-import type { CharacterAnimationMap } from './sprites';
+import type { AnimationClip, AttackPhase, CharacterAnimationMap } from './sprites';
 import { collectAmbientEffectsForFighter, renderAmbientEffect, renderVisualEffect } from './vfx';
 
 /**
@@ -32,6 +42,50 @@ export let SPRITE_RENDERING_ENABLED = true;
 
 export function setSpriteRendering(enabled: boolean): void {
   SPRITE_RENDERING_ENABLED = enabled;
+}
+
+/**
+ * Render conviction energy and global special cooldown beneath a health bar.
+ */
+export function renderSpecialMeter(
+  ctx: CanvasRenderingContext2D,
+  fighter: Fighter,
+  x: number,
+  y: number,
+  width: number,
+  color: string,
+  isPlayer2 = false
+): void {
+  const energyPercent =
+    fighter.specialState.maxEnergy > 0
+      ? fighter.specialState.currentEnergy / fighter.specialState.maxEnergy
+      : 0;
+  const cooldownPercent =
+    fighter.specialMaxCooldown > 0 ? 1 - fighter.specialCooldown / fighter.specialMaxCooldown : 1;
+  const ready = fighter.specialCooldown <= 0;
+
+  ctx.fillStyle = 'rgba(13, 5, 24, 0.88)';
+  ctx.fillRect(x, y, width, 10);
+  ctx.fillStyle = color;
+  const energyWidth = width * Math.max(0, Math.min(1, energyPercent));
+  ctx.fillRect(isPlayer2 ? x + width - energyWidth : x, y, energyWidth, 10);
+
+  ctx.fillStyle = '#241533';
+  ctx.fillRect(x, y + 13, width, 4);
+  ctx.fillStyle = ready ? '#39FF14' : '#FF9F1C';
+  const cooldownWidth = width * Math.max(0, Math.min(1, cooldownPercent));
+  ctx.fillRect(isPlayer2 ? x + width - cooldownWidth : x, y + 13, cooldownWidth, 4);
+
+  ctx.font = 'bold 9px "Courier New", monospace';
+  ctx.fillStyle = ready ? '#39FF14' : '#B8A9C9';
+  ctx.textAlign = isPlayer2 ? 'right' : 'left';
+  ctx.fillText(
+    ready
+      ? `SPECIAL READY · ${Math.round(fighter.specialState.currentEnergy)} CONVICTION`
+      : `SPECIAL ${Math.ceil(fighter.specialCooldown / 60)}s · ${Math.round(fighter.specialState.currentEnergy)} CONVICTION`,
+    isPlayer2 ? x + width : x,
+    y + 28
+  );
 }
 
 /**
@@ -53,6 +107,88 @@ const fighterGroundedCache = new Map<string, boolean>();
  * Track fighters that have completed landing animation
  */
 const fighterLandingCompleteCache = new Map<string, boolean>();
+
+interface SpriteClipTransition {
+  clip: AnimationClip;
+  frame: number;
+  ttl: number;
+  totalTtl: number;
+}
+
+export interface FighterAnimationSnapshot {
+  fighterId: string;
+  state: string;
+  clipId: string;
+  clipFrame: number;
+  clipFrameCount: number;
+  atlasFrameIndex: number;
+  nextAtlasFrameIndex: number;
+  frameBlend: number;
+  playbackSpeed: number;
+  attackPhase: AttackPhase | null;
+  attackPhaseProgress: number;
+  transitionFromClipId: string | null;
+  transitionAlpha: number;
+  depthScale: number;
+  stretchX: number;
+  stretchY: number;
+  afterImageAlpha: number;
+}
+
+const fighterClipTransitionCache = new Map<string, SpriteClipTransition>();
+const fighterAnimationSnapshotCache = new Map<string, FighterAnimationSnapshot>();
+
+export function getFighterAnimationSnapshot(fighterId: string): FighterAnimationSnapshot | null {
+  return fighterAnimationSnapshotCache.get(fighterId) ?? null;
+}
+
+function smoothStep01(value: number): number {
+  const clamped = Math.max(0, Math.min(1, value));
+  return clamped * clamped * (3 - 2 * clamped);
+}
+
+function resolveNextClipFrame(
+  clip: AnimationClip,
+  currentFrame: number,
+  direction: 1 | -1
+): number {
+  if (clip.frames.length <= 1) return currentFrame;
+  if (clip.mode === 'loop') return (currentFrame + 1) % clip.frames.length;
+  if (clip.mode === 'pingpong') {
+    if (direction === 1) return Math.min(clip.frames.length - 1, currentFrame + 1);
+    return Math.max(0, currentFrame - 1);
+  }
+  return Math.min(clip.frames.length - 1, currentFrame + 1);
+}
+
+function resolveSpriteFrameBlend(
+  animationState: ReturnType<typeof createAnimationPlayerState>,
+  combatProgress: number | null
+): { nextFrame: number; blend: number } {
+  const clip = animationState.currentClip;
+  if (!clip || clip.frames.length <= 1) {
+    return { nextFrame: animationState.currentFrame, blend: 0 };
+  }
+
+  if (combatProgress !== null) {
+    const framePosition = Math.max(0, Math.min(1, combatProgress)) * (clip.frames.length - 1);
+    const currentFrame = Math.min(clip.frames.length - 1, Math.floor(framePosition));
+    const localProgress = framePosition - currentFrame;
+    return {
+      nextFrame: Math.min(clip.frames.length - 1, currentFrame + 1),
+      blend: smoothStep01((localProgress - 0.62) / 0.38),
+    };
+  }
+
+  const currentClipFrame = clip.frames[animationState.currentFrame];
+  const localProgress = currentClipFrame
+    ? animationState.frameTimer / Math.max(1, currentClipFrame.duration)
+    : 0;
+  return {
+    nextFrame: resolveNextClipFrame(clip, animationState.currentFrame, animationState.direction),
+    blend: smoothStep01((localProgress - 0.68) / 0.32),
+  };
+}
 
 /**
  * Get or create animation player state for a fighter
@@ -78,6 +214,8 @@ export function clearFighterAnimationCache(): void {
   fighterLastStateCache.clear();
   fighterGroundedCache.clear();
   fighterLandingCompleteCache.clear();
+  fighterClipTransitionCache.clear();
+  fighterAnimationSnapshotCache.clear();
   // Clear all effective state caches
   for (const key of Array.from(fighterLastStateCache.keys())) {
     if (key.includes('_effective')) {
@@ -107,56 +245,35 @@ export function clearCanvas(ctx: CanvasRenderingContext2D): void {
 /**
  * Render background with parallax
  */
-export function renderBackground(ctx: CanvasRenderingContext2D, camera: Camera): void {
-  const transform = getCameraTransform(camera);
-
-  const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
-  gradient.addColorStop(0, '#0D0518');
-  gradient.addColorStop(0.45, '#1A0A2E');
-  gradient.addColorStop(1, '#2D1B4E');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-  ctx.save();
-  ctx.fillStyle = '#150A24';
-  for (const building of DEFAULT_BACKGROUND_SCENE.distantBuildings) {
-    const x = ((building.x + transform.offsetX * 0.1) % (CANVAS_WIDTH + 160)) - 80;
-    ctx.fillRect(x, CANVAS_HEIGHT - 100 - building.height, building.width, building.height);
-  }
-
-  for (const building of DEFAULT_BACKGROUND_SCENE.midBuildings) {
-    const x = ((building.x + transform.offsetX * 0.3) % (CANVAS_WIDTH + 240)) - 120;
-    const topY = CANVAS_HEIGHT - 100 - building.height;
-    ctx.fillStyle = '#1F1040';
-    ctx.fillRect(x, topY, building.width, building.height);
-
-    ctx.fillStyle = '#00F5FF33';
-    for (const window of building.windows) {
-      if (!window.lit) {
-        continue;
-      }
-      ctx.fillRect(x + window.x, topY + window.y, window.width, window.height);
-    }
-  }
-
-  ctx.font = '12px "Courier New", monospace';
-  for (const sign of DEFAULT_BACKGROUND_SCENE.signs) {
-    ctx.fillStyle = sign.color;
-    ctx.fillText(sign.text, sign.x + transform.offsetX * sign.speedFactor, sign.y);
-  }
-  ctx.restore();
+export function renderBackground(
+  ctx: CanvasRenderingContext2D,
+  camera: Camera,
+  frame = 0,
+  profile: FightGraphicsProfile = resolveFightGraphicsProfile()
+): void {
+  renderFightBackdrop(ctx, camera, frame, profile);
 }
 
 /**
  * Render ground/arena
  */
-export function renderArena(ctx: CanvasRenderingContext2D, _camera: Camera): void {
+export function renderArena(
+  ctx: CanvasRenderingContext2D,
+  _camera: Camera,
+  profile: FightGraphicsProfile = resolveFightGraphicsProfile()
+): void {
   // Ground
-  ctx.fillStyle = '#2D1B4E';
+  ctx.fillStyle = profile.floorColor;
+  ctx.fillRect(0, CANVAS_HEIGHT - 100, CANVAS_WIDTH, 100);
+
+  const floorGradient = ctx.createLinearGradient(0, CANVAS_HEIGHT - 100, 0, CANVAS_HEIGHT);
+  floorGradient.addColorStop(0, `${profile.floorHighlight}88`);
+  floorGradient.addColorStop(1, `${profile.floorColor}00`);
+  ctx.fillStyle = floorGradient;
   ctx.fillRect(0, CANVAS_HEIGHT - 100, CANVAS_WIDTH, 100);
 
   // Lane lines
-  ctx.strokeStyle = '#4D3B6E';
+  ctx.strokeStyle = `${profile.floorHighlight}AA`;
   ctx.lineWidth = 1;
   ctx.setLineDash([10, 10]);
 
@@ -172,14 +289,14 @@ export function renderArena(ctx: CanvasRenderingContext2D, _camera: Camera): voi
 
   // Arena edges (glowing)
   const edgeGradientLeft = ctx.createLinearGradient(0, 0, 50, 0);
-  edgeGradientLeft.addColorStop(0, '#FF00FF44');
+  edgeGradientLeft.addColorStop(0, `${profile.secondaryAccent}44`);
   edgeGradientLeft.addColorStop(1, 'transparent');
   ctx.fillStyle = edgeGradientLeft;
   ctx.fillRect(0, 0, 50, CANVAS_HEIGHT);
 
   const edgeGradientRight = ctx.createLinearGradient(CANVAS_WIDTH - 50, 0, CANVAS_WIDTH, 0);
   edgeGradientRight.addColorStop(0, 'transparent');
-  edgeGradientRight.addColorStop(1, '#00F5FF44');
+  edgeGradientRight.addColorStop(1, `${profile.accent}44`);
   ctx.fillStyle = edgeGradientRight;
   ctx.fillRect(CANVAS_WIDTH - 50, 0, 50, CANVAS_HEIGHT);
 }
@@ -203,6 +320,7 @@ export function renderFighter(
   if (useSprites) {
     renderFighterWithSprite(ctx, fighter, animMap, frame);
   } else {
+    fighterAnimationSnapshotCache.delete(fighter.id);
     renderFighterProcedural(ctx, fighter, camera, frame);
   }
 }
@@ -214,21 +332,37 @@ function renderFighterWithSprite(
   ctx: CanvasRenderingContext2D,
   fighter: Fighter,
   animMap: CharacterAnimationMap,
-  _frame: number
+  frame: number
 ): void {
   const animState = getFighterAnimationState(fighter.id);
+  const previousState = fighterLastStateCache.get(fighter.id);
   let targetClip: ReturnType<typeof getStateClip> | ReturnType<typeof getAttackPhaseClip> | null =
     null;
+  let attackPhase: AttackPhase | null = null;
+  let attackPhaseProgress = 0;
+  let usesCombatSyncedPlayback = false;
 
   if (fighter.state === 'attacking' || fighter.state === 'special') {
     if (fighter.currentAttack) {
-      const phase = resolveAttackPhase(
+      attackPhase = resolveAttackPhase(
         fighter.attackFrame,
         fighter.currentAttack.startup,
         fighter.currentAttack.active,
         fighter.currentAttack.recovery
       );
-      targetClip = getAttackPhaseClip(animMap, fighter.currentAttack.id, phase);
+      attackPhaseProgress = resolveAttackPhaseProgress(
+        fighter.attackFrame,
+        fighter.currentAttack.startup,
+        fighter.currentAttack.active,
+        fighter.currentAttack.recovery
+      );
+      targetClip = getAttackPhaseClip(
+        animMap,
+        fighter.currentAttack.id,
+        attackPhase,
+        fighter.currentAttack.type
+      );
+      usesCombatSyncedPlayback = true;
     }
   }
 
@@ -241,8 +375,6 @@ function renderFighterWithSprite(
     targetClip = getStateClip(animMap, 'idle');
   }
 
-  // Update the last known state
-  fighterLastStateCache.set(fighter.id, fighter.state);
   fighterGroundedCache.set(fighter.id, fighter.isGrounded);
 
   // Use landing state to override animation when actively landing
@@ -266,7 +398,6 @@ function renderFighterWithSprite(
   let effectiveClip = targetClip;
 
   // Only apply landing override if the fighter is actually coming from a jump/fall
-  const previousState = fighterLastStateCache.get(fighter.id);
   const wasJumpingOrFalling = previousState === 'jumping' || previousState === 'falling';
 
   // Reset landing completion when starting a new grounded action (running, walking, etc.)
@@ -305,17 +436,45 @@ function renderFighterWithSprite(
     effectiveStateChanged;
 
   if (effectiveClip && needsClipChange) {
-    const newState = playClip(animState, effectiveClip, 1);
+    const locomotionSpeed = Math.abs(fighter.moveVelocityX) + Math.abs(fighter.velocityX) * 0.35;
+    const playbackSpeed =
+      effectiveState === 'running'
+        ? Math.max(0.8, Math.min(1.8, 0.72 + locomotionSpeed * 0.12))
+        : effectiveState === 'walking'
+          ? Math.max(0.72, Math.min(1.3, 0.7 + locomotionSpeed * 0.08))
+          : 1;
+    if (animState.currentClip && animState.currentClip.id !== effectiveClip.id) {
+      fighterClipTransitionCache.set(fighter.id, {
+        clip: animState.currentClip,
+        frame: animState.currentFrame,
+        ttl: 4,
+        totalTtl: 4,
+      });
+    }
+    const newState = playClip(animState, effectiveClip, playbackSpeed);
     Object.assign(animState, newState);
   }
 
-  const updatedState = updateAnimationPlayer(animState, 1);
-  Object.assign(animState, updatedState);
+  if (usesCombatSyncedPlayback) {
+    Object.assign(animState, seekToProgress(animState, attackPhaseProgress));
+    animState.isPlaying = true;
+  } else {
+    const updatedState = updateAnimationPlayer(animState, 1);
+    Object.assign(animState, updatedState);
+  }
+
+  const frameBlendState = resolveSpriteFrameBlend(
+    animState,
+    usesCombatSyncedPlayback ? attackPhaseProgress : null
+  );
+
+  fighterLastStateCache.set(fighter.id, fighter.state);
 
   const screenX = fighter.x;
   const screenY = fighter.getWorldY();
   const facingRight = fighter.facing === 'right';
-  const depthScale = getSpriteScaleFactor();
+  const animation = createFighterAnimationView(fighter, frame);
+  const depthScale = getSpriteScaleFactor() * animation.depthScale;
 
   if (!animState.currentClip || !animMap.atlas) {
     console.warn(`Missing clip or atlas for ${fighter.characterId}, falling back to procedural`);
@@ -323,23 +482,115 @@ function renderFighterWithSprite(
       ctx,
       fighter,
       { x: 0, y: 0, zoom: 1, shakeOffsetX: 0, shakeOffsetY: 0 } as Camera,
-      _frame
+      frame
     );
     return;
   }
 
-  const rendered = renderFighterSprite(
-    ctx,
-    animMap,
-    animState.currentClip,
-    animState.currentFrame,
-    screenX,
-    screenY,
-    facingRight,
+  const stretchX = Math.max(0.86, Math.min(1.16, 1 + (animation.bodyWidthScale - 1) * 0.28));
+  const stretchY = Math.max(0.86, Math.min(1.16, 1 + (animation.bodyHeightScale - 1) * 0.24));
+  const rotation = Math.max(-0.12, Math.min(0.12, animation.bodyLean * 0.18));
+
+  ctx.save();
+  ctx.globalAlpha = fighter.state === 'knockdown' ? 0.28 : 0.22;
+  ctx.fillStyle = '#05030A';
+  ctx.translate(screenX, screenY + 3);
+  ctx.scale(animation.shadowScaleX, animation.shadowScaleY);
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 34, 9, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  const drawSpritePose = (
+    clip: AnimationClip,
+    clipFrame: number,
+    offsetX: number,
+    opacity: number,
+    blur = 0
+  ): boolean => {
+    ctx.save();
+    ctx.translate(screenX + offsetX + animation.recoilOffsetX, screenY + animation.bobOffsetY);
+    ctx.rotate(rotation);
+    ctx.scale(stretchX, stretchY);
+    if (blur > 0) {
+      ctx.filter = `blur(${blur}px) saturate(1.35)`;
+    } else if (animation.flashIntensity > 0) {
+      ctx.filter = `brightness(${1 + animation.flashIntensity * 0.85}) saturate(${1 + animation.flashIntensity * 0.45})`;
+    }
+    const result = renderFighterSprite(
+      ctx,
+      animMap,
+      clip,
+      clipFrame,
+      0,
+      0,
+      facingRight,
+      depthScale,
+      opacity,
+      fighter.characterId
+    );
+    ctx.restore();
+    return result;
+  };
+
+  const currentClip = animState.currentClip;
+  const transition = fighterClipTransitionCache.get(fighter.id);
+  const transitionAlpha = transition ? transition.ttl / transition.totalTtl : 0;
+  if (transition && transitionAlpha > 0) {
+    drawSpritePose(transition.clip, transition.frame, 0, transitionAlpha * 0.38, 0.45);
+  }
+
+  const velocity = fighter.moveVelocityX + fighter.velocityX;
+  const trailDirection = velocity === 0 ? (facingRight ? -1 : 1) : velocity > 0 ? -1 : 1;
+  if (animation.afterImageAlpha > 0.04) {
+    drawSpritePose(
+      currentClip,
+      animState.currentFrame,
+      trailDirection * 18,
+      animation.afterImageAlpha * 0.42,
+      1.4
+    );
+    drawSpritePose(
+      currentClip,
+      animState.currentFrame,
+      trailDirection * 9,
+      animation.afterImageAlpha * 0.68,
+      0.7
+    );
+  }
+
+  const rendered = drawSpritePose(currentClip, animState.currentFrame, 0, 1);
+  if (frameBlendState.nextFrame !== animState.currentFrame && frameBlendState.blend > 0.01) {
+    drawSpritePose(currentClip, frameBlendState.nextFrame, 0, frameBlendState.blend * 0.48);
+  }
+
+  const currentAtlasFrame = currentClip.frames[animState.currentFrame]?.frameIndex ?? -1;
+  const nextAtlasFrame =
+    currentClip.frames[frameBlendState.nextFrame]?.frameIndex ?? currentAtlasFrame;
+  fighterAnimationSnapshotCache.set(fighter.id, {
+    fighterId: fighter.id,
+    state: effectiveState,
+    clipId: currentClip.id,
+    clipFrame: animState.currentFrame,
+    clipFrameCount: currentClip.frames.length,
+    atlasFrameIndex: currentAtlasFrame,
+    nextAtlasFrameIndex: nextAtlasFrame,
+    frameBlend: frameBlendState.blend,
+    playbackSpeed: animState.playbackSpeed,
+    attackPhase,
+    attackPhaseProgress,
+    transitionFromClipId: transition?.clip.id ?? null,
+    transitionAlpha,
     depthScale,
-    1,
-    fighter.characterId
-  );
+    stretchX,
+    stretchY,
+    afterImageAlpha: animation.afterImageAlpha,
+  });
+
+  if (transition) {
+    transition.ttl -= 1;
+    if (transition.ttl <= 0) fighterClipTransitionCache.delete(fighter.id);
+  }
 
   if (!rendered) {
     // Fall back to procedural rendering when sprites fail
@@ -347,7 +598,7 @@ function renderFighterWithSprite(
       ctx,
       fighter,
       { x: 0, y: 0, zoom: 1, shakeOffsetX: 0, shakeOffsetY: 0 } as Camera,
-      _frame
+      frame
     );
   }
 }
@@ -753,8 +1004,10 @@ export function renderAnnouncement(
 export function renderFightScene(
   ctx: CanvasRenderingContext2D,
   fightState: FightState,
-  camera: Camera
+  camera: Camera,
+  presentation: FightPresentationOptions = {}
 ): void {
+  const graphicsProfile = resolveFightGraphicsProfile(presentation);
   ctx.save();
   ctx.translate(camera.shakeOffsetX, camera.shakeOffsetY);
   ctx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
@@ -762,10 +1015,10 @@ export function renderFightScene(
   ctx.translate(-CANVAS_WIDTH / 2, -CANVAS_HEIGHT / 2);
 
   // Background
-  renderBackground(ctx, camera);
+  renderBackground(ctx, camera, fightState.frameCount, graphicsProfile);
 
   // Arena
-  renderArena(ctx, camera);
+  renderArena(ctx, camera, graphicsProfile);
 
   // Fighters (sorted by lane for proper layering)
   const fighters = [fightState.player1, fightState.player2];
@@ -776,6 +1029,7 @@ export function renderFightScene(
   }
 
   for (const fighter of fighters) {
+    renderAttackTelegraph(ctx, fighter, fightState.frameCount);
     for (const effect of collectAmbientEffectsForFighter(fighter, fightState.frameCount)) {
       if (effect.layer === 'behind') {
         renderAmbientEffect(ctx, effect);
@@ -793,10 +1047,8 @@ export function renderFightScene(
     renderVisualEffect(ctx, effect);
   }
 
-  // Render particle systems
-  for (const particleSystem of fightState.particleSystems) {
-    particleSystem.render(ctx);
-  }
+  fightState.particlePool.render(ctx);
+  renderFightForeground(ctx, camera, fightState.frameCount, graphicsProfile);
 
   if (fightState.hitFreezeFrames > 0) {
     ctx.save();
@@ -812,6 +1064,8 @@ export function renderFightScene(
   for (const screenEffect of fightState.screenEffects) {
     screenEffect.render(ctx);
   }
+
+  renderCombatScreenFeedback(ctx, fightState);
 
   // HUD
   const p1Char = CHARACTERS[fightState.player1.characterId as keyof typeof CHARACTERS];
@@ -840,6 +1094,25 @@ export function renderFightScene(
     fightState.player2.stats.maxHealth,
     p2Char?.colors.primary ?? '#FF00FF',
     p2Char?.name ?? 'P2',
+    true
+  );
+
+  renderSpecialMeter(
+    ctx,
+    fightState.player1,
+    50,
+    55,
+    300,
+    p1Char?.colors.accent ?? '#39FF14',
+    false
+  );
+  renderSpecialMeter(
+    ctx,
+    fightState.player2,
+    CANVAS_WIDTH - 350,
+    55,
+    300,
+    p2Char?.colors.accent ?? '#FF9F1C',
     true
   );
 

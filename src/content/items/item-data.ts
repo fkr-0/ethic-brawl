@@ -195,7 +195,13 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 1,
     buyValue: 260,
     sellValue: 80,
-    effect: { type: 'weapon', family: 'firearm', damageBonus: 3, speedModifier: 12, hitstunBonus: 0 },
+    effect: {
+      type: 'weapon',
+      family: 'firearm',
+      damageBonus: 3,
+      speedModifier: 12,
+      hitstunBonus: 0,
+    },
     tags: ['weapon', 'firearm', 'ranged', 'overlay'],
   },
   bat: {
@@ -237,7 +243,13 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 2,
     buyValue: 120,
     sellValue: 35,
-    effect: { type: 'throwable', projectileId: 'molotov_bottle', damage: 18, radius: 54, throwSpeed: 8 },
+    effect: {
+      type: 'throwable',
+      projectileId: 'molotov_bottle',
+      damage: 18,
+      radius: 54,
+      throwSpeed: 8,
+    },
     tags: ['throwable', 'fire', 'overlay', 'projectile'],
   },
   grenade: {
@@ -251,7 +263,13 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 2,
     buyValue: 160,
     sellValue: 50,
-    effect: { type: 'throwable', projectileId: 'grenade_arc', damage: 28, radius: 72, throwSpeed: 7 },
+    effect: {
+      type: 'throwable',
+      projectileId: 'grenade_arc',
+      damage: 28,
+      radius: 72,
+      throwSpeed: 7,
+    },
     tags: ['throwable', 'explosive', 'overlay', 'projectile'],
   },
   boulder: {
@@ -265,7 +283,13 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 1,
     buyValue: 180,
     sellValue: 45,
-    effect: { type: 'weapon', family: 'heavy_prop', damageBonus: 12, speedModifier: -18, hitstunBonus: 7 },
+    effect: {
+      type: 'weapon',
+      family: 'heavy_prop',
+      damageBonus: 12,
+      speedModifier: -18,
+      hitstunBonus: 7,
+    },
     tags: ['weapon', 'heavy', 'boulder', 'overlay', 'custom_pose'],
   },
   rocket_launcher: {
@@ -279,7 +303,13 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 1,
     buyValue: 420,
     sellValue: 140,
-    effect: { type: 'weapon', family: 'launcher', damageBonus: 16, speedModifier: -22, hitstunBonus: 8 },
+    effect: {
+      type: 'weapon',
+      family: 'launcher',
+      damageBonus: 16,
+      speedModifier: -22,
+      hitstunBonus: 8,
+    },
     tags: ['weapon', 'launcher', 'ranged', 'overlay', 'custom_pose'],
   },
   minidrone: {
@@ -293,7 +323,12 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 1,
     buyValue: 240,
     sellValue: 75,
-    effect: { type: 'deployable', actorId: 'minidrone_actor', durationSeconds: 12, cooldownSeconds: 20 },
+    effect: {
+      type: 'deployable',
+      actorId: 'minidrone_actor',
+      durationSeconds: 12,
+      cooldownSeconds: 20,
+    },
     tags: ['deployable', 'drone', 'overlay', 'actor'],
   },
   computer_terminal: {
@@ -301,7 +336,8 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     name: 'Portable Computer Terminal',
     category: 'gadget',
     rarity: 'epic',
-    description: 'Hack systems, designate an orbital ion strike, or smash enemies with the terminal casing.',
+    description:
+      'Hack systems, designate an orbital ion strike, or smash enemies with the terminal casing.',
     flavorText: 'Runs three programs: breach, judgment, blunt force.',
     icon: '▣',
     stackLimit: 1,
@@ -327,7 +363,13 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 1,
     buyValue: 390,
     sellValue: 125,
-    effect: { type: 'weapon', family: 'rifle', damageBonus: 14, speedModifier: -14, hitstunBonus: 3 },
+    effect: {
+      type: 'weapon',
+      family: 'rifle',
+      damageBonus: 14,
+      speedModifier: -14,
+      hitstunBonus: 3,
+    },
     tags: ['weapon', 'rifle', 'ranged', 'precision', 'overlay', 'custom_pose'],
   },
   bow: {
@@ -369,7 +411,13 @@ export const ITEM_CATALOG: Record<ItemId, ItemDefinition> = {
     stackLimit: 1,
     buyValue: 105,
     sellValue: 30,
-    effect: { type: 'weapon', family: 'shovel', damageBonus: 6, speedModifier: -5, hitstunBonus: 3 },
+    effect: {
+      type: 'weapon',
+      family: 'shovel',
+      damageBonus: 6,
+      speedModifier: -5,
+      hitstunBonus: 3,
+    },
     tags: ['weapon', 'shovel', 'tool', 'blunt', 'overlay'],
   },
   book_stoic_body: {

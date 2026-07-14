@@ -3,11 +3,11 @@
  */
 
 import {
+  type InputBinding,
   PLAYER1_BINDINGS,
   PLAYER2_BINDINGS,
-  cloneInputBinding,
-  type InputBinding,
   type PlayerInput,
+  cloneInputBinding,
   readPlayerInput,
 } from './input-binding';
 import { type Keyboard, createKeyboard } from './keyboard';

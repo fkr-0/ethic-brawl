@@ -148,10 +148,9 @@ export function deserializeInputBinding(
     for (const action of GAME_ACTIONS) {
       const customKeys = serialized[action];
       if (Array.isArray(customKeys) && customKeys.length > 0) {
-        keys.set(
-          action,
-          [...new Set(customKeys.filter((key) => typeof key === 'string' && key.length > 0))]
-        );
+        keys.set(action, [
+          ...new Set(customKeys.filter((key) => typeof key === 'string' && key.length > 0)),
+        ]);
       }
     }
   }

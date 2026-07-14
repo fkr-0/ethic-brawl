@@ -47,7 +47,7 @@ describe('item visual definitions', () => {
 
     expect(frame).toEqual(
       expect.objectContaining({
-        imagePath: '/assets/sprites/items/katana.png',
+        imagePath: 'assets/sprites/items/katana.png',
         sourceX: 192,
         sourceY: 0,
         sourceWidth: 96,
@@ -65,7 +65,9 @@ describe('item visual definitions', () => {
 
   it('groups visuals by pose family', () => {
     const throwableIds = getItemVisualsByPoseFamily('throw_light').map((visual) => visual.itemId);
-    expect(throwableIds).toEqual(expect.arrayContaining(['molotov_cocktail', 'grenade', 'boulder']));
+    expect(throwableIds).toEqual(
+      expect.arrayContaining(['molotov_cocktail', 'grenade', 'boulder'])
+    );
 
     const uzi = getItemVisual('uzi');
     if (!uzi) {
@@ -90,7 +92,13 @@ describe('item visual definitions', () => {
 
   it('flags the item visuals that need bespoke body poses', () => {
     expect(getItemVisualsRequiringCustomBodyPose().map((visual) => visual.itemId)).toEqual(
-      expect.arrayContaining(['boulder', 'rocket_launcher', 'computer_terminal', 'sniper_rifle', 'bow'])
+      expect.arrayContaining([
+        'boulder',
+        'rocket_launcher',
+        'computer_terminal',
+        'sniper_rifle',
+        'bow',
+      ])
     );
     expect(CUSTOM_BODY_POSE_SPRITES).toEqual(
       expect.arrayContaining([
