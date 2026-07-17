@@ -1,7 +1,12 @@
 import type { FightOutcomeSummary, GameMode, SettingsState } from '@/app/app-shell/types';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { CharacterId } from '@/content/characters/character-data';
-import { getCharacter } from '@/content/characters/character-data';
+import {
+  getCharacter,
+  getCharacterNormalChain,
+} from '@/content/characters/character-data';
+import { getEnemyVisual } from '@/content/enemies/enemy-visual-data';
+import { getSpecialsForCharacter } from '@/content/specials/special-data';
 import {
   GAME_ACTIONS,
   GAME_ACTION_LABELS,
@@ -16,6 +21,7 @@ import {
   getStateClip,
   renderSpriteFrame,
 } from '@/render/sprites';
+import { commandSlotToLabel } from '@/game/fight/command-input';
 import {
   ARCADE_UI_FONT,
   ETHIC_UI,
@@ -127,7 +133,12 @@ export function renderStartScreen(ctx: CanvasRenderingContext2D): void {
 }
 
 export function renderMainMenu(ctx: CanvasRenderingContext2D, selectedIndex: number): void {
-  const options = ['VS MODE', 'STAGE MODE', 'SETTINGS'];
+  const options = ['VERSUS // LOCAL', 'STORY // BABYLON', 'SETTINGS'];
+  const descriptions = [
+    'Two players · full release roster · authored command kits',
+    'Three encounters · persistent wave pressure · one complete route',
+    'Gameplay, accessibility, and remappable controls',
+  ];
   drawArcadeBackdrop(ctx);
 
   ctx.textAlign = 'center';
@@ -154,6 +165,9 @@ export function renderMainMenu(ctx: CanvasRenderingContext2D, selectedIndex: num
     const label = options[i] ?? '';
     drawArcadeMenuRow(ctx, label, panelX + 18, panelY + 36 + i * 48, 424, active);
   }
+  ctx.font = `12px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.muted;
+  ctx.fillText(descriptions[selectedIndex] ?? '', CANVAS_WIDTH / 2, panelY + 216);
   drawArcadeFooter(ctx, 'W/S navigate  //  Enter confirm  //  Shift+/ controls');
 }
 
@@ -336,7 +350,7 @@ export function renderCharacterSelect(
     const panelX = 662;
     const panelY = 86;
     const panelWidth = 276;
-    const panelHeight = 332;
+    const panelHeight = 390;
     drawArcadePanel(ctx, {
       x: panelX,
       y: panelY,
@@ -373,34 +387,45 @@ export function renderCharacterSelect(
       ctx.fillRect(panelX + 146, y - 9, Math.min(106, value * 10.6), 10);
     });
 
-    ctx.font = 'bold 14px "Courier New", monospace';
+    const normalChain = getCharacterNormalChain(selected);
+    ctx.font = 'bold 11px "Courier New", monospace';
     ctx.fillStyle = selected.colors.primary;
-    ctx.fillText(selected.special.name.toUpperCase(), panelX + 18, panelY + 170);
-    ctx.font = '12px "Courier New", monospace';
+    ctx.fillText('NORMAL CHAIN', panelX + 18, panelY + 174);
+    ctx.font = '10px "Courier New", monospace';
     ctx.fillStyle = '#D7CDE2';
-    drawWrappedText(
-      ctx,
-      selected.special.description,
+    ctx.fillText(
+      normalChain.map((attack) => attack.name).join('  ›  ').slice(0, 42),
       panelX + 18,
-      panelY + 191,
-      panelWidth - 36,
-      16,
-      3
+      panelY + 191
     );
 
-    ctx.font = 'bold 13px "Courier New", monospace';
+    ctx.font = 'bold 11px "Courier New", monospace';
+    ctx.fillStyle = selected.colors.primary;
+    ctx.fillText('COMMAND MOVESET', panelX + 18, panelY + 216);
+    const specials = getSpecialsForCharacter(selectedId).slice(0, 4);
+    specials.forEach((move, index) => {
+      const y = panelY + 236 + index * 20;
+      ctx.font = 'bold 10px "Courier New", monospace';
+      ctx.fillStyle = selected.colors.accent;
+      ctx.fillText(commandSlotToLabel(move.commandSlot), panelX + 18, y);
+      ctx.font = '10px "Courier New", monospace';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText(move.displayName.toUpperCase().slice(0, 25), panelX + 92, y);
+    });
+
+    ctx.font = 'bold 12px "Courier New", monospace';
     ctx.fillStyle = selected.colors.accent;
-    ctx.fillText(selected.gimmick.name.toUpperCase(), panelX + 18, panelY + 254);
-    ctx.font = '12px "Courier New", monospace';
+    ctx.fillText(selected.gimmick.name.toUpperCase(), panelX + 18, panelY + 326);
+    ctx.font = '10px "Courier New", monospace';
     ctx.fillStyle = '#B8A9C9';
     drawWrappedText(
       ctx,
       selected.gimmick.description,
       panelX + 18,
-      panelY + 275,
+      panelY + 344,
       panelWidth - 36,
-      16,
-      3
+      14,
+      2
     );
   }
 
@@ -510,17 +535,24 @@ export function renderStageIntro(ctx: CanvasRenderingContext2D, stage: StageIntr
   ctx.font = 'bold 34px "Courier New", monospace';
   ctx.fillStyle = '#FFFFFF';
   ctx.fillText('VS', CANVAS_WIDTH / 2, 270);
-  ctx.font = '13px "Courier New", monospace';
-  ctx.fillStyle = '#39FF14';
-  drawWrappedText(
-    ctx,
-    stage.enemyArchetypes.join(' · ').replaceAll('_', ' ').toUpperCase(),
-    CANVAS_WIDTH / 2,
-    308,
-    240,
-    17,
-    2
-  );
+  const archetypeVisuals = stage.enemyArchetypes
+    .map((id) => getEnemyVisual(id))
+    .filter((visual) => visual !== null);
+  archetypeVisuals.forEach((visual, index) => {
+    const badgeWidth = 72;
+    const gap = 6;
+    const rowWidth = archetypeVisuals.length * badgeWidth + (archetypeVisuals.length - 1) * gap;
+    const x = CANVAS_WIDTH / 2 - rowWidth / 2 + index * (badgeWidth + gap);
+    ctx.fillStyle = '#120C20';
+    ctx.fillRect(x, 296, badgeWidth, 34);
+    ctx.strokeStyle = visual.accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, 296, badgeWidth, 34);
+    ctx.font = 'bold 8px "Courier New", monospace';
+    ctx.fillStyle = visual.accent;
+    ctx.textAlign = 'center';
+    drawWrappedText(ctx, visual.label.toUpperCase(), x + badgeWidth / 2, 309, badgeWidth - 8, 10, 2);
+  });
   ctx.fillStyle =
     stage.aiDifficulty === 'hard'
       ? '#FF073A'
