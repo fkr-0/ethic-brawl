@@ -2,8 +2,8 @@ import type { FightRuntime } from '@/app/fight-runtime';
 import {
   type CharacterId,
   getCharacter,
-  getCharacterIds,
 } from '@/content/characters/character-data';
+import { getReleaseRosterIds } from '@/content/characters/release-roster';
 import {
   STAGE_ONE,
   STAGE_ONE_ENCOUNTERS,
@@ -254,7 +254,7 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
   if (input.player1.confirm) {
     if (appState.characterSelectPhase === 1) {
       if (appState.gameMode === 'stage') {
-        const selectedP1 = selectCharacterByIndex(appState.player1SelectIndex, 'camus');
+        const selectedP1 = selectCharacterByIndex(characterIds, appState.player1SelectIndex, 'camus');
         const encounter = getStageOneEncounter(0);
         appState.stageNumber = 1;
         appState.stageEncounterIndex = 0;
@@ -270,8 +270,8 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
       return;
     }
 
-    const selectedP1 = selectCharacterByIndex(appState.player1SelectIndex, 'camus');
-    let selectedP2 = selectCharacterByIndex(appState.player2SelectIndex, 'machiavelli');
+    const selectedP1 = selectCharacterByIndex(characterIds, appState.player1SelectIndex, 'camus');
+    let selectedP2 = selectCharacterByIndex(characterIds, appState.player2SelectIndex, 'machiavelli');
     if (selectedP2 === selectedP1) {
       selectedP2 =
         characterIds.find((id) => id !== selectedP1) ??
@@ -419,7 +419,7 @@ interface BuildScenesDeps {
   fightRuntime: FightRuntime;
   getLatestInput: () => InputState;
   transitionTo: (target: SceneName) => Promise<boolean>;
-  getCharacterIdsList?: () => ReturnType<typeof getCharacterIds>;
+  getCharacterIdsList?: () => CharacterId[];
   onSettingsChanged?: (settings: SettingsState) => void;
 }
 
@@ -447,8 +447,12 @@ export interface AppShellState {
   settings: SettingsState;
 }
 
-function selectCharacterByIndex(index: number, fallback: MatchSelection['player1']) {
-  return getCharacterIds()[index] ?? fallback;
+function selectCharacterByIndex(
+  characterIds: readonly CharacterId[],
+  index: number,
+  fallback: MatchSelection['player1']
+) {
+  return characterIds[index] ?? fallback;
 }
 
 export const CHARACTER_SELECT_COLUMNS = 6;
@@ -465,7 +469,7 @@ export function moveCharacterSelectGridIndex(
 }
 
 export function createInitialAppShellState(): AppShellState {
-  const characterIds = getCharacterIds();
+  const characterIds = getReleaseRosterIds();
   return {
     player1SelectIndex: 0,
     player2SelectIndex: Math.min(1, characterIds.length - 1),
@@ -504,7 +508,7 @@ export function createInitialAppShellState(): AppShellState {
 }
 
 export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): Scene[] {
-  const characterIds = (deps.getCharacterIdsList ?? getCharacterIds)();
+  const characterIds = (deps.getCharacterIdsList ?? getReleaseRosterIds)();
 
   // Create shared update context
   const createUpdateContext = (): SceneUpdateContext => ({

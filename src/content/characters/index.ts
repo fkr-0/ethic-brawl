@@ -3,3 +3,4 @@
  */
 
 export * from './character-data';
+export * from './release-roster';
