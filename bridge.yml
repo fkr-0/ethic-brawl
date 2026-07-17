@@ -1,0 +1,29 @@
+version: 1
+name: ethic-brawl
+description: Ethic Brawl development commands
+agent:
+  notes: Canvas2D renderer with a future renderer-neutral presentation seam. Do not introduce a cross-repository runtime dependency on badger-sprawl-runner; its repository is not present in Ethic Brawl CI.
+  tasks:
+    - Keep production deployment subpath-safe at /ethic-brawl/.
+    - Keep Stage 1 E2E coverage green.
+  changelog:
+    - 2026-07-14: Production subpath deployment and Stage 1 vertical slice repaired and enhanced.
+    - 2026-07-14: Added renderer-neutral stage profiles, pooled combat VFX, and Badger-inspired parallax/foreground layers.
+commands:
+  lint:
+    run: ["pnpm", "lint"]
+    category: lint
+  typecheck:
+    run: ["pnpm", "typecheck"]
+    category: test
+  test:
+    run: ["pnpm", "test:run"]
+    category: test
+  e2e:
+    run: ["pnpm", "test:e2e"]
+    timeoutMs: 60000
+    category: test
+  release-check:
+    run: ["pnpm", "release:check"]
+    timeoutMs: 120000
+    category: test
