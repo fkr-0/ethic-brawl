@@ -16,6 +16,14 @@ import {
   getStateClip,
   renderSpriteFrame,
 } from '@/render/sprites';
+import {
+  ARCADE_UI_FONT,
+  ETHIC_UI,
+  drawArcadeBackdrop,
+  drawArcadeFooter,
+  drawArcadeMenuRow,
+  drawArcadePanel,
+} from '@/ui/arcade-ui';
 
 function drawWrappedText(
   ctx: CanvasRenderingContext2D,
@@ -72,75 +80,94 @@ function renderCharacterSpritePreview(
 }
 
 export function renderLoading(ctx: CanvasRenderingContext2D): void {
-  ctx.fillStyle = '#1A0A2E';
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  ctx.font = '24px "Courier New", monospace';
-  ctx.fillStyle = '#00F5FF';
+  drawArcadeBackdrop(ctx);
+  drawArcadePanel(ctx, {
+    x: CANVAS_WIDTH / 2 - 180,
+    y: CANVAS_HEIGHT / 2 - 54,
+    width: 360,
+    height: 108,
+    strong: true,
+    label: 'System boot',
+  });
+  ctx.font = `800 22px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.accent;
   ctx.textAlign = 'center';
-  ctx.fillText('INITIALIZING...', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+  ctx.fillText('INITIALIZING...', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 10);
 }
 
 export function renderStartScreen(ctx: CanvasRenderingContext2D): void {
-  const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
-  gradient.addColorStop(0, '#1A0A2E');
-  gradient.addColorStop(1, '#2D1B4E');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadeBackdrop(ctx);
 
-  ctx.font = 'bold 64px "Courier New", monospace';
-  ctx.fillStyle = '#FF00FF';
+  ctx.font = `900 60px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.accentAlt;
   ctx.textAlign = 'center';
-  ctx.fillText('ETHIC BRAWL', CANVAS_WIDTH / 2, 180);
+  ctx.fillText('ETHIC BRAWL', CANVAS_WIDTH / 2, 150);
 
-  ctx.font = '20px "Courier New", monospace';
-  ctx.fillStyle = '#00F5FF';
-  ctx.fillText('A Philosophical Arena Fighter', CANVAS_WIDTH / 2, 220);
+  ctx.font = `700 16px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.accent;
+  ctx.fillText('PHILOSOPHICAL ARENA // BABYLON FEED', CANVAS_WIDTH / 2, 184);
 
-  ctx.font = '28px "Courier New", monospace';
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillText('[ENTER] START GAME', CANVAS_WIDTH / 2, 350);
+  drawArcadePanel(ctx, {
+    x: CANVAS_WIDTH / 2 - 220,
+    y: 246,
+    width: 440,
+    height: 132,
+    accent: ETHIC_UI.warning,
+    strong: true,
+    label: 'Open transmission',
+  });
+  ctx.font = `800 24px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.text;
+  ctx.fillText('ENTER  //  START GAME', CANVAS_WIDTH / 2, 310);
 
-  ctx.font = '18px "Courier New", monospace';
-  ctx.fillStyle = '#B8A9C9';
-  ctx.fillText('Press ENTER or ATTACK to continue', CANVAS_WIDTH / 2, 450);
-  ctx.fillText('Press Shift+/ (?) for controls', CANVAS_WIDTH / 2, 480);
+  ctx.font = `12px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.muted;
+  ctx.fillText('ATTACK ALSO CONFIRMS', CANVAS_WIDTH / 2, 342);
+  drawArcadeFooter(ctx, 'Enter / Attack continue  //  Shift+/ controls');
 }
 
 export function renderMainMenu(ctx: CanvasRenderingContext2D, selectedIndex: number): void {
   const options = ['VS MODE', 'STAGE MODE', 'SETTINGS'];
-
-  const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
-  gradient.addColorStop(0, '#1A0A2E');
-  gradient.addColorStop(1, '#2D1B4E');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadeBackdrop(ctx);
 
   ctx.textAlign = 'center';
-  ctx.font = 'bold 64px "Courier New", monospace';
-  ctx.fillStyle = '#FF00FF';
-  ctx.fillText('ETHIC BRAWL', CANVAS_WIDTH / 2, 130);
+  ctx.font = `900 50px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.accentAlt;
+  ctx.fillText('ETHIC BRAWL', CANVAS_WIDTH / 2, 92);
 
-  ctx.font = '20px "Courier New", monospace';
-  ctx.fillStyle = '#00F5FF';
-  ctx.fillText('Choose a mode', CANVAS_WIDTH / 2, 175);
+  ctx.font = `700 13px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.accent;
+  ctx.fillText('SELECT DISPUTE PROTOCOL', CANVAS_WIDTH / 2, 122);
 
+  const panelX = CANVAS_WIDTH / 2 - 230;
+  const panelY = 154;
+  drawArcadePanel(ctx, {
+    x: panelX,
+    y: panelY,
+    width: 460,
+    height: 238,
+    strong: true,
+    label: 'Mode routing',
+  });
   for (let i = 0; i < options.length; i++) {
-    const y = 250 + i * 70;
     const active = i === selectedIndex;
-    ctx.fillStyle = active ? '#FFFFFF' : '#B8A9C9';
-    ctx.font = active ? 'bold 34px "Courier New", monospace' : '28px "Courier New", monospace';
     const label = options[i] ?? '';
-    ctx.fillText(active ? `> ${label} <` : label, CANVAS_WIDTH / 2, y);
+    drawArcadeMenuRow(ctx, label, panelX + 18, panelY + 36 + i * 48, 424, active);
   }
-
-  ctx.font = '18px "Courier New", monospace';
-  ctx.fillStyle = '#B8A9C9';
-  ctx.fillText('W/S move | ENTER confirm | Shift+/ (?) help', CANVAS_WIDTH / 2, 500);
+  drawArcadeFooter(ctx, 'W/S navigate  //  Enter confirm  //  Shift+/ controls');
 }
 
 export function renderSettings(ctx: CanvasRenderingContext2D, settings: SettingsState): void {
-  ctx.fillStyle = '#12091F';
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadeBackdrop(ctx);
+  drawArcadePanel(ctx, {
+    x: 68,
+    y: 104,
+    width: CANVAS_WIDTH - 136,
+    height: 370,
+    accent: ETHIC_UI.accentAlt,
+    strong: true,
+    label: 'Configuration matrix',
+  });
   ctx.textAlign = 'center';
 
   ctx.font = 'bold 42px "Courier New", monospace';
@@ -217,14 +244,7 @@ export function renderSettings(ctx: CanvasRenderingContext2D, settings: Settings
     }
   }
 
-  ctx.textAlign = 'center';
-  ctx.font = '16px "Courier New", monospace';
-  ctx.fillStyle = '#B8A9C9';
-  ctx.fillText(
-    'W/S select | A/D tab | ENTER edit/toggle | BACKSPACE/ESC back',
-    CANVAS_WIDTH / 2,
-    555
-  );
+  drawArcadeFooter(ctx, 'W/S select  //  A/D tab  //  Enter edit  //  Esc back');
 }
 
 export function renderCharacterSelect(
@@ -235,8 +255,7 @@ export function renderCharacterSelect(
   phase: 1 | 2,
   gameMode: GameMode = 'vs'
 ): void {
-  ctx.fillStyle = '#1A0A2E';
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadeBackdrop(ctx);
 
   ctx.font = '32px "Courier New", monospace';
   ctx.fillStyle = '#FF00FF';
@@ -268,8 +287,14 @@ export function renderCharacterSelect(
     const isP1 = i === player1SelectIndex;
     const isP2 = i === player2SelectIndex;
 
-    ctx.fillStyle = isActive ? '#3A2361' : '#2D1B4E';
-    ctx.fillRect(x, y, cardWidth, cardHeight);
+    drawArcadePanel(ctx, {
+      x,
+      y,
+      width: cardWidth,
+      height: cardHeight,
+      accent: isActive ? ETHIC_UI.text : character.colors.primary,
+      strong: isActive,
+    });
 
     const accentColor = character.colors.primary;
     ctx.strokeStyle = isActive ? '#FFFFFF' : accentColor;
@@ -312,11 +337,15 @@ export function renderCharacterSelect(
     const panelY = 86;
     const panelWidth = 276;
     const panelHeight = 332;
-    ctx.fillStyle = 'rgba(13, 5, 24, 0.92)';
-    ctx.fillRect(panelX, panelY, panelWidth, panelHeight);
-    ctx.strokeStyle = selected.colors.primary;
-    ctx.lineWidth = 3;
-    ctx.strokeRect(panelX, panelY, panelWidth, panelHeight);
+    drawArcadePanel(ctx, {
+      x: panelX,
+      y: panelY,
+      width: panelWidth,
+      height: panelHeight,
+      accent: selected.colors.primary,
+      strong: true,
+      label: 'Doctrine profile',
+    });
 
     renderCharacterSpritePreview(ctx, selectedId, panelX + 58, panelY + 128, 102, 120);
     ctx.textAlign = 'left';
@@ -375,15 +404,11 @@ export function renderCharacterSelect(
     );
   }
 
-  ctx.font = '18px "Courier New", monospace';
-  ctx.fillStyle = '#B8A9C9';
-  ctx.textAlign = 'center';
-  ctx.fillText(
+  drawArcadeFooter(
+    ctx,
     gameMode === 'stage'
       ? 'D-PAD choose | CONFIRM enter Babylon | CANCEL back | Shift+/ (?) help'
-      : 'D-PAD choose | CONFIRM lock | CANCEL back | Shift+/ (?) help',
-    CANVAS_WIDTH / 2,
-    510
+      : 'D-PAD choose | CONFIRM lock | CANCEL back | Shift+/ (?) help'
   );
 }
 
@@ -469,11 +494,15 @@ export function renderStageIntro(ctx: CanvasRenderingContext2D, stage: StageIntr
   ctx.fillStyle = enemy.colors.accent;
   ctx.fillText(enemy.subtitle.toUpperCase(), 750, 464);
 
-  ctx.fillStyle = 'rgba(5, 3, 12, 0.82)';
-  ctx.fillRect(340, 152, 280, 280);
-  ctx.strokeStyle = '#FF9F1C';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(340, 152, 280, 280);
+  drawArcadePanel(ctx, {
+    x: 340,
+    y: 152,
+    width: 280,
+    height: 280,
+    accent: ETHIC_UI.warning,
+    strong: true,
+    label: 'Encounter terms',
+  });
 
   ctx.font = 'bold 25px "Courier New", monospace';
   ctx.fillStyle = '#FF00FF';
@@ -526,10 +555,14 @@ export function renderStageProgress(
   stage: Pick<StageIntroViewModel, 'stageNumber' | 'stageName' | 'wave' | 'waveCount' | 'modeLabel'>
 ): void {
   ctx.save();
-  ctx.fillStyle = 'rgba(18, 9, 31, 0.78)';
-  ctx.fillRect(CANVAS_WIDTH / 2 - 170, CANVAS_HEIGHT - 48, 340, 36);
-  ctx.strokeStyle = '#FF9F1C';
-  ctx.strokeRect(CANVAS_WIDTH / 2 - 170, CANVAS_HEIGHT - 48, 340, 36);
+  drawArcadePanel(ctx, {
+    x: CANVAS_WIDTH / 2 - 190,
+    y: CANVAS_HEIGHT - 56,
+    width: 380,
+    height: 40,
+    accent: ETHIC_UI.warning,
+    strong: true,
+  });
   ctx.textAlign = 'center';
   ctx.font = 'bold 14px "Courier New", monospace';
   ctx.fillStyle = '#FFFFFF';
@@ -542,8 +575,16 @@ export function renderStageProgress(
 }
 
 export function renderTrial(ctx: CanvasRenderingContext2D): void {
-  ctx.fillStyle = '#140C25';
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadeBackdrop(ctx);
+  drawArcadePanel(ctx, {
+    x: CANVAS_WIDTH / 2 - 270,
+    y: 118,
+    width: 540,
+    height: 286,
+    accent: ETHIC_UI.warning,
+    strong: true,
+    label: 'Intermission protocol',
+  });
   ctx.textAlign = 'center';
   ctx.font = 'bold 42px "Courier New", monospace';
   ctx.fillStyle = '#FF9F1C';
@@ -558,8 +599,16 @@ export function renderTrial(ctx: CanvasRenderingContext2D): void {
 }
 
 export function renderUpgrade(ctx: CanvasRenderingContext2D): void {
-  ctx.fillStyle = '#180E2E';
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadeBackdrop(ctx);
+  drawArcadePanel(ctx, {
+    x: CANVAS_WIDTH / 2 - 270,
+    y: 118,
+    width: 540,
+    height: 250,
+    accent: ETHIC_UI.accent,
+    strong: true,
+    label: 'Doctrine modified',
+  });
   ctx.textAlign = 'center';
   ctx.font = 'bold 42px "Courier New", monospace';
   ctx.fillStyle = '#39FF14';
@@ -574,6 +623,15 @@ export function renderUpgrade(ctx: CanvasRenderingContext2D): void {
 export function renderPauseScreen(ctx: CanvasRenderingContext2D): void {
   ctx.fillStyle = 'rgba(26, 10, 46, 0.8)';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadePanel(ctx, {
+    x: CANVAS_WIDTH / 2 - 230,
+    y: CANVAS_HEIGHT / 2 - 96,
+    width: 460,
+    height: 192,
+    accent: ETHIC_UI.accentAlt,
+    strong: true,
+    label: 'Simulation held',
+  });
 
   ctx.font = 'bold 48px "Courier New", monospace';
   ctx.fillStyle = '#FF00FF';
@@ -601,8 +659,16 @@ export function renderResults(
   result: FightOutcomeSummary | null,
   view: ResultsViewModel
 ): void {
-  ctx.fillStyle = '#1A0A2E';
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadeBackdrop(ctx);
+  drawArcadePanel(ctx, {
+    x: CANVAS_WIDTH / 2 - 280,
+    y: 88,
+    width: 560,
+    height: 370,
+    accent: result?.winner === 1 ? ETHIC_UI.accent : ETHIC_UI.danger,
+    strong: true,
+    label: 'Verdict ledger',
+  });
 
   const stageDefeat = view.gameMode === 'stage' && result?.winner === 2;
   const aborted = result === null;
@@ -677,6 +743,7 @@ export function renderResults(
     ctx.fillStyle = '#39FF14';
     ctx.fillText('Press CONFIRM to continue', CANVAS_WIDTH / 2, 458);
   }
+  drawArcadeFooter(ctx, 'Confirm continue  //  Cancel return');
 }
 
 function formatBindingKeys(keys: string[]): string {
@@ -696,6 +763,15 @@ export function renderHelpOverlay(ctx: CanvasRenderingContext2D): void {
   ctx.save();
   ctx.fillStyle = 'rgba(8, 5, 16, 0.88)';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawArcadePanel(ctx, {
+    x: 72,
+    y: 38,
+    width: CANVAS_WIDTH - 144,
+    height: CANVAS_HEIGHT - 88,
+    accent: ETHIC_UI.accent,
+    strong: true,
+    label: 'Input reference',
+  });
 
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
