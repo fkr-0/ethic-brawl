@@ -27,7 +27,7 @@ async function tapKey(page: Page, key: string, holdMilliseconds = 80): Promise<v
 }
 
 async function damageEnemyWithPlayerOne(page: Page, startingHealth: number): Promise<number> {
-  for (let attempt = 0; attempt < 24; attempt++) {
+  for (let attempt = 0; attempt < 40; attempt++) {
     const snapshot = await getSnapshot(page);
     const player1X = snapshot.fight.player1X;
     const player2X = snapshot.fight.player2X;
@@ -46,19 +46,19 @@ async function damageEnemyWithPlayerOne(page: Page, startingHealth: number): Pro
     if (enemyHealth < startingHealth) return enemyHealth;
 
     if (player1Lane !== player2Lane) {
-      await tapKey(page, player1Lane < player2Lane ? 's' : 'w', 90);
-      await page.waitForTimeout(220);
+      await tapKey(page, player1Lane < player2Lane ? 'w' : 's', 90);
+      await page.waitForTimeout(180);
       continue;
     }
 
     const distance = player2X - player1X;
-    if (Math.abs(distance) > 58) {
-      await tapKey(page, distance > 0 ? 'd' : 'a', 110);
+    if (Math.abs(distance) > 54) {
+      await tapKey(page, distance > 0 ? 'd' : 'a', 135);
       continue;
     }
 
-    await tapKey(page, 'j', 90);
-    await page.waitForTimeout(260);
+    await tapKey(page, 'j', 70);
+    await page.waitForTimeout(190);
   }
   return (await getSnapshot(page)).fight.player2Health ?? startingHealth;
 }

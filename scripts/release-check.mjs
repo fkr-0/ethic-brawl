@@ -22,4 +22,6 @@ for (const [command, args] of commands) {
   }
 }
 
-console.info('\nRelease check passed, including the Stage 1 browser E2E slice.');
+console.info(
+  '\nRelease check passed, including the Stage 1 and sprite-animation browser E2E specifications.'
+);

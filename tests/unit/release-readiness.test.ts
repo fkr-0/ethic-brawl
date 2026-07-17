@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import workflow from '../../.github/workflows/release-check.yml?raw';
 import testingGuide from '../../docs/testing.md?raw';
+import spriteAnimationE2E from '../../e2e/sprite-animation.spec.ts?raw';
 import packageJson from '../../package.json?raw';
 import releaseScript from '../../scripts/release-check.mjs?raw';
 import todoList from '../../todo.md?raw';
@@ -26,6 +27,21 @@ describe('major release readiness assets', () => {
       'pnpm release:check',
     ]) {
       expect(testingGuide).toContain(command);
+    }
+  });
+
+  it('keeps the browser sprite-correctness and animation-fluidity gate in place', () => {
+    expect(packageJson).toContain('"test:e2e:sprites"');
+    for (const contract of [
+      'getSpriteValidation',
+      'validation.totalFrames',
+      "observeAttackClipSequence(page, 'j', 'attack_light')",
+      "observeAttackClipSequence(page, 'i', 'attack_special')",
+      "clipId === 'hitstun'",
+      'transitionFromClipId',
+      'depthScale',
+    ]) {
+      expect(spriteAnimationE2E).toContain(contract);
     }
   });
 

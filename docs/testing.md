@@ -6,6 +6,7 @@
 pnpm test:run
 pnpm typecheck
 pnpm test:e2e
+pnpm test:e2e:sprites
 ```
 
 ## Focused checks
@@ -13,6 +14,7 @@ pnpm test:e2e
 ```bash
 pnpm test:single tests/unit/release-readiness.test.ts
 pnpm test:simulation
+pnpm test:e2e:sprites
 ```
 
 ## Full local release gate
@@ -28,9 +30,11 @@ pnpm test:e2e
 pnpm release:check
 ```
 
-`pnpm release:check` runs the automated release gate in order: lint, typecheck, unit tests, production build, and the Chromium Stage 1 E2E slice.
+`pnpm release:check` runs the automated release gate in order: lint, typecheck, unit tests, production build, and both Chromium E2E specifications.
 
 The Stage 1 browser test builds a production bundle and serves it below `/ethic-brawl/`, matching the artifacts-hub deployment layout. It verifies that relative bundle and sprite URLs resolve, all 18 coded character sprite atlases load, vertical and horizontal roster navigation work, the renderer reports the Canvas2D backend and correct Babylon graphics profile, the opponent AI advances and escalates from easy to medium to hard, real keyboard movement and attack input damage an opponent, and the pooled VFX runtime emits without recycling under the tested combat load. It also verifies the Market Procession, Archive Lockdown, and Gate Judgment rule IDs, their 99/84/72-second clocks, encounter durability and conviction differences, defeat/retry behavior, all three encounter transitions, and the complete trial/upgrade/results route.
+
+The focused sprite-animation E2E specification audits the actual post-keyed browser pixels for all 448 atlas frames. It rejects blank frames, invalid atlas bounds, invalid clip references, and retained full-cell backgrounds. It then selects Aristotle through the real character-select UI and validates multi-frame idle cycling, monotonic keyboard locomotion, interpolation blends, light attack startup/active/recovery clips, special animation phases, afterimages, lane-dependent scale, a real Leibniz hitstun reaction, and a clean animation-cache reset in a second match.
 
 ## Manual browser smoke test
 

@@ -32,15 +32,73 @@ async function collectSnapshots(
   return samples;
 }
 
-async function triggerAndCollect(
+type FighterAnimation = NonNullable<E2EProbeSnapshot['fight']['player1Animation']>;
+
+async function waitForPlayerOneAnimation(
+  page: Page,
+  description: string,
+  predicate: (animation: FighterAnimation, snapshot: E2EProbeSnapshot) => boolean,
+  timeoutMilliseconds = 1_200
+): Promise<E2EProbeSnapshot> {
+  const deadline = Date.now() + timeoutMilliseconds;
+  const observed: string[] = [];
+  while (Date.now() < deadline) {
+    const snapshot = await getSnapshot(page);
+    const animation = snapshot.fight.player1Animation;
+    if (animation) {
+      const signature = `${animation.state}:${animation.clipId}:${animation.attackPhase ?? 'none'}:${animation.frameBlend.toFixed(2)}`;
+      if (observed.at(-1) !== signature) observed.push(signature);
+      if (predicate(animation, snapshot)) return snapshot;
+    }
+    await page.waitForTimeout(8);
+  }
+  throw new Error(
+    `Timed out waiting for ${description}. Observed: ${observed.slice(-12).join(' -> ')}`
+  );
+}
+
+async function pressAndObserveClip(
   page: Page,
   key: string,
-  durationMilliseconds: number
-): Promise<E2EProbeSnapshot[]> {
+  clipId: string,
+  timeoutMilliseconds = 1_200
+): Promise<E2EProbeSnapshot> {
   await page.keyboard.down(key);
-  await page.waitForTimeout(12);
-  await page.keyboard.up(key);
-  return collectSnapshots(page, durationMilliseconds, 18);
+  try {
+    return await waitForPlayerOneAnimation(
+      page,
+      clipId,
+      (animation) => animation.clipId === clipId,
+      timeoutMilliseconds
+    );
+  } finally {
+    await page.keyboard.up(key);
+  }
+}
+
+async function observeAttackClipSequence(
+  page: Page,
+  key: string,
+  prefix: 'attack_light' | 'attack_special'
+): Promise<E2EProbeSnapshot[]> {
+  const startup = await pressAndObserveClip(page, key, `${prefix}_startup`);
+  const active = await waitForPlayerOneAnimation(
+    page,
+    `${prefix}_active`,
+    (animation) => animation.clipId === `${prefix}_active`
+  );
+  const recovery = await waitForPlayerOneAnimation(
+    page,
+    `${prefix}_recovery`,
+    (animation) => animation.clipId === `${prefix}_recovery`
+  );
+  const settled = await waitForPlayerOneAnimation(
+    page,
+    'idle after attack',
+    (animation, snapshot) => animation.clipId === 'idle' && snapshot.fight.player1State === 'idle',
+    1_800
+  );
+  return [startup, active, recovery, settled];
 }
 
 function playerOneAnimations(samples: E2EProbeSnapshot[]) {
@@ -104,12 +162,24 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(
     new Set(idleAnimations.map(({ atlasFrameIndex }) => atlasFrameIndex)).size
   ).toBeGreaterThan(2);
-  expect(idleAnimations.some(({ frameBlend }) => frameBlend > 0.05)).toBe(true);
+  const idleBlend = await waitForPlayerOneAnimation(
+    page,
+    'an idle interpolation blend',
+    (animation) => animation.clipId === 'idle' && animation.frameBlend > 0.05
+  );
+  expect(idleBlend.fight.player1Animation?.frameBlend).toBeLessThanOrEqual(1);
   expect(idleAnimations.every(({ frameBlend }) => frameBlend >= 0 && frameBlend <= 1)).toBe(true);
 
   await page.keyboard.down('d');
+  const runBlendPromise = waitForPlayerOneAnimation(
+    page,
+    'a locomotion interpolation blend',
+    (animation) => animation.clipId === 'run' && animation.frameBlend > 0.05
+  );
   const movementSamples = await collectSnapshots(page, 720, 48);
+  const runBlend = await runBlendPromise;
   await page.keyboard.up('d');
+  expect(runBlend.fight.player1Animation?.frameBlend).toBeGreaterThan(0.05);
   const movementAnimations = playerOneAnimations(movementSamples).filter(
     ({ clipId }) => clipId === 'run'
   );
@@ -120,7 +190,6 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(
     new Set(movementAnimations.map(({ atlasFrameIndex }) => atlasFrameIndex)).size
   ).toBeGreaterThan(2);
-  expect(movementAnimations.some(({ frameBlend }) => frameBlend > 0.05)).toBe(true);
   expect(movementAnimations.every(({ playbackSpeed }) => playbackSpeed >= 0.72)).toBe(true);
   for (let index = 1; index < movementPositions.length; index += 1) {
     const delta = (movementPositions[index] ?? 0) - (movementPositions[index - 1] ?? 0);
@@ -128,28 +197,30 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     expect(delta).toBeLessThan(40);
   }
 
-  const lightAttackAnimations = playerOneAnimations(await triggerAndCollect(page, 'j', 760));
-  const observedLightPhases = new Set(lightAttackAnimations.map(({ attackPhase }) => attackPhase));
-  expect(observedLightPhases).toEqual(new Set(['startup', 'active', 'recovery', null]));
-  for (const clipId of ['attack_light_startup', 'attack_light_active', 'attack_light_recovery']) {
-    expect(lightAttackAnimations.some((animation) => animation.clipId === clipId)).toBe(true);
-  }
+  const lightAttackSamples = await observeAttackClipSequence(page, 'j', 'attack_light');
+  const lightAttackAnimations = playerOneAnimations(lightAttackSamples);
+  expect(lightAttackAnimations.map(({ attackPhase }) => attackPhase)).toEqual([
+    'startup',
+    'active',
+    'recovery',
+    null,
+  ]);
   expect(
     lightAttackAnimations.some(
       ({ transitionFromClipId, transitionAlpha }) =>
         transitionFromClipId !== null && transitionAlpha > 0
     )
   ).toBe(true);
-  expect(lightAttackAnimations.some(({ frameBlend }) => frameBlend > 0.05)).toBe(true);
-
-  await expect.poll(async () => (await getSnapshot(page)).fight.player1State).toBe('idle');
-  const specialAnimations = playerOneAnimations(await triggerAndCollect(page, 'i', 980));
-  expect(specialAnimations.some(({ clipId }) => clipId === 'attack_special_startup')).toBe(true);
-  expect(specialAnimations.some(({ clipId }) => clipId === 'attack_special_active')).toBe(true);
-  expect(specialAnimations.some(({ clipId }) => clipId === 'attack_special_recovery')).toBe(true);
+  const specialSamples = await observeAttackClipSequence(page, 'i', 'attack_special');
+  const specialAnimations = playerOneAnimations(specialSamples);
+  expect(specialAnimations.map(({ attackPhase }) => attackPhase)).toEqual([
+    'startup',
+    'active',
+    'recovery',
+    null,
+  ]);
   expect(specialAnimations.some(({ afterImageAlpha }) => afterImageAlpha > 0.1)).toBe(true);
 
-  await expect.poll(async () => (await getSnapshot(page)).fight.player1State).toBe('idle');
   const middleDepth = (await getSnapshot(page)).fight.player1Animation?.depthScale ?? 0;
   await tapKey(page, 'w', 70);
   await expect.poll(async () => (await getSnapshot(page)).fight.player1Lane).toBe(2);
@@ -171,7 +242,11 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   }
   const enemyHealthBefore = (await getSnapshot(page)).fight.player2Health;
   expect(enemyHealthBefore).not.toBeNull();
-  const contactSamples = await triggerAndCollect(page, 'j', 620);
+  await page.keyboard.down('j');
+  const contactSamplesPromise = collectSnapshots(page, 620, 16);
+  await page.waitForTimeout(55);
+  await page.keyboard.up('j');
+  const contactSamples = await contactSamplesPromise;
   const enemyHealthAfter = contactSamples.at(-1)?.fight.player2Health;
   expect(enemyHealthAfter).not.toBeNull();
   expect(enemyHealthAfter as number).toBeLessThan(enemyHealthBefore as number);

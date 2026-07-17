@@ -18,7 +18,8 @@
     "format": "biome format --write .",
     "test:single": "vitest run",
     "test:simulation": "vitest run tests/unit/*runtime*.test.ts tests/unit/*system*.test.ts tests/unit/gameplay-architecture.test.ts",
-    "release:check": "node scripts/release-check.mjs"
+    "release:check": "node scripts/release-check.mjs",
+    "test:e2e:sprites": "playwright test e2e/sprite-animation.spec.ts"
   },
   "keywords": ["game", "brawler", "cyberpunk", "philosophy", "canvas"],
   "author": "",

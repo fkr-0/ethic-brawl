@@ -238,7 +238,11 @@ function applyAdaptiveEdgeKey(imageData: ImageData, settings: ChromaKeySettings)
   }
 }
 
-function applyChromaKey(imageData: ImageData, settings: ChromaKeySettings): void {
+export function applySpriteBackgroundKey(
+  imageData: ImageData,
+  settings: ChromaKeySettings = chromaKeySettings
+): void {
+  if (!settings.enabled) return;
   if (settings.mode === 'fixed-color') applyFixedChromaKey(imageData, settings);
   else applyAdaptiveEdgeKey(imageData, settings);
 }
@@ -298,7 +302,7 @@ export function getProcessedSpriteFrameCanvas(
 
     if (chromaKeySettings.enabled) {
       const imageData = context.getImageData(0, 0, atlasFrame.frameWidth, atlasFrame.frameHeight);
-      applyChromaKey(imageData, chromaKeySettings);
+      applySpriteBackgroundKey(imageData, chromaKeySettings);
       context.putImageData(imageData, 0, 0);
     }
     processedChromaKeyFrames.add(cacheKey);

@@ -2,7 +2,7 @@
 
 ## Current release status
 
-- Automated gate includes lint, typecheck, 75 unit tests, production build, and the Babylon Stage 1 Chromium E2E slice.
+- Automated gate includes lint, typecheck, 78 unit tests, production build, and two Chromium E2E specifications covering Stage 1 plus sprite correctness/animation fluidity.
 - Remaining blocker: manual browser/canvas validation and release packaging notes.
 - Release rule: do not tag `v1.0.0` until every item in `Release-blocking manual validation` is checked.
 
@@ -30,6 +30,8 @@
   - Added renderer-neutral presentation profiles, three Babylon parallax treatments, attack telegraphs, low-health/impact feedback, sprite placards, and renderer/profile E2E metadata.
   - Replaced per-hit particle-system allocation with a fixed-capacity combat VFX pool and added encounter-specific foreground layers.
   - Added combat-synchronized multi-frame sprite attacks, eight attack choreography families, adaptive locomotion, afterimages, and per-wave atmospheric parallax.
+  - Replaced fixed white-background chroma keying with adaptive edge-connected extraction for mixed legacy and dark-gradient sheets.
+  - Added browser validation of all 448 atlas cells and real-input E2E checks for idle/run continuity, phase blends, specials, lane depth, hitstun, and reset cleanliness.
   - Added Market Procession, Archive Lockdown, and Gate Judgment rule presets with distinct timers, durability, conviction, and special readiness.
   - PixiJS remains intentionally uninstalled until both projects have a concrete reason to replace their complete Canvas2D backends.
 
@@ -37,7 +39,7 @@
 
 - [ ] Run the automated gate one final time on the release candidate
   - Command: `pnpm release:check`
-  - Expected result: lint exits zero, typecheck exits zero, all unit tests pass, production build succeeds, and Stage 1 E2E passes.
+  - Expected result: lint exits zero, typecheck exits zero, all unit tests pass, production build succeeds, and both Chromium E2E specifications pass.
   - Record in release notes: command, exit status, test count, build artifact names, date, and commit SHA.
 
 - [ ] Manual browser smoke test before tagging

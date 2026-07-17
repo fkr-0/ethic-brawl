@@ -20,8 +20,11 @@ pnpm typecheck
 # Run tests
 pnpm test:run
 
-# Run the Babylon Stage 1 browser slice
+# Run all production-mounted browser tests
 pnpm test:e2e
+
+# Run the focused sprite/animation browser gate
+pnpm test:e2e:sprites
 ```
 
 ## Controls
@@ -105,6 +108,8 @@ The three Stage 1 modes now change actual fight rules as well as presentation: M
 The Babylon fights now use three encounter-specific graphics profiles with independently tuned parallax speeds, moving dust, cuneiform-style propaganda signs, attack wind-up telegraphs, and low-health/impact screen feedback. Stage introductions use the actual selected and opposing sprites in a theatrical placard layout. Near-camera layers distinguish the waves with market stalls and awnings, archive columns and scanning light, or gate braziers and crowd silhouettes; atmospheric layers add market streamers, falling archive data, and gate embers.
 
 Sprite attacks are synchronized directly to combat startup, active, and recovery frames. Light, medium, heavy, and special attacks use multi-frame pose sequences on both legacy and extended sprite sheets, while eight choreography families add distinct straight punches, sweeps, heel attacks, orbiting motions, launchers, flurries, invocations, and ripostes. Movement speed drives locomotion playback, and sprites now receive lane depth, squash/stretch, recoil, hit flashes, shadows, and restrained afterimages.
+
+Sprite extraction now uses an adaptive edge-connected background key rather than assuming every source sheet has a white backdrop. The browser validates all 448 atlas cells across the 18-character roster after keying, rejecting blank cells, out-of-bounds references, and likely retained background panels. Short crossfades between adjacent frames and clips smooth locomotion and combat phase changes without decoupling animation from the deterministic fight timeline.
 
 Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.
 
