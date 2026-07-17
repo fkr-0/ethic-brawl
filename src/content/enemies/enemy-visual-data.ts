@@ -43,7 +43,14 @@ export const ENEMY_VISUALS: Record<EnemyArchetypeId, EnemyVisualDefinition> = {
   ninja_mob: enemy('ninja_mob', 'Courier Cell', 'crowd', 1, '#D45CFF', 'light'),
   citizen_1: enemy('citizen_1', 'Market Citizen', 'crowd', 2, '#56D6C9', 'medium'),
   citizen_riot: enemy('citizen_riot', 'Riot Citizen', 'crowd', 3, '#FF5B67', 'medium'),
-  air_drone: enemy('air_drone', 'Cuneiform Air Drone', 'machines-apocalypse', 0, '#00F5FF', 'aerial'),
+  air_drone: enemy(
+    'air_drone',
+    'Cuneiform Air Drone',
+    'machines-apocalypse',
+    0,
+    '#00F5FF',
+    'aerial'
+  ),
   ground_drone: enemy(
     'ground_drone',
     'Bronze Ground Drone',

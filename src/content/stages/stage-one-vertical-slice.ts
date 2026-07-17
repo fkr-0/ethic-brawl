@@ -1,4 +1,5 @@
 import type { CharacterId } from '@/content/characters/character-data';
+import type { ItemId } from '@/content/items/item-data';
 import type { AIDifficulty } from '@/game/ai/ai-controller';
 import type { FightRuleSet } from '@/game/fight/fight-controller';
 import { STORY_STAGES } from './story-stage-data';
@@ -25,6 +26,7 @@ export interface StageOneEncounter {
 }
 
 export const STAGE_ONE = STORY_STAGES.babylon;
+export const STAGE_ONE_REWARD_IDS = STAGE_ONE.rewardItemIds as readonly ItemId[];
 
 export const STAGE_ONE_COMBAT_MODES: readonly StageOneCombatMode[] = [
   {

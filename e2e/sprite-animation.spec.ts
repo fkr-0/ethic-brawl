@@ -1,5 +1,6 @@
 import { type Page, expect, test } from '@playwright/test';
 import type { E2EProbeSnapshot } from '../src/app/e2e-probe';
+import { RELEASE_ROSTER_IDS } from '../src/content/characters/release-roster';
 
 async function getSnapshot(page: Page): Promise<E2EProbeSnapshot> {
   const snapshot = await page.evaluate(() => window.__ETHIC_BRAWL_E2E__?.getSnapshot() ?? null);
@@ -107,7 +108,7 @@ function playerOneAnimations(samples: E2EProbeSnapshot[]) {
   );
 }
 
-async function enterAristotleVersusMatch(page: Page): Promise<void> {
+async function enterFoucaultVersusMatch(page: Page): Promise<void> {
   await tapKey(page, 'Enter');
   await waitForScene(page, 'character-select');
   for (let index = 0; index < 4; index += 1) await tapKey(page, 'd');
@@ -138,7 +139,17 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   if (!validation) throw new Error('Sprite validation report is unavailable');
   expect(validation.valid).toBe(true);
   expect(validation.characterCount).toBe(18);
-  expect(validation.totalFrames).toBe(448);
+  expect(validation.totalFrames).toBe(
+    Object.values(validation.characters).reduce(
+      (total, character) => total + character.frameCount,
+      0
+    )
+  );
+  for (const characterId of RELEASE_ROSTER_IDS) {
+    expect(validation.characters[characterId].frameCount, `${characterId} release frame bank`).toBe(
+      32
+    );
+  }
   expect(validation.invalidCharacters).toEqual([]);
   expect(validation.blankFrameCount).toBe(0);
   expect(validation.backgroundLeakFrameCount).toBe(0);
@@ -149,10 +160,10 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     expect(character.maximumOpaqueCoverage).toBeLessThan(0.72);
   }
 
-  await enterAristotleVersusMatch(page);
+  await enterFoucaultVersusMatch(page);
   let snapshot = await getSnapshot(page);
-  expect(snapshot.fight.player1Character).toBe('aristotle');
-  expect(snapshot.fight.player2Character).toBe('leibniz');
+  expect(snapshot.fight.player1Character).toBe('foucault');
+  expect(snapshot.fight.player2Character).toBe('machiavelli');
   expect(snapshot.fight.player1Animation?.clipFrameCount).toBe(4);
   expect(snapshot.fight.player1Animation?.transitionFromClipId).toBeNull();
 

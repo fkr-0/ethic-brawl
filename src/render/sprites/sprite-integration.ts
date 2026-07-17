@@ -3,6 +3,10 @@
  */
 
 import { type CharacterId, getCharacterIds } from '@/content/characters/character-data';
+import {
+  type SpecialMoveDefinition,
+  getSpecialsForCharacter,
+} from '@/content/specials/special-data';
 import { buildCharacterAnimationMap } from './character-anim-map';
 import {
   createAtlasFramesFromGrid,
@@ -15,7 +19,7 @@ import type { CharacterAnimationMap, SpriteAtlas, SpriteManifest } from './types
 /**
  * Character sprite asset paths
  */
-interface CharacterSpriteDescriptor {
+export interface CharacterSpriteDescriptor {
   corePath: string;
   extendedPath?: string;
   layout: 'legacy' | 'roster';
@@ -39,14 +43,27 @@ export function getSpriteLoadReport(): SpriteLoadReport {
   };
 }
 
-const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescriptor> = {
-  camus: { corePath: 'assets/sprites/camus/source/camus.png', layout: 'legacy' },
-  leibniz: { corePath: 'assets/sprites/leibniz/source/leibniz.png', layout: 'legacy' },
-  machiavelli: {
-    corePath: 'assets/sprites/machiavelli/source/machiavelli.png',
-    layout: 'legacy',
+export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescriptor> = {
+  camus: {
+    corePath: 'assets/sprites/roster/camus/source/camus_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/camus/source/camus_extended_4x4.png',
+    layout: 'roster',
   },
-  diogenes: { corePath: 'assets/sprites/diogenes/source/diogenes.png', layout: 'legacy' },
+  leibniz: {
+    corePath: 'assets/sprites/roster/leibniz/source/leibniz_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/leibniz/source/leibniz_extended_4x4.png',
+    layout: 'roster',
+  },
+  machiavelli: {
+    corePath: 'assets/sprites/roster/machiavelli/source/machiavelli_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/machiavelli/source/machiavelli_extended_4x4.png',
+    layout: 'roster',
+  },
+  diogenes: {
+    corePath: 'assets/sprites/roster/diogenes/source/diogenes_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/diogenes/source/diogenes_extended_4x4.png',
+    layout: 'roster',
+  },
   aristotle: {
     corePath: 'assets/sprites/roster/aristotle/source/aristotle_core_4x4.png',
     extendedPath: 'assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png',
@@ -78,6 +95,7 @@ const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescriptor> = {
   },
   deleuze_guattari: {
     corePath: 'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_extended_4x4.png',
     layout: 'roster',
   },
   marx: {
@@ -107,10 +125,12 @@ const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescriptor> = {
   },
   kierkegaard: {
     corePath: 'assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/kierkegaard/source/kierkegaard_extended_4x4.png',
     layout: 'roster',
   },
   stirner: {
     corePath: 'assets/sprites/roster/stirner/source/stirner_core_4x4.png',
+    extendedPath: 'assets/sprites/roster/stirner/source/stirner_extended_4x4.png',
     layout: 'roster',
   },
 };
@@ -276,18 +296,127 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
   return manifest;
 }
 
-function createCharacterManifest(
+interface SpecialFramePhases {
+  startup: number[];
+  active: number[];
+  recovery: number[];
+}
+
+function getSpecialFramePhases(
+  special: SpecialMoveDefinition,
+  hasExtended: boolean
+): SpecialFramePhases {
+  const tags = new Set(special.tags);
+
+  if (!hasExtended) {
+    if (tags.has('counter') || tags.has('reflect')) {
+      return { startup: [1, 2], active: [13, 12], recovery: [11, 0] };
+    }
+    if (tags.has('launcher') || tags.has('anti_air')) {
+      return { startup: [8, 9], active: [10, 14], recovery: [11, 0] };
+    }
+    if (tags.has('dash') || tags.has('teleport')) {
+      return { startup: [4, 5], active: [6, 12, 13], recovery: [7, 0] };
+    }
+    if (tags.has('field') || tags.has('trap')) {
+      return { startup: [0, 3, 15], active: [15, 14], recovery: [11, 3, 0] };
+    }
+    return { startup: [0, 15], active: [15, 14], recovery: [14, 11, 0] };
+  }
+
+  if (tags.has('counter') || tags.has('reflect')) {
+    return { startup: [24, 25], active: [17, 16], recovery: [26, 0] };
+  }
+  if (tags.has('launcher') || tags.has('anti_air')) {
+    return { startup: [8, 9, 20], active: [20, 21, 10], recovery: [22, 11, 0] };
+  }
+  if (tags.has('dash') || tags.has('teleport')) {
+    return { startup: [4, 5, 16], active: [16, 17, 18, 19], recovery: [19, 7, 0] };
+  }
+  if (tags.has('field') || tags.has('trap')) {
+    return { startup: [0, 15, 22], active: [23, 20, 21], recovery: [21, 22, 0] };
+  }
+  if (special.projectile) {
+    return { startup: [0, 15, 22], active: [22, 23, 20], recovery: [21, 11, 0] };
+  }
+  if (tags.has('buff') || tags.has('armor')) {
+    return { startup: [0, 3, 15], active: [15, 23], recovery: [23, 3, 0] };
+  }
+  return { startup: [0, 15, 22], active: [23, 20, 21], recovery: [21, 22, 0] };
+}
+
+function addAuthoredSpecialClips(
+  manifest: SpriteManifest,
   characterId: CharacterId,
-  descriptor: CharacterSpriteDescriptor,
   hasExtended: boolean
 ): SpriteManifest {
-  if (characterId === 'diogenes') {
-    return createDiogenesManifest();
+  const knownClipIds = new Set(manifest.clips.map(({ id }) => id));
+  const commandMappings = [...(manifest.commandSpecialMappings ?? [])];
+
+  for (const special of getSpecialsForCharacter(characterId)) {
+    const phases = getSpecialFramePhases(special, hasExtended);
+    const baseClipId = special.animation.casterClipId;
+    const phaseClipIds = {
+      startup: `${baseClipId}_startup`,
+      active: `${baseClipId}_active`,
+      recovery: `${baseClipId}_recovery`,
+    } as const;
+
+    if (!knownClipIds.has(baseClipId)) {
+      manifest.clips.push(
+        createClip(
+          baseClipId,
+          special.displayName,
+          [...phases.startup, ...phases.active, ...phases.recovery],
+          'once',
+          3
+        )
+      );
+      knownClipIds.add(baseClipId);
+    }
+
+    for (const phase of ['startup', 'active', 'recovery'] as const) {
+      const clipId = phaseClipIds[phase];
+      manifest.clips.push(
+        createClip(clipId, `${special.displayName} ${phase}`, phases[phase], 'once', 3)
+      );
+      manifest.attackPhaseMappings.push({ attackId: special.id, phase, clipId });
+    }
+
+    commandMappings.push({ command: special.commandSlot, clipId: baseClipId });
   }
+
+  manifest.commandSpecialMappings = commandMappings;
+  return manifest;
+}
+
+export function createCharacterSpriteManifest(
+  characterId: CharacterId,
+  hasExtended = Boolean(CHARACTER_SPRITE_PATHS[characterId].extendedPath)
+): SpriteManifest {
+  const descriptor = CHARACTER_SPRITE_PATHS[characterId];
+  let manifest: SpriteManifest;
+
   if (descriptor.layout === 'roster') {
-    return createRosterManifest(characterId, hasExtended);
+    manifest = createRosterManifest(characterId, hasExtended);
+    if (characterId === 'diogenes') {
+      const diogenesManifest = createDiogenesManifest();
+      manifest.clips.push(
+        ...diogenesManifest.clips.filter(
+          (clip) => clip.id === 'energy_blast' || clip.id === 'boulder_roll'
+        )
+      );
+      if (diogenesManifest.commandSpecialMappings) {
+        manifest.commandSpecialMappings = diogenesManifest.commandSpecialMappings;
+      }
+    }
+  } else if (characterId === 'diogenes') {
+    manifest = createDiogenesManifest();
+  } else {
+    manifest = createDefaultManifest(characterId);
   }
-  return createDefaultManifest(characterId);
+
+  return addAuthoredSpecialClips(manifest, characterId, hasExtended);
 }
 
 async function buildCharacterAtlas(
@@ -296,26 +425,42 @@ async function buildCharacterAtlas(
 ): Promise<{ atlas: SpriteAtlas; hasExtended: boolean }> {
   const coreImage = await loadImage(descriptor.corePath);
   const extendedImage = descriptor.extendedPath ? await loadImage(descriptor.extendedPath) : null;
+  const normalizeRosterSheet = (
+    image: HTMLImageElement | HTMLCanvasElement
+  ): HTMLImageElement | HTMLCanvasElement => {
+    if (descriptor.layout !== 'roster' || image.width !== 512 || image.height <= 512) {
+      return image;
+    }
+    const normalized = document.createElement('canvas');
+    normalized.width = 512;
+    normalized.height = 512;
+    const normalizedContext = normalized.getContext('2d');
+    if (!normalizedContext) return image;
+    normalizedContext.drawImage(image, 0, image.height - 512, 512, 512, 0, 0, 512, 512);
+    return normalized;
+  };
+  const coreSheet = normalizeRosterSheet(coreImage);
+  const extendedSheet = extendedImage ? normalizeRosterSheet(extendedImage) : null;
   const atlasImage = document.createElement('canvas');
-  atlasImage.width = Math.max(coreImage.width, extendedImage?.width ?? 0);
-  atlasImage.height = coreImage.height + (extendedImage?.height ?? 0);
+  atlasImage.width = Math.max(coreSheet.width, extendedSheet?.width ?? 0);
+  atlasImage.height = coreSheet.height + (extendedSheet?.height ?? 0);
   const atlasContext = atlasImage.getContext('2d');
   if (!atlasContext) {
     throw new Error(`Unable to create sprite atlas canvas for ${characterId}`);
   }
-  atlasContext.drawImage(coreImage, 0, 0);
-  if (extendedImage) {
-    atlasContext.drawImage(extendedImage, 0, coreImage.height);
+  atlasContext.drawImage(coreSheet, 0, 0);
+  if (extendedSheet) {
+    atlasContext.drawImage(extendedSheet, 0, coreSheet.height);
   }
 
-  const frames = createAtlasFramesFromGrid(coreImage, 4, 4, {
+  const frames = createAtlasFramesFromGrid(coreSheet, 4, 4, {
     cropPixels: GRID_SPACING,
   });
-  if (extendedImage) {
+  if (extendedSheet) {
     frames.push(
-      ...createAtlasFramesFromGrid(extendedImage, 4, 4, {
+      ...createAtlasFramesFromGrid(extendedSheet, 4, 4, {
         indexOffset: 16,
-        destinationOffsetY: coreImage.height,
+        destinationOffsetY: coreSheet.height,
         cropPixels: GRID_SPACING,
       })
     );
@@ -326,10 +471,10 @@ async function buildCharacterAtlas(
       characterId,
       image: atlasImage,
       frames,
-      frameWidth: Math.floor(coreImage.width / 4),
-      frameHeight: Math.floor(coreImage.height / 4),
+      frameWidth: Math.floor(coreSheet.width / 4),
+      frameHeight: Math.floor(coreSheet.height / 4),
     },
-    hasExtended: Boolean(extendedImage),
+    hasExtended: Boolean(extendedSheet),
   };
 }
 
@@ -348,7 +493,7 @@ export async function initializeCharacterSprites(
 
   try {
     const { atlas, hasExtended } = await buildCharacterAtlas(characterId, descriptor);
-    const manifest = createCharacterManifest(characterId, descriptor, hasExtended);
+    const manifest = createCharacterSpriteManifest(characterId, hasExtended);
     const animMap = buildCharacterAnimationMap(manifest, atlas);
     characterAnimationMapCache.set(characterId, animMap);
     spriteLoadFailures.delete(characterId);
@@ -360,7 +505,7 @@ export async function initializeCharacterSprites(
     );
     console.warn(`  → Falling back to procedural rendering for ${characterId}`);
     spriteLoadFailures.set(characterId, errorMessage);
-    const manifest = createCharacterManifest(characterId, descriptor, false);
+    const manifest = createCharacterSpriteManifest(characterId, false);
     const animMap = buildCharacterAnimationMap(manifest, null);
     characterAnimationMapCache.set(characterId, animMap);
     return animMap;

@@ -2,6 +2,8 @@
 
 A 2.5D cyberpunk philosophical arena-brawler with absurdist humor. Battle as neon-cyberpunk versions of historical philosophers in a futuristic dystopia where ideas are fought with fists.
 
+**Current release candidate: 1.1.0.** Local Versus and the complete three-encounter Babylon Story route are playable. Five later story routes are authored previews and remain locked.
+
 ## Quick Start
 
 ```bash
@@ -25,6 +27,9 @@ pnpm test:e2e
 
 # Run the focused sprite/animation browser gate
 pnpm test:e2e:sprites
+
+# Run the complete release gate
+pnpm release:check
 ```
 
 ## Controls
@@ -50,6 +55,8 @@ pnpm test:e2e:sprites
 | Numpad 4 / P | Special Attack |
 
 ## Characters
+
+The 1.1.0 release roster contains 13 fighters: Camus, Machiavelli, Diogenes, Leibniz, Foucault, Deleuze & Guattari, Marx, Bakunin, Schmitt, Socrates, Kant, Kierkegaard, and Stirner. Every release fighter has a three-hit normal chain, four command specials, a unique gimmick, and a 32-frame core-plus-extended animation set.
 
 ### Albert Camus - "The Absurdist"
 - **Style:** Balanced fighter with resilience under pressure
@@ -95,11 +102,11 @@ pnpm test:e2e:sprites
 
 Stage Mode now ships a complete first campaign slice using the existing focused two-fighter combat engine:
 
-1. Select one philosopher from the full 18-character roster.
-2. Use the full 6×3 roster grid with live sprite previews, core stats, special descriptions, and character gimmicks.
+1. Select one philosopher from the curated 13-character release roster.
+2. Use the release grid with live sprite previews, core stats, the full normal chain, all four command inputs, special names, and character gimmicks.
 3. Fight three AI-driven Babylon encounters representing the stage's market, archive-security, and ziggurat-gate waves; threat ramps from easy to medium to hard and each wave uses a distinct combat mode.
 4. Preserve the selected protagonist across encounters and retry the current wave after a defeat.
-5. Clear the final encounter to reach the trial, upgrade, results, and return-to-menu flow.
+5. Clear the final encounter to choose one of three illustrated Babylon rewards, archive the clear, review the next locked route preview, and return to the menu.
 
 Combat presentation now includes conviction energy, special-cooldown readiness, corrected victory/defeat/aborted verdicts, and a stage-progress strip that no longer obscures the health HUD.
 
@@ -110,6 +117,8 @@ The Babylon fights now use three encounter-specific graphics profiles with indep
 Sprite attacks are synchronized directly to combat startup, active, and recovery frames. Light, medium, heavy, and special attacks use multi-frame pose sequences on both legacy and extended sprite sheets, while eight choreography families add distinct straight punches, sweeps, heel attacks, orbiting motions, launchers, flurries, invocations, and ripostes. Movement speed drives locomotion playback, and sprites now receive lane depth, squash/stretch, recoil, hit flashes, shadows, and restrained afterimages.
 
 Sprite extraction now uses an adaptive edge-connected background key rather than assuming every source sheet has a white backdrop. The browser validates all 448 atlas cells across the 18-character roster after keying, rejecting blank cells, out-of-bounds references, and likely retained background panels. Short crossfades between adjacent frames and clips smooth locomotion and combat phase changes without decoupling animation from the deterministic fight timeline.
+
+The 1.1.0 content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
 
 Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.
 

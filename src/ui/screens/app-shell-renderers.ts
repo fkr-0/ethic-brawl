@@ -1,11 +1,10 @@
 import type { FightOutcomeSummary, GameMode, SettingsState } from '@/app/app-shell/types';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { CharacterId } from '@/content/characters/character-data';
-import {
-  getCharacter,
-  getCharacterNormalChain,
-} from '@/content/characters/character-data';
+import { getCharacter, getCharacterNormalChain } from '@/content/characters/character-data';
 import { getEnemyVisual } from '@/content/enemies/enemy-visual-data';
+import { type ItemId, getItem } from '@/content/items/item-data';
+import { getItemIcon } from '@/content/items/item-icon-data';
 import { getSpecialsForCharacter } from '@/content/specials/special-data';
 import {
   GAME_ACTIONS,
@@ -15,13 +14,13 @@ import {
   type PlayerInput,
   formatBindingForDisplay,
 } from '@/core';
+import { commandSlotToLabel } from '@/game/fight/command-input';
 import {
   getAtlasFrame,
   getCharacterAnimationMap,
   getStateClip,
   renderSpriteFrame,
 } from '@/render/sprites';
-import { commandSlotToLabel } from '@/game/fight/command-input';
 import {
   ARCADE_UI_FONT,
   ETHIC_UI,
@@ -58,6 +57,28 @@ function drawWrappedText(
 
   lines.forEach((value, index) => ctx.fillText(value, x, y + index * lineHeight));
   return lines.length * lineHeight;
+}
+
+const itemAtlasImages = new Map<string, HTMLImageElement>();
+
+function renderItemIcon(
+  ctx: CanvasRenderingContext2D,
+  itemId: ItemId,
+  x: number,
+  y: number,
+  size: number
+): boolean {
+  const icon = getItemIcon(itemId);
+  if (!icon) return false;
+  let atlas = itemAtlasImages.get(icon.atlasPath);
+  if (!atlas) {
+    atlas = new Image();
+    atlas.src = icon.atlasPath;
+    itemAtlasImages.set(icon.atlasPath, atlas);
+  }
+  if (!atlas.complete || atlas.naturalWidth === 0) return false;
+  ctx.drawImage(atlas, icon.column * 128, icon.row * 128, 128, 128, x, y, size, size);
+  return true;
 }
 
 function renderCharacterSpritePreview(
@@ -281,6 +302,15 @@ export function renderCharacterSelect(
         ? 'SELECT PLAYER 1'
         : 'SELECT PLAYER 2';
   ctx.fillText(title, CANVAS_WIDTH / 2, 54);
+  if (gameMode === 'stage') {
+    ctx.font = 'bold 10px "Courier New", monospace';
+    ctx.fillStyle = ETHIC_UI.warning;
+    ctx.fillText(
+      'ROUTE 01/06 ACTIVE · ROUTES 02–06 ARE AUTHORED PREVIEWS, NOT YET PLAYABLE',
+      CANVAS_WIDTH / 2,
+      73
+    );
+  }
 
   const columns = 6;
   const cardWidth = 96;
@@ -394,7 +424,10 @@ export function renderCharacterSelect(
     ctx.font = '10px "Courier New", monospace';
     ctx.fillStyle = '#D7CDE2';
     ctx.fillText(
-      normalChain.map((attack) => attack.name).join('  ›  ').slice(0, 42),
+      normalChain
+        .map((attack) => attack.name)
+        .join('  ›  ')
+        .slice(0, 42),
       panelX + 18,
       panelY + 191
     );
@@ -551,7 +584,15 @@ export function renderStageIntro(ctx: CanvasRenderingContext2D, stage: StageIntr
     ctx.font = 'bold 8px "Courier New", monospace';
     ctx.fillStyle = visual.accent;
     ctx.textAlign = 'center';
-    drawWrappedText(ctx, visual.label.toUpperCase(), x + badgeWidth / 2, 309, badgeWidth - 8, 10, 2);
+    drawWrappedText(
+      ctx,
+      visual.label.toUpperCase(),
+      x + badgeWidth / 2,
+      309,
+      badgeWidth - 8,
+      10,
+      2
+    );
   });
   ctx.fillStyle =
     stage.aiDifficulty === 'hard'
@@ -606,13 +647,17 @@ export function renderStageProgress(
   ctx.restore();
 }
 
-export function renderTrial(ctx: CanvasRenderingContext2D): void {
+export function renderTrial(
+  ctx: CanvasRenderingContext2D,
+  rewardItemIds: readonly ItemId[],
+  selectedIndex: number
+): void {
   drawArcadeBackdrop(ctx);
   drawArcadePanel(ctx, {
-    x: CANVAS_WIDTH / 2 - 270,
-    y: 118,
-    width: 540,
-    height: 286,
+    x: CANVAS_WIDTH / 2 - 300,
+    y: 78,
+    width: 600,
+    height: 374,
     accent: ETHIC_UI.warning,
     strong: true,
     label: 'Intermission protocol',
@@ -620,23 +665,56 @@ export function renderTrial(ctx: CanvasRenderingContext2D): void {
   ctx.textAlign = 'center';
   ctx.font = 'bold 42px "Courier New", monospace';
   ctx.fillStyle = '#FF9F1C';
-  ctx.fillText('TRIAL OF CONVICTION', CANVAS_WIDTH / 2, 170);
-  ctx.font = '20px "Courier New", monospace';
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillText('Win the debate between rounds?', CANVAS_WIDTH / 2, 250);
+  ctx.fillText('TRIAL OF CONVICTION', CANVAS_WIDTH / 2, 132);
+  ctx.font = '14px "Courier New", monospace';
+  ctx.fillStyle = '#D7CDE2';
+  ctx.fillText(
+    'Babylon yields one artifact. Choose what the argument leaves behind.',
+    CANVAS_WIDTH / 2,
+    162
+  );
+
+  rewardItemIds.forEach((itemId, index) => {
+    const item = getItem(itemId);
+    const active = index === selectedIndex;
+    const x = 204 + index * 188;
+    const y = 190;
+    drawArcadePanel(ctx, {
+      x,
+      y,
+      width: 176,
+      height: 184,
+      accent: active ? ETHIC_UI.accent : ETHIC_UI.muted,
+      strong: active,
+    });
+    if (!renderItemIcon(ctx, itemId, x + 56, y + 14, 64)) {
+      ctx.fillStyle = active ? ETHIC_UI.accent : ETHIC_UI.muted;
+      ctx.fillRect(x + 68, y + 28, 40, 40);
+    }
+    ctx.font = 'bold 11px "Courier New", monospace';
+    ctx.fillStyle = active ? '#FFFFFF' : '#D7CDE2';
+    ctx.textAlign = 'center';
+    ctx.fillText(item.name.toUpperCase().slice(0, 22), x + 88, y + 96);
+    ctx.font = 'bold 9px "Courier New", monospace';
+    ctx.fillStyle = active ? ETHIC_UI.warning : ETHIC_UI.muted;
+    ctx.fillText(item.category.replace('_', ' ').toUpperCase(), x + 88, y + 116);
+    ctx.font = '9px "Courier New", monospace';
+    ctx.fillStyle = '#B8A9C9';
+    drawWrappedText(ctx, item.description, x + 88, y + 138, 150, 11, 3);
+  });
+
+  ctx.font = 'bold 13px "Courier New", monospace';
   ctx.fillStyle = '#39FF14';
-  ctx.fillText('CONFIRM: Accept reward', CANVAS_WIDTH / 2, 320);
-  ctx.fillStyle = '#FF00FF';
-  ctx.fillText('CANCEL: Skip to results', CANVAS_WIDTH / 2, 355);
+  ctx.fillText('D-PAD CHOOSE · CONFIRM CLAIM · CANCEL DECLINE', CANVAS_WIDTH / 2, 422);
 }
 
-export function renderUpgrade(ctx: CanvasRenderingContext2D): void {
+export function renderUpgrade(ctx: CanvasRenderingContext2D, itemId: ItemId | null): void {
   drawArcadeBackdrop(ctx);
   drawArcadePanel(ctx, {
     x: CANVAS_WIDTH / 2 - 270,
-    y: 118,
+    y: 90,
     width: 540,
-    height: 250,
+    height: 350,
     accent: ETHIC_UI.accent,
     strong: true,
     label: 'Doctrine modified',
@@ -645,11 +723,19 @@ export function renderUpgrade(ctx: CanvasRenderingContext2D): void {
   ctx.font = 'bold 42px "Courier New", monospace';
   ctx.fillStyle = '#39FF14';
   ctx.fillText('UPGRADE ACQUIRED', CANVAS_WIDTH / 2, 170);
-  ctx.font = '20px "Courier New", monospace';
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillText('+ Momentum: Better opening pressure', CANVAS_WIDTH / 2, 260);
+  const item = itemId ? getItem(itemId) : null;
+  if (item && itemId) {
+    renderItemIcon(ctx, itemId, CANVAS_WIDTH / 2 - 42, 194, 84);
+    ctx.font = 'bold 20px "Courier New", monospace';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(item.name.toUpperCase(), CANVAS_WIDTH / 2, 304);
+    ctx.font = '12px "Courier New", monospace';
+    ctx.fillStyle = '#B8A9C9';
+    drawWrappedText(ctx, item.description, CANVAS_WIDTH / 2, 328, 430, 15, 2);
+  }
   ctx.fillStyle = '#B8A9C9';
-  ctx.fillText('Press CONFIRM to continue', CANVAS_WIDTH / 2, 340);
+  ctx.font = '14px "Courier New", monospace';
+  ctx.fillText('Press CONFIRM to archive the Babylon clear', CANVAS_WIDTH / 2, 392);
 }
 
 export function renderPauseScreen(ctx: CanvasRenderingContext2D): void {
@@ -748,6 +834,15 @@ export function renderResults(
       CANVAS_WIDTH / 2,
       240
     );
+    if (stageCleared) {
+      ctx.font = 'bold 11px "Courier New", monospace';
+      ctx.fillStyle = '#B8A9C9';
+      ctx.fillText(
+        'NEXT ROUTE PREVIEW: BABYLON — POSTAPOCALYPSE · LOCKED FOR A LATER RELEASE',
+        CANVAS_WIDTH / 2,
+        264
+      );
+    }
   }
 
   ctx.font = '18px "Courier New", monospace';

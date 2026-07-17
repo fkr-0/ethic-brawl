@@ -1,12 +1,11 @@
 import type { FightRuntime } from '@/app/fight-runtime';
-import {
-  type CharacterId,
-  getCharacter,
-} from '@/content/characters/character-data';
+import { type CharacterId, getCharacter } from '@/content/characters/character-data';
 import { getReleaseRosterIds } from '@/content/characters/release-roster';
+import type { ItemId } from '@/content/items/item-data';
 import {
   STAGE_ONE,
   STAGE_ONE_ENCOUNTERS,
+  STAGE_ONE_REWARD_IDS,
   getStageOneEncounter,
   isFinalStageOneEncounter,
 } from '@/content/stages/stage-one-vertical-slice';
@@ -254,11 +253,17 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
   if (input.player1.confirm) {
     if (appState.characterSelectPhase === 1) {
       if (appState.gameMode === 'stage') {
-        const selectedP1 = selectCharacterByIndex(characterIds, appState.player1SelectIndex, 'camus');
+        const selectedP1 = selectCharacterByIndex(
+          characterIds,
+          appState.player1SelectIndex,
+          'camus'
+        );
         const encounter = getStageOneEncounter(0);
         appState.stageNumber = 1;
         appState.stageEncounterIndex = 0;
         appState.stageEncounterWins = 0;
+        appState.stageRewardIndex = 0;
+        appState.selectedRewardItemId = null;
         appState.pendingSelection = {
           player1: selectedP1,
           player2: encounter.enemyCharacterId,
@@ -271,7 +276,11 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
     }
 
     const selectedP1 = selectCharacterByIndex(characterIds, appState.player1SelectIndex, 'camus');
-    let selectedP2 = selectCharacterByIndex(characterIds, appState.player2SelectIndex, 'machiavelli');
+    let selectedP2 = selectCharacterByIndex(
+      characterIds,
+      appState.player2SelectIndex,
+      'machiavelli'
+    );
     if (selectedP2 === selectedP1) {
       selectedP2 =
         characterIds.find((id) => id !== selectedP1) ??
@@ -358,9 +367,27 @@ function updateFightScene(ctx: SceneUpdateContext, deltaTime: number): void {
  * Update trial scene
  */
 function updateTrialScene(ctx: SceneUpdateContext): void {
-  const { input, transitionTo } = ctx;
+  const { appState, input, transitionTo } = ctx;
+
+  if ((input.player1.moveLeft || input.player1.moveUp) && !appState.stageRewardPreviousLatch) {
+    appState.stageRewardIndex =
+      (appState.stageRewardIndex - 1 + STAGE_ONE_REWARD_IDS.length) % STAGE_ONE_REWARD_IDS.length;
+    appState.stageRewardPreviousLatch = true;
+  }
+  if (!input.player1.moveLeft && !input.player1.moveUp) {
+    appState.stageRewardPreviousLatch = false;
+  }
+
+  if ((input.player1.moveRight || input.player1.moveDown) && !appState.stageRewardNextLatch) {
+    appState.stageRewardIndex = (appState.stageRewardIndex + 1) % STAGE_ONE_REWARD_IDS.length;
+    appState.stageRewardNextLatch = true;
+  }
+  if (!input.player1.moveRight && !input.player1.moveDown) {
+    appState.stageRewardNextLatch = false;
+  }
 
   if (input.player1.confirm) {
+    appState.selectedRewardItemId = STAGE_ONE_REWARD_IDS[appState.stageRewardIndex] ?? null;
     void transitionTo('upgrade');
   }
   if (input.player1.cancel) {
@@ -434,6 +461,10 @@ export interface AppShellState {
   stageNumber: number;
   stageEncounterIndex: number;
   stageEncounterWins: number;
+  stageRewardIndex: number;
+  selectedRewardItemId: ItemId | null;
+  stageRewardPreviousLatch: boolean;
+  stageRewardNextLatch: boolean;
   stageIntroTimerFrames: number;
   roundEndTimerFrames: number;
   latestResult: FightOutcomeSummary | null;
@@ -481,6 +512,10 @@ export function createInitialAppShellState(): AppShellState {
     stageNumber: 1,
     stageEncounterIndex: 0,
     stageEncounterWins: 0,
+    stageRewardIndex: 0,
+    selectedRewardItemId: null,
+    stageRewardPreviousLatch: false,
+    stageRewardNextLatch: false,
     stageIntroTimerFrames: 0,
     roundEndTimerFrames: 0,
     latestResult: null,
@@ -626,11 +661,15 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
       },
     }),
     createScene('trial', {
+      enter: () => {
+        appState.stageRewardPreviousLatch = false;
+        appState.stageRewardNextLatch = false;
+      },
       update: () => {
         updateTrialScene(createUpdateContext());
       },
       render: (ctx) => {
-        renderTrial(ctx);
+        renderTrial(ctx, STAGE_ONE_REWARD_IDS, appState.stageRewardIndex);
       },
     }),
     createScene('upgrade', {
@@ -638,7 +677,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         updateUpgradeScene(createUpdateContext());
       },
       render: (ctx) => {
-        renderUpgrade(ctx);
+        renderUpgrade(ctx, appState.selectedRewardItemId);
       },
     }),
     createScene('pause', {
