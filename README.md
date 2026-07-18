@@ -118,6 +118,8 @@ Sprite attacks are synchronized directly to combat startup, active, and recovery
 
 Sprite extraction now uses an adaptive edge-connected background key rather than assuming every source sheet has a white backdrop. The browser validates all 448 atlas cells across the 18-character roster after keying, rejecting blank cells, out-of-bounds references, and likely retained background panels. Short crossfades between adjacent frames and clips smooth locomotion and combat phase changes without decoupling animation from the deterministic fight timeline.
 
+Fighter sprites are normalized from the visible height of their idle poses instead of sharing one raw source-pixel multiplier. Regular 128-pixel sheets, taller roster sheets, and smaller legacy sheets therefore render at a consistent arena height while preserving front/middle/back lane depth.
+
 The 1.1.0 content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
 
 Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.

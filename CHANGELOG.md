@@ -2,6 +2,19 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.1.1] - 2026-07-18
+
+### Changed
+
+- Fighter sprites are normalized from the visible height of their idle poses, producing consistent readable sizing across 96 px, 128 px, and 136 px source cells.
+- The authored presentation multiplier now defaults to `1.0`; F3/F4 adjust the normalized result between 60% and 150%.
+
+### Fixed
+
+- Deployed fighters no longer render at the legacy `0.4` raw scale, which reduced middle-lane characters to roughly 47–50 visible pixels and made sprite animation appear static.
+- Runtime sprite lookup now accepts every playable character ID without retaining the obsolete four-character type assertion.
+- Browser E2E now rejects a regression to undersized fighter rendering while continuing to validate idle, locomotion, attack, special, hitstun, and lane-depth animation.
+
 ## [1.1.0] - 2026-07-17
 
 ### Added

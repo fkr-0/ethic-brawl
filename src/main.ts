@@ -143,13 +143,13 @@ async function main() {
       }
 
       if (keyboard.wasJustPressed('F3')) {
-        const newScale = Math.max(0.05, getSpriteScaleFactor() - 0.01);
+        const newScale = Math.max(0.6, getSpriteScaleFactor() - 0.05);
         setSpriteScaleFactor(newScale);
         console.info(`🔍 Sprite scale factor: ${newScale.toFixed(2)}`);
       }
 
       if (keyboard.wasJustPressed('F4')) {
-        const newScale = Math.min(1.0, getSpriteScaleFactor() + 0.01);
+        const newScale = Math.min(1.5, getSpriteScaleFactor() + 0.05);
         setSpriteScaleFactor(newScale);
         console.info(`🔍 Sprite scale factor: ${newScale.toFixed(2)}`);
       }

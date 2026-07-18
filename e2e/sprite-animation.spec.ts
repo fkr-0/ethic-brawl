@@ -166,6 +166,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(snapshot.fight.player2Character).toBe('machiavelli');
   expect(snapshot.fight.player1Animation?.clipFrameCount).toBe(4);
   expect(snapshot.fight.player1Animation?.transitionFromClipId).toBeNull();
+  expect(snapshot.fight.player1Animation?.depthScale).toBeGreaterThan(0.85);
 
   const idleAnimations = playerOneAnimations(await collectSnapshots(page, 720, 55)).filter(
     ({ clipId }) => clipId === 'idle'

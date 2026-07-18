@@ -3,7 +3,7 @@
  */
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
-import { CHARACTERS } from '@/content/characters/character-data';
+import { CHARACTERS, type CharacterId } from '@/content/characters/character-data';
 import { getComboDisplayText } from '@/game/fight/combo';
 import { type FightState, getLaneGroundY } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
@@ -21,6 +21,7 @@ import { createFighterAnimationView } from './fighter-animation-view';
 import {
   canRenderSprites,
   createAnimationPlayerState,
+  getAtlasFrame,
   getAttackPhaseClip,
   getCharacterAnimationMap,
   getSpriteScaleFactor,
@@ -29,6 +30,7 @@ import {
   renderFighterSprite,
   resolveAttackPhase,
   resolveAttackPhaseProgress,
+  resolveFighterSpriteRenderScale,
   seekToProgress,
   updateAnimationPlayer,
 } from './sprites';
@@ -310,9 +312,7 @@ export function renderFighter(
   camera: Camera,
   frame = 0
 ): void {
-  const animMap = getCharacterAnimationMap(
-    fighter.characterId as 'camus' | 'diogenes' | 'machiavelli' | 'leibniz'
-  );
+  const animMap = getCharacterAnimationMap(fighter.characterId as CharacterId);
 
   const useSprites =
     SPRITE_RENDERING_ENABLED && animMap && canRenderSprites(animMap, fighter.characterId);
@@ -474,8 +474,6 @@ function renderFighterWithSprite(
   const screenY = fighter.getWorldY();
   const facingRight = fighter.facing === 'right';
   const animation = createFighterAnimationView(fighter, frame);
-  const depthScale = getSpriteScaleFactor() * animation.depthScale;
-
   if (!animState.currentClip || !animMap.atlas) {
     console.warn(`Missing clip or atlas for ${fighter.characterId}, falling back to procedural`);
     renderFighterProcedural(
@@ -486,6 +484,12 @@ function renderFighterWithSprite(
     );
     return;
   }
+
+  const activeClipFrame = animState.currentClip.frames[animState.currentFrame];
+  const activeAtlasFrame = activeClipFrame ? getAtlasFrame(animMap, activeClipFrame) : null;
+  const depthScale = activeAtlasFrame
+    ? resolveFighterSpriteRenderScale(animMap.atlas, animation.depthScale, getSpriteScaleFactor())
+    : animation.depthScale;
 
   const stretchX = Math.max(0.86, Math.min(1.16, 1 + (animation.bodyWidthScale - 1) * 0.28));
   const stretchY = Math.max(0.86, Math.min(1.16, 1 + (animation.bodyHeightScale - 1) * 0.24));

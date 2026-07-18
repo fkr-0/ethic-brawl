@@ -136,9 +136,10 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
 };
 
 /**
- * Global sprite scale factor - scales down large sprites to fit game scale
+ * Player-adjustable multiplier applied after each atlas is normalized to a
+ * consistent visible fighter height. A value of 1 is the authored default.
  */
-let SPRITE_SCALE_FACTOR = 0.4;
+let SPRITE_SCALE_FACTOR = 1;
 
 /**
  * Grid spacing adjustment - pixels to subtract from frame dimensions to avoid overlap
@@ -155,7 +156,7 @@ export function getGridSpacing(): number {
 }
 
 export function setSpriteScaleFactor(scale: number): void {
-  SPRITE_SCALE_FACTOR = scale;
+  SPRITE_SCALE_FACTOR = Math.max(0.6, Math.min(1.5, scale));
 }
 
 export function getSpriteScaleFactor(): number {

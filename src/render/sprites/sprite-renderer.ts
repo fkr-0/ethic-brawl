@@ -31,12 +31,20 @@ export interface SpriteFrameInspection {
   frameIndex: number;
   width: number;
   height: number;
+  opaqueBounds: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
   opaqueCoverage: number;
   topAndSideEdgeCoverage: number;
   boundsValid: boolean;
   blank: boolean;
   backgroundLeak: boolean;
 }
+
+export const TARGET_FIGHTER_VISIBLE_HEIGHT = 132;
 
 let chromaKeySettings: ChromaKeySettings = {
   enabled: true,
@@ -64,6 +72,8 @@ export function setChromaKey(
   chromaKeySettings = { enabled, mode, r, g, b, threshold };
   chromaKeyCanvasCache.clear();
   processedChromaKeyFrames.clear();
+  spriteFrameInspectionCache.clear();
+  fighterSpriteNormalizationCache.clear();
   console.info(
     `🎨 Chroma key ${enabled ? 'enabled' : 'disabled'}: ${mode}, RGB(${r}, ${g}, ${b}), threshold ${threshold}`
   );
@@ -252,6 +262,8 @@ export function applySpriteBackgroundKey(
  */
 const chromaKeyCanvasCache = new Map<string, HTMLCanvasElement>();
 const processedChromaKeyFrames = new Set<string>();
+const spriteFrameInspectionCache = new Map<string, SpriteFrameInspection>();
+const fighterSpriteNormalizationCache = new Map<string, number>();
 
 /**
  * Debug mode for showing frame boundaries
@@ -315,6 +327,10 @@ export function inspectSpriteFrame(
   atlas: SpriteAtlas,
   atlasFrame: AtlasFrame
 ): SpriteFrameInspection {
+  const cacheKey = `${atlas.characterId}_${atlasFrame.index}`;
+  const cached = spriteFrameInspectionCache.get(cacheKey);
+  if (cached) return cached;
+
   const boundsValid =
     atlasFrame.x >= 0 &&
     atlasFrame.y >= 0 &&
@@ -325,16 +341,19 @@ export function inspectSpriteFrame(
   const canvas = boundsValid ? getProcessedSpriteFrameCanvas(atlas, atlasFrame) : null;
   const context = canvas?.getContext('2d', { willReadFrequently: true }) ?? null;
   if (!canvas || !context) {
-    return {
+    const inspection = {
       frameIndex: atlasFrame.index,
       width: atlasFrame.frameWidth,
       height: atlasFrame.frameHeight,
+      opaqueBounds: { x: 0, y: 0, width: 0, height: 0 },
       opaqueCoverage: 0,
       topAndSideEdgeCoverage: 0,
       boundsValid,
       blank: true,
       backgroundLeak: false,
     };
+    spriteFrameInspectionCache.set(cacheKey, inspection);
+    return inspection;
   }
 
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -342,12 +361,22 @@ export function inspectSpriteFrame(
   let opaquePixels = 0;
   let edgePixels = 0;
   let opaqueEdgePixels = 0;
+  let minOpaqueX = width;
+  let minOpaqueY = height;
+  let maxOpaqueX = -1;
+  let maxOpaqueY = -1;
   const edgeWidth = Math.min(2, Math.max(1, Math.floor(Math.min(width, height) / 16)));
 
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const alpha = data[(y * width + x) * 4 + 3] ?? 0;
-      if (alpha > 16) opaquePixels += 1;
+      if (alpha > 16) {
+        opaquePixels += 1;
+        minOpaqueX = Math.min(minOpaqueX, x);
+        minOpaqueY = Math.min(minOpaqueY, y);
+        maxOpaqueX = Math.max(maxOpaqueX, x);
+        maxOpaqueY = Math.max(maxOpaqueY, y);
+      }
       const onTopOrSide = y < edgeWidth || x < edgeWidth || x >= width - edgeWidth;
       if (onTopOrSide) {
         edgePixels += 1;
@@ -358,16 +387,60 @@ export function inspectSpriteFrame(
 
   const opaqueCoverage = opaquePixels / Math.max(1, width * height);
   const topAndSideEdgeCoverage = opaqueEdgePixels / Math.max(1, edgePixels);
-  return {
+  const inspection = {
     frameIndex: atlasFrame.index,
     width,
     height,
+    opaqueBounds: {
+      x: maxOpaqueX >= 0 ? minOpaqueX : 0,
+      y: maxOpaqueY >= 0 ? minOpaqueY : 0,
+      width: maxOpaqueX >= 0 ? maxOpaqueX - minOpaqueX + 1 : 0,
+      height: maxOpaqueY >= 0 ? maxOpaqueY - minOpaqueY + 1 : 0,
+    },
     opaqueCoverage,
     topAndSideEdgeCoverage,
     boundsValid,
     blank: opaqueCoverage < 0.01,
     backgroundLeak: opaqueCoverage > 0.72 || topAndSideEdgeCoverage > 0.58,
   };
+  spriteFrameInspectionCache.set(cacheKey, inspection);
+  return inspection;
+}
+
+export function calculateNormalizedSpriteScale(
+  representativeOpaqueHeight: number,
+  laneDepthScale: number,
+  presentationScale = 1
+): number {
+  const safeOpaqueHeight = Math.max(1, representativeOpaqueHeight);
+  const normalizedScale = TARGET_FIGHTER_VISIBLE_HEIGHT / safeOpaqueHeight;
+  return Math.max(0.65, Math.min(2.1, normalizedScale * laneDepthScale * presentationScale));
+}
+
+/**
+ * Resolve one stable render scale per atlas from the median visible height of
+ * its four idle poses. This prevents small source sheets from producing tiny
+ * fighters and avoids scale pumping when attacks use crouched or wide poses.
+ */
+export function resolveFighterSpriteRenderScale(
+  atlas: SpriteAtlas,
+  laneDepthScale: number,
+  presentationScale = 1
+): number {
+  let normalization = fighterSpriteNormalizationCache.get(atlas.characterId);
+  if (normalization === undefined) {
+    const idleHeights = atlas.frames
+      .slice(0, 4)
+      .map((frame) => inspectSpriteFrame(atlas, frame).opaqueBounds.height)
+      .filter((height) => height > 0)
+      .sort((a, b) => a - b);
+    const representativeOpaqueHeight =
+      idleHeights[Math.floor(idleHeights.length / 2)] ?? atlas.frameHeight;
+    normalization = TARGET_FIGHTER_VISIBLE_HEIGHT / Math.max(1, representativeOpaqueHeight);
+    fighterSpriteNormalizationCache.set(atlas.characterId, normalization);
+  }
+
+  return Math.max(0.65, Math.min(2.1, normalization * laneDepthScale * presentationScale));
 }
 
 /**

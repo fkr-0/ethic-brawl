@@ -1,5 +1,9 @@
 import { createAtlasFramesFromGrid, createDefaultManifest } from '@/render/sprites/sprite-assets';
-import { applySpriteBackgroundKey } from '@/render/sprites/sprite-renderer';
+import {
+  TARGET_FIGHTER_VISIBLE_HEIGHT,
+  applySpriteBackgroundKey,
+  calculateNormalizedSpriteScale,
+} from '@/render/sprites/sprite-renderer';
 import { describe, expect, it } from 'vitest';
 
 describe('sprite sheet decoding', () => {
@@ -79,5 +83,15 @@ describe('sprite sheet decoding', () => {
     expect(alphaAt(6, 3)).toBe(0);
     expect(alphaAt(3, 3)).toBe(255);
     expect(alphaAt(3, 1)).toBe(255);
+  });
+
+  it('normalizes differently-sized sprite sheets to the same readable fighter height', () => {
+    const middleLaneDepth = 0.925;
+    const regularScale = calculateNormalizedSpriteScale(118, middleLaneDepth);
+    const smallSheetScale = calculateNormalizedSpriteScale(69, middleLaneDepth);
+
+    expect(118 * regularScale).toBeCloseTo(TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth, 5);
+    expect(69 * smallSheetScale).toBeCloseTo(TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth, 5);
+    expect(smallSheetScale).toBeGreaterThan(regularScale);
   });
 });
