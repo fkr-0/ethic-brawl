@@ -1,10 +1,10 @@
+import { describe, expect, it } from 'vitest';
 import { createAtlasFramesFromGrid, createDefaultManifest } from '@/render/sprites/sprite-assets';
 import {
-  TARGET_FIGHTER_VISIBLE_HEIGHT,
   applySpriteBackgroundKey,
   calculateNormalizedSpriteScale,
+  TARGET_FIGHTER_VISIBLE_HEIGHT,
 } from '@/render/sprites/sprite-renderer';
-import { describe, expect, it } from 'vitest';
 
 describe('sprite sheet decoding', () => {
   it('divides non-even 4x4 sheets without cumulative frame drift', () => {
@@ -23,6 +23,7 @@ describe('sprite sheet decoding', () => {
     const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
 
     expect(clips.get('run')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([4, 5, 6, 7]);
+    expect(clips.get('run')?.frames.every(({ duration }) => duration === 5)).toBe(true);
     expect(clips.get('jump_rise')?.frames[0]?.frameIndex).toBe(9);
     expect(clips.get('air_attack')?.frames[0]?.frameIndex).toBe(10);
     expect(clips.get('attack_1')?.frames[0]?.frameIndex).toBe(12);

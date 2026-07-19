@@ -40,7 +40,11 @@ Stage presentation tests verify that all four deterministic signature events cyc
 
 Shared-runtime tests verify deterministic system/pass execution, context-loss restoration, synchronous and asynchronous profiling, invalidatable Canvas texture passes, ordered Pixi descriptors, composite stage bridging, declaration compatibility, metadata versioning, and SHA-256 hashes for both vendored runtime files.
 
-The renderer-bridge browser route runs the same fight in Canvas-only and opt-in Pixi bridge modes. It requires a successful lazy Pixi initialization, one active `stage-canvas` pass, a ready context, at least 90 measured frames per mode, and a bounded bridge p95 cost. This comparison is diagnostic evidence; Canvas2D remains the release baseline until native fighter, projectile, and VFX passes reach parity.
+Animation-cadence tests verify that walking and running preserve one continuous clip phase, playback rates remain bounded, speed changes retain the current pose/timer, and generated-frame interpolation does not regress into rapid frame chattering.
+
+Biome 2 keeps import organization separate from the normal release check. Use `pnpm imports:fix` only for an intentional import/export cleanup; `pnpm lint` remains stable for focused feature and release diffs.
+
+The renderer-bridge browser route runs the same fight in Canvas-only and opt-in Pixi bridge modes. It requires a successful lazy Pixi initialization, one active `stage-canvas` pass, a ready context, at least 90 measured frames per mode, a median bridge frame inside the 60 FPS budget, and bounded p95/Canvas-relative jank. This comparison is diagnostic evidence; Canvas2D remains the release baseline until native fighter, projectile, and VFX passes reach parity.
 
 ## Manual browser smoke test
 

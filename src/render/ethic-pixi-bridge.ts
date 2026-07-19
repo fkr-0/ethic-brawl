@@ -97,6 +97,8 @@ export async function createEthicPixiBridge(options: {
   });
 
   const canvas = runtime.canvas;
+  canvas.style.removeProperty('width');
+  canvas.style.removeProperty('height');
   canvas.setAttribute('aria-hidden', 'true');
   canvas.dataset.rendererMode = 'bridge';
   canvas.style.pointerEvents = 'none';

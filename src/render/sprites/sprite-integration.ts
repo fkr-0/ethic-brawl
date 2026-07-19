@@ -4,8 +4,8 @@
 
 import { type CharacterId, getCharacterIds } from '@/content/characters/character-data';
 import {
-  type SpecialMoveDefinition,
   getSpecialsForCharacter,
+  type SpecialMoveDefinition,
 } from '@/content/specials/special-data';
 import { buildCharacterAnimationMap } from './character-anim-map';
 import {
@@ -232,8 +232,8 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
     duration: 4,
   }));
   manifest.clips = [
-    createClip('idle', 'Idle Cycle', [0, 1, 2, 3], 'loop', 7),
-    createClip('run', 'Walk / Run', [4, 5, 6, 7], 'loop', 3),
+    createClip('idle', 'Idle Cycle', [0, 1, 2, 3], 'loop', 10),
+    createClip('run', 'Walk / Run', [4, 5, 6, 7], 'loop', 5),
     createClip('jump_rise', 'Jump Arc', [8, 9], 'once', 4),
     createClip('air_attack', 'Air Attack', [10], 'once', 4),
     createClip('land', 'Land and Settle', [9, 11, 0], 'once', 3),

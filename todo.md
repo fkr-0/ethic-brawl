@@ -2,7 +2,7 @@
 
 ## Current release status
 
-- Automated gate includes lint, typecheck, 99 unit tests, production build, and three Chromium E2E specifications covering Stage 1, sprite correctness/animation fluidity, combat-reactive stages, and Canvas-versus-Pixi bridge validation.
+- Automated gate includes Biome 2 lint, typecheck, 102 unit tests, production build, and three Chromium E2E specifications covering Stage 1, sprite correctness/animation fluidity, combat-reactive stages, responsive viewport sizing, and Canvas-versus-Pixi bridge validation.
 - Remaining blocker: manual browser/canvas validation and release packaging notes.
 - Release rule: do not tag `v1.0.0` until every item in `Release-blocking manual validation` is checked.
 

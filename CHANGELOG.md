@@ -2,6 +2,27 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.5.1] - 2026-07-19
+
+### Added
+
+- A fine-grained fighter-animation prompt pack covering eight-frame idle, forward and backward walking, run acceleration/loop/braking, jump/landing recovery, lane shifts, crouch, and guard transitions.
+- A proposed animation-v2 atlas manifest and visual acceptance checklist for generated sheets.
+- Unit coverage for locomotion cadence, same-clip phase preservation, and bounded playback smoothing.
+
+### Changed
+
+- Upgraded the formatter, linter, and import organizer from Biome 1.9 to Biome 2.5.4 with a migrated v2 configuration; import organization is available explicitly through `pnpm imports:fix` rather than rewriting unrelated files during every lint run.
+- Slowed the authored four-frame idle and locomotion clips to more readable base durations.
+- Walking and running now share a continuous clip phase instead of restarting at frame zero when the gameplay state changes.
+- Playback speed now approaches its target gradually and is bounded to a lower locomotion cadence.
+- Adjacent poses use a broader cross-dissolve, and idle/run clip transitions settle over seven render frames.
+- Procedural locomotion bob and limb cycles now match the slower sprite cadence.
+
+### Fixed
+
+- The production browser-test server now uses a project-specific port, preventing parallel Artifact Lab Playwright jobs from taking over Ethic Brawl's E2E listener.
+
 ## [1.5.0] - 2026-07-19
 
 ### Added

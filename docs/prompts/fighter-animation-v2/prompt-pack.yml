@@ -1,0 +1,208 @@
+version: 1
+purpose: Fine-grained basic fighter animation sheets for image-rendering LLMs
+
+placeholders:
+  character_id: '<id from characters/<id>/prompts.yml>'
+  common_prompt_prefix: '<common_prompt_prefix>'
+  character_sprite_brief: '<character_sprite_brief>'
+  palette_anchors: '<palette_anchors>'
+  appearance_bible: '<appearance_bible>'
+  animation_bible: '<animation_bible>'
+  negative_prompt: '<negative_prompt>'
+
+shared_contract: |
+  Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
+  Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
+  True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
+  Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+  Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
+  Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
+  overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
+  Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+
+shared_negative_prompt: |
+  blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+  background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+  inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+  camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
+  excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+
+prompts:
+  - id: idle_turn_4x4
+    output: assets/sprites/roster/{{character_id}}/source/animation-v2/{{character_id}}_idle_turn_4x4.png
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+      Appearance continuity: {{appearance_bible}}
+      Palette anchors: {{palette_anchors}}
+      Animation identity: {{animation_bible}}
+
+      {{shared_contract}}
+
+      SHEET: FINE IDLE AND TURN CYCLE.
+      Frames 1-8 are one seamless right-facing idle loop:
+      1 neutral contact pose and inhale start;
+      2 chest/shoulders expand subtly, cloth and hair lag by one beat;
+      3 weight moves toward the front foot, hands remain combat-ready;
+      4 lowest settling pose, knees compress slightly;
+      5 exhale and smallest upward recovery;
+      6 weight moves toward the rear foot, head counterbalances;
+      7 micro-adjustment of guard, prop, coat, robe, or hair according to character identity;
+      8 loop bridge, almost frame 1 but with enough follow-through that 8-to-1 is fluid.
+
+      Frames 9-12 are a controlled right-to-left turn in place:
+      9 anticipate by loading the near foot;
+      10 narrow mid-turn silhouette, shoulders and hips crossing at different times;
+      11 plant facing left, trailing cloth/hair/prop catches up;
+      12 settle into the same idle guard while facing left.
+
+      Frames 13-16 return left-to-right:
+      13 load the opposite foot;
+      14 narrow mid-turn silhouette;
+      15 plant facing right;
+      16 settle into the frame-1 stance.
+
+      Motion must be subtle and readable, never comedic bouncing. The character must not translate across the cells.
+      Negative prompt: {{negative_prompt}}, {{shared_negative_prompt}}
+
+  - id: walk_forward_backward_4x4
+    output: assets/sprites/roster/{{character_id}}/source/animation-v2/{{character_id}}_walk_forward_backward_4x4.png
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+      Appearance continuity: {{appearance_bible}}
+      Palette anchors: {{palette_anchors}}
+      Animation identity: {{animation_bible}}
+
+      {{shared_contract}}
+
+      SHEET: EIGHT-FRAME FORWARD WALK AND EIGHT-FRAME BACKWARD WALK. Character faces right in all 16 cells.
+
+      Frames 1-8, advancing walk loop:
+      1 right heel contact / left toe push;
+      2 weight accepts onto right leg, body at lowest point;
+      3 left leg passes under pelvis, arms counter-swing;
+      4 right leg supports, body at highest point;
+      5 left heel contact / right toe push;
+      6 weight accepts onto left leg, body at lowest point;
+      7 right leg passes under pelvis, opposite arm counter-swing;
+      8 left leg supports, body at highest point and loops cleanly to frame 1.
+
+      Frames 9-16, guarded backward walk loop while still facing right:
+      9 rear/left toe reaches back cautiously, guard tightens;
+      10 weight shifts onto rear leg, torso stays oriented toward opponent;
+      11 front/right foot passes back beneath pelvis, shoulders counter-rotate less than forward walk;
+      12 rear leg supports, body rises slightly;
+      13 front/right toe reaches back;
+      14 weight shifts onto front/right leg without turning away;
+      15 rear/left foot passes beneath pelvis;
+      16 front/right leg supports and loops cleanly to frame 9.
+
+      Forward and backward cycles must be visually distinct. Backward movement is defensive, shorter-stride, and never a mirrored forward walk.
+      Root remains centered in every cell. Negative prompt: {{negative_prompt}}, {{shared_negative_prompt}}
+
+  - id: run_start_loop_stop_4x4
+    output: assets/sprites/roster/{{character_id}}/source/animation-v2/{{character_id}}_run_start_loop_stop_4x4.png
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+      Appearance continuity: {{appearance_bible}}
+      Palette anchors: {{palette_anchors}}
+      Animation identity: {{animation_bible}}
+
+      {{shared_contract}}
+
+      SHEET: RUN ACCELERATION, EIGHT-FRAME RUN LOOP, AND BRAKING. Character faces right throughout.
+
+      Frames 1-4, acceleration from idle:
+      1 anticipation, hips lower and torso loads slightly forward;
+      2 rear foot drives, first committed push-off;
+      3 first long step, arms begin stronger counter-swing;
+      4 reaches the same rhythm and body height as run-loop frame 5.
+
+      Frames 5-12, seamless eight-frame run loop:
+      5 right foot contact, left leg extended behind;
+      6 compression/weight acceptance, lowest body point;
+      7 left leg passes quickly under pelvis;
+      8 airborne or light-support phase, highest body point;
+      9 left foot contact, right leg extended behind;
+      10 compression/weight acceptance;
+      11 right leg passes quickly under pelvis;
+      12 airborne or light-support phase that loops cleanly to frame 5.
+
+      Frames 13-16, braking to idle:
+      13 long braking contact ahead of the body;
+      14 deep compression, torso counter-leans without losing balance;
+      15 rebound and short corrective step;
+      16 restored combat idle matching the approved idle sheet.
+
+      Preserve character-specific run personality, but keep the biomechanics legible. No root translation and no speed-line background.
+      Negative prompt: {{negative_prompt}}, {{shared_negative_prompt}}
+
+  - id: jump_land_recovery_4x4
+    output: assets/sprites/roster/{{character_id}}/source/animation-v2/{{character_id}}_jump_land_recovery_4x4.png
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+      Appearance continuity: {{appearance_bible}}
+      Palette anchors: {{palette_anchors}}
+      Animation identity: {{animation_bible}}
+
+      {{shared_contract}}
+
+      SHEET: TAKEOFF, AIR ARC, LANDING, AND RECOVERY. Keep one consistent side-view camera and horizontal root anchor.
+
+      Frames 1-4, takeoff:
+      1 standing anticipation, knees and hips begin to load;
+      2 deepest crouch/compression, arms prepare;
+      3 explosive extension, toes still near baseline;
+      4 clean takeoff, feet visibly leave the baseline.
+
+      Frames 5-8, airborne arc:
+      5 rising pose with limbs trailing;
+      6 near apex, body longest and lightest;
+      7 apex transition, vertical velocity visually near zero;
+      8 beginning descent, limbs prepare for contact.
+
+      Frames 9-12, landing:
+      9 pre-contact with feet reaching for baseline;
+      10 first contact, clear squash and impact absorption;
+      11 deepest landing compression, torso and secondary cloth/hair continue downward;
+      12 first recovery upward, balance returning.
+
+      Frames 13-16, settle:
+      13 small corrective step or character-specific stabilizing gesture;
+      14 guard and head return to neutral height;
+      15 secondary motion settles;
+      16 exact reusable idle-ready pose.
+
+      Do not add a floor, dust cloud, or scenery. A tiny contact accent inside frame 10 is allowed but must not obscure the feet.
+      Negative prompt: {{negative_prompt}}, {{shared_negative_prompt}}
+
+  - id: lane_guard_crouch_4x4
+    output: assets/sprites/roster/{{character_id}}/source/animation-v2/{{character_id}}_lane_guard_crouch_4x4.png
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+      Appearance continuity: {{appearance_bible}}
+      Palette anchors: {{palette_anchors}}
+      Animation identity: {{animation_bible}}
+
+      {{shared_contract}}
+
+      SHEET: 2.5D LANE SHIFTS, CROUCH TRANSITION, AND GUARD TRANSITION.
+
+      Frames 1-4, sidestep away from camera into the rear lane: load, diagonal push, crossing/passing step, planted recovery.
+      Frames 5-8, sidestep toward camera into the front lane: load, diagonal push, crossing/passing step, planted recovery.
+      Keep the side-view fighting silhouette; suggest depth through foreshortened feet, shoulder overlap, and small scale cues, not a camera turn.
+
+      Frames 9-12, crouch transition: standing guard, descent, stable crouch, rise toward standing. Keep the head protected and feet planted.
+      Frames 13-16, guard transition: neutral guard, guard raise, firm held block, controlled guard release toward neutral.
+
+      Defensive poses must remain character-specific. No shield unless the character owns one. No perspective background or floor grid.
+      Negative prompt: {{negative_prompt}}, {{shared_negative_prompt}}

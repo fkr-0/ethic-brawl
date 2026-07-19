@@ -3,7 +3,7 @@ import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, resolve, sep } from 'node:path';
 
-const port = Number(process.env.PORT ?? 4173);
+const port = Number(process.env.PORT ?? 43_173);
 const mountPath = '/ethic-brawl';
 const root = resolve(process.argv[2] ?? 'dist');
 

@@ -2,23 +2,23 @@
  * Sprite system exports
  */
 
-export * from './types';
-export * from './sprite-assets';
+// Re-export commonly used functions for convenience
+export { SPRITE_RENDERING_ENABLED, setSpriteRendering } from '../renderer';
+export * from './animation-cadence';
 export * from './animation-player';
 export * from './character-anim-map';
-export * from './sprite-renderer';
-export * from './sprite-integration';
-export * from './sprite-debug';
 export * from './command-specials';
-export * from './sprite-fallback';
 export * from './item-overlay-renderer';
-
-// Re-export commonly used functions for convenience
-export { setSpriteRendering, SPRITE_RENDERING_ENABLED } from '../renderer';
+export * from './sprite-assets';
+export * from './sprite-debug';
+export * from './sprite-fallback';
+export * from './sprite-integration';
 export {
-  getSpriteScaleFactor,
-  setSpriteScaleFactor,
-  setGridSpacing,
   getGridSpacing,
+  getSpriteScaleFactor,
+  setGridSpacing,
+  setSpriteScaleFactor,
 } from './sprite-integration';
-export { setChromaKey, getChromaKeySettings, setDebugFrameBoundaries } from './sprite-renderer';
+export * from './sprite-renderer';
+export { getChromaKeySettings, setChromaKey, setDebugFrameBoundaries } from './sprite-renderer';
+export * from './types';

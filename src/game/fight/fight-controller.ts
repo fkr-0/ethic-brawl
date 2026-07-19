@@ -229,7 +229,7 @@ export function createFightController() {
    * Update fight state
    */
   function update(deltaTime: number, input1: PlayerInput, input2?: PlayerInput): void {
-    if (!state || !state.isActive || state.isPaused) return;
+    if (!state?.isActive || state.isPaused) return;
 
     state.frameCount++;
     state.visualEffects = stepFightVisualEffects(state.visualEffects, [

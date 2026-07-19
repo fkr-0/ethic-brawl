@@ -126,9 +126,9 @@ export function createClip(
  */
 export function createDefaultClips(): AnimationClip[] {
   return [
-    createClip('idle', 'Idle', [0], 'loop', 8),
+    createClip('idle', 'Idle', [0], 'loop', 10),
     createSingleFrameClip('guard', 'Guard', 1, 1),
-    createClip('run', 'Run', [4, 5, 6, 7], 'loop', 3),
+    createClip('run', 'Run', [4, 5, 6, 7], 'loop', 5),
     createSingleFrameClip('crouch', 'Crouch / Landing', 8, 1),
     createClip('jump_rise', 'Jump Rise', [9], 'loop', 6),
     createSingleFrameClip('air_attack', 'Air Attack', 10, 1),

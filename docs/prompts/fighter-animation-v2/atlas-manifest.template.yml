@@ -1,0 +1,53 @@
+version: 1
+character_id: '<id>'
+source_directory: assets/sprites/roster/<id>/source/animation-v2
+sheet_layout:
+  rows: 4
+  columns: 4
+  frame_order: row-major
+  alpha: true
+  root_motion: engine-owned
+
+sheets:
+  idle_turn:
+    file: <id>_idle_turn_4x4.png
+    clips:
+      idle_v2: {frames: [0, 1, 2, 3, 4, 5, 6, 7], mode: loop, duration: 7}
+      turn_left_v2: {frames: [8, 9, 10, 11], mode: once, duration: 3}
+      turn_right_v2: {frames: [12, 13, 14, 15], mode: once, duration: 3}
+
+  walk_forward_backward:
+    file: <id>_walk_forward_backward_4x4.png
+    clips:
+      walk_forward_v2: {frames: [0, 1, 2, 3, 4, 5, 6, 7], mode: loop, duration: 4}
+      walk_backward_v2: {frames: [8, 9, 10, 11, 12, 13, 14, 15], mode: loop, duration: 5}
+
+  run_start_loop_stop:
+    file: <id>_run_start_loop_stop_4x4.png
+    clips:
+      run_start_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      run_v2: {frames: [4, 5, 6, 7, 8, 9, 10, 11], mode: loop, duration: 3}
+      run_stop_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
+
+  jump_land_recovery:
+    file: <id>_jump_land_recovery_4x4.png
+    clips:
+      jump_takeoff_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      jump_air_v2: {frames: [4, 5, 6, 7], mode: once, duration: 4}
+      land_v2: {frames: [8, 9, 10, 11], mode: once, duration: 3}
+      land_recovery_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
+
+  lane_guard_crouch:
+    file: <id>_lane_guard_crouch_4x4.png
+    clips:
+      lane_away_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      lane_toward_v2: {frames: [4, 5, 6, 7], mode: once, duration: 3}
+      crouch_v2: {frames: [8, 9, 10, 11], mode: once, duration: 4}
+      guard_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
+
+integration_status: prompt-only
+integration_notes:
+  - Keep existing core and extended sheets active until each v2 sheet passes visual review.
+  - Assign unique atlas offsets when importing multiple sheets into one CharacterAnimationMap.
+  - Preserve locomotion phase when switching walk_forward_v2 to run_v2.
+  - Select walk_backward_v2 from movement intent relative to facing, not from world-space direction alone.

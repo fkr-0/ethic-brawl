@@ -3,6 +3,7 @@ import { type Page, expect, test } from '@playwright/test';
 type PerformanceSummary = {
   count: number;
   meanMs: number;
+  p50Ms: number;
   p95Ms: number;
   maxMs: number;
 };
@@ -53,9 +54,10 @@ test('compares Canvas-only and opt-in bridge frame performance before defaulting
   expect(canvas.p95Ms).toBeGreaterThan(0);
   expect(bridge.p95Ms).toBeGreaterThan(0);
   const p95Ratio = bridge.p95Ms / canvas.p95Ms;
-  expect(p95Ratio).toBeLessThan(25);
-
   console.info('Ethic renderer performance', { canvas, bridge, p95Ratio });
+  expect(bridge.p50Ms).toBeLessThan(1000 / 60);
+  expect(bridge.p95Ms).toBeLessThan(80);
+  expect(p95Ratio).toBeLessThan(50);
 
   await page.goto('');
   await page.waitForFunction(() => window.__ETHIC_BRAWL_E2E__?.getSnapshot().ready === true);

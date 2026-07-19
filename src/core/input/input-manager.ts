@@ -27,10 +27,22 @@ export interface InputState {
 type CoreSnapshot = Readonly<Record<GameAction, ActionState>>;
 
 const GAMEPAD_BINDINGS: Record<GameAction, ActionBinding[]> = {
-  moveLeft: [{ type: 'axis', index: 0, direction: -1 }, { type: 'button', index: 14 }],
-  moveRight: [{ type: 'axis', index: 0, direction: 1 }, { type: 'button', index: 15 }],
-  moveUp: [{ type: 'axis', index: 1, direction: -1 }, { type: 'button', index: 12 }],
-  moveDown: [{ type: 'axis', index: 1, direction: 1 }, { type: 'button', index: 13 }],
+  moveLeft: [
+    { type: 'axis', index: 0, direction: -1 },
+    { type: 'button', index: 14 },
+  ],
+  moveRight: [
+    { type: 'axis', index: 0, direction: 1 },
+    { type: 'button', index: 15 },
+  ],
+  moveUp: [
+    { type: 'axis', index: 1, direction: -1 },
+    { type: 'button', index: 12 },
+  ],
+  moveDown: [
+    { type: 'axis', index: 1, direction: 1 },
+    { type: 'button', index: 13 },
+  ],
   jump: [{ type: 'button', index: 0 }],
   attack: [{ type: 'button', index: 2 }],
   block: [{ type: 'button', index: 4 }],

@@ -240,7 +240,7 @@ export function seekToProgress(
 ): AnimationPlayerState {
   const clampedProgress = Math.max(0, Math.min(progress, 1));
 
-  if (!state.currentClip || !state.currentClip.frames || state.currentClip.frames.length === 0) {
+  if (!state.currentClip?.frames || state.currentClip.frames.length === 0) {
     return state;
   }
 

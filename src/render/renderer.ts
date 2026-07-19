@@ -22,6 +22,7 @@ import {
   resolveFightStageEvent,
 } from './fight-presentation';
 import { createFighterAnimationView } from './fighter-animation-view';
+import type { AnimationClip, AttackPhase, CharacterAnimationMap } from './sprites';
 import {
   canRenderSprites,
   createAnimationPlayerState,
@@ -32,13 +33,17 @@ import {
   getStateClip,
   playClip,
   renderFighterSprite,
+  resolveAnimationPlaybackTarget,
   resolveAttackPhase,
   resolveAttackPhaseProgress,
+  resolveClipTransitionFrames,
   resolveFighterSpriteRenderScale,
   seekToProgress,
+  setPlaybackSpeed,
+  shouldRestartAnimationClip,
+  smoothAnimationPlaybackSpeed,
   updateAnimationPlayer,
 } from './sprites';
-import type { AnimationClip, AttackPhase, CharacterAnimationMap } from './sprites';
 import { collectAmbientEffectsForFighter, renderAmbientEffect, renderVisualEffect } from './vfx';
 
 /**
@@ -98,11 +103,6 @@ export function renderSpecialMeter(
  * Per-fighter animation player state cache
  */
 const fighterAnimationStateCache = new Map<string, ReturnType<typeof createAnimationPlayerState>>();
-
-/**
- * Track the last known state for each fighter to detect state changes
- */
-const fighterLastStateCache = new Map<string, string>();
 
 interface SpriteClipTransition {
   clip: AnimationClip;
@@ -181,7 +181,7 @@ function resolveSpriteFrameBlend(
     const localProgress = framePosition - currentFrame;
     return {
       nextFrame: Math.min(clip.frames.length - 1, currentFrame + 1),
-      blend: smoothStep01((localProgress - 0.62) / 0.38),
+      blend: smoothStep01((localProgress - 0.42) / 0.58),
     };
   }
 
@@ -191,7 +191,7 @@ function resolveSpriteFrameBlend(
     : 0;
   return {
     nextFrame: resolveNextClipFrame(clip, animationState.currentFrame, animationState.direction),
-    blend: smoothStep01((localProgress - 0.68) / 0.32),
+    blend: smoothStep01((localProgress - 0.46) / 0.54),
   };
 }
 
@@ -216,15 +216,8 @@ function getFighterAnimationState(
  */
 export function clearFighterAnimationCache(): void {
   fighterAnimationStateCache.clear();
-  fighterLastStateCache.clear();
   fighterClipTransitionCache.clear();
   fighterAnimationSnapshotCache.clear();
-  // Clear all effective state caches
-  for (const key of Array.from(fighterLastStateCache.keys())) {
-    if (key.includes('_effective')) {
-      fighterLastStateCache.delete(key);
-    }
-  }
 }
 
 /**
@@ -447,37 +440,33 @@ function renderFighterWithSprite(
     }
   }
   const effectiveClip = targetClip;
-
-  // Check if effective state has changed
-  const lastEffectiveState = fighterLastStateCache.get(`${fighter.id}_effective`);
-  const effectiveStateChanged = lastEffectiveState !== effectiveState;
-  fighterLastStateCache.set(`${fighter.id}_effective`, effectiveState);
-
-  // Determine if we need to switch clips
+  const locomotionSpeed = Math.abs(fighter.moveVelocityX) + Math.abs(fighter.velocityX) * 0.35;
+  const targetPlaybackSpeed = resolveAnimationPlaybackTarget(effectiveState, locomotionSpeed);
   const needsClipChange =
-    !animState.currentClip ||
-    !effectiveClip ||
-    animState.currentClip.id !== effectiveClip.id ||
-    effectiveStateChanged;
+    effectiveClip !== null &&
+    shouldRestartAnimationClip(animState.currentClip?.id ?? null, effectiveClip.id);
 
   if (effectiveClip && needsClipChange) {
-    const locomotionSpeed = Math.abs(fighter.moveVelocityX) + Math.abs(fighter.velocityX) * 0.35;
-    const playbackSpeed =
-      effectiveState === 'running'
-        ? Math.max(0.8, Math.min(1.8, 0.72 + locomotionSpeed * 0.12))
-        : effectiveState === 'walking'
-          ? Math.max(0.72, Math.min(1.3, 0.7 + locomotionSpeed * 0.08))
-          : 1;
-    if (animState.currentClip && animState.currentClip.id !== effectiveClip.id) {
+    if (animState.currentClip) {
+      const transitionFrames = resolveClipTransitionFrames(
+        animState.currentClip.id,
+        effectiveClip.id
+      );
       fighterClipTransitionCache.set(fighter.id, {
         clip: animState.currentClip,
         frame: animState.currentFrame,
-        ttl: 4,
-        totalTtl: 4,
+        ttl: transitionFrames,
+        totalTtl: transitionFrames,
       });
     }
-    const newState = playClip(animState, effectiveClip, playbackSpeed);
+    const newState = playClip(animState, effectiveClip, targetPlaybackSpeed);
     Object.assign(animState, newState);
+  } else if (effectiveClip) {
+    const playbackSpeed = smoothAnimationPlaybackSpeed(
+      animState.playbackSpeed,
+      targetPlaybackSpeed
+    );
+    Object.assign(animState, setPlaybackSpeed(animState, playbackSpeed));
   }
 
   if (poseProgress !== null) {
@@ -489,8 +478,6 @@ function renderFighterWithSprite(
   }
 
   const frameBlendState = resolveSpriteFrameBlend(animState, poseProgress);
-
-  fighterLastStateCache.set(fighter.id, fighter.state);
 
   const screenX = fighter.x;
   const screenY = fighter.getWorldY();
@@ -586,7 +573,7 @@ function renderFighterWithSprite(
   const transition = fighterClipTransitionCache.get(fighter.id);
   const transitionAlpha = transition ? transition.ttl / transition.totalTtl : 0;
   if (transition && transitionAlpha > 0) {
-    drawSpritePose(transition.clip, transition.frame, 0, transitionAlpha * 0.38, 0.45);
+    drawSpritePose(transition.clip, transition.frame, 0, transitionAlpha * 0.28, 0.38);
   }
   if (turnGhostAlpha > 0.02) {
     drawSpritePose(currentClip, animState.currentFrame, 0, turnGhostAlpha, 0.55, !facingRight);
@@ -617,9 +604,12 @@ function renderFighterWithSprite(
     );
   }
 
-  const rendered = drawSpritePose(currentClip, animState.currentFrame, 0, 1);
-  if (frameBlendState.nextFrame !== animState.currentFrame && frameBlendState.blend > 0.01) {
-    drawSpritePose(currentClip, frameBlendState.nextFrame, 0, frameBlendState.blend * 0.48);
+  const hasFrameBlend =
+    frameBlendState.nextFrame !== animState.currentFrame && frameBlendState.blend > 0.01;
+  const frameBlendOpacity = hasFrameBlend ? frameBlendState.blend * 0.82 : 0;
+  const rendered = drawSpritePose(currentClip, animState.currentFrame, 0, 1 - frameBlendOpacity);
+  if (hasFrameBlend) {
+    drawSpritePose(currentClip, frameBlendState.nextFrame, 0, frameBlendOpacity);
   }
 
   const currentAtlasFrame = currentClip.frames[animState.currentFrame]?.frameIndex ?? -1;

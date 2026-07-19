@@ -1,25 +1,23 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "assist": { "enabled": false },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
         "noUnusedVariables": "error",
         "useHookAtTopLevel": "error"
       },
       "style": {
         "useConst": "error",
-        "noVar": "error",
         "noParameterAssign": "off",
         "useNumberNamespace": "error"
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noConsoleLog": "warn"
+        "noVar": "error",
+        "noConsole": { "level": "warn", "options": { "allow": ["info", "warn", "error"] } }
       },
       "performance": {
         "noDelete": "warn"
@@ -48,6 +46,16 @@
     }
   },
   "files": {
-    "ignore": ["dist", ".e2e-dist", "tests.bak", "playwright-report", "test-results", "vendor"]
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/.e2e-dist",
+      "!**/tests.bak",
+      "!**/playwright-report",
+      "!**/test-results",
+      "!**/vendor",
+      "!**/test-sprites.html",
+      "!**/trunk"
+    ]
   }
 }

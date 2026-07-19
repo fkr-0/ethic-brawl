@@ -1,4 +1,4 @@
-import { type Page, expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import type { E2EProbeSnapshot } from '../src/app/e2e-probe';
 import { RELEASE_ROSTER_IDS } from '../src/content/characters/release-roster';
 
@@ -223,7 +223,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(snapshot.renderer.stageCrowdEnergy).toBeGreaterThanOrEqual(0);
   expect(snapshot.renderer.stageCrowdEnergy).toBeLessThanOrEqual(1);
 
-  const idleAnimations = playerOneAnimations(await collectSnapshots(page, 720, 55)).filter(
+  const idleAnimations = playerOneAnimations(await collectSnapshots(page, 1_250, 55)).filter(
     ({ clipId }) => clipId === 'idle'
   );
   expect(
@@ -236,6 +236,8 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   );
   expect(idleBlend.fight.player1Animation?.frameBlend).toBeLessThanOrEqual(1);
   expect(idleAnimations.every(({ frameBlend }) => frameBlend >= 0 && frameBlend <= 1)).toBe(true);
+  expect(idleAnimations.every(({ playbackSpeed }) => playbackSpeed >= 0.8)).toBe(true);
+  expect(idleAnimations.every(({ playbackSpeed }) => playbackSpeed <= 0.84)).toBe(true);
 
   await page.keyboard.down('d');
   const runBlendPromise = waitForPlayerOneAnimation(
@@ -243,7 +245,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     'a locomotion interpolation blend',
     (animation) => animation.clipId === 'run' && animation.frameBlend > 0.05
   );
-  const movementSamples = await collectSnapshots(page, 720, 48);
+  const movementSamples = await collectSnapshots(page, 1_150, 48);
   const runBlend = await runBlendPromise;
   await page.keyboard.up('d');
   expect(runBlend.fight.player1Animation?.frameBlend).toBeGreaterThan(0.05);
@@ -257,7 +259,9 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(
     new Set(movementAnimations.map(({ atlasFrameIndex }) => atlasFrameIndex)).size
   ).toBeGreaterThan(2);
-  expect(movementAnimations.every(({ playbackSpeed }) => playbackSpeed >= 0.72)).toBe(true);
+  expect(
+    movementAnimations.every(({ playbackSpeed }) => playbackSpeed >= 0.72 && playbackSpeed <= 1.28)
+  ).toBe(true);
   for (let index = 1; index < movementPositions.length; index += 1) {
     const delta = (movementPositions[index] ?? 0) - (movementPositions[index - 1] ?? 0);
     expect(delta).toBeGreaterThanOrEqual(-0.01);

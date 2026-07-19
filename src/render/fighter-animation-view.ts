@@ -93,7 +93,7 @@ function getLocomotionCycle(fighter: Fighter, globalFrame: number): number {
   const velocity = Math.abs(fighter.moveVelocityX) + Math.abs(fighter.velocityX) * 0.35;
   const profile = fighter.character.animation;
   const frequency =
-    (fighter.state === 'running' ? 0.48 : fighter.state === 'walking' ? 0.3 : 0.16) *
+    (fighter.state === 'running' ? 0.34 : fighter.state === 'walking' ? 0.22 : 0.12) *
     profile.legStride;
   return globalFrame * frequency + velocity * 0.35 + fighter.playerId * 0.6 + profile.visualSeed;
 }

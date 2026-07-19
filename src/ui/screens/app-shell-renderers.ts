@@ -55,7 +55,9 @@ function drawWrappedText(
   }
   if (line && lines.length < maxLines) lines.push(line);
 
-  lines.forEach((value, index) => ctx.fillText(value, x, y + index * lineHeight));
+  lines.forEach((value, index) => {
+    ctx.fillText(value, x, y + index * lineHeight);
+  });
   return lines.length * lineHeight;
 }
 
