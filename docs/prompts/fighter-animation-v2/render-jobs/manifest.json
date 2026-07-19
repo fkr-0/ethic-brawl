@@ -1,0 +1,1270 @@
+{
+  "characterCount": 16,
+  "generatedBy": "docs/prompts/fighter-animation-v2/render-prompts.py",
+  "jobCount": 80,
+  "jobs": [
+    {
+      "characterId": "anselm",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "anselm/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/anselm/source/animation-v2/anselm_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/anselm/source/anselm_core_4x4.png",
+        "assets/sprites/roster/anselm/source/anselm_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "anselm",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "anselm/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/anselm/source/animation-v2/anselm_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/anselm/source/anselm_core_4x4.png",
+        "assets/sprites/roster/anselm/source/anselm_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "anselm",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "anselm/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/anselm/source/animation-v2/anselm_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/anselm/source/anselm_core_4x4.png",
+        "assets/sprites/roster/anselm/source/anselm_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "anselm",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "anselm/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/anselm/source/animation-v2/anselm_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/anselm/source/anselm_core_4x4.png",
+        "assets/sprites/roster/anselm/source/anselm_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "anselm",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "anselm/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/anselm/source/animation-v2/anselm_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/anselm/source/anselm_core_4x4.png",
+        "assets/sprites/roster/anselm/source/anselm_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aquinas",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "aquinas/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/aquinas/source/aquinas_core_4x4.png",
+        "assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aquinas",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "aquinas/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/aquinas/source/aquinas_core_4x4.png",
+        "assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aquinas",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "aquinas/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/aquinas/source/aquinas_core_4x4.png",
+        "assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aquinas",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "aquinas/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/aquinas/source/aquinas_core_4x4.png",
+        "assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aquinas",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "aquinas/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/aquinas/source/aquinas_core_4x4.png",
+        "assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aristotle",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "aristotle/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/aristotle/source/aristotle_core_4x4.png",
+        "assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aristotle",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "aristotle/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/aristotle/source/aristotle_core_4x4.png",
+        "assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aristotle",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "aristotle/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/aristotle/source/aristotle_core_4x4.png",
+        "assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aristotle",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "aristotle/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/aristotle/source/aristotle_core_4x4.png",
+        "assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "aristotle",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "aristotle/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/aristotle/source/aristotle_core_4x4.png",
+        "assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "bakunin",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "bakunin/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/bakunin/source/bakunin_core_4x4.png",
+        "assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "bakunin",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "bakunin/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/bakunin/source/bakunin_core_4x4.png",
+        "assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "bakunin",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "bakunin/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/bakunin/source/bakunin_core_4x4.png",
+        "assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "bakunin",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "bakunin/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/bakunin/source/bakunin_core_4x4.png",
+        "assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "bakunin",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "bakunin/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/bakunin/source/bakunin_core_4x4.png",
+        "assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "camus",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "camus/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/camus/source/animation-v2/camus_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": []
+    },
+    {
+      "characterId": "camus",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "camus/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/camus/source/animation-v2/camus_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": []
+    },
+    {
+      "characterId": "camus",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "camus/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/camus/source/animation-v2/camus_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": []
+    },
+    {
+      "characterId": "camus",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "camus/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/camus/source/animation-v2/camus_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": []
+    },
+    {
+      "characterId": "camus",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "camus/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/camus/source/animation-v2/camus_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": []
+    },
+    {
+      "characterId": "deleuze_guattari",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "deleuze_guattari/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "deleuze_guattari",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "deleuze_guattari/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "deleuze_guattari",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "deleuze_guattari/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "deleuze_guattari",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "deleuze_guattari/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "deleuze_guattari",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "deleuze_guattari/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "foucault",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "foucault/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/foucault/source/animation-v2/foucault_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/foucault/source/foucault_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "foucault",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "foucault/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/foucault/source/animation-v2/foucault_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/foucault/source/foucault_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "foucault",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "foucault/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/foucault/source/animation-v2/foucault_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/foucault/source/foucault_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "foucault",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "foucault/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/foucault/source/animation-v2/foucault_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/foucault/source/foucault_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "foucault",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "foucault/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/foucault/source/animation-v2/foucault_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/foucault/source/foucault_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "hegel",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "hegel/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/hegel/source/animation-v2/hegel_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/hegel/source/hegel_core_4x4.png",
+        "assets/sprites/roster/hegel/source/hegel_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "hegel",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "hegel/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/hegel/source/animation-v2/hegel_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/hegel/source/hegel_core_4x4.png",
+        "assets/sprites/roster/hegel/source/hegel_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "hegel",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "hegel/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/hegel/source/animation-v2/hegel_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/hegel/source/hegel_core_4x4.png",
+        "assets/sprites/roster/hegel/source/hegel_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "hegel",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "hegel/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/hegel/source/animation-v2/hegel_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/hegel/source/hegel_core_4x4.png",
+        "assets/sprites/roster/hegel/source/hegel_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "hegel",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "hegel/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/hegel/source/animation-v2/hegel_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/hegel/source/hegel_core_4x4.png",
+        "assets/sprites/roster/hegel/source/hegel_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kant",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "kant/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/kant/source/animation-v2/kant_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/kant/source/kant_core_4x4.png",
+        "assets/sprites/roster/kant/source/kant_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kant",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "kant/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/kant/source/animation-v2/kant_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/kant/source/kant_core_4x4.png",
+        "assets/sprites/roster/kant/source/kant_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kant",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "kant/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/kant/source/animation-v2/kant_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/kant/source/kant_core_4x4.png",
+        "assets/sprites/roster/kant/source/kant_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kant",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "kant/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/kant/source/animation-v2/kant_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/kant/source/kant_core_4x4.png",
+        "assets/sprites/roster/kant/source/kant_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kant",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "kant/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/kant/source/animation-v2/kant_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/kant/source/kant_core_4x4.png",
+        "assets/sprites/roster/kant/source/kant_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kierkegaard",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "kierkegaard/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kierkegaard",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "kierkegaard/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kierkegaard",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "kierkegaard/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kierkegaard",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "kierkegaard/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "kierkegaard",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "kierkegaard/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "machiavelli",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "machiavelli/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": []
+    },
+    {
+      "characterId": "machiavelli",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "machiavelli/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": []
+    },
+    {
+      "characterId": "machiavelli",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "machiavelli/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": []
+    },
+    {
+      "characterId": "machiavelli",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "machiavelli/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": []
+    },
+    {
+      "characterId": "machiavelli",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "machiavelli/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": []
+    },
+    {
+      "characterId": "marx",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "marx/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/marx/source/animation-v2/marx_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/marx/source/marx_core_4x4.png",
+        "assets/sprites/roster/marx/source/marx_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "marx",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "marx/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/marx/source/animation-v2/marx_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/marx/source/marx_core_4x4.png",
+        "assets/sprites/roster/marx/source/marx_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "marx",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "marx/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/marx/source/animation-v2/marx_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/marx/source/marx_core_4x4.png",
+        "assets/sprites/roster/marx/source/marx_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "marx",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "marx/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/marx/source/animation-v2/marx_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/marx/source/marx_core_4x4.png",
+        "assets/sprites/roster/marx/source/marx_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "marx",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "marx/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/marx/source/animation-v2/marx_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/marx/source/marx_core_4x4.png",
+        "assets/sprites/roster/marx/source/marx_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "nietzsche",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "nietzsche/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "nietzsche",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "nietzsche/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "nietzsche",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "nietzsche/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "nietzsche",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "nietzsche/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "nietzsche",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "nietzsche/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "schmitt",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "schmitt/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/schmitt/source/schmitt_core_4x4.png",
+        "assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "schmitt",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "schmitt/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/schmitt/source/schmitt_core_4x4.png",
+        "assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "schmitt",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "schmitt/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/schmitt/source/schmitt_core_4x4.png",
+        "assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "schmitt",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "schmitt/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/schmitt/source/schmitt_core_4x4.png",
+        "assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "schmitt",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "schmitt/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/schmitt/source/schmitt_core_4x4.png",
+        "assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "socrates",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "socrates/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/socrates/source/animation-v2/socrates_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/socrates/source/socrates_core_4x4.png",
+        "assets/sprites/roster/socrates/source/socrates_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "socrates",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "socrates/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/socrates/source/animation-v2/socrates_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/socrates/source/socrates_core_4x4.png",
+        "assets/sprites/roster/socrates/source/socrates_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "socrates",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "socrates/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/socrates/source/animation-v2/socrates_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/socrates/source/socrates_core_4x4.png",
+        "assets/sprites/roster/socrates/source/socrates_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "socrates",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "socrates/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/socrates/source/animation-v2/socrates_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/socrates/source/socrates_core_4x4.png",
+        "assets/sprites/roster/socrates/source/socrates_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "socrates",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "socrates/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/socrates/source/animation-v2/socrates_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/socrates/source/socrates_core_4x4.png",
+        "assets/sprites/roster/socrates/source/socrates_extended_4x4.png"
+      ]
+    },
+    {
+      "characterId": "stirner",
+      "clips": [
+        "idle_v2",
+        "turn_left_v2",
+        "turn_right_v2"
+      ],
+      "markdown": "stirner/idle_turn_4x4.md",
+      "outputImage": "assets/sprites/roster/stirner/source/animation-v2/stirner_idle_turn_4x4.png",
+      "promptId": "idle_turn_4x4",
+      "promptOrder": 0,
+      "referenceImages": [
+        "assets/sprites/roster/stirner/source/stirner_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "stirner",
+      "clips": [
+        "walk_forward_v2",
+        "walk_backward_v2"
+      ],
+      "markdown": "stirner/walk_forward_backward_4x4.md",
+      "outputImage": "assets/sprites/roster/stirner/source/animation-v2/stirner_walk_forward_backward_4x4.png",
+      "promptId": "walk_forward_backward_4x4",
+      "promptOrder": 1,
+      "referenceImages": [
+        "assets/sprites/roster/stirner/source/stirner_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "stirner",
+      "clips": [
+        "run_start_v2",
+        "run_v2",
+        "run_stop_v2"
+      ],
+      "markdown": "stirner/run_start_loop_stop_4x4.md",
+      "outputImage": "assets/sprites/roster/stirner/source/animation-v2/stirner_run_start_loop_stop_4x4.png",
+      "promptId": "run_start_loop_stop_4x4",
+      "promptOrder": 2,
+      "referenceImages": [
+        "assets/sprites/roster/stirner/source/stirner_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "stirner",
+      "clips": [
+        "jump_takeoff_v2",
+        "jump_air_v2",
+        "land_v2",
+        "land_recovery_v2"
+      ],
+      "markdown": "stirner/jump_land_recovery_4x4.md",
+      "outputImage": "assets/sprites/roster/stirner/source/animation-v2/stirner_jump_land_recovery_4x4.png",
+      "promptId": "jump_land_recovery_4x4",
+      "promptOrder": 3,
+      "referenceImages": [
+        "assets/sprites/roster/stirner/source/stirner_core_4x4.png"
+      ]
+    },
+    {
+      "characterId": "stirner",
+      "clips": [
+        "lane_away_v2",
+        "lane_toward_v2",
+        "crouch_v2",
+        "guard_v2"
+      ],
+      "markdown": "stirner/lane_guard_crouch_4x4.md",
+      "outputImage": "assets/sprites/roster/stirner/source/animation-v2/stirner_lane_guard_crouch_4x4.png",
+      "promptId": "lane_guard_crouch_4x4",
+      "promptOrder": 4,
+      "referenceImages": [
+        "assets/sprites/roster/stirner/source/stirner_core_4x4.png"
+      ]
+    }
+  ],
+  "promptPackVersion": 1,
+  "sources": {
+    "characters/anselm/prompts.yml": "7a8ccaad0867bc3826c5fe772b0e91d82ff60ea738e1ed3bb4ec636459d3d999",
+    "characters/aquinas/prompts.yml": "45c05c04745d942c560515b3ae1458d80b753fe0f1cae031e31c3a0649d5094c",
+    "characters/aristotle/prompts.yml": "1c8c66cbd328e9e218f3bb0a363daea3ce4b4f40539ee77947368332090a8489",
+    "characters/bakunin/prompts.yml": "55f3fc9fba265dd32b94d2704fc7ede99de5f7e33adc10e587b0a1dc47a1687e",
+    "characters/camus/prompts.yml": "eef88bdc3887c87283fa3b30ce72a11eb105f5c01c82277a2909f9eb9ea109bc",
+    "characters/deleuze_guattari/prompts.yml": "af2ff9ac5050995e511380e66868c500995f6e5dfed79447444b6be07c911c29",
+    "characters/foucault/prompts.yml": "76116f37cb08a7697d51f3969c55994142dc4a7a6efa2ace817998dae03ba0a4",
+    "characters/hegel/prompts.yml": "eafa563530e1f039d8665dc9f0075137d789674a323df007a0497c3dc7099859",
+    "characters/kant/prompts.yml": "0ef2a944f5ee0a4fca8a4768ee8f00879d1d629fd318cbcce7f57fcf631f2bdc",
+    "characters/kierkegaard/prompts.yml": "dfe3034cc765b8bbc8a6b78097061c33bdff68d07af4bf9fc7c0abbe5efa2464",
+    "characters/machiavelli/prompts.yml": "d40470552b7b95bc5486ffe79907fcc1f725202d2723f4f47c554ae335fb3feb",
+    "characters/marx/prompts.yml": "7b50ddc9ecbff860dd53aaf0499ddf651b44a6abe9a20caad4a5b2d311c4054c",
+    "characters/nietzsche/prompts.yml": "ea7aa34dee18f9e15edc7cd9ae69654efb6289d10592614d8eeae5a8a48183c5",
+    "characters/schmitt/prompts.yml": "f09cbf87c1bbfcdf78cac2e757d92b2f8e2ff82a88dea47d09616fd9b98e0700",
+    "characters/socrates/prompts.yml": "680564ca21b66080c0e6da3fb9bd8cae4501c03d01e0b1b1bdeff2908dad4203",
+    "characters/stirner/prompts.yml": "b3d5da13557662562eaecd6de917300742092f0b7c19328aefbf2086462cd597",
+    "docs/prompts/fighter-animation-v2/atlas-manifest.template.yml": "1143eb137fa27644942a0dd09958661f51b577853497a8df6e75ce658e8e0806",
+    "docs/prompts/fighter-animation-v2/prompt-pack.yml": "13be48caa89f0884fbcd055121d10578e7d359b281ffe7b3f3bf31e5d6705800"
+  },
+  "version": 1
+}

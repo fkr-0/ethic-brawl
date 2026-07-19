@@ -134,7 +134,7 @@ Combat sparks and landing dust use one fixed-capacity object pool instead of all
 
 The browser E2E test mounts a production build at `/ethic-brawl/`, covering deployed bundle and sprite URLs, two-dimensional roster navigation, real keyboard combat, defeat/retry behavior, escalating AI, all three encounters, and the complete campaign route.
 
-Fine-grained replacement prompts for idle, forward/backward walking, run start/loop/stop, jump/landing, lane changes, crouch, and guard cycles live in `docs/prompts/fighter-animation-v2/`. They reuse each character's existing `characters/<id>/prompts.yml` identity bible and keep root movement outside the generated frames so the runtime remains authoritative.
+Fine-grained replacement prompts for idle, forward/backward walking, run start/loop/stop, jump/landing, lane changes, crouch, and guard cycles live in `docs/prompts/fighter-animation-v2/`. They reuse each character's existing `characters/<id>/prompts.yml` identity bible and keep root movement outside the generated frames so the runtime remains authoritative. Run `pnpm prompts:v2:generate` to create one Markdown render job per character and sheet, or `pnpm prompts:v2:check` to verify the generated set.
 
 The project uses Biome 2.5.4. `pnpm lint` and `pnpm lint:fix` run the normal release checks; `pnpm imports:fix` deliberately invokes Biome Assist for a separate import/export organization pass so routine formatting does not produce unrelated barrel-file churn.
 

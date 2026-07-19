@@ -22,9 +22,17 @@
     "release:check": "node scripts/release-check.mjs",
     "test:e2e:sprites": "playwright test e2e/sprite-animation.spec.ts",
     "assets:build": "python scripts/build-release-atlases.py && python scripts/build-character-extensions.py",
-    "assets:check": "node scripts/check-release-assets.mjs"
+    "assets:check": "node scripts/check-release-assets.mjs",
+    "prompts:v2:generate": "python3 docs/prompts/fighter-animation-v2/render-prompts.py",
+    "prompts:v2:check": "python3 docs/prompts/fighter-animation-v2/render-prompts.py --check"
   },
-  "keywords": ["game", "brawler", "cyberpunk", "philosophy", "canvas"],
+  "keywords": [
+    "game",
+    "brawler",
+    "cyberpunk",
+    "philosophy",
+    "canvas"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {

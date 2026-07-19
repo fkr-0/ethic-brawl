@@ -48,15 +48,35 @@ assets/sprites/roster/<id>/source/animation-v2/
 
 Suggested file names are listed in `atlas-manifest.template.yml`.
 
+## Generate individual render jobs
+
+Install the small Python dependency once, then create one ready-to-paste Markdown file for every character and sheet prompt:
+
+```bash
+python3 -m pip install -r docs/prompts/fighter-animation-v2/requirements.txt
+pnpm prompts:v2:generate
+```
+
+The generator reads `prompt-pack.yml`, `atlas-manifest.template.yml`, and all `characters/<id>/prompts.yml` files. It writes 80 individual jobs to `render-jobs/<character>/<prompt-id>.md`, plus `render-jobs/INDEX.md` and a machine-readable `render-jobs/manifest.json`.
+
+Verify that the generated files match their sources without rewriting them:
+
+```bash
+pnpm prompts:v2:check
+```
+
+Each generated Markdown file contains frontmatter, the target image path, suggested approved reference sheets, the runtime clip plan, and one complete prompt block for the rendering model. Generated files should not be edited directly; change the prompt pack or character bible and regenerate them.
+
 ## Rendering workflow
 
-1. Generate `idle_turn_4x4` first.
-2. Reject it if identity, baseline, scale, or cell geometry drifts.
-3. Use the approved idle sheet together with the current core sheet as references for every later sheet.
-4. Generate locomotion sheets individually. Do not request all 80 frames in one image.
-5. Compare frame 1 and frame 8 of each loop at 50% opacity; the silhouette should not jump.
-6. Run the checklist in `REVIEW_CHECKLIST.md` before slicing or integrating anything.
+1. Run `pnpm prompts:v2:generate` and open `render-jobs/INDEX.md`.
+2. Generate `idle_turn_4x4` first for a character.
+3. Reject it if identity, baseline, scale, or cell geometry drifts.
+4. Use the approved idle sheet together with the current core sheet as references for every later sheet.
+5. Generate locomotion sheets individually. Do not request all 80 frames in one image.
+6. Compare frame 1 and frame 8 of each loop at 50% opacity; the silhouette should not jump.
+7. Run the checklist in `REVIEW_CHECKLIST.md` before slicing or integrating anything.
 
 ## Runtime note
 
-Ethic Brawl v1.3.3 slows and cross-dissolves the existing four-frame cycles and preserves phase when walking changes to running. These prompts are the asset-side follow-up. The new sheets are deliberately separate from the current core and extended atlases so they can be reviewed and integrated without replacing combat frames prematurely.
+Ethic Brawl v1.5.1 slows and cross-dissolves the existing four-frame cycles and preserves phase when walking changes to running. These prompts are the asset-side follow-up. The new sheets are deliberately separate from the current core and extended atlases so they can be reviewed and integrated without replacing combat frames prematurely.
