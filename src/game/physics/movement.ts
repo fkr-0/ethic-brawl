@@ -3,7 +3,7 @@
  */
 
 import type { CharacterMovementProfile } from '@/content/characters/character-data';
-import { clamp } from '@/utils/math';
+import { approach, clampNumber, integrateAcceleration } from '../../../vendor/arcade-core.mjs';
 import { FRAME_DATA } from '../fight/fighter-state';
 
 export interface MovementTuning {
@@ -71,13 +71,7 @@ export function applyAcceleration(
   targetVelocity: number,
   acceleration: number = FRAME_DATA.RUN_ACCELERATION
 ): number {
-  if (currentVelocity < targetVelocity) {
-    return Math.min(currentVelocity + acceleration, targetVelocity);
-  }
-  if (currentVelocity > targetVelocity) {
-    return Math.max(currentVelocity - acceleration, targetVelocity);
-  }
-  return currentVelocity;
+  return approach(currentVelocity, targetVelocity, acceleration);
 }
 
 /**
@@ -87,13 +81,7 @@ export function applyDeceleration(
   currentVelocity: number,
   deceleration: number = FRAME_DATA.RUN_DECELERATION
 ): number {
-  if (currentVelocity > 0) {
-    return Math.max(0, currentVelocity - deceleration);
-  }
-  if (currentVelocity < 0) {
-    return Math.min(0, currentVelocity + deceleration);
-  }
-  return currentVelocity;
+  return approach(currentVelocity, 0, deceleration);
 }
 
 /**
@@ -125,7 +113,7 @@ export function calculateJumpVelocity(agility: number, jumpMultiplier = 1): numb
  * Apply gravity to vertical velocity
  */
 export function applyGravity(velocityY: number): number {
-  return velocityY - FRAME_DATA.GRAVITY;
+  return integrateAcceleration(velocityY, -FRAME_DATA.GRAVITY);
 }
 
 /**
@@ -140,7 +128,7 @@ export function applyAirControl(
   const maxAirSpeed = Math.abs(walkSpeed);
   const airControlForce = maxAirSpeed * airControl;
   const nextVelocity = currentVelocity + inputDirection * airControlForce;
-  return clamp(nextVelocity, -maxAirSpeed, maxAirSpeed);
+  return clampNumber(nextVelocity, -maxAirSpeed, maxAirSpeed);
 }
 
 /**

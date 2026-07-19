@@ -1,3 +1,4 @@
+import { integrateAcceleration } from '../../../vendor/arcade-core.mjs';
 import type { ItemDefinition, ItemEffect } from './item-system';
 
 export type ItemActionKind = 'pickup' | 'equip' | 'consume' | 'throw' | 'use';
@@ -93,6 +94,6 @@ export function updateThrownItem(item: WorldItemState, gravity = 0.6): WorldItem
     ...item,
     x: item.x + item.velocityX,
     y: item.y + item.velocityY,
-    velocityY: item.velocityY + gravity,
+    velocityY: integrateAcceleration(item.velocityY, gravity),
   };
 }

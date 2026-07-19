@@ -1,5 +1,5 @@
 import type { AABB, Vector2 } from '@/utils/math';
-import { aabbIntersects } from '@/utils/math';
+import { aabbOverlap, resolveOneWayPlatforms } from '../../../vendor/arcade-core.mjs';
 
 export type StageSurfaceKind = 'floor' | 'platform' | 'wall' | 'hazard';
 export type StageObstacleKind = 'solid' | 'jump_through' | 'pickup_blocker' | 'hazard';
@@ -95,7 +95,7 @@ export function resolveStageMovement(
   const solids: Array<StageSurface | StageObstacle> = [...stage.surfaces, ...stage.obstacles];
 
   for (const solid of solids) {
-    if ('damageOnTouch' in solid && solid.damageOnTouch && aabbIntersects(next, solid)) {
+    if ('damageOnTouch' in solid && solid.damageOnTouch && aabbOverlap(next, solid)) {
       touchedHazards.push(solid.id);
     }
 
@@ -106,14 +106,16 @@ export function resolveStageMovement(
       if (!wasAbove || !isFalling) continue;
     }
 
-    if (!aabbIntersects(next, solid)) continue;
+    if (!aabbOverlap(next, solid)) continue;
 
-    const previousBottom = previous.y + previous.height;
-    const nextBottom = next.y + next.height;
-    const landingFromAbove =
-      previousBottom <= solid.y && nextBottom >= solid.y && next.velocityY >= 0;
-    if (landingFromAbove) {
-      next = { ...next, y: solid.y - next.height, velocityY: 0 };
+    const landing = resolveOneWayPlatforms({
+      body: next,
+      previous,
+      velocityY: next.velocityY,
+      platforms: [solid],
+    });
+    if (landing) {
+      next = { ...next, y: landing.y, velocityY: 0 };
       grounded = true;
       standingOnId = solid.id;
       continue;
