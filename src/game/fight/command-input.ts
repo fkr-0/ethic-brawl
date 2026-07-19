@@ -91,9 +91,7 @@ export function pushCommandBuffer(
 ): CommandBufferState {
   const runtime = toRuntimeCommandBuffer(buffer);
   return fromRuntimeCommandBuffer(
-    command
-      ? pushBufferedInput(runtime, command, frame)
-      : pruneBufferedInputQueue(runtime, frame)
+    command ? pushBufferedInput(runtime, command, frame) : pruneBufferedInputQueue(runtime, frame)
   );
 }
 
@@ -125,9 +123,7 @@ function toRuntimeCommandBuffer(buffer: CommandBufferState): BufferedInputQueue<
   };
 }
 
-function fromRuntimeCommandBuffer(
-  runtime: BufferedInputQueue<CombatCommand>
-): CommandBufferState {
+function fromRuntimeCommandBuffer(runtime: BufferedInputQueue<CombatCommand>): CommandBufferState {
   return {
     runtime,
     memoryFrames: runtime.window,

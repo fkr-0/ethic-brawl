@@ -6,7 +6,9 @@ import type { E2EProbeSnapshot } from '../src/app/e2e-probe';
 
 const REVIEW_DIR = join(process.cwd(), 'generated', 'sprite-visual-review');
 
-async function captureRecord(file: string): Promise<{ file: string; bytes: number; sha256: string }> {
+async function captureRecord(
+  file: string
+): Promise<{ file: string; bytes: number; sha256: string }> {
   const bytes = await readFile(join(REVIEW_DIR, file));
   return {
     file,

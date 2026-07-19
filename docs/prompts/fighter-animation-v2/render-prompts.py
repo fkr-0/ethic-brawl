@@ -385,7 +385,26 @@ def render_manifest(
             for job in job_list
         ],
     }
-    return json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    rendered = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True)
+
+    # Biome keeps short scalar arrays on one line. Match that canonical
+    # representation here so generated output is lint-clean and `--check`
+    # remains a deterministic byte-for-byte verification.
+    scalar_array = re.compile(
+        r'(?m)^(?P<prefix>\s+"(?:clips|referenceImages)":) \[\n'
+        r'(?P<values>(?:\s+"(?:[^"\\]|\\.)*",?\n)+)'
+        r'\s+\]'
+    )
+
+    def compact_short_array(match: re.Match[str]) -> str:
+        values = [
+            line.strip().removesuffix(",")
+            for line in match.group("values").splitlines()
+        ]
+        compact = f'{match.group("prefix")} [{", ".join(values)}]'
+        return compact if len(compact) <= 100 else match.group(0)
+
+    return scalar_array.sub(compact_short_array, rendered) + "\n"
 
 
 def expected_files(

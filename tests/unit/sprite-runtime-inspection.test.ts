@@ -57,7 +57,12 @@ describe('Ethic sprite runtime adapters', () => {
     image.width = 4;
     image.height = 4;
     const data = new Uint8ClampedArray(4 * 4 * 4);
-    const opaquePixels: Array<readonly [number, number]> = [[1, 1], [2, 1], [1, 2], [2, 2]];
+    const opaquePixels: Array<readonly [number, number]> = [
+      [1, 1],
+      [2, 1],
+      [1, 2],
+      [2, 2],
+    ];
     for (const [x, y] of opaquePixels) {
       data[(y * 4 + x) * 4 + 3] = 255;
     }
@@ -102,7 +107,7 @@ describe('Ethic sprite runtime adapters', () => {
         const data = new Uint8ClampedArray(width * height * 4);
         const visibleHeight = heights[Math.floor(sourceX / 2)] ?? height;
         for (let y = height - visibleHeight; y < height; y += 1) {
-          data[(y * width) * 4 + 3] = 255;
+          data[y * width * 4 + 3] = 255;
         }
         return { data, width, height };
       }),
