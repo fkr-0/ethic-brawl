@@ -3,6 +3,12 @@
  */
 
 import { type CharacterId, getCharacterIds } from '@/content/characters/character-data';
+import {
+  createArcadeSpriteFrameGeometry,
+  inspectArcadeSpriteFrame,
+  resolveArcadeSpriteVisibleScale,
+  type ArcadeSpritePixelData,
+} from '../../../vendor/arcade-runtime.mjs';
 import { markSpriteFallback, shouldUseSpriteFallback } from './sprite-fallback';
 import type {
   AnimationClip,
@@ -125,9 +131,10 @@ export function calculatePivotOffset(
   atlasFrame: AtlasFrame,
   scale: number
 ): { x: number; y: number } {
+  const geometry = createArcadeSpriteFrameGeometry(atlasFrame, { scale });
   return {
-    x: -atlasFrame.frameWidth * atlasFrame.pivot.x * scale,
-    y: -atlasFrame.frameHeight * atlasFrame.pivot.y * scale,
+    x: geometry.destination.x,
+    y: geometry.destination.y,
   };
 }
 
@@ -265,6 +272,22 @@ const processedChromaKeyFrames = new Set<string>();
 const spriteFrameInspectionCache = new Map<string, SpriteFrameInspection>();
 const fighterSpriteNormalizationCache = new Map<string, number>();
 
+function readProcessedSpritePixels(
+  atlas: SpriteAtlas,
+  atlasFrame: AtlasFrame
+): ArcadeSpritePixelData {
+  const canvas = getProcessedSpriteFrameCanvas(atlas, atlasFrame);
+  const context = canvas?.getContext('2d', { willReadFrequently: true }) ?? null;
+  if (!canvas || !context) {
+    return {
+      data: new Uint8ClampedArray(atlasFrame.frameWidth * atlasFrame.frameHeight * 4),
+      width: atlasFrame.frameWidth,
+      height: atlasFrame.frameHeight,
+    };
+  }
+  return context.getImageData(0, 0, canvas.width, canvas.height);
+}
+
 /**
  * Debug mode for showing frame boundaries
  */
@@ -338,9 +361,7 @@ export function inspectSpriteFrame(
     atlasFrame.frameHeight > 0 &&
     atlasFrame.x + atlasFrame.frameWidth <= atlas.image.width &&
     atlasFrame.y + atlasFrame.frameHeight <= atlas.image.height;
-  const canvas = boundsValid ? getProcessedSpriteFrameCanvas(atlas, atlasFrame) : null;
-  const context = canvas?.getContext('2d', { willReadFrequently: true }) ?? null;
-  if (!canvas || !context) {
+  if (!boundsValid) {
     const inspection = {
       frameIndex: atlasFrame.index,
       width: atlasFrame.frameWidth,
@@ -348,60 +369,27 @@ export function inspectSpriteFrame(
       opaqueBounds: { x: 0, y: 0, width: 0, height: 0 },
       opaqueCoverage: 0,
       topAndSideEdgeCoverage: 0,
-      boundsValid,
+      boundsValid: false,
       blank: true,
       backgroundLeak: false,
     };
     spriteFrameInspectionCache.set(cacheKey, inspection);
     return inspection;
   }
-
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  const { data, width, height } = imageData;
-  let opaquePixels = 0;
-  let edgePixels = 0;
-  let opaqueEdgePixels = 0;
-  let minOpaqueX = width;
-  let minOpaqueY = height;
-  let maxOpaqueX = -1;
-  let maxOpaqueY = -1;
-  const edgeWidth = Math.min(2, Math.max(1, Math.floor(Math.min(width, height) / 16)));
-
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      const alpha = data[(y * width + x) * 4 + 3] ?? 0;
-      if (alpha > 16) {
-        opaquePixels += 1;
-        minOpaqueX = Math.min(minOpaqueX, x);
-        minOpaqueY = Math.min(minOpaqueY, y);
-        maxOpaqueX = Math.max(maxOpaqueX, x);
-        maxOpaqueY = Math.max(maxOpaqueY, y);
-      }
-      const onTopOrSide = y < edgeWidth || x < edgeWidth || x >= width - edgeWidth;
-      if (onTopOrSide) {
-        edgePixels += 1;
-        if (alpha > 16) opaqueEdgePixels += 1;
-      }
-    }
-  }
-
-  const opaqueCoverage = opaquePixels / Math.max(1, width * height);
-  const topAndSideEdgeCoverage = opaqueEdgePixels / Math.max(1, edgePixels);
-  const inspection = {
-    frameIndex: atlasFrame.index,
-    width,
-    height,
-    opaqueBounds: {
-      x: maxOpaqueX >= 0 ? minOpaqueX : 0,
-      y: maxOpaqueY >= 0 ? minOpaqueY : 0,
-      width: maxOpaqueX >= 0 ? maxOpaqueX - minOpaqueX + 1 : 0,
-      height: maxOpaqueY >= 0 ? maxOpaqueY - minOpaqueY + 1 : 0,
-    },
-    opaqueCoverage,
-    topAndSideEdgeCoverage,
-    boundsValid,
-    blank: opaqueCoverage < 0.01,
-    backgroundLeak: opaqueCoverage > 0.72 || topAndSideEdgeCoverage > 0.58,
+  const runtimeInspection = inspectArcadeSpriteFrame(atlas.image, atlasFrame, {
+    cacheKey: atlas.characterId,
+    readPixels: () => readProcessedSpritePixels(atlas, atlasFrame),
+  });
+  const inspection: SpriteFrameInspection = {
+    frameIndex: runtimeInspection.frameIndex,
+    width: runtimeInspection.width,
+    height: runtimeInspection.height,
+    opaqueBounds: runtimeInspection.opaqueBounds,
+    opaqueCoverage: runtimeInspection.opaqueCoverage,
+    topAndSideEdgeCoverage: runtimeInspection.topAndSideEdgeCoverage,
+    boundsValid: runtimeInspection.boundsValid,
+    blank: runtimeInspection.blank,
+    backgroundLeak: runtimeInspection.backgroundLeak,
   };
   spriteFrameInspectionCache.set(cacheKey, inspection);
   return inspection;
@@ -429,14 +417,35 @@ export function resolveFighterSpriteRenderScale(
 ): number {
   let normalization = fighterSpriteNormalizationCache.get(atlas.characterId);
   if (normalization === undefined) {
-    const idleHeights = atlas.frames
-      .slice(0, 4)
-      .map((frame) => inspectSpriteFrame(atlas, frame).opaqueBounds.height)
-      .filter((height) => height > 0)
-      .sort((a, b) => a - b);
-    const representativeOpaqueHeight =
-      idleHeights[Math.floor(idleHeights.length / 2)] ?? atlas.frameHeight;
-    normalization = TARGET_FIGHTER_VISIBLE_HEIGHT / Math.max(1, representativeOpaqueHeight);
+    normalization = resolveArcadeSpriteVisibleScale(
+      {
+        image: atlas.image,
+        frames: atlas.frames.slice(0, 4),
+        frameHeight: atlas.frameHeight,
+      },
+      {
+        targetVisibleHeight: TARGET_FIGHTER_VISIBLE_HEIGHT,
+        fallbackVisibleHeight: atlas.frameHeight,
+        representative: 'median',
+        inspectionOptions: {
+          cacheKey: atlas.characterId,
+          readPixels: (_source, rectangle, frame) => {
+            const frameIndex = frame.absoluteFrame ?? frame.index ?? 0;
+            const atlasFrame = atlas.frames.find((candidate) => candidate.index === frameIndex) ?? {
+              index: frameIndex,
+              x: rectangle.x,
+              y: rectangle.y,
+              width: rectangle.width,
+              height: rectangle.height,
+              frameWidth: rectangle.width,
+              frameHeight: rectangle.height,
+              pivot: { x: 0.5, y: 1 },
+            };
+            return readProcessedSpritePixels(atlas, atlasFrame);
+          },
+        },
+      }
+    );
     fighterSpriteNormalizationCache.set(atlas.characterId, normalization);
   }
 
