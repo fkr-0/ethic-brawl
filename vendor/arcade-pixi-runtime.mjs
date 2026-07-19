@@ -1,4 +1,4 @@
-export const ARCADE_PIXI_RUNTIME_VERSION = '0.6.0';
+export const ARCADE_PIXI_RUNTIME_VERSION = '0.7.0';
 
 export const DEFAULT_ARCADE_LAYERS = Object.freeze([
   'backdrop',
@@ -19,6 +19,181 @@ function finiteNumber(value, fallback) {
 function positiveNumber(value, fallback) {
   const resolved = finiteNumber(value, fallback);
   return resolved > 0 ? resolved : fallback;
+}
+
+export function clampArcadeValue(value, minimum, maximum) {
+  const resolvedMinimum = finiteNumber(minimum, 0);
+  const resolvedMaximum = finiteNumber(maximum, resolvedMinimum);
+  invariant(resolvedMinimum <= resolvedMaximum, 'clamp minimum must not exceed maximum');
+  return Math.min(resolvedMaximum, Math.max(resolvedMinimum, finiteNumber(value, resolvedMinimum)));
+}
+
+export function approachArcadeValue(current, target, maximumDelta) {
+  const resolvedCurrent = finiteNumber(current, 0);
+  const resolvedTarget = finiteNumber(target, resolvedCurrent);
+  const resolvedDelta = Math.max(0, finiteNumber(maximumDelta, 0));
+  if (resolvedCurrent < resolvedTarget) return Math.min(resolvedCurrent + resolvedDelta, resolvedTarget);
+  if (resolvedCurrent > resolvedTarget) return Math.max(resolvedCurrent - resolvedDelta, resolvedTarget);
+  return resolvedCurrent;
+}
+
+export function applyArcadeDrag(value, drag, delta = 1) {
+  const resolvedDrag = Math.max(0, finiteNumber(drag, 0));
+  const resolvedDelta = Math.max(0, finiteNumber(delta, 0));
+  return approachArcadeValue(value, 0, resolvedDrag * resolvedDelta);
+}
+
+export function integrateArcadeBody2D(body, delta = 1) {
+  invariant(body && typeof body === 'object', 'kinematic body is required');
+  const resolvedDelta = Math.max(0, finiteNumber(delta, 0));
+  const x = finiteNumber(body.x, 0);
+  const y = finiteNumber(body.y, 0);
+  const vx = finiteNumber(body.vx, 0);
+  const vy = finiteNumber(body.vy, 0);
+  return {
+    ...body,
+    x: x + vx * resolvedDelta,
+    y: y + vy * resolvedDelta,
+    vx,
+    vy,
+  };
+}
+
+const ARCADE_ANIMATION_MODES = new Set(['loop', 'once', 'pingpong']);
+
+function normalizeAnimationMode(mode) {
+  return ARCADE_ANIMATION_MODES.has(mode) ? mode : 'loop';
+}
+
+function resolveAnimationFrameDuration(frameDuration, frame) {
+  const rawDuration = typeof frameDuration === 'function'
+    ? frameDuration(frame)
+    : Array.isArray(frameDuration)
+      ? frameDuration[frame]
+      : frameDuration;
+  return positiveNumber(rawDuration, 1 / 60);
+}
+
+export function createArcadeAnimationClock(initial = {}) {
+  return {
+    frame: Math.max(0, Math.floor(finiteNumber(initial.frame, 0))),
+    elapsed: Math.max(0, finiteNumber(initial.elapsed, 0)),
+    direction: initial.direction === -1 ? -1 : 1,
+    playing: initial.playing === true,
+    paused: initial.paused === true,
+    completed: initial.completed === true,
+    frameAdvances: 0,
+    advancedFrames: [],
+  };
+}
+
+export function playArcadeAnimationClock(state = {}, options = {}) {
+  const current = createArcadeAnimationClock(state);
+  const restart = options.restart !== false;
+  return {
+    ...current,
+    frame: restart ? Math.max(0, Math.floor(finiteNumber(options.frame, 0))) : current.frame,
+    elapsed: restart ? 0 : current.elapsed,
+    direction: restart ? (options.direction === -1 ? -1 : 1) : current.direction,
+    playing: true,
+    paused: false,
+    completed: false,
+    frameAdvances: 0,
+    advancedFrames: [],
+  };
+}
+
+export function advanceArcadeAnimationClock(state, deltaTime, timeline = {}) {
+  const current = createArcadeAnimationClock(state);
+  const frameCount = Math.max(0, Math.floor(finiteNumber(timeline.frameCount, 0)));
+  const delta = Math.max(0, finiteNumber(deltaTime, 0));
+  const speed = Math.max(0, finiteNumber(timeline.speed, 1));
+  const mode = normalizeAnimationMode(timeline.mode);
+  const maxAdvances = Math.max(1, Math.floor(finiteNumber(timeline.maxAdvances, 10_000)));
+
+  if (!current.playing || current.paused || frameCount === 0 || delta === 0 || speed === 0) {
+    return current;
+  }
+
+  let frame = clampArcadeValue(current.frame, 0, frameCount - 1);
+  let elapsed = current.elapsed + delta * speed;
+  let direction = current.direction;
+  let playing = current.playing;
+  let completed = false;
+  let frameAdvances = 0;
+  const advancedFrames = [];
+
+  if (frameCount === 1 && timeline.singleFrameMode !== 'complete') {
+    const duration = resolveAnimationFrameDuration(timeline.frameDuration, 0);
+    return {
+      ...current,
+      frame: 0,
+      elapsed: elapsed % duration,
+      playing: true,
+      completed: false,
+      frameAdvances: Math.floor(elapsed / duration),
+      advancedFrames: [],
+    };
+  }
+
+  while (playing && frameAdvances < maxAdvances) {
+    const duration = resolveAnimationFrameDuration(timeline.frameDuration, frame);
+    if (elapsed < duration) break;
+    elapsed -= duration;
+    frameAdvances += 1;
+
+    if (mode === 'loop') {
+      frame = (frame + 1) % frameCount;
+      advancedFrames.push(frame);
+      continue;
+    }
+
+    if (mode === 'once') {
+      if (frame < frameCount - 1) {
+        frame += 1;
+        advancedFrames.push(frame);
+      } else {
+        playing = false;
+        completed = true;
+        elapsed = 0;
+      }
+      continue;
+    }
+
+    if (direction === 1) {
+      if (frame < frameCount - 1) {
+        frame += 1;
+        advancedFrames.push(frame);
+      }
+      else {
+        direction = -1;
+        frame = Math.max(0, frameCount - 2);
+        advancedFrames.push(frame);
+      }
+    } else if (frame > 0) {
+      frame -= 1;
+      advancedFrames.push(frame);
+    } else {
+      direction = 1;
+      frame = Math.min(frameCount - 1, 1);
+      advancedFrames.push(frame);
+    }
+  }
+
+  if (frameAdvances === maxAdvances && playing) {
+    elapsed = Math.min(elapsed, resolveAnimationFrameDuration(timeline.frameDuration, frame));
+  }
+
+  return {
+    ...current,
+    frame,
+    elapsed,
+    direction,
+    playing,
+    completed,
+    frameAdvances,
+    advancedFrames,
+  };
 }
 
 export function createArcadeCameraTransform(initial = {}) {
