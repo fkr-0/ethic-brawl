@@ -2,6 +2,28 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.5.0] - 2026-07-19
+
+### Added
+
+- A composite shared-runtime stage bridge with independently profiled background and arena canvas passes.
+- Shared arcade-core primitives for the fixed-step loop, keyboard/input lifecycle, scene management, movement approach, acceleration, AABB collision, and one-way platforms.
+- Shared-runtime contract, checksum, and lifecycle tests covering both core and Pixi adapters.
+- Browser coverage for square and ultrawide viewport scaling while preserving aligned 16:9 Canvas and Pixi surfaces.
+
+### Changed
+
+- The vendored Pixi runtime is updated to 0.7.0 with animation clocks, async profiling, context state, pass invalidation, and expanded telemetry.
+- Thrown items, fighter movement, gravity, air control, and stage collision now delegate stable math to the shared arcade core.
+- The game fills the available viewport using dynamic viewport units while preserving native 960 × 540 simulation coordinates.
+- Renderer review and release checks now cover the composite runtime and its generated metadata.
+
+### Fixed
+
+- Canvas and bridge surfaces remain pixel-aligned across square, landscape, ultrawide, and embedded viewport sizes.
+- Input, loop, and scene teardown now share consistent cleanup semantics instead of maintaining parallel lifecycle implementations.
+- Platform landings and collision checks use the same validated primitives as the rest of the arcade runtime.
+
 ## [1.4.0] - 2026-07-19
 
 ### Added

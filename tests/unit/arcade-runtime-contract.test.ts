@@ -12,7 +12,7 @@ import {
 
 describe('shared Pixi runtime contract', () => {
   it('pins the common runtime and preserves deterministic pass order', () => {
-    expect(ETHIC_ARCADE_PIXI_RUNTIME_VERSION).toBe('0.6.0');
+    expect(ETHIC_ARCADE_PIXI_RUNTIME_VERSION).toBe('0.7.0');
     expect(ETHIC_PIXI_LAYERS).toEqual([
       'backdrop',
       'world-back',
