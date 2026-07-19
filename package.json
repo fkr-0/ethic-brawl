@@ -24,13 +24,7 @@
     "assets:build": "python scripts/build-release-atlases.py && python scripts/build-character-extensions.py",
     "assets:check": "node scripts/check-release-assets.mjs"
   },
-  "keywords": [
-    "game",
-    "brawler",
-    "cyberpunk",
-    "philosophy",
-    "canvas"
-  ],
+  "keywords": ["game", "brawler", "cyberpunk", "philosophy", "canvas"],
   "author": "",
   "license": "MIT",
   "dependencies": {

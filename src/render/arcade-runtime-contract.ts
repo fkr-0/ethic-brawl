@@ -3,9 +3,12 @@
  *
  * This keeps scene/gameplay code renderer-neutral while passes migrate independently.
  */
-import { defineArcadeRenderPlan } from "../../vendor/arcade-runtime.mjs";
+import {
+  ARCADE_RUNTIME_VERSION,
+  defineArcadeRenderPlan,
+} from "../../vendor/arcade-runtime.mjs";
 
-export const ETHIC_ARCADE_RUNTIME_VERSION = "0.8.0";
+export const ETHIC_ARCADE_RUNTIME_VERSION = ARCADE_RUNTIME_VERSION;
 /** @deprecated Use ETHIC_ARCADE_RUNTIME_VERSION. */
 export const ETHIC_ARCADE_PIXI_RUNTIME_VERSION = ETHIC_ARCADE_RUNTIME_VERSION;
 

@@ -1,12 +1,12 @@
 {
   "package": "@arcade/runtime",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "module": "arcade-runtime.mjs",
   "types": "arcade-runtime.d.mts",
   "compatibilityModules": [
     "arcade-core.mjs",
     "arcade-pixi-runtime.mjs"
   ],
-  "sha256": "cd2561b2c2c8a9276e8ceff6fba706df0ded0ce2a4ac7dc34924ce10d37729ad",
+  "sha256": "9b72eeccc4cf7b7b5fcea19559065f14387ded0e931a5fba5cd41021b9d64fde",
   "typesSha256": "46227a04387f72a2ac222d0261b69790ded63f30029b52d138f88a1266df42c5"
 }

@@ -1,7 +1,7 @@
-import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { describe, expect, it } from "vitest";
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { describe, expect, it } from 'vitest';
 import {
   ETHIC_ARCADE_PIXI_RUNTIME_VERSION,
   ETHIC_ARCADE_RUNTIME_VERSION,
@@ -17,6 +17,15 @@ describe("shared Pixi runtime contract", () => {
     expect(ETHIC_ARCADE_PIXI_RUNTIME_VERSION).toBe(
       ETHIC_ARCADE_RUNTIME_VERSION,
     );
+} from '../../src/render/arcade-runtime-contract';
+import { ARCADE_CORE_VERSION as COMPAT_CORE_VERSION } from '../../vendor/arcade-core.mjs';
+import { ARCADE_PIXI_RUNTIME_VERSION as COMPAT_PIXI_VERSION } from '../../vendor/arcade-pixi-runtime.mjs';
+import { ARCADE_RUNTIME_VERSION as SHARED_RUNTIME_VERSION } from '../../vendor/arcade-runtime.mjs';
+
+describe('shared Pixi runtime contract', () => {
+  it('pins the common runtime and preserves deterministic pass order', () => {
+    expect(ETHIC_ARCADE_RUNTIME_VERSION).toBe(SHARED_RUNTIME_VERSION);
+    expect(ETHIC_ARCADE_PIXI_RUNTIME_VERSION).toBe(ETHIC_ARCADE_RUNTIME_VERSION);
     expect(ETHIC_PIXI_LAYERS).toEqual([
       "backdrop",
       "world-back",
@@ -76,5 +85,19 @@ describe("shared Pixi runtime contract", () => {
     expect(createHash("sha256").update(runtimeTypes).digest("hex")).toBe(
       metadata.typesSha256,
     );
+    expect(createHash('sha256').update(runtimeModule).digest('hex')).toBe(metadata.sha256);
+    const runtimeTypes = readFileSync(resolve(process.cwd(), 'vendor/arcade-runtime.d.mts'));
+    expect(createHash('sha256').update(runtimeTypes).digest('hex')).toBe(metadata.typesSha256);
+
+    expect(COMPAT_CORE_VERSION).toBe(ETHIC_ARCADE_RUNTIME_VERSION);
+    expect(COMPAT_PIXI_VERSION).toBe(ETHIC_ARCADE_RUNTIME_VERSION);
+    expect(readFileSync(resolve(process.cwd(), 'vendor/arcade-core.mjs'), 'utf8')).toContain(
+      "export * from './arcade-runtime.mjs'"
+    );
+    expect(
+      readFileSync(resolve(process.cwd(), 'vendor/arcade-pixi-runtime.mjs'), 'utf8')
+    ).toContain("export * from './arcade-runtime.mjs'");
+    expect(existsSync(resolve(process.cwd(), 'vendor/arcade-core.meta.json'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'vendor/arcade-pixi-runtime.meta.json'))).toBe(false);
   });
 });

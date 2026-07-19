@@ -1,4 +1,4 @@
-export const ARCADE_RUNTIME_VERSION = '0.8.0';
+export const ARCADE_RUNTIME_VERSION = '0.9.0';
 export const ARCADE_PIXI_RUNTIME_VERSION = ARCADE_RUNTIME_VERSION;
 
 export const DEFAULT_ARCADE_LAYERS = Object.freeze([

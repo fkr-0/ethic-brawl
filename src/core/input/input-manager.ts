@@ -3,9 +3,9 @@
  */
 
 import {
-  createActionInput,
   type ActionBinding,
   type ActionState,
+  createActionInput,
 } from '../../../vendor/arcade-runtime.mjs';
 import {
   GAME_ACTIONS,

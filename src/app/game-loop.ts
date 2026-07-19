@@ -2,8 +2,8 @@
  * Ethic Brawl compatibility adapter for the shared renderer-neutral arcade loop.
  */
 
-import { createFixedStepLoop } from '../../vendor/arcade-runtime.mjs';
 import { clamp } from '@/utils/math';
+import { createFixedStepLoop } from '../../vendor/arcade-runtime.mjs';
 import { FIXED_TIMESTEP } from './config';
 
 export type UpdateCallback = (deltaTime: number) => void;
