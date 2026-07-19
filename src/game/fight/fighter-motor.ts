@@ -25,7 +25,12 @@ export interface FighterMotorInput {
 }
 
 function canMotorSetGroundedState(fighter: Fighter): boolean {
-  return fighter.state === 'idle' || fighter.state === 'walking' || fighter.state === 'running';
+  return (
+    fighter.state === 'idle' ||
+    fighter.state === 'walking' ||
+    fighter.state === 'running' ||
+    fighter.state === 'falling'
+  );
 }
 
 function syncGroundedMovementState(fighter: Fighter): void {
@@ -176,6 +181,7 @@ export function applyFighterMotor(fighter: Fighter): void {
       fighter.velocityY = 0;
       fighter.isGrounded = true;
       if (!wasGrounded) {
+        fighter.isRunning = false;
         fighter.triggerLanding(Math.abs(landingVelocity) / 5);
       }
       syncGroundedMovementState(fighter);

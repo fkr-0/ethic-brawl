@@ -47,6 +47,9 @@ export interface E2EProbeSnapshot {
     rendererNeutralPresentation: true;
     theme: 'neon_arena' | 'babylon';
     profileId: string;
+    stageEventId: string;
+    stageEventPhase: 'idle' | 'warning' | 'active' | 'release';
+    stageEventIntensity: number;
   };
   fight: {
     player1Character: string | null;
@@ -137,6 +140,8 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
   element.dataset.rendererBackend = snapshot.renderer.backend;
   element.dataset.graphicsTheme = snapshot.renderer.theme;
   element.dataset.graphicsProfile = snapshot.renderer.profileId;
+  element.dataset.stageEvent = snapshot.renderer.stageEventId;
+  element.dataset.stageEventPhase = snapshot.renderer.stageEventPhase;
   element.dataset.activeParticles = String(snapshot.fight.activeParticles);
   element.dataset.emittedParticleBursts = String(snapshot.fight.emittedParticleBursts);
   element.dataset.recycledParticles = String(snapshot.fight.recycledParticles);

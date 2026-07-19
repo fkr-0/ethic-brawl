@@ -167,6 +167,9 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(snapshot.fight.player1Animation?.clipFrameCount).toBe(4);
   expect(snapshot.fight.player1Animation?.transitionFromClipId).toBeNull();
   expect(snapshot.fight.player1Animation?.depthScale).toBeGreaterThan(0.85);
+  expect(snapshot.renderer.stageEventId).toBe('signal_surge');
+  expect(snapshot.renderer.stageEventIntensity).toBeGreaterThanOrEqual(0);
+  expect(snapshot.renderer.stageEventIntensity).toBeLessThanOrEqual(1);
 
   const idleAnimations = playerOneAnimations(await collectSnapshots(page, 720, 55)).filter(
     ({ clipId }) => clipId === 'idle'
@@ -232,6 +235,25 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     null,
   ]);
   expect(specialAnimations.some(({ afterImageAlpha }) => afterImageAlpha > 0.1)).toBe(true);
+
+  const jumpSnapshot = await pressAndObserveClip(page, 'l', 'jump_rise');
+  expect(jumpSnapshot.fight.player1Animation?.poseProgress).not.toBeNull();
+  expect(Math.abs(jumpSnapshot.fight.player1Animation?.rotation ?? 0)).toBeGreaterThan(0.005);
+  const landingSnapshot = await waitForPlayerOneAnimation(
+    page,
+    'a synchronized landing settle',
+    (animation) => animation.clipId === 'land',
+    2_200
+  );
+  expect(landingSnapshot.fight.player1Animation?.clipFrameCount).toBe(3);
+  expect(landingSnapshot.fight.player1Animation?.landingProgress).toBeGreaterThanOrEqual(0);
+  expect(landingSnapshot.fight.player1Animation?.poseProgress).not.toBeNull();
+  await waitForPlayerOneAnimation(
+    page,
+    'idle after landing',
+    (animation, current) => animation.clipId === 'idle' && current.fight.player1State === 'idle',
+    1_200
+  );
 
   const middleDepth = (await getSnapshot(page)).fight.player1Animation?.depthScale ?? 0;
   await tapKey(page, 'w', 70);

@@ -2,6 +2,26 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.2.0] - 2026-07-19
+
+### Added
+
+- Deterministic signature stage events for every arena profile: Neon Signal Surge, Bronze Caravan, Archive Index Sweep, and Brazier Verdict.
+- Stage-specific arena flooring with market tracks, archive index tiles, gate cracks, perspective rays, and event-responsive lighting.
+- Browser observability for stage-event ID, phase, and intensity.
+- Unit coverage for jump, landing, turnaround, get-up, stage-event cycles, and grounded landing recovery.
+
+### Changed
+
+- Jump, fall, landing, knockdown, and get-up sprite clips now follow the deterministic combat timeline instead of free-running independently.
+- Landing uses a three-pose airborne-to-impact-to-idle settle; extended knockdown and get-up clips now include readable transitions back to neutral.
+- Turnarounds compress the fighter silhouette through the facing change and briefly crossfade the previous orientation.
+- Airborne sprite tilt now follows vertical velocity, while rotation also incorporates authored torso twist.
+
+### Fixed
+
+- Falling fighters now return to a controllable grounded state when touching down. Previously the motor marked them grounded while leaving the logical state stuck at `falling`.
+
 ## [1.1.1] - 2026-07-18
 
 ### Changed

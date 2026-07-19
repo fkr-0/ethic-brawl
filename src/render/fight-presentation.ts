@@ -15,6 +15,219 @@ export type FightAtmosphereMotif =
   | 'market_streamers'
   | 'archive_data'
   | 'gate_embers';
+export type FightStageEventId =
+  | 'signal_surge'
+  | 'market_caravan'
+  | 'archive_scan'
+  | 'gate_heat_wave';
+export type FightStageEventPhase = 'idle' | 'warning' | 'active' | 'release';
+
+export interface FightStageEventState {
+  id: FightStageEventId;
+  label: string;
+  phase: FightStageEventPhase;
+  cycleFrame: number;
+  cycleProgress: number;
+  phaseProgress: number;
+  intensity: number;
+}
+
+export function resolveFightStageEvent(
+  frame: number,
+  profile: FightGraphicsProfile
+): FightStageEventState {
+  const period = Math.max(1, profile.stageEventPeriod);
+  const cycleFrame = positiveModulo(frame + profile.seed, period);
+  const warningStart = Math.max(
+    0,
+    period -
+      profile.stageEventWarningFrames -
+      profile.stageEventActiveFrames -
+      profile.stageEventReleaseFrames
+  );
+  const activeStart = warningStart + profile.stageEventWarningFrames;
+  const releaseStart = activeStart + profile.stageEventActiveFrames;
+
+  let phase: FightStageEventPhase = 'idle';
+  let phaseProgress = warningStart > 0 ? cycleFrame / warningStart : 0;
+  let intensity = 0;
+
+  if (cycleFrame >= releaseStart) {
+    phase = 'release';
+    phaseProgress = (cycleFrame - releaseStart) / Math.max(1, profile.stageEventReleaseFrames - 1);
+    intensity = 1 - phaseProgress;
+  } else if (cycleFrame >= activeStart) {
+    phase = 'active';
+    phaseProgress = (cycleFrame - activeStart) / Math.max(1, profile.stageEventActiveFrames - 1);
+    intensity = 0.74 + Math.sin(phaseProgress * Math.PI) * 0.26;
+  } else if (cycleFrame >= warningStart) {
+    phase = 'warning';
+    phaseProgress = (cycleFrame - warningStart) / Math.max(1, profile.stageEventWarningFrames - 1);
+    intensity = phaseProgress * 0.72;
+  }
+
+  return {
+    id: profile.stageEventId,
+    label: profile.stageEventLabel,
+    phase,
+    cycleFrame,
+    cycleProgress: cycleFrame / period,
+    phaseProgress: Math.max(0, Math.min(1, phaseProgress)),
+    intensity: Math.max(0, Math.min(1, intensity)),
+  };
+}
+
+function renderStageEventBackdrop(
+  ctx: CanvasRenderingContext2D,
+  camera: Camera,
+  frame: number,
+  profile: FightGraphicsProfile,
+  event: FightStageEventState
+): void {
+  if (event.phase === 'idle') return;
+
+  ctx.save();
+  switch (event.id) {
+    case 'market_caravan': {
+      const travel = event.cycleProgress * (CANVAS_WIDTH + 420);
+      const caravanX = CANVAS_WIDTH + 170 - travel - camera.x * 0.12;
+      ctx.globalAlpha = 0.3 + event.intensity * 0.45;
+      for (let cart = 0; cart < 4; cart += 1) {
+        const x = caravanX + cart * 132;
+        const y = CANVAS_HEIGHT - 154 + Math.sin(frame * 0.09 + cart) * 2;
+        ctx.fillStyle = cart % 2 === 0 ? profile.secondaryAccent : profile.midColor;
+        ctx.fillRect(x, y - 36, 96, 34);
+        ctx.fillStyle = profile.floorColor;
+        ctx.fillRect(x + 9, y - 52, 78, 18);
+        ctx.fillStyle = `${profile.accent}CC`;
+        ctx.fillRect(x + 18, y - 47, 6, 9);
+        ctx.fillRect(x + 70, y - 47, 6, 9);
+        ctx.fillStyle = '#08060C';
+        ctx.beginPath();
+        ctx.arc(x + 20, y, 12, 0, Math.PI * 2);
+        ctx.arc(x + 76, y, 12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      break;
+    }
+    case 'archive_scan': {
+      const sweep = event.phase === 'warning' ? event.phaseProgress * 0.18 : event.phaseProgress;
+      const x = 70 + sweep * (CANVAS_WIDTH - 140);
+      const beam = ctx.createLinearGradient(x - 76, 0, x + 76, 0);
+      beam.addColorStop(0, `${profile.accent}00`);
+      beam.addColorStop(0.5, `${profile.accent}${event.phase === 'active' ? '66' : '33'}`);
+      beam.addColorStop(1, `${profile.accent}00`);
+      ctx.fillStyle = beam;
+      ctx.fillRect(x - 76, 84, 152, CANVAS_HEIGHT - 164);
+      ctx.strokeStyle = `${profile.secondaryAccent}88`;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = 0.35 + event.intensity * 0.5;
+      for (let row = 0; row < 7; row += 1) {
+        const y = 104 + row * 48;
+        ctx.strokeRect(x - 44 - (row % 2) * 18, y, 88 + (row % 3) * 24, 19);
+      }
+      break;
+    }
+    case 'gate_heat_wave': {
+      const pulse = 0.72 + event.intensity * 0.28;
+      const glow = ctx.createRadialGradient(
+        CANVAS_WIDTH / 2,
+        CANVAS_HEIGHT - 180,
+        18,
+        CANVAS_WIDTH / 2,
+        CANVAS_HEIGHT - 180,
+        290 * pulse
+      );
+      glow.addColorStop(0, `${profile.accent}88`);
+      glow.addColorStop(0.45, `${profile.secondaryAccent}33`);
+      glow.addColorStop(1, `${profile.secondaryAccent}00`);
+      ctx.fillStyle = glow;
+      ctx.globalAlpha = 0.38 + event.intensity * 0.42;
+      ctx.fillRect(120, 74, CANVAS_WIDTH - 240, CANVAS_HEIGHT - 128);
+      ctx.strokeStyle = `${profile.accent}66`;
+      ctx.lineWidth = 2;
+      for (let wave = 0; wave < 5; wave += 1) {
+        const y = CANVAS_HEIGHT - 128 - wave * 24;
+        ctx.beginPath();
+        for (let x = 100; x <= CANVAS_WIDTH - 100; x += 18) {
+          const offset = Math.sin(x * 0.045 + frame * 0.11 + wave) * 5 * event.intensity;
+          if (x === 100) ctx.moveTo(x, y + offset);
+          else ctx.lineTo(x, y + offset);
+        }
+        ctx.stroke();
+      }
+      break;
+    }
+    case 'signal_surge': {
+      ctx.globalAlpha = 0.18 + event.intensity * 0.36;
+      for (let band = 0; band < 6; band += 1) {
+        const y = 92 + band * 58 + Math.sin(frame * 0.06 + band) * 8;
+        const gradient = ctx.createLinearGradient(0, y, CANVAS_WIDTH, y);
+        gradient.addColorStop(0, `${profile.secondaryAccent}00`);
+        gradient.addColorStop(0.5, band % 2 === 0 ? profile.accent : profile.secondaryAccent);
+        gradient.addColorStop(1, `${profile.accent}00`);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2 + event.intensity * 3;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.bezierCurveTo(220, y - 24, 720, y + 28, CANVAS_WIDTH, y - 6);
+        ctx.stroke();
+      }
+      break;
+    }
+  }
+  ctx.restore();
+}
+
+function renderStageEventForeground(
+  ctx: CanvasRenderingContext2D,
+  frame: number,
+  profile: FightGraphicsProfile,
+  event: FightStageEventState
+): void {
+  if (event.phase === 'idle') return;
+
+  ctx.save();
+  if (event.id === 'archive_scan') {
+    const x = 70 + event.phaseProgress * (CANVAS_WIDTH - 140);
+    ctx.globalAlpha = 0.12 + event.intensity * 0.28;
+    ctx.fillStyle = profile.accent;
+    ctx.fillRect(x - 2, 78, 4, CANVAS_HEIGHT - 118);
+    ctx.font = 'bold 9px "Courier New", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(event.label, x, 94);
+  } else if (event.id === 'gate_heat_wave') {
+    ctx.globalAlpha = event.intensity * 0.12;
+    ctx.fillStyle = profile.accent;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  } else if (event.id === 'market_caravan') {
+    ctx.globalAlpha = 0.22 + event.intensity * 0.2;
+    ctx.strokeStyle = profile.secondaryAccent;
+    ctx.lineWidth = 3;
+    for (let rope = 0; rope < 3; rope += 1) {
+      const y = 52 + rope * 25;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.bezierCurveTo(
+        260,
+        y + Math.sin(frame * 0.05 + rope) * 16,
+        680,
+        y - 12,
+        CANVAS_WIDTH,
+        y + 6
+      );
+      ctx.stroke();
+    }
+  } else {
+    ctx.globalAlpha = event.intensity * 0.16;
+    ctx.fillStyle = profile.secondaryAccent;
+    for (let x = 0; x < CANVAS_WIDTH; x += 48) {
+      const height = 4 + Math.sin(frame * 0.12 + x) * 3;
+      ctx.fillRect(x, CANVAS_HEIGHT - 30 - height, 26, height);
+    }
+  }
+  ctx.restore();
+}
 
 export interface FightPresentationOptions {
   theme?: FightArenaThemeId;
@@ -58,6 +271,7 @@ export function renderFightForeground(
   frame: number,
   profile: FightGraphicsProfile
 ): void {
+  const stageEvent = resolveFightStageEvent(frame, profile);
   renderForegroundCrowd(ctx, camera, frame, profile);
 
   ctx.save();
@@ -146,6 +360,7 @@ export function renderFightForeground(
   bottomShade.addColorStop(1, 'rgba(0, 0, 0, 0.42)');
   ctx.fillStyle = bottomShade;
   ctx.fillRect(0, CANVAS_HEIGHT - 110, CANVAS_WIDTH, 110);
+  renderStageEventForeground(ctx, frame, profile, stageEvent);
   ctx.restore();
 }
 
@@ -171,6 +386,12 @@ export interface FightGraphicsProfile {
   farParallaxSpeed: number;
   midParallaxSpeed: number;
   signParallaxSpeed: number;
+  stageEventId: FightStageEventId;
+  stageEventLabel: string;
+  stageEventPeriod: number;
+  stageEventWarningFrames: number;
+  stageEventActiveFrames: number;
+  stageEventReleaseFrames: number;
   seed: number;
 }
 
@@ -212,6 +433,12 @@ const NEON_ARENA_PROFILE: FightGraphicsProfile = {
   farParallaxSpeed: 0.1,
   midParallaxSpeed: 0.24,
   signParallaxSpeed: 0.4,
+  stageEventId: 'signal_surge',
+  stageEventLabel: 'SIGNAL SURGE',
+  stageEventPeriod: 360,
+  stageEventWarningFrames: 54,
+  stageEventActiveFrames: 92,
+  stageEventReleaseFrames: 48,
   seed: 1337,
 };
 
@@ -238,6 +465,12 @@ const BABYLON_PROFILES: readonly FightGraphicsProfile[] = [
     farParallaxSpeed: 0.12,
     midParallaxSpeed: 0.3,
     signParallaxSpeed: 0.46,
+    stageEventId: 'market_caravan',
+    stageEventLabel: 'BRONZE CARAVAN',
+    stageEventPeriod: 390,
+    stageEventWarningFrames: 60,
+    stageEventActiveFrames: 116,
+    stageEventReleaseFrames: 54,
     seed: 701,
   },
   {
@@ -262,6 +495,12 @@ const BABYLON_PROFILES: readonly FightGraphicsProfile[] = [
     farParallaxSpeed: 0.075,
     midParallaxSpeed: 0.2,
     signParallaxSpeed: 0.34,
+    stageEventId: 'archive_scan',
+    stageEventLabel: 'ARCHIVE INDEX SWEEP',
+    stageEventPeriod: 330,
+    stageEventWarningFrames: 48,
+    stageEventActiveFrames: 98,
+    stageEventReleaseFrames: 42,
     seed: 1701,
   },
   {
@@ -286,6 +525,12 @@ const BABYLON_PROFILES: readonly FightGraphicsProfile[] = [
     farParallaxSpeed: 0.16,
     midParallaxSpeed: 0.36,
     signParallaxSpeed: 0.54,
+    stageEventId: 'gate_heat_wave',
+    stageEventLabel: 'BRAZIER VERDICT',
+    stageEventPeriod: 300,
+    stageEventWarningFrames: 44,
+    stageEventActiveFrames: 104,
+    stageEventReleaseFrames: 52,
     seed: 2701,
   },
 ];
@@ -402,6 +647,9 @@ export function renderFightBackdrop(
     ctx.fillRect(x + 12, y + 16, 5, Math.max(8, height - 32));
   }
   ctx.restore();
+
+  const stageEvent = resolveFightStageEvent(frame, profile);
+  renderStageEventBackdrop(ctx, camera, frame, profile, stageEvent);
 
   ctx.save();
   switch (profile.atmosphereMotif) {

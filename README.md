@@ -120,6 +120,10 @@ Sprite extraction now uses an adaptive edge-connected background key rather than
 
 Fighter sprites are normalized from the visible height of their idle poses instead of sharing one raw source-pixel multiplier. Regular 128-pixel sheets, taller roster sheets, and smaller legacy sheets therefore render at a consistent arena height while preserving front/middle/back lane depth.
 
+Jumping, falling, landing, knockdown, get-up, and turnaround presentation is synchronized to simulation state. Landings move through an airborne pose, impact crouch, and neutral settle; turns collapse and crossfade through the facing swap; airborne tilt follows vertical velocity rather than replaying a detached loop.
+
+Each arena profile also runs a deterministic signature event. The market receives a moving bronze caravan, the archive performs an index scanner sweep, the final gate emits a brazier heat verdict, and the versus arena surges with a neon signal wave. These events affect backdrop motion, foreground light, crowd rhythm, and stage-specific floor geometry without changing combat determinism.
+
 The 1.1.0 content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
 
 Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.

@@ -13,6 +13,7 @@ import {
   getFighterAnimationSnapshot,
   getGraphicsBackendStatus,
   resolveFightGraphicsProfile,
+  resolveFightStageEvent,
 } from '@/render';
 import {
   getCharacterAnimationMap,
@@ -211,6 +212,7 @@ async function main() {
       theme: appState.gameMode === 'stage' ? 'babylon' : 'neon_arena',
       encounterIndex: appState.stageEncounterIndex,
     });
+    const stageEvent = resolveFightStageEvent(fightState?.frameCount ?? 0, graphicsProfile);
     const particleStats = fightState?.particlePool.getStats();
     return {
       ready: sceneManager.getCurrentScene() !== 'loading',
@@ -252,6 +254,9 @@ async function main() {
         ...graphicsBackend,
         theme: graphicsProfile.theme,
         profileId: graphicsProfile.id,
+        stageEventId: stageEvent.id,
+        stageEventPhase: stageEvent.phase,
+        stageEventIntensity: stageEvent.intensity,
       },
       fight: {
         player1Character: fightState?.player1.characterId ?? null,

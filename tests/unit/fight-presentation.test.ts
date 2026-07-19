@@ -7,6 +7,7 @@ import {
   resolveAttackTelegraph,
   resolveCombatScreenFeedback,
   resolveFightGraphicsProfile,
+  resolveFightStageEvent,
 } from '@/render/fight-presentation';
 import { describe, expect, it } from 'vitest';
 
@@ -19,6 +20,26 @@ describe('Badger-compatible fight presentation contract', () => {
     });
   });
 
+  it('cycles every stage event through warning, active, and release phases deterministically', () => {
+    for (const profile of [
+      resolveFightGraphicsProfile({ theme: 'neon_arena' }),
+      resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 0 }),
+      resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 1 }),
+      resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 2 }),
+    ]) {
+      const phases = new Set<string>();
+      for (let frame = 0; frame < profile.stageEventPeriod; frame += 1) {
+        const event = resolveFightStageEvent(frame, profile);
+        phases.add(event.phase);
+        expect(event.intensity).toBeGreaterThanOrEqual(0);
+        expect(event.intensity).toBeLessThanOrEqual(1);
+        expect(event.phaseProgress).toBeGreaterThanOrEqual(0);
+        expect(event.phaseProgress).toBeLessThanOrEqual(1);
+      }
+      expect(phases).toEqual(new Set(['idle', 'warning', 'active', 'release']));
+    }
+  });
+
   it('resolves distinct Babylon profiles and clamps out-of-range encounters', () => {
     expect(resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 0 }).id).toBe(
       'babylon_market'
@@ -26,18 +47,27 @@ describe('Badger-compatible fight presentation contract', () => {
     expect(
       resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 0 }).foregroundMotif
     ).toBe('market_awning');
+    expect(resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 0 }).stageEventId).toBe(
+      'market_caravan'
+    );
     expect(resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 1 }).id).toBe(
       'babylon_archive'
     );
     expect(
       resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 1 }).foregroundMotif
     ).toBe('archive_columns');
+    expect(resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 1 }).stageEventId).toBe(
+      'archive_scan'
+    );
     expect(resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 99 }).id).toBe(
       'babylon_gate'
     );
     expect(
       resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 99 }).foregroundMotif
     ).toBe('gate_braziers');
+    expect(resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 99 }).stageEventId).toBe(
+      'gate_heat_wave'
+    );
     expect(resolveFightGraphicsProfile({ theme: 'neon_arena' }).id).toBe('neon_arena');
   });
 

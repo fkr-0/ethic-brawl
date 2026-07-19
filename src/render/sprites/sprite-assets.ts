@@ -132,7 +132,7 @@ export function createDefaultClips(): AnimationClip[] {
     createSingleFrameClip('crouch', 'Crouch / Landing', 8, 1),
     createClip('jump_rise', 'Jump Rise', [9], 'loop', 6),
     createSingleFrameClip('air_attack', 'Air Attack', 10, 1),
-    createSingleFrameClip('land', 'Land', 11, 1),
+    createClip('land', 'Land and Settle', [9, 11, 0], 'once', 3),
     createClip('attack_1', 'Attack 1', [12], 'loop', 4),
     createClip('attack_2', 'Attack 2', [13], 'loop', 4),
     createClip('attack_3', 'Attack 3', [14], 'loop', 4),

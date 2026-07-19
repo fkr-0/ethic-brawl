@@ -7,6 +7,7 @@ import { CHARACTERS, type CharacterId } from '@/content/characters/character-dat
 import { getComboDisplayText } from '@/game/fight/combo';
 import { type FightState, getLaneGroundY } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
+import { FRAME_DATA } from '@/game/fight/fighter-state';
 import type { Camera } from './camera';
 import {
   type FightGraphicsProfile,
@@ -16,6 +17,7 @@ import {
   renderFightBackdrop,
   renderFightForeground,
   resolveFightGraphicsProfile,
+  resolveFightStageEvent,
 } from './fight-presentation';
 import { createFighterAnimationView } from './fighter-animation-view';
 import {
@@ -100,16 +102,6 @@ const fighterAnimationStateCache = new Map<string, ReturnType<typeof createAnima
  */
 const fighterLastStateCache = new Map<string, string>();
 
-/**
- * Track the last known grounded state for each fighter
- */
-const fighterGroundedCache = new Map<string, boolean>();
-
-/**
- * Track fighters that have completed landing animation
- */
-const fighterLandingCompleteCache = new Map<string, boolean>();
-
 interface SpriteClipTransition {
   clip: AnimationClip;
   frame: number;
@@ -135,6 +127,11 @@ export interface FighterAnimationSnapshot {
   stretchX: number;
   stretchY: number;
   afterImageAlpha: number;
+  poseProgress: number | null;
+  landingProgress: number;
+  turnaroundAmount: number;
+  turnScaleX: number;
+  rotation: number;
 }
 
 const fighterClipTransitionCache = new Map<string, SpriteClipTransition>();
@@ -214,8 +211,6 @@ function getFighterAnimationState(
 export function clearFighterAnimationCache(): void {
   fighterAnimationStateCache.clear();
   fighterLastStateCache.clear();
-  fighterGroundedCache.clear();
-  fighterLandingCompleteCache.clear();
   fighterClipTransitionCache.clear();
   fighterAnimationSnapshotCache.clear();
   // Clear all effective state caches
@@ -262,7 +257,8 @@ export function renderBackground(
 export function renderArena(
   ctx: CanvasRenderingContext2D,
   _camera: Camera,
-  profile: FightGraphicsProfile = resolveFightGraphicsProfile()
+  profile: FightGraphicsProfile = resolveFightGraphicsProfile(),
+  frame = 0
 ): void {
   // Ground
   ctx.fillStyle = profile.floorColor;
@@ -288,6 +284,62 @@ export function renderArena(
   }
 
   ctx.setLineDash([]);
+
+  const stageEvent = resolveFightStageEvent(frame, profile);
+  ctx.save();
+  ctx.globalAlpha = 0.16 + stageEvent.intensity * 0.12;
+  ctx.strokeStyle = profile.accent;
+  ctx.lineWidth = 1;
+  for (let ray = 0; ray <= 12; ray += 1) {
+    const x = (CANVAS_WIDTH / 12) * ray;
+    ctx.beginPath();
+    ctx.moveTo(CANVAS_WIDTH / 2, CANVAS_HEIGHT - 100);
+    ctx.lineTo(x, CANVAS_HEIGHT);
+    ctx.stroke();
+  }
+
+  if (profile.id === 'babylon_market') {
+    ctx.strokeStyle = `${profile.secondaryAccent}99`;
+    ctx.lineWidth = 3;
+    for (const x of [180, 780]) {
+      const offset = Math.sin(frame * 0.025 + x) * 8;
+      ctx.beginPath();
+      ctx.moveTo(x + offset, CANVAS_HEIGHT - 100);
+      ctx.lineTo(x - 54 + offset, CANVAS_HEIGHT);
+      ctx.stroke();
+    }
+  } else if (profile.id === 'babylon_archive') {
+    ctx.fillStyle = `${profile.accent}22`;
+    for (let row = 0; row < 3; row += 1) {
+      for (let column = 0; column < 12; column += 1) {
+        const pulse = 0.35 + Math.sin(frame * 0.06 + row * 2 + column) * 0.2;
+        ctx.globalAlpha = pulse + stageEvent.intensity * 0.16;
+        ctx.fillRect(18 + column * 80, CANVAS_HEIGHT - 92 + row * 29, 48, 7);
+      }
+    }
+  } else if (profile.id === 'babylon_gate') {
+    ctx.strokeStyle = `${profile.secondaryAccent}88`;
+    ctx.lineWidth = 2;
+    for (let crack = 0; crack < 9; crack += 1) {
+      const baseX = 80 + crack * 106;
+      ctx.beginPath();
+      ctx.moveTo(baseX, CANVAS_HEIGHT - 98);
+      ctx.lineTo(baseX + 12, CANVAS_HEIGHT - 72);
+      ctx.lineTo(baseX - 8, CANVAS_HEIGHT - 42);
+      ctx.lineTo(baseX + 20, CANVAS_HEIGHT - 8);
+      ctx.stroke();
+    }
+  } else {
+    ctx.strokeStyle = `${profile.secondaryAccent}66`;
+    for (let y = CANVAS_HEIGHT - 88; y < CANVAS_HEIGHT; y += 20) {
+      const drift = (frame * 0.45 + y) % 40;
+      ctx.beginPath();
+      ctx.moveTo(-40 + drift, y);
+      ctx.lineTo(CANVAS_WIDTH, y);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
 
   // Arena edges (glowing)
   const edgeGradientLeft = ctx.createLinearGradient(0, 0, 50, 0);
@@ -335,12 +387,12 @@ function renderFighterWithSprite(
   frame: number
 ): void {
   const animState = getFighterAnimationState(fighter.id);
-  const previousState = fighterLastStateCache.get(fighter.id);
   let targetClip: ReturnType<typeof getStateClip> | ReturnType<typeof getAttackPhaseClip> | null =
     null;
   let attackPhase: AttackPhase | null = null;
   let attackPhaseProgress = 0;
-  let usesCombatSyncedPlayback = false;
+  let poseProgress: number | null = null;
+  let effectiveState = fighter.state as string;
 
   if (fighter.state === 'attacking' || fighter.state === 'special') {
     if (fighter.currentAttack) {
@@ -362,66 +414,33 @@ function renderFighterWithSprite(
         attackPhase,
         fighter.currentAttack.type
       );
-      usesCombatSyncedPlayback = true;
+      poseProgress = attackPhaseProgress;
     }
   }
 
-  if (!targetClip) {
+  if (fighter.landingFrames > 0 && fighter.isGrounded && !fighter.currentAttack) {
+    effectiveState = 'landing';
+    targetClip = getStateClip(animMap, 'landing');
+    poseProgress = 1 - Math.min(1, fighter.landingFrames / FRAME_DATA.LANDING_IMPACT_DURATION);
+  } else if (!targetClip) {
     targetClip = getStateClip(animMap, fighter.state);
+    if (fighter.state === 'gettingUp') {
+      poseProgress = Math.min(1, fighter.stateFrame / Math.max(1, FRAME_DATA.GET_UP_DURATION - 1));
+    } else if (fighter.state === 'knockdown') {
+      poseProgress = Math.min(
+        1,
+        fighter.stateFrame / Math.max(1, Math.floor(FRAME_DATA.KNOCKDOWN_DURATION * 0.35))
+      );
+    } else if (fighter.state === 'jumping') {
+      poseProgress = Math.max(0, Math.min(0.48, 1 - fighter.velocityY / FRAME_DATA.JUMP_VELOCITY));
+    } else if (fighter.state === 'falling') {
+      poseProgress = Math.max(
+        0.52,
+        Math.min(1, 0.52 + (-fighter.velocityY / FRAME_DATA.JUMP_VELOCITY) * 0.48)
+      );
+    }
   }
-
-  // Override state for landing - if fighter is landing but state shows jumping/falling, use idle clip
-  if (fighter.landingFrames > 0 && (fighter.state === 'jumping' || fighter.state === 'falling')) {
-    targetClip = getStateClip(animMap, 'idle');
-  }
-
-  fighterGroundedCache.set(fighter.id, fighter.isGrounded);
-
-  // Use landing state to override animation when actively landing
-  const isCurrentlyLanding = fighter.landingFrames > 0;
-  let landingComplete = fighterLandingCompleteCache.get(fighter.id) || false;
-
-  // Mark landing as complete when landing frames end while grounded
-  if (isCurrentlyLanding && fighter.isGrounded) {
-    landingComplete = true;
-    fighterLandingCompleteCache.set(fighter.id, true);
-  }
-
-  // Reset landing completion when jumping again
-  if ((fighter.state === 'jumping' || fighter.state === 'falling') && !fighter.isGrounded) {
-    landingComplete = false;
-    fighterLandingCompleteCache.set(fighter.id, false);
-  }
-
-  // Determine effective state and clip
-  let effectiveState = fighter.state;
-  let effectiveClip = targetClip;
-
-  // Only apply landing override if the fighter is actually coming from a jump/fall
-  const wasJumpingOrFalling = previousState === 'jumping' || previousState === 'falling';
-
-  // Reset landing completion when starting a new grounded action (running, walking, etc.)
-  if (
-    landingComplete &&
-    fighter.isGrounded &&
-    (fighter.state === 'running' ||
-      fighter.state === 'walking' ||
-      fighter.state === 'attacking' ||
-      fighter.state === 'blocking')
-  ) {
-    landingComplete = false;
-    fighterLandingCompleteCache.set(fighter.id, false);
-  }
-
-  // If landing is complete after jumping, force idle animation
-  if (landingComplete && wasJumpingOrFalling && fighter.isGrounded) {
-    effectiveClip = getStateClip(animMap, 'idle');
-    effectiveState = 'idle';
-  } else if (isCurrentlyLanding && wasJumpingOrFalling) {
-    // While actively landing from a jump, use idle animation
-    effectiveClip = getStateClip(animMap, 'idle');
-  }
-  // Don't override running animation - let it play normally
+  const effectiveClip = targetClip;
 
   // Check if effective state has changed
   const lastEffectiveState = fighterLastStateCache.get(`${fighter.id}_effective`);
@@ -455,18 +474,15 @@ function renderFighterWithSprite(
     Object.assign(animState, newState);
   }
 
-  if (usesCombatSyncedPlayback) {
-    Object.assign(animState, seekToProgress(animState, attackPhaseProgress));
+  if (poseProgress !== null) {
+    Object.assign(animState, seekToProgress(animState, poseProgress));
     animState.isPlaying = true;
   } else {
     const updatedState = updateAnimationPlayer(animState, 1);
     Object.assign(animState, updatedState);
   }
 
-  const frameBlendState = resolveSpriteFrameBlend(
-    animState,
-    usesCombatSyncedPlayback ? attackPhaseProgress : null
-  );
+  const frameBlendState = resolveSpriteFrameBlend(animState, poseProgress);
 
   fighterLastStateCache.set(fighter.id, fighter.state);
 
@@ -493,7 +509,20 @@ function renderFighterWithSprite(
 
   const stretchX = Math.max(0.86, Math.min(1.16, 1 + (animation.bodyWidthScale - 1) * 0.28));
   const stretchY = Math.max(0.86, Math.min(1.16, 1 + (animation.bodyHeightScale - 1) * 0.24));
-  const rotation = Math.max(-0.12, Math.min(0.12, animation.bodyLean * 0.18));
+  const airborneTilt = fighter.isGrounded
+    ? 0
+    : Math.max(-0.09, Math.min(0.09, -fighter.velocityY * 0.008));
+  const rotation = Math.max(
+    -0.18,
+    Math.min(0.18, animation.bodyLean * 0.18 + animation.bodyTwist * 0.1 + airborneTilt)
+  );
+  const turnaroundPhase = animation.turnaroundAmount > 0 ? 1 - animation.turnaroundAmount : 1;
+  const turnScaleX =
+    animation.turnaroundAmount > 0
+      ? 0.26 + Math.abs(Math.cos(turnaroundPhase * Math.PI)) * 0.74
+      : 1;
+  const turnGhostAlpha =
+    animation.turnaroundAmount > 0 ? Math.sin(turnaroundPhase * Math.PI) * 0.34 : 0;
 
   ctx.save();
   ctx.globalAlpha = fighter.state === 'knockdown' ? 0.28 : 0.22;
@@ -510,12 +539,13 @@ function renderFighterWithSprite(
     clipFrame: number,
     offsetX: number,
     opacity: number,
-    blur = 0
+    blur = 0,
+    poseFacingRight = facingRight
   ): boolean => {
     ctx.save();
     ctx.translate(screenX + offsetX + animation.recoilOffsetX, screenY + animation.bobOffsetY);
     ctx.rotate(rotation);
-    ctx.scale(stretchX, stretchY);
+    ctx.scale(stretchX * turnScaleX, stretchY);
     if (blur > 0) {
       ctx.filter = `blur(${blur}px) saturate(1.35)`;
     } else if (animation.flashIntensity > 0) {
@@ -528,7 +558,7 @@ function renderFighterWithSprite(
       clipFrame,
       0,
       0,
-      facingRight,
+      poseFacingRight,
       depthScale,
       opacity,
       fighter.characterId
@@ -542,6 +572,9 @@ function renderFighterWithSprite(
   const transitionAlpha = transition ? transition.ttl / transition.totalTtl : 0;
   if (transition && transitionAlpha > 0) {
     drawSpritePose(transition.clip, transition.frame, 0, transitionAlpha * 0.38, 0.45);
+  }
+  if (turnGhostAlpha > 0.02) {
+    drawSpritePose(currentClip, animState.currentFrame, 0, turnGhostAlpha, 0.55, !facingRight);
   }
 
   const velocity = fighter.moveVelocityX + fighter.velocityX;
@@ -589,6 +622,14 @@ function renderFighterWithSprite(
     stretchX,
     stretchY,
     afterImageAlpha: animation.afterImageAlpha,
+    poseProgress,
+    landingProgress:
+      fighter.landingFrames > 0
+        ? 1 - Math.min(1, fighter.landingFrames / FRAME_DATA.LANDING_IMPACT_DURATION)
+        : 0,
+    turnaroundAmount: animation.turnaroundAmount,
+    turnScaleX,
+    rotation,
   });
 
   if (transition) {
@@ -1022,7 +1063,7 @@ export function renderFightScene(
   renderBackground(ctx, camera, fightState.frameCount, graphicsProfile);
 
   // Arena
-  renderArena(ctx, camera, graphicsProfile);
+  renderArena(ctx, camera, graphicsProfile, fightState.frameCount);
 
   // Fighters (sorted by lane for proper layering)
   const fighters = [fightState.player1, fightState.player2];

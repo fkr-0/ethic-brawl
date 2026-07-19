@@ -234,9 +234,9 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
   manifest.clips = [
     createClip('idle', 'Idle Cycle', [0, 1, 2, 3], 'loop', 7),
     createClip('run', 'Walk / Run', [4, 5, 6, 7], 'loop', 3),
-    createClip('jump_rise', 'Jump', [8, 9], 'once', 4),
+    createClip('jump_rise', 'Jump Arc', [8, 9], 'once', 4),
     createClip('air_attack', 'Air Attack', [10], 'once', 4),
-    createClip('land', 'Land', [11], 'once', 4),
+    createClip('land', 'Land and Settle', [9, 11, 0], 'once', 3),
     createClip('attack_light_startup', 'Light Wind-Up', lightStartup, 'once', 3),
     createClip('attack_light_active', 'Light Strike', lightActive, 'once', 2),
     createClip('attack_light_recovery', 'Light Recovery', lightRecovery, 'once', 3),
@@ -255,8 +255,8 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
     createClip('special', 'Special Charge Fallback', [15], 'once', 5),
     createClip('guard', 'Guard', [hasExtended ? 24 : 1], 'loop', 4),
     createClip('hitstun', 'Hurt', hasExtended ? [26, 27] : [11], 'once', 3),
-    createClip('knockdown', 'Knockdown', [hasExtended ? 28 : 11], 'once', 5),
-    createClip('getup', 'Get Up', hasExtended ? [29, 30] : [11], 'once', 4),
+    createClip('knockdown', 'Knockdown', hasExtended ? [27, 28] : [10, 11], 'once', 5),
+    createClip('getup', 'Get Up', hasExtended ? [28, 29, 30, 0] : [11, 8, 0], 'once', 4),
     createClip('victory', 'Victory', [hasExtended ? 31 : 3], 'loop', 8),
   ];
   manifest.stateMappings = [

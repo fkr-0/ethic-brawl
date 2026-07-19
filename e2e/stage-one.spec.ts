@@ -107,6 +107,7 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   expect(snapshot.app.stageEncounterIndex).toBe(0);
   expect(snapshot.app.pendingSelection.player2).toBe('socrates');
   expect(snapshot.renderer.profileId).toBe('babylon_market');
+  expect(snapshot.renderer.stageEventId).toBe('market_caravan');
 
   await tapKey(page, 'Enter');
   await waitForScene(page, 'fight');
@@ -153,6 +154,7 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   expect(snapshot.app.stageEncounterWins).toBe(1);
   expect(snapshot.app.pendingSelection.player2).toBe('schmitt');
   expect(snapshot.renderer.profileId).toBe('babylon_archive');
+  expect(snapshot.renderer.stageEventId).toBe('archive_scan');
 
   await tapKey(page, 'Enter');
   await waitForScene(page, 'fight');
@@ -169,6 +171,7 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   expect(snapshot.app.stageEncounterWins).toBe(2);
   expect(snapshot.app.pendingSelection.player2).toBe('machiavelli');
   expect(snapshot.renderer.profileId).toBe('babylon_gate');
+  expect(snapshot.renderer.stageEventId).toBe('gate_heat_wave');
 
   await tapKey(page, 'Enter');
   await waitForScene(page, 'fight');
