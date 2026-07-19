@@ -1,12 +1,17 @@
 import type { AttackData } from './fighter-state';
 import { resolveAttackHitPolicySource } from './hit-policy-presets';
+import { createHitContactLedger, type HitContactLedger } from '../../../vendor/arcade-runtime.mjs';
 
 export interface AttackContactRecord {
   hits: number;
   lastHitFrame: number;
 }
 
-export type AttackContactMap = Map<string, AttackContactRecord>;
+export type AttackContactMap = HitContactLedger;
+
+export function createAttackContactMap(): AttackContactMap {
+  return createHitContactLedger();
+}
 
 export function resolveAttackHitPolicy(attack: Pick<AttackData, 'hitPolicy' | 'hitPolicyPreset'>) {
   return resolveAttackHitPolicySource(attack);
@@ -18,17 +23,11 @@ export function canRegisterAttackContact(
   targetId: string,
   currentFrame: number
 ): boolean {
-  const record = contacts.get(targetId);
-  if (!record) {
-    return true;
-  }
-
   const policy = resolveAttackHitPolicy(attack);
-  if (record.hits >= policy.maxHitsPerTarget) {
-    return false;
-  }
-
-  return currentFrame - record.lastHitFrame >= policy.rehitDelayFrames;
+  return contacts.canRegister(targetId, currentFrame, {
+    maxHitsPerTarget: policy.maxHitsPerTarget,
+    rehitDelayFrames: policy.rehitDelayFrames,
+  });
 }
 
 export function registerAttackContact(
@@ -36,12 +35,5 @@ export function registerAttackContact(
   targetId: string,
   currentFrame: number
 ): void {
-  const record = contacts.get(targetId);
-  if (!record) {
-    contacts.set(targetId, { hits: 1, lastHitFrame: currentFrame });
-    return;
-  }
-
-  record.hits += 1;
-  record.lastHitFrame = currentFrame;
+  contacts.register(targetId, currentFrame);
 }

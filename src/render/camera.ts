@@ -4,7 +4,7 @@
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { Vector2 } from '@/utils/math';
-import { lerp } from '@/utils/math';
+import { createCameraRig, type CameraRig } from '../../vendor/arcade-runtime.mjs';
 
 /**
  * Camera configuration
@@ -22,13 +22,7 @@ export interface CameraConfig {
 /**
  * Camera state
  */
-export interface Camera {
-  x: number;
-  y: number;
-  zoom: number;
-  targetX: number;
-  targetY: number;
-  shake: number;
+export interface Camera extends CameraRig {
   shakeOffsetX: number;
   shakeOffsetY: number;
 }
@@ -51,49 +45,51 @@ const DEFAULT_CONFIG: CameraConfig = {
  */
 export function createCamera(config: Partial<CameraConfig> = {}): Camera {
   const cfg = { ...DEFAULT_CONFIG, ...config };
-  return {
+  const camera = createCameraRig({
     x: cfg.x,
     y: cfg.y,
     zoom: cfg.zoom,
     targetX: cfg.x,
     targetY: cfg.y,
-    shake: 0,
-    shakeOffsetX: 0,
-    shakeOffsetY: 0,
-  };
+  }) as Camera;
+  Object.defineProperties(camera, {
+    shakeOffsetX: {
+      enumerable: true,
+      get: () => camera.shakeX,
+      set: (value: number) => {
+        camera.shakeX = value;
+      },
+    },
+    shakeOffsetY: {
+      enumerable: true,
+      get: () => camera.shakeY,
+      set: (value: number) => {
+        camera.shakeY = value;
+      },
+    },
+  });
+  return camera;
 }
 
 /**
  * Set camera target
  */
 export function setCameraTarget(camera: Camera, x: number, y: number): void {
-  camera.targetX = x;
-  camera.targetY = y;
+  camera.target(x, y);
 }
 
 /**
  * Follow multiple targets (average position)
  */
 export function cameraFollowTargets(camera: Camera, targets: Vector2[]): void {
-  if (targets.length === 0) return;
-
-  let sumX = 0;
-  let sumY = 0;
-
-  for (const target of targets) {
-    sumX += target.x;
-    sumY += target.y;
-  }
-
-  camera.targetX = sumX / targets.length;
-  camera.targetY = sumY / targets.length;
+  camera.follow(targets);
 }
 
 /**
  * Apply shake effect
  */
 export function shakeCamera(camera: Camera, intensity: number): void {
-  camera.shake = Math.max(camera.shake, intensity);
+  camera.addShake(intensity);
 }
 
 /**
@@ -101,27 +97,15 @@ export function shakeCamera(camera: Camera, intensity: number): void {
  */
 export function updateCamera(camera: Camera, config: Partial<CameraConfig> = {}): void {
   const cfg = { ...DEFAULT_CONFIG, ...config };
-
-  // Smooth follow
-  camera.x = lerp(camera.x, camera.targetX, cfg.followSpeed);
-  camera.y = lerp(camera.y, camera.targetY, cfg.followSpeed);
-  camera.zoom = lerp(camera.zoom, cfg.zoom, 0.16);
-
-  // Clamp position
-  camera.x = Math.max(cfg.minX, Math.min(cfg.maxX, camera.x));
-
-  // Update shake
-  if (camera.shake > 0) {
-    camera.shake *= cfg.shakeDecay;
-    camera.shakeOffsetX = (Math.random() - 0.5) * camera.shake * 2;
-    camera.shakeOffsetY = (Math.random() - 0.5) * camera.shake * 2;
-
-    if (camera.shake < 0.1) {
-      camera.shake = 0;
-      camera.shakeOffsetX = 0;
-      camera.shakeOffsetY = 0;
-    }
-  }
+  camera.step(1, {
+    followBlend: cfg.followSpeed,
+    minX: cfg.minX,
+    maxX: cfg.maxX,
+    zoomTarget: cfg.zoom,
+    zoomBlend: 0.16,
+    shakeDecayMultiplier: cfg.shakeDecay,
+    shakeEpsilon: 0.1,
+  });
 }
 
 export function applyFightCameraEffects(

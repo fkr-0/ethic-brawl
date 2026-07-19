@@ -1,4 +1,5 @@
 import type { ProjectileDefinition } from '@/content/specials';
+import { resolveHitboxContacts } from '../../../vendor/arcade-runtime.mjs';
 
 export interface ProjectileState {
   id: string;
@@ -81,10 +82,28 @@ export function projectileHitsTarget(
     return target.lane === projectile.lane && isAhead(projectile, target.x);
 
   return (
-    projectile.x < target.x + target.width &&
-    projectile.x + 16 > target.x &&
-    projectile.y < target.y + target.height &&
-    projectile.y + 16 > target.y
+    resolveHitboxContacts({
+      hitboxes: [
+        {
+          id: projectile.id,
+          ownerId: projectile.ownerId,
+          x: projectile.x,
+          y: projectile.y,
+          width: 16,
+          height: 16,
+        },
+      ],
+      hurtboxes: [
+        {
+          id: `target:${target.id}`,
+          actorId: target.id,
+          x: target.x,
+          y: target.y,
+          width: target.width,
+          height: target.height,
+        },
+      ],
+    }).length > 0
   );
 }
 

@@ -1,8 +1,43 @@
 import type { StatusEffectDefinition, StatusEffectId } from '@/content/specials';
+import {
+  applyTimedEffect,
+  hasTimedEffect,
+  stepTimedEffects,
+  type TimedEffectState,
+} from '../../../vendor/arcade-runtime.mjs';
 
 export interface ActiveStatusEffect extends StatusEffectDefinition {
   sourceId: string;
   elapsedFrames: number;
+}
+
+type RuntimeStatusEffect = TimedEffectState<StatusEffectId> & ActiveStatusEffect;
+
+function toRuntimeEffect(effect: ActiveStatusEffect): RuntimeStatusEffect {
+  const duration = effect.durationFrames + 1;
+  const tickInterval = effect.id === 'burn' ? (effect.tickRate ?? 1) : undefined;
+  return {
+    ...effect,
+    kind: effect.id,
+    duration,
+    remaining: Math.max(0, duration - effect.elapsedFrames),
+    stacks: 1,
+    maxStacks: 1,
+    ...(tickInterval === undefined
+      ? {}
+      : { tickInterval, tickTimer: tickInterval - (effect.elapsedFrames % tickInterval) }),
+  };
+}
+
+function fromRuntimeEffect(effect: RuntimeStatusEffect): ActiveStatusEffect {
+  return {
+    id: effect.id,
+    durationFrames: effect.durationFrames,
+    magnitude: effect.magnitude,
+    ...(effect.tickRate === undefined ? {} : { tickRate: effect.tickRate }),
+    sourceId: effect.sourceId ?? '',
+    elapsedFrames: Math.max(0, Math.round(effect.duration - effect.remaining)),
+  };
 }
 
 export interface StatusEffectTickResult {
@@ -19,10 +54,13 @@ export function applyStatusEffect(
   definition: StatusEffectDefinition,
   sourceId: string
 ): ActiveStatusEffect[] {
-  return [
-    ...effects.filter((effect) => effect.id !== definition.id),
-    { ...definition, sourceId, elapsedFrames: 0 },
-  ];
+  const incoming = toRuntimeEffect({ ...definition, sourceId, elapsedFrames: 0 });
+  const applied = applyTimedEffect(effects.map(toRuntimeEffect), incoming, {
+    match: 'id',
+    merge: 'replace',
+    position: 'append',
+  });
+  return applied.effects.map((effect) => fromRuntimeEffect(effect as RuntimeStatusEffect));
 }
 
 export function tickStatusEffects(effects: readonly ActiveStatusEffect[]): StatusEffectTickResult {
@@ -32,12 +70,16 @@ export function tickStatusEffects(effects: readonly ActiveStatusEffect[]): Statu
   let armorHits = 0;
   let reflectsProjectiles = false;
 
-  const next = effects
-    .map((effect) => ({ ...effect, elapsedFrames: effect.elapsedFrames + 1 }))
-    .filter((effect) => effect.elapsedFrames <= effect.durationFrames);
+  const stepped = stepTimedEffects(effects.map(toRuntimeEffect), 1);
+  const next = stepped.effects.map((effect) => fromRuntimeEffect(effect as RuntimeStatusEffect));
+
+  for (const event of stepped.events) {
+    if (event.kind === 'tick' && event.effect.kind === 'burn') {
+      damage += event.effect.magnitude;
+    }
+  }
 
   for (const effect of next) {
-    if (effect.id === 'burn' && shouldTick(effect)) damage += effect.magnitude;
     if (effect.id === 'freeze' || effect.id === 'slow')
       movementMultiplier *= Math.max(0.1, 1 - effect.magnitude);
     if (effect.id === 'silence') canUseCommandSpecials = false;
@@ -59,9 +101,5 @@ export function hasStatusEffect(
   effects: readonly ActiveStatusEffect[],
   id: StatusEffectId
 ): boolean {
-  return effects.some((effect) => effect.id === id);
-}
-
-function shouldTick(effect: ActiveStatusEffect): boolean {
-  return effect.tickRate === undefined || effect.elapsedFrames % effect.tickRate === 0;
+  return hasTimedEffect(effects.map(toRuntimeEffect), id, { field: 'kind' });
 }

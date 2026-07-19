@@ -18,7 +18,13 @@ import {
 import type { ActiveStatusEffect } from '@/game/specials/status-effects';
 import { sign } from '@/utils/math';
 import {
+  createTimelineQueue,
+  stepTimelineQueue,
+  type TimelineQueueState,
+} from '../../../vendor/arcade-runtime.mjs';
+import {
   type AttackMotionVariation,
+  type AttackPresentationCue,
   type AttackPresentationProfile,
   type FightCameraEffect,
   createAttackMotionVariation,
@@ -38,7 +44,11 @@ import {
   type Lane,
   STATE_TRANSITIONS,
 } from './fighter-state';
-import { canRegisterAttackContact, registerAttackContact } from './hit-confirm';
+import {
+  canRegisterAttackContact,
+  createAttackContactMap,
+  registerAttackContact,
+} from './hit-confirm';
 import type { ActiveHitbox } from './hitbox';
 import { DEFAULT_HURTBOX, createActiveHitbox } from './hitbox';
 import type { FightVisualEffect } from './visual-effects';
@@ -111,7 +121,7 @@ export class Fighter {
 
   // Attack facing lock
   attackFacing: Direction | null = null;
-  attackContacts = new Map<string, { hits: number; lastHitFrame: number }>();
+  attackContacts = createAttackContactMap();
   currentAttackPresentation: AttackPresentationProfile | null = null;
   attackMotionVariation: AttackMotionVariation = {
     startupShift: 0,
@@ -122,7 +132,7 @@ export class Fighter {
     twistJitter: 0,
     cadenceJitter: 0,
   };
-  attackPresentationCueIndex = 0;
+  attackPresentationTimeline: TimelineQueueState<AttackPresentationCue> | null = null;
   attackVariationCounter = 0;
   pendingPresentationEffects: FightVisualEffect[] = [];
   pendingCameraEffects: FightCameraEffect[] = [];
@@ -258,7 +268,7 @@ export class Fighter {
 
   private resetAttackPresentation(): void {
     this.currentAttackPresentation = null;
-    this.attackPresentationCueIndex = 0;
+    this.attackPresentationTimeline = null;
     this.attackMotionVariation = {
       startupShift: 0,
       activeShift: 0,
@@ -277,7 +287,10 @@ export class Fighter {
       this.character.animation.visualSeed,
       ++this.attackVariationCounter
     );
-    this.attackPresentationCueIndex = 0;
+    this.attackPresentationTimeline = createTimelineQueue(this.currentAttackPresentation.cues, {
+      time: -1,
+      getAt: (cue) => cue.frame,
+    });
   }
 
   private queuePresentationCues(
@@ -289,23 +302,24 @@ export class Fighter {
       return;
     }
 
-    const cues = this.currentAttackPresentation.cues;
-    while (this.attackPresentationCueIndex < cues.length) {
-      const cue = cues[this.attackPresentationCueIndex];
-      if (!cue || cue.frame > nextFrame) {
-        break;
+    if (!this.attackPresentationTimeline) {
+      return;
+    }
+
+    const advanced = stepTimelineQueue(
+      this.attackPresentationTimeline,
+      Math.max(0, nextFrame - previousFrame)
+    );
+    this.attackPresentationTimeline = advanced.state;
+    for (const cue of advanced.due) {
+      const effect = createPresentationVisualEffect(this, this.currentAttack, cue, currentFrame);
+      const cameraEffect = createPresentationCameraEffect(this, cue, currentFrame);
+      if (effect) {
+        this.pendingPresentationEffects.push(effect);
       }
-      if (cue.frame > previousFrame) {
-        const effect = createPresentationVisualEffect(this, this.currentAttack, cue, currentFrame);
-        const cameraEffect = createPresentationCameraEffect(this, cue, currentFrame);
-        if (effect) {
-          this.pendingPresentationEffects.push(effect);
-        }
-        if (cameraEffect) {
-          this.pendingCameraEffects.push(cameraEffect);
-        }
+      if (cameraEffect) {
+        this.pendingCameraEffects.push(cameraEffect);
       }
-      this.attackPresentationCueIndex++;
     }
   }
 

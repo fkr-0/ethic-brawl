@@ -3,7 +3,7 @@
  */
 
 import type { AABB, Vector2 } from '@/utils/math';
-import { aabbCenter, aabbIntersects } from '@/utils/math';
+import { aabbOverlap, computeCollisionManifold } from '../../../vendor/arcade-runtime.mjs';
 
 /**
  * Collision layers
@@ -26,36 +26,23 @@ export interface CollisionInfo {
  * Check collision between two AABBs
  */
 export function checkCollision(a: AABB, b: AABB): boolean {
-  return aabbIntersects(a, b);
+  return aabbOverlap(a, b);
 }
 
 /**
  * Get collision info between two AABBs
  */
 export function getCollisionInfo(a: AABB, b: AABB): CollisionInfo | null {
-  if (!checkCollision(a, b)) return null;
-
-  const centerA = aabbCenter(a);
-  const centerB = aabbCenter(b);
-
-  const overlapLeft = a.x + a.width - b.x;
-  const overlapRight = b.x + b.width - a.x;
-  const overlapTop = a.y + a.height - b.y;
-  const overlapBottom = b.y + b.height - a.y;
-
-  const overlapX = Math.min(overlapLeft, overlapRight);
-  const overlapY = Math.min(overlapTop, overlapBottom);
-
-  const normalX = centerA.x < centerB.x ? -1 : 1;
-  const normalY = centerA.y < centerB.y ? -1 : 1;
+  const manifold = computeCollisionManifold({ id: 'a', ...a }, { id: 'b', ...b });
+  if (!manifold) return null;
 
   return {
     a,
     b,
-    overlapX,
-    overlapY,
-    normalX: overlapX < overlapY ? normalX : 0,
-    normalY: overlapX < overlapY ? 0 : normalY,
+    overlapX: manifold.overlapX,
+    overlapY: manifold.overlapY,
+    normalX: -manifold.normalX,
+    normalY: -manifold.normalY,
   };
 }
 

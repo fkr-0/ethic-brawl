@@ -5,7 +5,10 @@
 import {
   type ActionBinding,
   type ActionState,
+  type ArcadeCommandStream,
+  type SnapshotValue,
   createActionInput,
+  createCommandRecorder,
 } from '../../../vendor/arcade-runtime.mjs';
 import {
   GAME_ACTIONS,
@@ -22,6 +25,11 @@ import { createKeyboard } from './keyboard';
 export interface InputState {
   player1: PlayerInput;
   player2: PlayerInput;
+}
+
+export interface InputManagerOptions {
+  /** Keep the newest N semantic two-player input snapshots. Disabled when omitted or zero. */
+  recordingCapacity?: number;
 }
 
 type CoreSnapshot = Readonly<Record<GameAction, ActionState>>;
@@ -81,8 +89,26 @@ function toPlayerInput(snapshot: CoreSnapshot): PlayerInput {
   return input;
 }
 
-export function createInputManager() {
+function toRecordedInputState(state: InputState): SnapshotValue {
+  return {
+    player1: { ...state.player1 },
+    player2: { ...state.player2 },
+  };
+}
+
+export function createInputManager(options: InputManagerOptions = {}) {
   const keyboard = createKeyboard();
+  const recordingCapacity = Math.max(
+    0,
+    Math.floor(Number.isFinite(options.recordingCapacity) ? Number(options.recordingCapacity) : 0)
+  );
+  const recorder =
+    recordingCapacity > 0
+      ? createCommandRecorder({
+          capacity: recordingCapacity,
+          metadata: { game: 'ethic-brawl', stream: 'semantic-input-v1' },
+        })
+      : null;
   let player1Binding = cloneInputBinding(PLAYER1_BINDINGS);
   let player2Binding = cloneInputBinding(PLAYER2_BINDINGS);
   const player1 = createActionInput({
@@ -108,6 +134,8 @@ export function createInputManager() {
       player1: toPlayerInput(player1.refresh()),
       player2: toPlayerInput(player2.refresh()),
     };
+    recorder?.record(toRecordedInputState(current));
+    recorder?.advance();
   }
 
   function getState(): InputState {
@@ -145,10 +173,15 @@ export function createInputManager() {
       setPlayer2Binding(PLAYER2_BINDINGS);
     },
     getKeyboard: () => keyboard,
+    getInputRecording: (): ArcadeCommandStream | null => recorder?.snapshot() ?? null,
+    clearInputRecording(): void {
+      recorder?.clear();
+    },
     reset(): void {
       keyboard.reset();
       player1.reset();
       player2.reset();
+      recorder?.clear();
       current = {
         player1: createEmptyPlayerInput(),
         player2: createEmptyPlayerInput(),

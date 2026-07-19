@@ -1,89 +1,9 @@
-/**
- * Type-safe pub/sub event bus
- */
+/** Type-safe compatibility facade over the shared arcade-runtime event engine. */
 
-type EventCallback<T = unknown> = (data: T) => void;
+import { createEventBus as createArcadeEventBus } from '../../../vendor/arcade-runtime.mjs';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type EventMap = object;
-
-/**
- * Create a typed event bus
- */
-export function createEventBus<TEvents extends EventMap>() {
-  const listeners = new Map<keyof TEvents, Set<EventCallback<unknown>>>();
-
-  function getOrCreateCallbacks<K extends keyof TEvents>(event: K): Set<EventCallback<unknown>> {
-    const existing = listeners.get(event);
-    if (existing) {
-      return existing;
-    }
-
-    const created = new Set<EventCallback<unknown>>();
-    listeners.set(event, created);
-    return created;
-  }
-
-  function on<K extends keyof TEvents>(event: K, callback: EventCallback<TEvents[K]>): () => void {
-    const callbacks = getOrCreateCallbacks(event);
-    const normalizedCallback = callback as EventCallback<unknown>;
-    callbacks.add(normalizedCallback);
-
-    return () => {
-      callbacks.delete(normalizedCallback);
-      if (callbacks.size === 0) {
-        listeners.delete(event);
-      }
-    };
-  }
-
-  function once<K extends keyof TEvents>(
-    event: K,
-    callback: EventCallback<TEvents[K]>
-  ): () => void {
-    let unsubscribe = () => {};
-
-    const wrappedCallback: EventCallback<TEvents[K]> = (data) => {
-      unsubscribe();
-      callback(data);
-    };
-
-    unsubscribe = on(event, wrappedCallback);
-    return unsubscribe;
-  }
-
-  function emit<K extends keyof TEvents>(event: K, data: TEvents[K]): void {
-    const callbacks = listeners.get(event);
-    if (!callbacks) {
-      return;
-    }
-
-    for (const callback of [...callbacks]) {
-      callback(data);
-    }
-  }
-
-  function off<K extends keyof TEvents>(event?: K): void {
-    if (event) {
-      listeners.delete(event);
-      return;
-    }
-
-    listeners.clear();
-  }
-
-  function hasListeners<K extends keyof TEvents>(event: K): boolean {
-    const callbacks = listeners.get(event);
-    return callbacks !== undefined && callbacks.size > 0;
-  }
-
-  return {
-    on,
-    once,
-    emit,
-    off,
-    hasListeners,
-  };
+export function createEventBus<TEvents extends object>() {
+  return createArcadeEventBus<TEvents>();
 }
 
 /**

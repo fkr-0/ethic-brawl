@@ -6,6 +6,11 @@ import {
   getSpecialMove,
 } from '@/content/specials';
 import type { CommandSlot } from '@/game/fight/command-input';
+import {
+  isCooldownReady,
+  startCooldown,
+  stepCooldownState,
+} from '../../../vendor/arcade-runtime.mjs';
 
 export type SpecialResolveRejectReason = 'no_special' | 'locked' | 'not_enough_energy' | 'cooldown';
 
@@ -30,7 +35,9 @@ export function resolveCommandSpecial(
   const unlockedSpecialIds = getUnlockedSpecials(state.characterId, state.unlockedNodeIds);
   if (!unlockedSpecialIds.includes(special.id)) return { ok: false, reason: 'locked', special };
   if (state.energy < special.energyCost) return { ok: false, reason: 'not_enough_energy', special };
-  if ((state.cooldowns[special.id] ?? 0) > 0) return { ok: false, reason: 'cooldown', special };
+  if (!isCooldownReady(state.cooldowns, special.id)) {
+    return { ok: false, reason: 'cooldown', special };
+  }
 
   return {
     ok: true,
@@ -38,7 +45,7 @@ export function resolveCommandSpecial(
     next: {
       ...state,
       energy: state.energy - special.energyCost,
-      cooldowns: { ...state.cooldowns, [special.id]: special.cooldownFrames },
+      cooldowns: startCooldown(state.cooldowns, special.id, special.cooldownFrames),
     },
   };
 }
@@ -46,11 +53,7 @@ export function resolveCommandSpecial(
 export function tickSpecialCooldowns(
   cooldowns: Readonly<Record<string, number>>
 ): Record<string, number> {
-  return Object.fromEntries(
-    Object.entries(cooldowns)
-      .map(([id, frames]) => [id, Math.max(0, frames - 1)] as const)
-      .filter(([, frames]) => frames > 0)
-  );
+  return stepCooldownState(cooldowns);
 }
 
 export function resolveSpecialById(

@@ -7,6 +7,7 @@ import {
 } from '@/render/sprites/animation-cadence';
 import {
   createAnimationPlayerState,
+  isAnimationComplete,
   playClip,
   setPlaybackSpeed,
   updateAnimationPlayer,
@@ -51,5 +52,15 @@ describe('sprite animation cadence', () => {
     expect(state.currentFrame).toBe(frameBefore);
     expect(state.frameTimer).toBe(timerBefore);
     expect(state.playbackSpeed).toBe(1.05);
+  });
+
+  it('retains a completed once clip on its final frame', () => {
+    const clip = createClip('hit', 'Hit', [8, 9, 10], 'once', 2);
+    let state = playClip(createAnimationPlayerState(), clip);
+    state = updateAnimationPlayer(state, 7);
+
+    expect(state.currentFrame).toBe(2);
+    expect(state.isPlaying).toBe(false);
+    expect(isAnimationComplete(state)).toBe(true);
   });
 });

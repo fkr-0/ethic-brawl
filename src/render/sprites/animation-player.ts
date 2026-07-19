@@ -3,19 +3,25 @@
  */
 
 import type { AnimationClip, AnimationPlayerState, ClipFrame } from './types';
+import {
+  advanceArcadeAnimationClock,
+  createArcadeAnimationClock,
+  playArcadeAnimationClock,
+} from '../../../vendor/arcade-runtime.mjs';
 
 /**
  * Create initial animation player state
  */
 export function createAnimationPlayerState(): AnimationPlayerState {
+  const clock = createArcadeAnimationClock();
   return {
     currentClip: null,
-    currentFrame: 0,
-    frameTimer: 0,
-    isPlaying: false,
-    isPaused: false,
+    currentFrame: clock.frame,
+    frameTimer: clock.elapsed,
+    isPlaying: clock.playing,
+    isPaused: clock.paused,
     playbackSpeed: 1,
-    direction: 1,
+    direction: clock.direction,
   };
 }
 
@@ -27,15 +33,16 @@ export function playClip(
   clip: AnimationClip,
   speed = 1
 ): AnimationPlayerState {
+  const clock = playArcadeAnimationClock(createArcadeAnimationClock());
   return {
     ...state,
     currentClip: clip,
-    currentFrame: 0,
-    frameTimer: 0,
-    isPlaying: true,
-    isPaused: false,
+    currentFrame: clock.frame,
+    frameTimer: clock.elapsed,
+    isPlaying: clock.playing,
+    isPaused: clock.paused,
     playbackSpeed: speed,
-    direction: 1,
+    direction: clock.direction,
   };
 }
 
@@ -105,72 +112,30 @@ export function updateAnimationPlayer(
   }
 
   const clip = state.currentClip;
-  const currentFrameData = clip.frames[state.currentFrame];
-
-  if (!currentFrameData) {
-    return state;
-  }
-
-  let newFrameTimer = state.frameTimer + deltaTime * state.playbackSpeed;
-  let newCurrentFrame = state.currentFrame;
-  let newDirection = state.direction;
-
-  while (newFrameTimer >= currentFrameData.duration) {
-    newFrameTimer -= currentFrameData.duration;
-
-    switch (clip.mode) {
-      case 'once':
-        if (newCurrentFrame < clip.frames.length - 1) {
-          newCurrentFrame++;
-        } else {
-          // For single-frame animations, keep them playing so they don't disappear
-          if (clip.frames.length === 1) {
-            // Keep the single frame visible and active
-            return {
-              ...state,
-              frameTimer: newFrameTimer,
-              currentFrame: 0,
-              isPlaying: true, // Keep playing for single-frame animations
-            };
-          }
-          return {
-            ...state,
-            frameTimer: newFrameTimer,
-            currentFrame: newCurrentFrame,
-            isPlaying: false,
-          };
-        }
-        break;
-
-      case 'loop':
-        newCurrentFrame = (newCurrentFrame + 1) % clip.frames.length;
-        break;
-
-      case 'pingpong':
-        if (newDirection === 1) {
-          if (newCurrentFrame < clip.frames.length - 1) {
-            newCurrentFrame++;
-          } else {
-            newDirection = -1;
-            newCurrentFrame = clip.frames.length - 2;
-          }
-        } else {
-          if (newCurrentFrame > 0) {
-            newCurrentFrame--;
-          } else {
-            newDirection = 1;
-            newCurrentFrame = 1;
-          }
-        }
-        break;
+  const clock = advanceArcadeAnimationClock(
+    {
+      frame: state.currentFrame,
+      elapsed: state.frameTimer,
+      direction: state.direction,
+      playing: state.isPlaying,
+      paused: state.isPaused,
+    },
+    deltaTime,
+    {
+      frameCount: clip.frames.length,
+      frameDuration: (frame) => clip.frames[frame]?.duration ?? 1,
+      mode: clip.mode,
+      speed: state.playbackSpeed,
     }
-  }
+  );
 
   return {
     ...state,
-    frameTimer: newFrameTimer,
-    currentFrame: newCurrentFrame,
-    direction: newDirection,
+    frameTimer: clock.elapsed,
+    currentFrame: clock.frame,
+    direction: clock.direction,
+    isPlaying: clock.playing,
+    isPaused: clock.paused,
   };
 }
 
@@ -183,13 +148,7 @@ export function isAnimationComplete(state: AnimationPlayerState): boolean {
   }
 
   const clip = state.currentClip;
-  const currentClipFrame = clip.frames[state.currentFrame];
-  return (
-    clip.mode === 'once' &&
-    state.currentFrame === clip.frames.length - 1 &&
-    currentClipFrame !== undefined &&
-    state.frameTimer >= currentClipFrame.duration
-  );
+  return clip.mode === 'once' && state.currentFrame === clip.frames.length - 1;
 }
 
 /**

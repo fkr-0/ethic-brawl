@@ -3,7 +3,7 @@
  */
 
 import type { AABB, Vector2 } from '@/utils/math';
-import { aabbIntersects } from '@/utils/math';
+import { resolveHitboxContacts } from '../../../vendor/arcade-runtime.mjs';
 import type { AttackData } from './fighter-state';
 import { resolveAttackMoveClass } from './move-class-presets';
 
@@ -108,7 +108,12 @@ const FALLBACK_ATTACK_HITBOX: HitboxConfig = {
  * Check if a hitbox intersects with a hurtbox
  */
 export function checkHit(hitbox: AABB, hurtbox: AABB): boolean {
-  return aabbIntersects(hitbox, hurtbox);
+  return (
+    resolveHitboxContacts({
+      hitboxes: [{ id: 'hitbox', ownerId: 'attacker', ...hitbox }],
+      hurtboxes: [{ id: 'hurtbox', actorId: 'target', ...hurtbox }],
+    }).length > 0
+  );
 }
 
 /**

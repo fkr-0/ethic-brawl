@@ -1,3 +1,5 @@
+import { createRecyclingPool, type RecyclingPool } from '../../../vendor/arcade-runtime.mjs';
+
 export type CombatParticleKind = 'spark' | 'guard' | 'special' | 'dust';
 
 export interface HitSparkConfig {
@@ -58,33 +60,25 @@ function createDormantParticle(): CombatParticle {
 }
 
 export class CombatVfxPool {
-  private readonly particles: CombatParticle[];
-  private cursor = 0;
+  private readonly pool: RecyclingPool<CombatParticle>;
   private emittedParticles = 0;
   private emittedBursts = 0;
-  private recycledParticles = 0;
 
   constructor(
     private readonly capacity = 320,
     private readonly random: RandomSource = Math.random
   ) {
-    this.particles = Array.from({ length: capacity }, createDormantParticle);
+    this.pool = createRecyclingPool({
+      capacity,
+      create: createDormantParticle,
+      reset: (particle) => Object.assign(particle, createDormantParticle()),
+    });
   }
 
   private acquire(): CombatParticle {
-    for (let offset = 0; offset < this.capacity; offset += 1) {
-      const index = (this.cursor + offset) % this.capacity;
-      const particle = this.particles[index];
-      if (!particle?.active) {
-        this.cursor = (index + 1) % this.capacity;
-        return particle ?? this.particles[0] ?? createDormantParticle();
-      }
-    }
-
-    const particle = this.particles[this.cursor] ?? this.particles[0] ?? createDormantParticle();
-    this.cursor = (this.cursor + 1) % this.capacity;
-    this.recycledParticles += 1;
-    return particle;
+    return this.pool.acquire((particle) => {
+      particle.active = true;
+    });
   }
 
   private spawn(config: Omit<CombatParticle, 'active'>): void {
@@ -169,22 +163,23 @@ export class CombatVfxPool {
   }
 
   update(): void {
-    for (const particle of this.particles) {
-      if (!particle.active) continue;
+    this.pool.forEachActive((particle) => {
       particle.x += particle.vx;
       particle.y += particle.vy;
       particle.vx *= particle.drag;
       particle.vy = particle.vy * particle.drag + particle.gravity;
       particle.rotation += particle.spin;
       particle.life -= 1;
-      if (particle.life <= 0) particle.active = false;
-    }
+      if (particle.life <= 0) {
+        particle.active = false;
+        this.pool.release(particle);
+      }
+    });
   }
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    for (const particle of this.particles) {
-      if (!particle.active) continue;
+    this.pool.forEachActive((particle) => {
       const lifeRatio = Math.max(0, particle.life / particle.maxLife);
       ctx.save();
       ctx.translate(particle.x, particle.y);
@@ -220,24 +215,22 @@ export class CombatVfxPool {
         }
       }
       ctx.restore();
-    }
+    });
     ctx.restore();
   }
 
   clear(): void {
-    for (const particle of this.particles) particle.active = false;
+    this.pool.clear();
   }
 
   getStats(): CombatVfxPoolStats {
+    const pool = this.pool.snapshot();
     return {
       capacity: this.capacity,
-      activeParticles: this.particles.reduce(
-        (count, particle) => count + Number(particle.active),
-        0
-      ),
+      activeParticles: pool.active,
       emittedParticles: this.emittedParticles,
       emittedBursts: this.emittedBursts,
-      recycledParticles: this.recycledParticles,
+      recycledParticles: pool.recycled,
     };
   }
 }

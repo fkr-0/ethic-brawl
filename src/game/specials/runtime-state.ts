@@ -1,5 +1,6 @@
 import type { CharacterId } from '@/content/characters/character-data';
 import { getSkillNodesForCharacter } from '@/content/skill-tree';
+import { stepCooldownState } from '../../../vendor/arcade-runtime.mjs';
 
 export const ENERGY_PER_STAT_POINT = 5;
 
@@ -44,10 +45,6 @@ export function restoreSpecialEnergy(
 export function tickFighterSpecialState(state: FighterSpecialState): FighterSpecialState {
   return {
     ...state,
-    cooldowns: Object.fromEntries(
-      Object.entries(state.cooldowns)
-        .map(([id, frames]) => [id, Math.max(0, frames - 1)] as const)
-        .filter(([, frames]) => frames > 0)
-    ),
+    cooldowns: stepCooldownState(state.cooldowns),
   };
 }

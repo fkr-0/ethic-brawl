@@ -29,6 +29,7 @@ import {
 import { CombatVfxPool, type HitSparkConfig } from '@/render/effects/combat-vfx-pool';
 import type { ScreenEffect } from '@/render/effects/screen-effects';
 import { createFlashEffect, createGlitchEffect } from '@/render/effects/screen-effects';
+import { createSystemPipeline } from '../../../vendor/arcade-runtime.mjs';
 import { type FightCameraEffect, stepFightCameraEffects } from './attack-presentation-presets';
 import { type HitResult, resolveHit } from './combat';
 import { applyCombatIntent } from './combat-intent';
@@ -134,6 +135,12 @@ export interface FightState {
   rules: FightRuleSet;
 }
 
+interface FightUpdateContext {
+  deltaTime: number;
+  input1: PlayerInput;
+  input2?: PlayerInput;
+}
+
 /**
  * Get ground Y for a lane
  */
@@ -150,6 +157,94 @@ export function createFightController() {
   let onFightEnd: ((result: FightResult) => void) | null = null;
   let onHit: ((attacker: string, target: string, result: HitResult) => void) | null = null;
   let onCombo: ((player: 1 | 2, count: number) => void) | null = null;
+
+  const updatePipeline = createSystemPipeline<FightUpdateContext>({
+    phases: ['frame', 'input', 'combat', 'post-combat', 'simulation', 'presentation'],
+  });
+
+  updatePipeline.add(
+    'frame-effects',
+    () => {
+      if (!state) return { halt: true };
+      state.frameCount++;
+      state.visualEffects = stepFightVisualEffects(state.visualEffects, [
+        state.player1,
+        state.player2,
+      ]);
+      state.cameraEffects = stepFightCameraEffects(state.cameraEffects);
+      state.particlePool.update();
+      state.screenEffects = state.screenEffects.filter((effect) => effect.update());
+    },
+    { phase: 'frame' }
+  );
+  updatePipeline.add('fighter-statuses', stepFighterStatuses, {
+    phase: 'frame',
+    after: 'frame-effects',
+  });
+  updatePipeline.add(
+    'pre-input-hit-freeze',
+    () => {
+      if (!state || state.hitFreezeFrames <= 0) return;
+      state.hitFreezeFrames--;
+      checkHits();
+      updateCombos(false);
+      return { halt: true };
+    },
+    { phase: 'frame', after: 'fighter-statuses' }
+  );
+  updatePipeline.add(
+    'round-clock',
+    ({ deltaTime }) => {
+      if (state) state.round.time = Math.max(0, state.round.time - deltaTime / 1000);
+    },
+    { phase: 'input' }
+  );
+  updatePipeline.add(
+    'fighter-input',
+    ({ input1, input2 }) => {
+      if (!state) return;
+      updateFighter(state.player1, input1, state.frameCount);
+      if (input2) updateFighter(state.player2, input2, state.frameCount);
+    },
+    { phase: 'input', after: 'round-clock' }
+  );
+  updatePipeline.add('special-spawns', drainSpecialSpawns, {
+    phase: 'input',
+    after: 'fighter-input',
+  });
+  updatePipeline.add('melee-contacts', checkHits, { phase: 'combat' });
+  updatePipeline.add('projectile-step', updateSpecialProjectiles, {
+    phase: 'combat',
+    after: 'melee-contacts',
+  });
+  updatePipeline.add('projectile-contacts', resolveProjectileHits, {
+    phase: 'combat',
+    after: 'projectile-step',
+  });
+  updatePipeline.add('field-step', stepFields, {
+    phase: 'combat',
+    after: 'projectile-contacts',
+  });
+  updatePipeline.add('combo-step', () => updateCombos(true), { phase: 'post-combat' });
+  updatePipeline.add('round-end', checkRoundEnd, {
+    phase: 'post-combat',
+    after: 'combo-step',
+  });
+  updatePipeline.add(
+    'post-combat-hit-freeze',
+    () => (state && state.hitFreezeFrames > 0 ? { halt: true } : undefined),
+    { phase: 'post-combat', after: 'round-end' }
+  );
+  updatePipeline.add('fighter-physics', ({ deltaTime }) => stepFighterPhysics(deltaTime), {
+    phase: 'simulation',
+  });
+  updatePipeline.add('presentation-drain', drainFighterPresentation, {
+    phase: 'presentation',
+  });
+  updatePipeline.add('auto-face', autoFaceOpponents, {
+    phase: 'presentation',
+    after: 'presentation-drain',
+  });
 
   /**
    * Initialize a new fight
@@ -230,71 +325,24 @@ export function createFightController() {
    */
   function update(deltaTime: number, input1: PlayerInput, input2?: PlayerInput): void {
     if (!state?.isActive || state.isPaused) return;
+    updatePipeline.run({ deltaTime, input1, ...(input2 ? { input2 } : {}) });
+  }
 
-    state.frameCount++;
-    state.visualEffects = stepFightVisualEffects(state.visualEffects, [
-      state.player1,
-      state.player2,
-    ]);
-    state.cameraEffects = stepFightCameraEffects(state.cameraEffects);
-
-    state.particlePool.update();
-
-    // Update screen effects
-    state.screenEffects = state.screenEffects.filter((effect) => effect.update());
-
-    stepFighterStatuses();
-
-    if (state.hitFreezeFrames > 0) {
-      state.hitFreezeFrames--;
-      checkHits();
-      state.combos[0] = updateCombo(state.combos[0], state.frameCount);
-      state.combos[1] = updateCombo(state.combos[1], state.frameCount);
-      return;
-    }
-
-    state.round.time = Math.max(0, state.round.time - deltaTime / 1000);
-
-    // Update fighters
-    updateFighter(state.player1, input1, state.frameCount);
-    if (input2) {
-      updateFighter(state.player2, input2, state.frameCount);
-    }
-    drainSpecialSpawns();
-
-    // Check for hits
-    checkHits();
-
-    updateSpecialProjectiles();
-    resolveProjectileHits();
-    stepFields();
-
-    // Update combos
+  function updateCombos(trackMaximums: boolean): void {
+    if (!state) return;
     state.combos[0] = updateCombo(state.combos[0], state.frameCount);
     state.combos[1] = updateCombo(state.combos[1], state.frameCount);
+    if (!trackMaximums) return;
+    if (state.combos[0].count > state.maxCombos[0]) state.maxCombos[0] = state.combos[0].count;
+    if (state.combos[1].count > state.maxCombos[1]) state.maxCombos[1] = state.combos[1].count;
+  }
 
-    // Track max combos
-    if (state.combos[0].count > state.maxCombos[0]) {
-      state.maxCombos[0] = state.combos[0].count;
-    }
-    if (state.combos[1].count > state.maxCombos[1]) {
-      state.maxCombos[1] = state.combos[1].count;
-    }
-
-    // Check round end conditions
-    checkRoundEnd();
-
-    if (state.hitFreezeFrames > 0) {
-      return;
-    }
-
+  function stepFighterPhysics(deltaTime: number): void {
+    if (!state) return;
     const player1LandingBefore = state.player1.landingFrames;
     const player2LandingBefore = state.player2.landingFrames;
-
-    // Update fighter physics
     state.player1.update(deltaTime, state.frameCount);
     state.player2.update(deltaTime, state.frameCount);
-
     if (state.player1.landingFrames > player1LandingBefore && state.player1.landingFrames > 0) {
       state.visualEffects.push(createLandingDustEffect(state.player1, state.frameCount));
       state.particlePool.emitLandingDust(
@@ -304,7 +352,6 @@ export function createFightController() {
         state.player1.landingFrames / 8
       );
     }
-
     if (state.player2.landingFrames > player2LandingBefore && state.player2.landingFrames > 0) {
       state.visualEffects.push(createLandingDustEffect(state.player2, state.frameCount));
       state.particlePool.emitLandingDust(
@@ -314,14 +361,14 @@ export function createFightController() {
         state.player2.landingFrames / 8
       );
     }
+  }
 
+  function drainFighterPresentation(): void {
+    if (!state) return;
     state.visualEffects.push(...state.player1.drainPresentationEffects());
     state.visualEffects.push(...state.player2.drainPresentationEffects());
     state.cameraEffects.push(...state.player1.drainCameraEffects());
     state.cameraEffects.push(...state.player2.drainCameraEffects());
-
-    // Auto-face opponents
-    autoFaceOpponents();
   }
 
   /**
@@ -982,6 +1029,7 @@ export function createFightController() {
     setOnHit,
     setOnCombo,
     getState,
+    getUpdatePipelineSnapshot: () => updatePipeline.snapshot(),
     getLaneGroundY,
   };
 }
