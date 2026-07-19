@@ -5,6 +5,7 @@
 import { type CharacterId, getCharacterIds } from '@/content/characters/character-data';
 import {
   createArcadeSpriteFrameGeometry,
+  drawArcadeSpriteCanvasFrame,
   inspectArcadeSpriteFrame,
   resolveArcadeSpriteVisibleScale,
   type ArcadeSpritePixelData,
@@ -469,29 +470,29 @@ export function renderSpriteFrame(
   }
 
   const opts = createRenderOptions(options);
-  const { scale, flipX, opacity } = opts;
-
-  ctx.save();
-  ctx.globalAlpha = opacity;
-  ctx.translate(x, y);
-
-  if (flipX) {
-    ctx.scale(-1, 1);
-  }
-
-  ctx.scale(scale, scale);
-
-  const pivotOffset = calculatePivotOffset(atlasFrame, 1);
-  ctx.translate(pivotOffset.x, pivotOffset.y);
-
   const processedFrame = getProcessedSpriteFrameCanvas(atlas, atlasFrame);
-  if (!processedFrame) {
-    ctx.restore();
-    return false;
-  }
-  ctx.drawImage(processedFrame, 0, 0);
+  if (!processedFrame) return false;
 
-  ctx.restore();
+  drawArcadeSpriteCanvasFrame(
+    ctx,
+    processedFrame,
+    {
+      ...atlasFrame,
+      sourceX: 0,
+      sourceY: 0,
+      frameWidth: processedFrame.width,
+      frameHeight: processedFrame.height,
+    },
+    {
+      x,
+      y,
+      scale: opts.scale,
+      flipX: opts.flipX,
+      opacity: opts.opacity,
+      placement: 'pivot',
+      imageSmoothingEnabled: false,
+    }
+  );
   return true;
 }
 

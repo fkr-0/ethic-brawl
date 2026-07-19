@@ -18,8 +18,16 @@ import {
 import type { ActiveStatusEffect } from '@/game/specials/status-effects';
 import { sign } from '@/utils/math';
 import {
+  createActionPhaseState,
+  createActionGraceState,
   createTimelineQueue,
+  isActionPhaseActive,
+  markActionOutcome,
+  stepActionPhase,
   stepTimelineQueue,
+  type ActionOutcome,
+  type ArcadeActionGraceState,
+  type ActionPhaseState,
   type TimelineQueueState,
 } from '../../../vendor/arcade-runtime.mjs';
 import {
@@ -93,6 +101,7 @@ export class Fighter {
   // Attack
   currentAttack: AttackData | null = null;
   attackFrame = 0;
+  attackPhaseState: ActionPhaseState | null = null;
   attackChainIndex = 0;
   attackChainTimeout = 0;
 
@@ -113,6 +122,10 @@ export class Fighter {
   lastDirection: Direction | null = null;
   previousHorizontalInput = 0;
   previousVerticalInput = 0;
+  jumpGraceState: ArcadeActionGraceState = createActionGraceState({
+    graceDuration: FRAME_DATA.JUMP_COYOTE_WINDOW,
+    bufferDuration: FRAME_DATA.JUMP_BUFFER_WINDOW,
+  });
 
   // Lane change
   laneChangeTimer = 0;
@@ -354,12 +367,9 @@ export class Fighter {
     if (!this.currentAttack) return null;
 
     const attack = this.currentAttack;
-    const relativeFrame = this.attackFrame - attack.startup;
-
-    // Check if in active frames
-    if (relativeFrame < 0 || relativeFrame >= attack.active) {
-      return null;
-    }
+    const phaseState =
+      this.attackPhaseState ?? createActionPhaseState(attack, { elapsed: this.attackFrame });
+    if (!isActionPhaseActive(phaseState)) return null;
 
     return createActiveHitbox(
       this.id,
@@ -383,6 +393,7 @@ export class Fighter {
     this.currentAttack = this.applyStatFrameScaling(attack);
     this.attackFacing = this.facing;
     this.attackFrame = 0;
+    this.attackPhaseState = createActionPhaseState(this.currentAttack);
     this.attackContacts.clear();
     this.configureAttackPresentation(this.currentAttack);
     this.queuePresentationCues(-1, 0, currentFrame);
@@ -413,6 +424,7 @@ export class Fighter {
     this.currentAttack = this.applyStatFrameScaling(attack);
     this.attackFacing = this.facing;
     this.attackFrame = 0;
+    this.attackPhaseState = createActionPhaseState(this.currentAttack);
     this.attackContacts.clear();
     this.configureAttackPresentation(this.currentAttack);
     this.queuePresentationCues(-1, 0, currentFrame);
@@ -437,6 +449,11 @@ export class Fighter {
 
   registerHitTarget(targetId: string, currentFrame: number): void {
     registerAttackContact(this.attackContacts, targetId, currentFrame);
+  }
+
+  markAttackOutcome(outcome: Exclude<ActionOutcome, 'none'>): void {
+    if (!this.attackPhaseState) return;
+    this.attackPhaseState = markActionOutcome(this.attackPhaseState, outcome);
   }
 
   /**
@@ -498,6 +515,7 @@ export class Fighter {
       this.currentAttack = null;
       this.attackFacing = null;
       this.attackFrame = 0;
+      this.attackPhaseState = null;
       this.attackContacts.clear();
       this.resetAttackPresentation();
       this.isBlocking = false;
@@ -529,15 +547,21 @@ export class Fighter {
     // Update attack
     if (this.currentAttack) {
       const previousAttackFrame = this.attackFrame;
-      this.attackFrame++;
+      const stepped = stepActionPhase(
+        this.currentAttack,
+        this.attackPhaseState ??
+          createActionPhaseState(this.currentAttack, { elapsed: this.attackFrame }),
+        1
+      );
+      this.attackPhaseState = stepped.state;
+      this.attackFrame = stepped.state.elapsed;
       this.queuePresentationCues(previousAttackFrame, this.attackFrame, currentFrame);
 
-      const totalFrames =
-        this.currentAttack.startup + this.currentAttack.active + this.currentAttack.recovery;
-      if (this.attackFrame >= totalFrames) {
+      if (stepped.finished) {
         this.currentAttack = null;
         this.attackFacing = null;
         this.attackFrame = 0;
+        this.attackPhaseState = null;
         this.attackContacts.clear();
         this.resetAttackPresentation();
         if (this.state === 'attacking' || this.state === 'special') {
@@ -613,6 +637,7 @@ export class Fighter {
       this.currentAttack = null;
       this.attackFacing = null;
       this.attackFrame = 0;
+      this.attackPhaseState = null;
       this.attackContacts.clear();
       this.resetAttackPresentation();
       this.hitstunFrames = 0;

@@ -44,6 +44,7 @@ import {
   smoothAnimationPlaybackSpeed,
   updateAnimationPlayer,
 } from './sprites';
+import { resolveHudGauge } from '../../vendor/arcade-runtime.mjs';
 import { collectAmbientEffectsForFighter, renderAmbientEffect, renderVisualEffect } from './vfx';
 
 /**
@@ -67,24 +68,28 @@ export function renderSpecialMeter(
   color: string,
   isPlayer2 = false
 ): void {
-  const energyPercent =
-    fighter.specialState.maxEnergy > 0
-      ? fighter.specialState.currentEnergy / fighter.specialState.maxEnergy
-      : 0;
-  const cooldownPercent =
-    fighter.specialMaxCooldown > 0 ? 1 - fighter.specialCooldown / fighter.specialMaxCooldown : 1;
+  const energyGauge = resolveHudGauge({
+    value: fighter.specialState.currentEnergy,
+    max: fighter.specialState.maxEnergy,
+    direction: isPlayer2 ? 'reverse' : 'forward',
+  });
+  const cooldownGauge = resolveHudGauge({
+    value: fighter.specialMaxCooldown - fighter.specialCooldown,
+    max: fighter.specialMaxCooldown,
+    direction: isPlayer2 ? 'reverse' : 'forward',
+  });
   const ready = fighter.specialCooldown <= 0;
 
   ctx.fillStyle = 'rgba(13, 5, 24, 0.88)';
   ctx.fillRect(x, y, width, 10);
   ctx.fillStyle = color;
-  const energyWidth = width * Math.max(0, Math.min(1, energyPercent));
+  const energyWidth = width * energyGauge.ratio;
   ctx.fillRect(isPlayer2 ? x + width - energyWidth : x, y, energyWidth, 10);
 
   ctx.fillStyle = '#241533';
   ctx.fillRect(x, y + 13, width, 4);
   ctx.fillStyle = ready ? '#39FF14' : '#FF9F1C';
-  const cooldownWidth = width * Math.max(0, Math.min(1, cooldownPercent));
+  const cooldownWidth = width * cooldownGauge.ratio;
   ctx.fillRect(isPlayer2 ? x + width - cooldownWidth : x, y + 13, cooldownWidth, 4);
 
   ctx.font = 'bold 9px "Courier New", monospace';
@@ -876,14 +881,22 @@ export function renderHealthBar(
   label: string,
   isPlayer2 = false
 ): void {
-  const percent = currentHealth / maxHealth;
+  const gauge = resolveHudGauge({
+    value: currentHealth,
+    max: maxHealth,
+    lowThreshold: 0.25,
+    criticalThreshold: 0.12,
+    direction: isPlayer2 ? 'reverse' : 'forward',
+    time: Date.now() / 1000,
+    pulsePeriod: 0.63,
+  });
 
   // Background
   ctx.fillStyle = '#1A0A2E';
   ctx.fillRect(x, y, width, height);
 
   // Health fill
-  const fillWidth = width * percent;
+  const fillWidth = width * gauge.ratio;
   if (isPlayer2) {
     ctx.fillStyle = color;
     ctx.fillRect(x + width - fillWidth, y, fillWidth, height);
@@ -893,9 +906,9 @@ export function renderHealthBar(
   }
 
   // Low health warning
-  if (percent < 0.25) {
+  if (gauge.warning) {
     ctx.fillStyle = '#FF073A';
-    ctx.globalAlpha = 0.5 + Math.sin(Date.now() * 0.01) * 0.3;
+    ctx.globalAlpha = gauge.pulse;
     if (isPlayer2) {
       ctx.fillRect(x + width - fillWidth, y, fillWidth, height);
     } else {

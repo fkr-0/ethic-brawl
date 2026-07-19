@@ -19,6 +19,11 @@ import {
 import type { InputState } from '@/core/input/input-manager';
 import type { FightPresentationOptions } from '@/render';
 import {
+  createUiNavigationRepeater,
+  resolveGridFocusIndex,
+  type ArcadeGridDirection,
+} from '../../../vendor/arcade-runtime.mjs';
+import {
   renderCharacterSelect,
   renderLoading,
   renderMainMenu,
@@ -42,6 +47,12 @@ interface SceneUpdateContext {
   fightRuntime: FightRuntime;
   onSettingsChanged?: (settings: SettingsState) => void;
   getFightPresentationOverrides?: () => Partial<FightPresentationOptions>;
+  navigation: {
+    start: ReturnType<typeof createUiNavigationRepeater>;
+    settingsRows: ReturnType<typeof createUiNavigationRepeater>;
+    settingsTabs: ReturnType<typeof createUiNavigationRepeater>;
+    character: ReturnType<typeof createUiNavigationRepeater>;
+  };
 }
 
 /**
@@ -49,21 +60,17 @@ interface SceneUpdateContext {
  */
 function updateStartScene(ctx: SceneUpdateContext): void {
   const { appState, input, transitionTo } = ctx;
-
-  if (input.player1.moveUp && !appState.menuUpLatch) {
-    appState.startMenuIndex = (appState.startMenuIndex + 2) % 3;
-    appState.menuUpLatch = true;
-  }
-  if (!input.player1.moveUp) {
-    appState.menuUpLatch = false;
-  }
-
-  if (input.player1.moveDown && !appState.menuDownLatch) {
-    appState.startMenuIndex = (appState.startMenuIndex + 1) % 3;
-    appState.menuDownLatch = true;
-  }
-  if (!input.player1.moveDown) {
-    appState.menuDownLatch = false;
+  const directions = ctx.navigation.start.step({
+    up: input.player1.moveUp,
+    down: input.player1.moveDown,
+  });
+  for (const direction of directions) {
+    appState.startMenuIndex = resolveGridFocusIndex(
+      appState.startMenuIndex,
+      direction as ArcadeGridDirection,
+      3,
+      { columns: 1, wrapY: true }
+    );
   }
 
   if (input.player1.confirm || input.player1.attack) {
@@ -124,31 +131,28 @@ function updateSettingsScene(ctx: SceneUpdateContext): void {
     return;
   }
 
-  if (input.player1.moveUp && !appState.menuUpLatch) {
-    appState.settings.selectedIndex = (appState.settings.selectedIndex - 1 + rowCount) % rowCount;
-    appState.menuUpLatch = true;
-  }
-  if (!input.player1.moveUp) {
-    appState.menuUpLatch = false;
-  }
-
-  if (input.player1.moveDown && !appState.menuDownLatch) {
-    appState.settings.selectedIndex = (appState.settings.selectedIndex + 1) % rowCount;
-    appState.menuDownLatch = true;
-  }
-  if (!input.player1.moveDown) {
-    appState.menuDownLatch = false;
+  const rowDirections = ctx.navigation.settingsRows.step({
+    up: input.player1.moveUp,
+    down: input.player1.moveDown,
+  });
+  for (const direction of rowDirections) {
+    appState.settings.selectedIndex = resolveGridFocusIndex(
+      appState.settings.selectedIndex,
+      direction as ArcadeGridDirection,
+      rowCount,
+      { columns: 1, wrapY: true }
+    );
   }
 
-  if ((input.player1.moveLeft || input.player1.moveRight) && !appState.settingsTabLatch) {
+  const tabDirections = ctx.navigation.settingsTabs.step({
+    left: input.player1.moveLeft,
+    right: input.player1.moveRight,
+  });
+  if (tabDirections.length > 0) {
     appState.settings.menuTab =
       appState.settings.menuTab === 'gameplay' ? 'keybindings' : 'gameplay';
     appState.settings.selectedIndex = 0;
-    appState.settingsTabLatch = true;
     commitSettingsChange(ctx);
-  }
-  if (!input.player1.moveLeft && !input.player1.moveRight) {
-    appState.settingsTabLatch = false;
   }
 
   if (input.player1.confirm || input.player1.attack) {
@@ -194,59 +198,30 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
   const activeIndexKey =
     appState.characterSelectPhase === 1 ? 'player1SelectIndex' : 'player2SelectIndex';
 
-  if (input.player1.moveLeft && !appState.charSelectLeftLatch) {
-    if (appState.characterSelectPhase === 1) {
-      appState.player1SelectIndex =
-        (appState.player1SelectIndex - 1 + characterIds.length) % characterIds.length;
-    } else {
-      appState.player2SelectIndex =
-        (appState.player2SelectIndex - 1 + characterIds.length) % characterIds.length;
-    }
-    appState.charSelectLeftLatch = true;
-  }
-  if (!input.player1.moveLeft) {
-    appState.charSelectLeftLatch = false;
-  }
-
-  if (input.player1.moveRight && !appState.charSelectRightLatch) {
-    if (appState.characterSelectPhase === 1) {
-      appState.player1SelectIndex = (appState.player1SelectIndex + 1) % characterIds.length;
-    } else {
-      appState.player2SelectIndex = (appState.player2SelectIndex + 1) % characterIds.length;
-    }
-    appState.charSelectRightLatch = true;
-  }
-  if (!input.player1.moveRight) {
-    appState.charSelectRightLatch = false;
-  }
-
-  if (input.player1.moveUp && !appState.charSelectUpLatch) {
-    appState[activeIndexKey] = moveCharacterSelectGridIndex(
+  const directions = ctx.navigation.character.step({
+    left: input.player1.moveLeft,
+    right: input.player1.moveRight,
+    up: input.player1.moveUp,
+    down: input.player1.moveDown,
+  });
+  for (const direction of directions) {
+    appState[activeIndexKey] = resolveGridFocusIndex(
       appState[activeIndexKey],
-      'up',
-      characterIds.length
+      direction as ArcadeGridDirection,
+      characterIds.length,
+      {
+        columns: CHARACTER_SELECT_COLUMNS,
+        horizontalMode: 'sequence',
+        wrapX: true,
+        wrapY: true,
+      }
     );
-    appState.charSelectUpLatch = true;
-  }
-  if (!input.player1.moveUp) {
-    appState.charSelectUpLatch = false;
-  }
-
-  if (input.player1.moveDown && !appState.charSelectDownLatch) {
-    appState[activeIndexKey] = moveCharacterSelectGridIndex(
-      appState[activeIndexKey],
-      'down',
-      characterIds.length
-    );
-    appState.charSelectDownLatch = true;
-  }
-  if (!input.player1.moveDown) {
-    appState.charSelectDownLatch = false;
   }
 
   if (input.player1.cancel) {
     if (appState.characterSelectPhase === 2) {
       appState.characterSelectPhase = 1;
+      ctx.navigation.character.reset();
     } else {
       void transitionTo('start');
     }
@@ -274,6 +249,7 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
         return;
       }
       appState.characterSelectPhase = 2;
+      ctx.navigation.character.reset();
       return;
     }
 
@@ -457,10 +433,6 @@ export interface AppShellState {
   player1SelectIndex: number;
   player2SelectIndex: number;
   characterSelectPhase: 1 | 2;
-  charSelectLeftLatch: boolean;
-  charSelectRightLatch: boolean;
-  charSelectUpLatch: boolean;
-  charSelectDownLatch: boolean;
   stageNumber: number;
   stageEncounterIndex: number;
   stageEncounterWins: number;
@@ -475,9 +447,6 @@ export interface AppShellState {
   pendingSelection: MatchSelection;
   gameMode: GameMode;
   startMenuIndex: number;
-  menuUpLatch: boolean;
-  menuDownLatch: boolean;
-  settingsTabLatch: boolean;
   settings: SettingsState;
 }
 
@@ -497,9 +466,10 @@ export function moveCharacterSelectGridIndex(
   itemCount: number,
   columns = CHARACTER_SELECT_COLUMNS
 ): number {
-  if (itemCount <= 0) return 0;
-  const delta = direction === 'up' ? -columns : columns;
-  return (index + delta + itemCount) % itemCount;
+  return resolveGridFocusIndex(index, direction, itemCount, {
+    columns,
+    wrapY: true,
+  });
 }
 
 export function createInitialAppShellState(): AppShellState {
@@ -508,10 +478,6 @@ export function createInitialAppShellState(): AppShellState {
     player1SelectIndex: 0,
     player2SelectIndex: Math.min(1, characterIds.length - 1),
     characterSelectPhase: 1,
-    charSelectLeftLatch: false,
-    charSelectRightLatch: false,
-    charSelectUpLatch: false,
-    charSelectDownLatch: false,
     stageNumber: 1,
     stageEncounterIndex: 0,
     stageEncounterWins: 0,
@@ -529,9 +495,6 @@ export function createInitialAppShellState(): AppShellState {
     },
     gameMode: 'vs',
     startMenuIndex: 0,
-    menuUpLatch: false,
-    menuDownLatch: false,
-    settingsTabLatch: false,
     settings: {
       skipStageIntro: false,
       menuTab: 'gameplay',
@@ -547,6 +510,32 @@ export function createInitialAppShellState(): AppShellState {
 
 export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): Scene[] {
   const characterIds = (deps.getCharacterIdsList ?? getReleaseRosterIds)();
+  const navigation = {
+    start: createUiNavigationRepeater({
+      directions: ['up', 'down'],
+      initialDelay: 18,
+      repeatInterval: 5,
+      mode: 'dominant',
+    }),
+    settingsRows: createUiNavigationRepeater({
+      directions: ['up', 'down'],
+      initialDelay: 18,
+      repeatInterval: 5,
+      mode: 'dominant',
+    }),
+    settingsTabs: createUiNavigationRepeater({
+      directions: ['left', 'right'],
+      initialDelay: 0,
+      repeatInterval: 0,
+      mode: 'dominant',
+    }),
+    character: createUiNavigationRepeater({
+      directions: ['left', 'right', 'up', 'down'],
+      initialDelay: 14,
+      repeatInterval: 4,
+      mode: 'dominant',
+    }),
+  };
 
   // Create shared update context
   const createUpdateContext = (): SceneUpdateContext => ({
@@ -554,6 +543,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
     input: deps.getLatestInput(),
     transitionTo: deps.transitionTo,
     fightRuntime: deps.fightRuntime,
+    navigation,
     ...(deps.onSettingsChanged && { onSettingsChanged: deps.onSettingsChanged }),
   });
 
@@ -566,6 +556,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
     createScene('start', {
       enter: () => {
         appState.latestResult = null;
+        navigation.start.reset();
       },
       update: () => {
         updateStartScene(createUpdateContext());
@@ -575,6 +566,10 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
       },
     }),
     createScene('settings', {
+      enter: () => {
+        navigation.settingsRows.reset();
+        navigation.settingsTabs.reset();
+      },
       update: () => {
         updateSettingsScene(createUpdateContext());
       },
@@ -585,10 +580,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
     createScene('character-select', {
       enter: () => {
         appState.characterSelectPhase = 1;
-        appState.charSelectLeftLatch = false;
-        appState.charSelectRightLatch = false;
-        appState.charSelectUpLatch = false;
-        appState.charSelectDownLatch = false;
+        navigation.character.reset();
       },
       update: () => {
         updateCharacterSelectScene(createUpdateContext(), characterIds);

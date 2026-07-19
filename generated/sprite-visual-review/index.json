@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-07-19T13:27:59.526Z",
+  "renderer": "@arcade/runtime drawArcadeSpriteCanvasFrame + Ethic presentation policy",
+  "canvas": {
+    "internal": {
+      "width": 960,
+      "height": 540
+    },
+    "display": {
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "captures": [
+    {
+      "file": "ethic-fight-idle.png",
+      "bytes": 194037,
+      "sha256": "fb4fdef957eb06a78e0fab067ff4ae11f2d4c9cf8851ff5141dbefe1a26b6c95",
+      "captureSpace": "display",
+      "width": 1280,
+      "height": 720,
+      "characterId": "foucault",
+      "clipId": "idle",
+      "atlasFrameIndex": 1,
+      "depthScale": 0.9614173228346456
+    },
+    {
+      "file": "ethic-light-attack-active.png",
+      "bytes": 288179,
+      "sha256": "32e0d2e128856ec234f56038e96d0ead718e66e2013e76ebc4abec360e35721f",
+      "captureSpace": "internal-canvas",
+      "width": 960,
+      "height": 540,
+      "characterId": "foucault",
+      "clipId": "attack_light_active",
+      "attackPhase": "active",
+      "atlasFrameIndex": 16,
+      "depthScale": 0.9614173228346456
+    }
+  ]
+}

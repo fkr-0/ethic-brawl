@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT DIRECTLY.
 // Edit source/runtime/*.js.inc and run `npm run source:build`.
 
-export const ARCADE_RUNTIME_VERSION = '1.4.1';
+export const ARCADE_RUNTIME_VERSION = '1.7.0';
 export const ARCADE_PIXI_RUNTIME_VERSION = ARCADE_RUNTIME_VERSION;
 
 export const DEFAULT_ARCADE_LAYERS = Object.freeze([
@@ -660,17 +660,46 @@ function arcadeSpriteInspectionFinite(value, fallback = 0) {
 }
 
 function arcadeSpriteInspectionPositiveInteger(value, label) {
-  const resolved = Math.floor(arcadeSpriteInspectionFinite(value, Number.NaN));
+  const resolved = arcadeSpriteInspectionFinite(value, Number.NaN);
   arcadeSpriteInspectionInvariant(
-    Number.isFinite(resolved) && resolved > 0,
+    Number.isInteger(resolved) && resolved > 0,
     `${label} must be a positive integer`,
   );
   return resolved;
 }
 
+function arcadeSpriteInspectionNonNegativeInteger(value, label) {
+  const resolved = arcadeSpriteInspectionFinite(value, Number.NaN);
+  arcadeSpriteInspectionInvariant(
+    Number.isInteger(resolved) && resolved >= 0,
+    `${label} must be a non-negative integer`,
+  );
+  return resolved;
+}
+
+const arcadeSpriteInspectionAdapterIds = new WeakMap();
+let arcadeSpriteInspectionNextAdapterId = 1;
+
+function arcadeSpriteInspectionAdapterKey(adapter) {
+  if (typeof adapter !== 'function') return 'none';
+  let id = arcadeSpriteInspectionAdapterIds.get(adapter);
+  if (id === undefined) {
+    id = arcadeSpriteInspectionNextAdapterId;
+    arcadeSpriteInspectionNextAdapterId += 1;
+    arcadeSpriteInspectionAdapterIds.set(adapter, id);
+  }
+  return String(id);
+}
+
 function arcadeSpriteInspectionFrame(frame = {}) {
-  const sourceX = Math.floor(arcadeSpriteInspectionFinite(frame.sourceX ?? frame.x, 0));
-  const sourceY = Math.floor(arcadeSpriteInspectionFinite(frame.sourceY ?? frame.y, 0));
+  const sourceX = arcadeSpriteInspectionNonNegativeInteger(
+    frame.sourceX ?? frame.x ?? 0,
+    'sprite frame sourceX',
+  );
+  const sourceY = arcadeSpriteInspectionNonNegativeInteger(
+    frame.sourceY ?? frame.y ?? 0,
+    'sprite frame sourceY',
+  );
   const frameWidth = arcadeSpriteInspectionPositiveInteger(
     frame.frameWidth ?? frame.width,
     'sprite frame width',
@@ -679,9 +708,9 @@ function arcadeSpriteInspectionFrame(frame = {}) {
     frame.frameHeight ?? frame.height,
     'sprite frame height',
   );
-  const absoluteFrame = Math.max(
-    0,
-    Math.floor(arcadeSpriteInspectionFinite(frame.absoluteFrame ?? frame.index, 0)),
+  const absoluteFrame = arcadeSpriteInspectionNonNegativeInteger(
+    frame.absoluteFrame ?? frame.index ?? 0,
+    'sprite absolute frame',
   );
   const anchor = frame.pivot ?? frame.anchor;
   const explicitPixelAnchor = frame.anchorUnits === 'pixels';
@@ -726,7 +755,7 @@ function arcadeSpriteInspectionSourceSize(source) {
   return Object.freeze({ width, height });
 }
 
-function arcadeSpriteInspectionCacheKey(source, frame, options) {
+function arcadeSpriteInspectionCacheIdentity(source, frame, options) {
   let sourceKey;
   if (typeof options.cacheKey === 'function') {
     const resolved = options.cacheKey(source, frame);
@@ -738,6 +767,9 @@ function arcadeSpriteInspectionCacheKey(source, frame, options) {
     sourceKey = resolved === undefined || resolved === null ? null : String(resolved);
   }
   if (sourceKey === null) return null;
+  const readPixels = options.readPixels
+    ?? source?.readPixels
+    ?? source?.getImageData;
   return [
     sourceKey,
     frame.absoluteFrame,
@@ -745,6 +777,15 @@ function arcadeSpriteInspectionCacheKey(source, frame, options) {
     frame.sourceY,
     frame.frameWidth,
     frame.frameHeight,
+    `read=${arcadeSpriteInspectionAdapterKey(readPixels)}`,
+    `process=${arcadeSpriteInspectionAdapterKey(options.processPixels)}`,
+  ].join(':');
+}
+
+function arcadeSpriteInspectionCacheKey(identity, options) {
+  if (identity === null) return null;
+  return [
+    identity,
     arcadeSpriteInspectionFinite(options.alphaThreshold, 16),
     arcadeSpriteInspectionFinite(options.edgeWidth, -1),
     arcadeSpriteInspectionFinite(options.blankCoverageThreshold, 0.01),
@@ -798,8 +839,8 @@ function arcadeSpriteInspectionExtractPixels(source, sourceSize, frame) {
   return Object.freeze({ data, width: frame.frameWidth, height: frame.frameHeight });
 }
 
-function arcadeSpriteInspectionReadPixels(source, sourceSize, frame, options, cacheKey) {
-  const processedKey = cacheKey === null ? null : `${cacheKey}:processed`;
+function arcadeSpriteInspectionReadPixels(source, sourceSize, frame, options, cacheIdentity) {
+  const processedKey = cacheIdentity === null ? null : `${cacheIdentity}:processed`;
   const cached = arcadeSpriteInspectionCacheGet(options.processedFrameCache, processedKey);
   if (cached !== undefined) {
     return arcadeSpriteInspectionNormalizePixels(cached, frame.frameWidth, frame.frameHeight);
@@ -845,11 +886,12 @@ export function inspectArcadeSpriteFrame(source, rawFrame, options = {}) {
     `sprite frame ${frame.absoluteFrame} source rectangle is outside ${sourceSize.width}x${sourceSize.height}`,
   );
 
-  const cacheKey = arcadeSpriteInspectionCacheKey(source, frame, options);
+  const cacheIdentity = arcadeSpriteInspectionCacheIdentity(source, frame, options);
+  const cacheKey = arcadeSpriteInspectionCacheKey(cacheIdentity, options);
   const cached = arcadeSpriteInspectionCacheGet(options.cache, cacheKey);
   if (cached !== undefined) return cached;
 
-  const pixels = arcadeSpriteInspectionReadPixels(source, sourceSize, frame, options, cacheKey);
+  const pixels = arcadeSpriteInspectionReadPixels(source, sourceSize, frame, options, cacheIdentity);
   const alphaThreshold = Math.max(0, Math.min(255, arcadeSpriteInspectionFinite(options.alphaThreshold, 16)));
   const edgeWidth = options.edgeWidth === undefined
     ? Math.min(2, Math.max(1, Math.floor(Math.min(pixels.width, pixels.height) / 16)))
@@ -1014,8 +1056,10 @@ export function createArcadeSpriteFrameGeometry(rawFrame, transform = {}) {
   const scaleX = commonScale * Math.abs(arcadeSpriteInspectionFinite(transform.scaleX, 1));
   const scaleY = commonScale * Math.abs(arcadeSpriteInspectionFinite(transform.scaleY, 1));
   const signedScaleX = transform.flipX === true ? -scaleX : scaleX;
-  const localX = -frame.frameWidth * frame.anchorX;
-  const localY = -frame.frameHeight * frame.anchorY;
+  const rawLocalX = -frame.frameWidth * frame.anchorX;
+  const rawLocalY = -frame.frameHeight * frame.anchorY;
+  const localX = Object.is(rawLocalX, -0) ? 0 : rawLocalX;
+  const localY = Object.is(rawLocalY, -0) ? 0 : rawLocalY;
   const firstX = x + localX * signedScaleX;
   const secondX = x + (localX + frame.frameWidth) * signedScaleX;
   const firstY = y + localY * scaleY;
@@ -1062,6 +1106,293 @@ export function createArcadeSpriteFrameGeometry(rawFrame, transform = {}) {
     flipX: transform.flipX === true,
     scaleX,
     scaleY,
+  });
+}
+
+function arcadeSpriteCanvasInvariant(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+function arcadeSpriteCanvasFinite(value, fallback = 0) {
+  return Number.isFinite(value) ? Number(value) : fallback;
+}
+
+function arcadeSpriteCanvasPositive(value, fallback) {
+  const resolved = arcadeSpriteCanvasFinite(value, fallback);
+  return resolved > 0 ? resolved : fallback;
+}
+
+function arcadeSpriteCanvasFrameDimension(frame, axis) {
+  const direct = axis === 'width' ? frame?.frameWidth ?? frame?.width : frame?.frameHeight ?? frame?.height;
+  const value = Math.floor(arcadeSpriteCanvasFinite(direct, 0));
+  arcadeSpriteCanvasInvariant(value > 0, `sprite canvas frame ${axis} must be positive`);
+  return value;
+}
+
+function arcadeSpriteCanvasPlacementFrame(frame, placement) {
+  if (placement !== 'top-left') return frame;
+  return {
+    ...frame,
+    anchorUnits: 'normalized',
+    anchorX: 0,
+    anchorY: 0,
+    pivotX: 0,
+    pivotY: 0,
+    anchor: [0, 0],
+    pivot: [0, 0],
+  };
+}
+
+function arcadeSpriteCanvasAssertContext(context) {
+  arcadeSpriteCanvasInvariant(context && typeof context.save === 'function', 'sprite canvas context must support save');
+  arcadeSpriteCanvasInvariant(typeof context.restore === 'function', 'sprite canvas context must support restore');
+  arcadeSpriteCanvasInvariant(typeof context.translate === 'function', 'sprite canvas context must support translate');
+  arcadeSpriteCanvasInvariant(typeof context.scale === 'function', 'sprite canvas context must support scale');
+  arcadeSpriteCanvasInvariant(typeof context.drawImage === 'function', 'sprite canvas context must support drawImage');
+}
+
+/**
+ * Draw one atlas frame through a shared Canvas2D transform contract.
+ *
+ * `placement: 'pivot'` treats x/y as the authored frame pivot and is suitable
+ * for fighters and world actors. `placement: 'top-left'` preserves legacy
+ * blitter semantics and mirrors around the destination frame rectangle.
+ */
+export function drawArcadeSpriteCanvasFrame(context, image, rawFrame, options = {}) {
+  arcadeSpriteCanvasAssertContext(context);
+  arcadeSpriteCanvasInvariant(image, 'sprite canvas image is required');
+
+  const placement = options.placement === 'top-left' ? 'top-left' : 'pivot';
+  const frameWidth = arcadeSpriteCanvasFrameDimension(rawFrame, 'width');
+  const commonScale = Math.abs(arcadeSpriteCanvasFinite(options.scale, 1));
+  const scaleX = Math.abs(arcadeSpriteCanvasFinite(options.scaleX, 1));
+  const scaleY = Math.abs(arcadeSpriteCanvasFinite(options.scaleY, 1));
+  const horizontalScale = commonScale * scaleX;
+  const flipX = options.flipX === true;
+  const rawX = arcadeSpriteCanvasFinite(options.x, 0)
+    + (placement === 'top-left' && flipX ? frameWidth * horizontalScale : 0);
+  const rawY = arcadeSpriteCanvasFinite(options.y, 0);
+  const x = options.snapToPixels === true ? Math.round(rawX) : rawX;
+  const y = options.snapToPixels === true ? Math.round(rawY) : rawY;
+  const frame = arcadeSpriteCanvasPlacementFrame(rawFrame, placement);
+  const geometry = createArcadeSpriteFrameGeometry(frame, {
+    x,
+    y,
+    scale: commonScale,
+    scaleX,
+    scaleY,
+    flipX,
+  });
+  const opacity = Math.max(0, Math.min(1, arcadeSpriteCanvasFinite(options.opacity, 1)));
+
+  context.save();
+  try {
+    const inheritedAlpha = arcadeSpriteCanvasFinite(context.globalAlpha, 1);
+    context.globalAlpha = inheritedAlpha * opacity;
+    const smoothing = options.imageSmoothingEnabled ?? options.smoothing;
+    if (typeof smoothing === 'boolean') {
+      context.imageSmoothingEnabled = smoothing;
+    }
+    if (typeof options.compositeOperation === 'string' && options.compositeOperation.length > 0) {
+      context.globalCompositeOperation = options.compositeOperation;
+    }
+    context.translate(geometry.matrix.tx, geometry.matrix.ty);
+    context.scale(geometry.matrix.a, geometry.matrix.d);
+    context.drawImage(
+      image,
+      geometry.source.x,
+      geometry.source.y,
+      geometry.source.width,
+      geometry.source.height,
+      Object.is(geometry.local.x, -0) ? 0 : geometry.local.x,
+      Object.is(geometry.local.y, -0) ? 0 : geometry.local.y,
+      geometry.local.width,
+      geometry.local.height,
+    );
+  } finally {
+    context.restore();
+  }
+  return geometry;
+}
+
+/** Canonical concise alias for the shared Canvas frame renderer. */
+export const drawArcadeSpriteCanvas = drawArcadeSpriteCanvasFrame;
+
+function arcadeSpriteContactSheetCells(entries, options) {
+  const count = entries.length;
+  const columns = Math.max(1, Math.floor(arcadeSpriteCanvasFinite(options.columns, Math.min(6, Math.max(1, count)))));
+  const rows = Math.max(1, Math.ceil(count / columns));
+  const cellWidth = arcadeSpriteCanvasPositive(options.cellWidth, 176);
+  const cellHeight = arcadeSpriteCanvasPositive(options.cellHeight, 176);
+  const gap = Math.max(0, arcadeSpriteCanvasFinite(options.gap, 0));
+  const padding = Math.max(0, arcadeSpriteCanvasFinite(options.padding, 16));
+  const labelHeight = Math.max(0, arcadeSpriteCanvasFinite(options.labelHeight, 28));
+  const contentPadding = Math.max(0, arcadeSpriteCanvasFinite(options.contentPadding, padding));
+  const width = columns * cellWidth + Math.max(0, columns - 1) * gap;
+  const height = rows * cellHeight + Math.max(0, rows - 1) * gap;
+  const cells = entries.map((entry, index) => {
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const x = column * (cellWidth + gap);
+    const y = row * (cellHeight + gap);
+    const content = Object.freeze({
+      x: x + contentPadding,
+      y: y + contentPadding,
+      width: Math.max(1, cellWidth - contentPadding * 2),
+      height: Math.max(1, cellHeight - labelHeight - contentPadding * 2),
+    });
+    const frameWidth = entry?.frame ? arcadeSpriteCanvasFrameDimension(entry.frame, 'width') : 1;
+    const frameHeight = entry?.frame ? arcadeSpriteCanvasFrameDimension(entry.frame, 'height') : 1;
+    const fitScale = Math.min(content.width / frameWidth, content.height / frameHeight);
+    const scale = Math.max(0, fitScale * arcadeSpriteCanvasPositive(entry?.scale, 1));
+    const drawX = content.x + (content.width - frameWidth * scale) / 2;
+    const drawY = content.y + (content.height - frameHeight * scale) / 2;
+    const inspectedFrame = entry?.frame ? arcadeSpriteInspectionFrame(entry.frame) : null;
+    const sourcePivotX = inspectedFrame ? inspectedFrame.frameWidth * inspectedFrame.anchorX : 0;
+    const sourcePivotY = inspectedFrame ? inspectedFrame.frameHeight * inspectedFrame.anchorY : 0;
+    return Object.freeze({
+      index,
+      column,
+      row,
+      x,
+      y,
+      width: cellWidth,
+      height: cellHeight,
+      content,
+      label: String(entry?.label ?? entry?.id ?? `frame ${index}`),
+      labelBounds: Object.freeze({
+        x: x + contentPadding,
+        y: y + cellHeight - labelHeight,
+        width: Math.max(1, cellWidth - contentPadding * 2),
+        height: labelHeight,
+      }),
+      scale,
+      drawX,
+      drawY,
+      flipX: entry?.flipX === true,
+      pivot: Object.freeze({
+        x: drawX + (entry?.flipX === true ? frameWidth - sourcePivotX : sourcePivotX) * scale,
+        y: drawY + sourcePivotY * scale,
+      }),
+    });
+  });
+  return Object.freeze({
+    width,
+    height,
+    columns,
+    rows,
+    cellWidth,
+    cellHeight,
+    gap,
+    padding,
+    labelHeight,
+    cells: Object.freeze(cells),
+  });
+}
+
+/** Create deterministic contact-sheet cell geometry without requiring a DOM. */
+export function createArcadeSpriteContactSheetLayout(entries, options = {}) {
+  arcadeSpriteCanvasInvariant(Array.isArray(entries), 'sprite contact-sheet entries must be an array');
+  return arcadeSpriteContactSheetCells(entries, options);
+}
+
+function arcadeSpriteContactSheetStyle(context, property, value) {
+  if (value !== undefined && property in context) context[property] = value;
+}
+
+/**
+ * Draw a visual review contact sheet. Images are provided by the consumer, so
+ * loading, chroma processing and URL ownership remain outside the runtime.
+ */
+export function drawArcadeSpriteContactSheetCanvas(context, entries, options = {}) {
+  arcadeSpriteCanvasAssertContext(context);
+  arcadeSpriteCanvasInvariant(Array.isArray(entries), 'sprite contact-sheet entries must be an array');
+  const layout = createArcadeSpriteContactSheetLayout(entries, options);
+  if (options.resizeCanvas === true && context.canvas) {
+    context.canvas.width = Math.ceil(layout.width);
+    context.canvas.height = Math.ceil(layout.height);
+  }
+  if (typeof context.clearRect === 'function') {
+    context.clearRect(0, 0, layout.width, layout.height);
+  }
+  if (typeof context.fillRect === 'function' && options.background !== null) {
+    arcadeSpriteContactSheetStyle(context, 'fillStyle', options.background ?? '#111318');
+    context.fillRect(0, 0, layout.width, layout.height);
+  }
+
+  const rendered = [];
+  for (const cell of layout.cells) {
+    const entry = entries[cell.index];
+    const image = entry?.image ?? entry?.source;
+    if (!image || !entry.frame) continue;
+    if (typeof context.fillRect === 'function') {
+      arcadeSpriteContactSheetStyle(context, 'fillStyle', options.cellBackground ?? '#1b1f27');
+      context.fillRect(cell.x, cell.y, cell.width, cell.height);
+    }
+    const scale = Math.min(
+      arcadeSpriteCanvasPositive(options.maximumScale, Number.POSITIVE_INFINITY),
+      cell.scale,
+    );
+    const geometry = drawArcadeSpriteCanvasFrame(context, image, entry.frame, {
+      x: cell.drawX,
+      y: cell.drawY,
+      placement: 'top-left',
+      scale,
+      flipX: entry.flipX === true,
+      opacity: entry.opacity,
+      imageSmoothingEnabled: options.imageSmoothingEnabled ?? options.smoothing ?? false,
+      snapToPixels: options.snapToPixels,
+    });
+
+    const showPivot = options.debugPivot ?? options.showPivot ?? true;
+    if (showPivot && typeof context.beginPath === 'function') {
+      const radius = Math.max(3, arcadeSpriteCanvasFinite(options.pivotRadius, 5));
+      arcadeSpriteContactSheetStyle(context, 'fillStyle', options.pivotColor ?? '#ffcf5a');
+      context.beginPath();
+      if (typeof context.arc === 'function' && typeof context.fill === 'function') {
+        context.arc(cell.pivot.x, cell.pivot.y, radius, 0, Math.PI * 2);
+        context.fill();
+      } else if (
+        typeof context.moveTo === 'function'
+        && typeof context.lineTo === 'function'
+        && typeof context.stroke === 'function'
+      ) {
+        arcadeSpriteContactSheetStyle(context, 'strokeStyle', options.pivotColor ?? '#ffcf5a');
+        context.moveTo(cell.pivot.x - radius, cell.pivot.y);
+        context.lineTo(cell.pivot.x + radius, cell.pivot.y);
+        context.moveTo(cell.pivot.x, cell.pivot.y - radius);
+        context.lineTo(cell.pivot.x, cell.pivot.y + radius);
+        context.stroke();
+      }
+    }
+    if ((options.debugFrame ?? true) && typeof context.strokeRect === 'function') {
+      arcadeSpriteContactSheetStyle(context, 'strokeStyle', options.cellBorder ?? '#596273');
+      arcadeSpriteContactSheetStyle(context, 'lineWidth', 1);
+      context.strokeRect(cell.x + 0.5, cell.y + 0.5, cell.width - 1, cell.height - 1);
+    }
+    if (typeof context.fillText === 'function' && cell.labelBounds.height > 0) {
+      arcadeSpriteContactSheetStyle(context, 'fillStyle', options.labelColor ?? '#eef1f6');
+      arcadeSpriteContactSheetStyle(context, 'font', options.font ?? '12px monospace');
+      arcadeSpriteContactSheetStyle(context, 'textBaseline', 'middle');
+      context.fillText(
+        cell.label,
+        cell.labelBounds.x,
+        cell.labelBounds.y + cell.labelBounds.height / 2,
+        cell.labelBounds.width,
+      );
+    }
+    rendered.push(Object.freeze({
+      index: cell.index,
+      geometry,
+      scale,
+      drawX: cell.drawX,
+      drawY: cell.drawY,
+    }));
+  }
+  return Object.freeze({
+    ...layout,
+    layout,
+    rendered: Object.freeze(rendered),
   });
 }
 
@@ -1549,6 +1880,339 @@ export function createRecyclingPool(options = {}) {
   return pool;
 }
 
+function arcadeInteractionInvariant(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+function arcadeInteractionFinite(value, fallback = 0) {
+  return Number.isFinite(value) ? Number(value) : fallback;
+}
+
+function arcadeInteractionNonNegative(value, label) {
+  const resolved = arcadeInteractionFinite(value, Number.NaN);
+  arcadeInteractionInvariant(Number.isFinite(resolved) && resolved >= 0, `${label} must be non-negative`);
+  return resolved;
+}
+
+function arcadeInteractionPositiveInteger(value, label) {
+  const resolved = arcadeInteractionFinite(value, Number.NaN);
+  arcadeInteractionInvariant(Number.isInteger(resolved) && resolved > 0, `${label} must be a positive integer`);
+  return resolved;
+}
+
+function freezeBufferedInputQueue(queue) {
+  return Object.freeze({
+    window: queue.window,
+    capacity: queue.capacity,
+    nextSequence: queue.nextSequence,
+    entries: Object.freeze(queue.entries.map((entry) => Object.freeze({ ...entry }))),
+  });
+}
+
+function normalizeBufferedInputQueue(queue) {
+  arcadeInteractionInvariant(queue && Array.isArray(queue.entries), 'buffered input queue is required');
+  return {
+    window: arcadeInteractionNonNegative(queue.window, 'buffered input window'),
+    capacity: arcadeInteractionPositiveInteger(queue.capacity, 'buffered input capacity'),
+    nextSequence: Math.max(0, Math.floor(arcadeInteractionFinite(queue.nextSequence, 0))),
+    entries: queue.entries.map((entry, index) => {
+      arcadeInteractionInvariant(entry && Object.hasOwn(entry, 'value'), `buffered input entry ${index} requires a value`);
+      return {
+        value: entry.value,
+        at: arcadeInteractionNonNegative(entry.at, `buffered input entry ${index} timestamp`),
+        sequence: Math.max(0, Math.floor(arcadeInteractionFinite(entry.sequence, index))),
+      };
+    }),
+  };
+}
+
+function sortBufferedInputEntries(entries) {
+  return [...entries].sort((left, right) => left.at - right.at || left.sequence - right.sequence);
+}
+
+export function createBufferedInputQueue(options = {}) {
+  return freezeBufferedInputQueue({
+    window: arcadeInteractionNonNegative(options.window ?? 10, 'buffered input window'),
+    capacity: arcadeInteractionPositiveInteger(options.capacity ?? 32, 'buffered input capacity'),
+    nextSequence: 0,
+    entries: [],
+  });
+}
+
+export function pruneBufferedInputQueue(queue, now) {
+  const normalized = normalizeBufferedInputQueue(queue);
+  const timestamp = arcadeInteractionNonNegative(now, 'buffered input timestamp');
+  const entries = normalized.entries.filter((entry) => entry.at > timestamp || timestamp - entry.at <= normalized.window);
+  return freezeBufferedInputQueue({ ...normalized, entries });
+}
+
+export function pushBufferedInput(queue, value, at) {
+  const normalized = normalizeBufferedInputQueue(queue);
+  const timestamp = arcadeInteractionNonNegative(at, 'buffered input timestamp');
+  const entries = sortBufferedInputEntries([
+    ...normalized.entries,
+    { value, at: timestamp, sequence: normalized.nextSequence },
+  ]).slice(-normalized.capacity);
+  return freezeBufferedInputQueue({
+    ...normalized,
+    nextSequence: normalized.nextSequence + 1,
+    entries,
+  });
+}
+
+function findBufferedInputEntry(queue, now, options = {}) {
+  const predicate = options.predicate ?? (() => true);
+  arcadeInteractionInvariant(typeof predicate === 'function', 'buffered input predicate must be a function');
+  const eligible = queue.entries.filter((entry) => entry.at <= now && predicate(entry.value, entry));
+  if (options.order === 'oldest') return eligible[0] ?? null;
+  return eligible[eligible.length - 1] ?? null;
+}
+
+export function peekBufferedInput(queue, now, options = {}) {
+  const pruned = pruneBufferedInputQueue(queue, now);
+  const entry = findBufferedInputEntry(pruned, now, options);
+  return Object.freeze({ entry, value: entry?.value ?? null, queue: pruned });
+}
+
+export function consumeBufferedInput(queue, now, options = {}) {
+  const peeked = peekBufferedInput(queue, now, options);
+  if (!peeked.entry) return peeked;
+  return Object.freeze({
+    entry: peeked.entry,
+    value: peeked.value,
+    queue: freezeBufferedInputQueue({
+      ...normalizeBufferedInputQueue(peeked.queue),
+      entries: peeked.queue.entries.filter((entry) => entry.sequence !== peeked.entry.sequence),
+    }),
+  });
+}
+
+function arcadeGridAvailable(itemCount, options) {
+  const available = [];
+  for (let index = 0; index < itemCount; index += 1) {
+    if (options.isAvailable?.(index) === false) continue;
+    available.push(index);
+  }
+  return available;
+}
+
+function arcadeGridSequenceMove(current, direction, itemCount, options, availableSet) {
+  const delta = direction === 'left' || direction === 'previous' ? -1 : 1;
+  for (let step = 1; step <= itemCount; step += 1) {
+    let candidate = current + delta * step;
+    if (options.wrapX !== false) candidate = ((candidate % itemCount) + itemCount) % itemCount;
+    else if (candidate < 0 || candidate >= itemCount) return current;
+    if (availableSet.has(candidate)) return candidate;
+  }
+  return current;
+}
+
+function arcadeGridRowCandidates(row, columns, itemCount, availableSet) {
+  const start = row * columns;
+  const end = Math.min(itemCount, start + columns);
+  const candidates = [];
+  for (let index = start; index < end; index += 1) {
+    if (availableSet.has(index)) candidates.push(index);
+  }
+  return candidates;
+}
+
+export function resolveGridFocusIndex(index, direction, itemCount, options = {}) {
+  const count = Math.max(0, Math.floor(arcadeInteractionFinite(itemCount, 0)));
+  if (count === 0) return 0;
+  arcadeInteractionInvariant(
+    ['left', 'right', 'up', 'down', 'next', 'previous'].includes(direction),
+    `unknown grid focus direction: ${direction}`,
+  );
+  const columns = arcadeInteractionPositiveInteger(options.columns ?? 1, 'grid column count');
+  const available = arcadeGridAvailable(count, options);
+  if (available.length === 0) return 0;
+  const availableSet = new Set(available);
+  let current = Math.max(0, Math.min(count - 1, Math.floor(arcadeInteractionFinite(index, 0))));
+  if (!availableSet.has(current)) current = available[0];
+
+  if (direction === 'next' || direction === 'previous') {
+    return arcadeGridSequenceMove(current, direction, count, { ...options, wrapX: options.wrap !== false }, availableSet);
+  }
+  if (direction === 'left' || direction === 'right') {
+    if (options.horizontalMode === 'sequence') {
+      return arcadeGridSequenceMove(current, direction, count, options, availableSet);
+    }
+    const row = Math.floor(current / columns);
+    const candidates = arcadeGridRowCandidates(row, columns, count, availableSet);
+    const position = candidates.indexOf(current);
+    if (position < 0 || candidates.length < 2) return current;
+    const delta = direction === 'left' ? -1 : 1;
+    let next = position + delta;
+    if (options.wrapX !== false) next = (next + candidates.length) % candidates.length;
+    else if (next < 0 || next >= candidates.length) return current;
+    return candidates[next];
+  }
+
+  const rowCount = Math.ceil(count / columns);
+  const currentRow = Math.floor(current / columns);
+  const preferredColumn = Math.max(
+    0,
+    Math.min(columns - 1, Math.floor(arcadeInteractionFinite(options.preferredColumn, current % columns))),
+  );
+  const delta = direction === 'up' ? -1 : 1;
+  for (let step = 1; step <= rowCount; step += 1) {
+    let row = currentRow + delta * step;
+    if (options.wrapY !== false) row = ((row % rowCount) + rowCount) % rowCount;
+    else if (row < 0 || row >= rowCount) return current;
+    const candidates = arcadeGridRowCandidates(row, columns, count, availableSet);
+    if (!candidates.length) continue;
+    return candidates.reduce((best, candidate) => {
+      const candidateDistance = Math.abs((candidate % columns) - preferredColumn);
+      const bestDistance = Math.abs((best % columns) - preferredColumn);
+      return candidateDistance < bestDistance || (candidateDistance === bestDistance && candidate < best)
+        ? candidate
+        : best;
+    }, candidates[0]);
+  }
+  return current;
+}
+
+export function createGridFocusNavigator(options = {}) {
+  let items = [...(options.items ?? [])];
+  let columns = arcadeInteractionPositiveInteger(options.columns ?? 1, 'grid column count');
+  const events = options.events ?? createEventBus();
+  const isAvailable = (index) => items[index]?.disabled !== true && items[index]?.hidden !== true;
+  let focusedIndex = items.findIndex((item, index) => item.id === options.initialId && isAvailable(index));
+  if (focusedIndex < 0) focusedIndex = items.findIndex((_item, index) => isAvailable(index));
+  let preferredColumn = focusedIndex >= 0 ? focusedIndex % columns : 0;
+
+  const navigator = {
+    events,
+    setItems(nextItems, nextColumns = columns) {
+      const previousId = navigator.current()?.id ?? null;
+      items = [...nextItems];
+      columns = arcadeInteractionPositiveInteger(nextColumns, 'grid column count');
+      focusedIndex = items.findIndex((item, index) => item.id === previousId && isAvailable(index));
+      if (focusedIndex < 0) focusedIndex = items.findIndex((_item, index) => isAvailable(index));
+      preferredColumn = focusedIndex >= 0 ? focusedIndex % columns : 0;
+      return navigator.current();
+    },
+    current() {
+      return focusedIndex >= 0 ? items[focusedIndex] ?? null : null;
+    },
+    focus(id, reason = 'programmatic') {
+      const nextIndex = items.findIndex((item, index) => item.id === id && isAvailable(index));
+      if (nextIndex < 0 || nextIndex === focusedIndex) return false;
+      const previousId = navigator.current()?.id ?? null;
+      focusedIndex = nextIndex;
+      preferredColumn = focusedIndex % columns;
+      const item = navigator.current();
+      events.emit('focus:change', Object.freeze({ previousId, id: item.id, reason, item }));
+      return true;
+    },
+    move(direction) {
+      if (focusedIndex < 0) return null;
+      const nextIndex = resolveGridFocusIndex(focusedIndex, direction, items.length, {
+        columns,
+        wrap: options.wrap,
+        wrapX: options.wrapX ?? options.wrap,
+        wrapY: options.wrapY ?? options.wrap,
+        horizontalMode: options.horizontalMode,
+        preferredColumn,
+        isAvailable,
+      });
+      const vertical = direction === 'up' || direction === 'down';
+      const previousPreferredColumn = preferredColumn;
+      navigator.focus(items[nextIndex]?.id, direction);
+      if (vertical) preferredColumn = previousPreferredColumn;
+      return navigator.current();
+    },
+    activate() {
+      const item = navigator.current();
+      if (!item) return false;
+      item.onActivate?.(item);
+      events.emit('focus:activate', Object.freeze({ id: item.id, item }));
+      return true;
+    },
+    snapshot() {
+      return Object.freeze({
+        focusedId: navigator.current()?.id ?? null,
+        focusedIndex,
+        preferredColumn,
+        columns,
+        items: Object.freeze(items.map((item) => Object.freeze({
+          id: item.id,
+          disabled: Boolean(item.disabled),
+          hidden: Boolean(item.hidden),
+        }))),
+      });
+    },
+  };
+  return navigator;
+}
+
+export function createUiNavigationRepeater(options = {}) {
+  const directions = Object.freeze([...(options.directions ?? ['up', 'down', 'left', 'right'])]);
+  arcadeInteractionInvariant(directions.length > 0, 'UI navigation repeater requires directions');
+  const initialDelay = arcadeInteractionNonNegative(options.initialDelay ?? 18, 'UI repeat initial delay');
+  const repeatInterval = arcadeInteractionNonNegative(options.repeatInterval ?? 5, 'UI repeat interval');
+  const maximumTriggers = arcadeInteractionPositiveInteger(options.maximumTriggersPerStep ?? 32, 'UI maximum triggers per step');
+  const events = options.events ?? createEventBus();
+  const states = new Map(directions.map((direction) => [direction, { held: false, untilRepeat: initialDelay }]));
+
+  const repeater = {
+    events,
+    step(input = {}, delta = 1) {
+      const elapsed = arcadeInteractionNonNegative(delta, 'UI navigation delta');
+      const pressed = directions.filter((direction) => input[direction] === true);
+      const selected = options.mode === 'dominant' ? pressed.slice(0, 1) : pressed;
+      const selectedSet = new Set(selected);
+      const triggered = [];
+      for (const direction of directions) {
+        const state = states.get(direction);
+        if (!selectedSet.has(direction)) {
+          state.held = false;
+          state.untilRepeat = initialDelay;
+          continue;
+        }
+        if (!state.held) {
+          state.held = true;
+          state.untilRepeat = initialDelay;
+          triggered.push(direction);
+          continue;
+        }
+        if (repeatInterval === 0 && initialDelay === 0) continue;
+        state.untilRepeat -= elapsed;
+        while (state.untilRepeat <= 0 && triggered.length < maximumTriggers) {
+          triggered.push(direction);
+          state.untilRepeat += repeatInterval > 0 ? repeatInterval : Number.POSITIVE_INFINITY;
+        }
+      }
+      for (const direction of triggered) {
+        events.emit('ui-navigation:trigger', Object.freeze({ direction, input, delta: elapsed }));
+      }
+      return Object.freeze(triggered);
+    },
+    reset(direction) {
+      const targets = direction === undefined ? directions : [direction];
+      for (const target of targets) {
+        const state = states.get(target);
+        if (!state) continue;
+        state.held = false;
+        state.untilRepeat = initialDelay;
+      }
+      return repeater.snapshot();
+    },
+    snapshot() {
+      return Object.freeze({
+        directions,
+        initialDelay,
+        repeatInterval,
+        states: Object.freeze(Object.fromEntries(
+          directions.map((direction) => [direction, Object.freeze({ ...states.get(direction) })]),
+        )),
+      });
+    },
+  };
+  return repeater;
+}
+
 function freezeTimelineState(time, nextSequence, entries) {
   return Object.freeze({
     time,
@@ -1730,6 +2394,206 @@ export function hasTimedEffect(effects, value, options = {}) {
   coreInvariant(Array.isArray(effects), 'timed effects must be an array');
   const field = options.field ?? 'id';
   return effects.some((effect) => effect?.[field] === value && finiteNumber(effect.remaining, 0) > 0);
+}
+
+export const ARCADE_ACTION_PHASES = Object.freeze(['startup', 'active', 'recovery', 'done']);
+export const ARCADE_ACTION_OUTCOMES = Object.freeze(['none', 'hit', 'block', 'whiff']);
+
+function normalizeActionPhaseDuration(value, name) {
+  const duration = finiteNumber(value, Number.NaN);
+  coreInvariant(Number.isFinite(duration) && duration >= 0, `action ${name} must be finite and non-negative`);
+  return duration;
+}
+
+function normalizeActionPhaseDefinition(definition = {}) {
+  const id = String(definition.id ?? '');
+  coreInvariant(id.length > 0, 'action phase definition id is required');
+  return {
+    ...definition,
+    id,
+    startup: normalizeActionPhaseDuration(definition.startup, 'startup'),
+    active: normalizeActionPhaseDuration(definition.active, 'active'),
+    recovery: normalizeActionPhaseDuration(definition.recovery, 'recovery'),
+  };
+}
+
+function normalizeActionOutcome(outcome) {
+  const normalized = String(outcome ?? 'none');
+  coreInvariant(ARCADE_ACTION_OUTCOMES.includes(normalized), `unknown action outcome "${normalized}"`);
+  return normalized;
+}
+
+function actionPhaseSequence(definition) {
+  const phases = [];
+  if (definition.startup > 0) phases.push('startup');
+  if (definition.active > 0) phases.push('active');
+  if (definition.recovery > 0) phases.push('recovery');
+  phases.push('done');
+  return phases;
+}
+
+export function getActionPhase(definition, elapsed) {
+  const normalized = normalizeActionPhaseDefinition(definition);
+  const time = Math.max(0, finiteNumber(elapsed, Number.NaN));
+  coreInvariant(Number.isFinite(time), 'action elapsed time must be finite and non-negative');
+  if (time < normalized.startup) return 'startup';
+  if (time < normalized.startup + normalized.active) return 'active';
+  if (time < normalized.startup + normalized.active + normalized.recovery) return 'recovery';
+  return 'done';
+}
+
+function actionPhaseBounds(definition, phase) {
+  const activeStart = definition.startup;
+  const recoveryStart = activeStart + definition.active;
+  const doneStart = recoveryStart + definition.recovery;
+  if (phase === 'startup') return { start: 0, end: activeStart };
+  if (phase === 'active') return { start: activeStart, end: recoveryStart };
+  if (phase === 'recovery') return { start: recoveryStart, end: doneStart };
+  return { start: doneStart, end: doneStart };
+}
+
+export function getActionPhaseProgress(definition, stateOrElapsed) {
+  const normalized = normalizeActionPhaseDefinition(definition);
+  const elapsed = typeof stateOrElapsed === 'number'
+    ? Math.max(0, finiteNumber(stateOrElapsed, Number.NaN))
+    : Math.max(0, finiteNumber(stateOrElapsed?.elapsed, Number.NaN));
+  coreInvariant(Number.isFinite(elapsed), 'action elapsed time must be finite and non-negative');
+  const phase = getActionPhase(normalized, elapsed);
+  const bounds = actionPhaseBounds(normalized, phase);
+  const duration = Math.max(0, bounds.end - bounds.start);
+  const elapsedInPhase = phase === 'done'
+    ? 0
+    : Math.max(0, Math.min(duration, elapsed - bounds.start));
+  return Object.freeze({
+    phase,
+    elapsed,
+    elapsedInPhase,
+    duration,
+    progress: phase === 'done' ? 1 : duration === 0 ? 1 : elapsedInPhase / duration,
+    phaseStart: bounds.start,
+    phaseEnd: bounds.end,
+    totalDuration: normalized.startup + normalized.active + normalized.recovery,
+  });
+}
+
+export function createActionPhaseState(definition, options = {}) {
+  const normalized = normalizeActionPhaseDefinition(definition);
+  const elapsed = Math.max(0, finiteNumber(options.elapsed, 0));
+  const lastOutcome = normalizeActionOutcome(options.lastOutcome);
+  return Object.freeze({
+    actionId: normalized.id,
+    elapsed,
+    phase: getActionPhase(normalized, elapsed),
+    hitConfirmed: options.hitConfirmed === true || lastOutcome === 'hit',
+    lastOutcome,
+  });
+}
+
+export function markActionOutcome(state, outcome = 'hit') {
+  coreInvariant(state && typeof state.actionId === 'string', 'action phase state is required');
+  const lastOutcome = normalizeActionOutcome(outcome);
+  coreInvariant(lastOutcome !== 'none', 'resolved action outcome cannot be none');
+  return Object.freeze({
+    ...state,
+    hitConfirmed: state.hitConfirmed === true || lastOutcome === 'hit',
+    lastOutcome,
+  });
+}
+
+function actionOutcomeRoutes(definition, outcome) {
+  if (outcome === 'hit') return definition.onHitCancelInto;
+  if (outcome === 'block') return definition.onBlockCancelInto;
+  if (outcome === 'whiff') return definition.onWhiffCancelInto;
+  return undefined;
+}
+
+function appendActionRoutes(target, routes) {
+  for (const route of routes ?? []) {
+    const normalized = String(route);
+    if (normalized.length > 0) target.add(normalized);
+  }
+}
+
+export function getActionCancelRoutes(definition, state) {
+  const normalized = normalizeActionPhaseDefinition(definition);
+  coreInvariant(state && state.actionId === normalized.id, `action state does not match definition "${normalized.id}"`);
+  const routes = new Set();
+  let phaseMatched = false;
+  let hitConfirmBlocked = false;
+
+  if (state.phase === 'recovery') {
+    phaseMatched = true;
+    if (normalized.requiresHitConfirm && !state.hitConfirmed) {
+      hitConfirmBlocked = true;
+    } else {
+      appendActionRoutes(routes, normalized.cancelInto);
+      appendActionRoutes(routes, actionOutcomeRoutes(normalized, state.lastOutcome));
+    }
+  }
+
+  for (const rule of normalized.cancelRules ?? []) {
+    const fromPhase = rule.fromPhase ?? 'recovery';
+    coreInvariant(ARCADE_ACTION_PHASES.includes(fromPhase), `unknown cancel phase "${fromPhase}"`);
+    if (fromPhase !== state.phase) continue;
+    phaseMatched = true;
+    if (rule.requiresHitConfirm && !state.hitConfirmed) {
+      hitConfirmBlocked = true;
+      continue;
+    }
+    const outcomeRoutes = actionOutcomeRoutes(rule, state.lastOutcome);
+    if (outcomeRoutes !== undefined) appendActionRoutes(routes, outcomeRoutes);
+    else if (rule.into !== undefined) appendActionRoutes(routes, [rule.into]);
+  }
+
+  const ordered = [...routes].sort((left, right) => left.localeCompare(right));
+  if (ordered.length > 0) return Object.freeze({ allowed: true, routes: Object.freeze(ordered) });
+  if (!phaseMatched) return Object.freeze({ allowed: false, routes: Object.freeze([]), reason: 'phase' });
+  if (hitConfirmBlocked) {
+    return Object.freeze({ allowed: false, routes: Object.freeze([]), reason: 'requires-hit-confirm' });
+  }
+  return Object.freeze({ allowed: false, routes: Object.freeze([]), reason: 'not-routed' });
+}
+
+export function canCancelActionInto(definition, state, nextActionId) {
+  return getActionCancelRoutes(definition, state).routes.includes(String(nextActionId));
+}
+
+export function isActionPhaseActive(state) {
+  return state?.phase === 'active';
+}
+
+export function stepActionPhase(definition, state, delta) {
+  const normalized = normalizeActionPhaseDefinition(definition);
+  coreInvariant(state && state.actionId === normalized.id, `action state does not match definition "${normalized.id}"`);
+  const normalizedDelta = finiteNumber(delta, Number.NaN);
+  coreInvariant(Number.isFinite(normalizedDelta) && normalizedDelta >= 0, 'action phase delta must be finite and non-negative');
+  const previousPhase = getActionPhase(normalized, state.elapsed);
+  const elapsed = state.elapsed + normalizedDelta;
+  const phase = getActionPhase(normalized, elapsed);
+  const sequence = actionPhaseSequence(normalized);
+  const previousIndex = sequence.indexOf(previousPhase);
+  const nextIndex = sequence.indexOf(phase);
+  coreInvariant(previousIndex >= 0 && nextIndex >= previousIndex, 'action phase state cannot move backwards');
+  const enteredPhases = sequence.slice(previousIndex + 1, nextIndex + 1);
+  const events = enteredPhases.map((enteredPhase) => {
+    const bounds = actionPhaseBounds(normalized, enteredPhase);
+    return Object.freeze({
+      kind: enteredPhase === 'done' ? 'completed' : 'phase-enter',
+      phase: enteredPhase,
+      actionId: normalized.id,
+      elapsed: bounds.start,
+    });
+  });
+  const nextState = Object.freeze({ ...state, elapsed, phase });
+  return Object.freeze({
+    state: nextState,
+    previousPhase,
+    enteredPhases: Object.freeze(enteredPhases),
+    events: Object.freeze(events),
+    becameActive: previousPhase !== 'active' && enteredPhases.includes('active'),
+    canCancel: getActionCancelRoutes(normalized, nextState).allowed,
+    finished: phase === 'done',
+  });
 }
 
 function normalizeSystemDependencyList(value) {
@@ -1915,6 +2779,848 @@ export function createSystemPipeline(options = {}) {
     },
   };
   return pipeline;
+}
+
+function requireEntityId(value, label = 'entity id') {
+  const id = String(value ?? '');
+  coreInvariant(id.length > 0, `${label} is required`);
+  return id;
+}
+
+const ENTITY_COMMAND_KINDS = Object.freeze(['spawn', 'despawn', 'replace', 'patch']);
+
+function requireEntityCommandPolicy(value, allowed, label) {
+  const policy = String(value);
+  coreInvariant(allowed.includes(policy), `unknown ${label} policy "${policy}"`);
+  return policy;
+}
+
+function freezeEntityWorldState(revision, nextSequence, entries) {
+  return Object.freeze({
+    revision,
+    nextSequence,
+    entities: Object.freeze(entries
+      .slice()
+      .sort((left, right) => left.sequence - right.sequence || left.id.localeCompare(right.id))
+      .map((entry) => Object.freeze({ ...entry }))),
+  });
+}
+
+function freezeEntityCommandBuffer(nextSequence, commands) {
+  return Object.freeze({
+    nextSequence,
+    commands: Object.freeze(commands
+      .slice()
+      .sort((left, right) => left.sequence - right.sequence)
+      .map((command) => Object.freeze({ ...command }))),
+  });
+}
+
+function entityIdFor(entity, options = {}) {
+  const getId = options.getId ?? ((value) => value?.id);
+  coreInvariant(typeof getId === 'function', 'entity getId must be a function');
+  return requireEntityId(options.id ?? getId(entity), 'entity id');
+}
+
+export function createEntityWorld(entities = [], options = {}) {
+  coreInvariant(Array.isArray(entities), 'entity world values must be an array');
+  const seen = new Set();
+  const entries = entities.map((entity, sequence) => {
+    const id = entityIdFor(entity, options);
+    coreInvariant(!seen.has(id), `duplicate entity id "${id}"`);
+    seen.add(id);
+    return { id, sequence, entity };
+  });
+  return freezeEntityWorldState(
+    Math.max(0, Math.floor(finiteNumber(options.revision, 0))),
+    entries.length,
+    entries,
+  );
+}
+
+export function createEntityCommandBuffer(commands = [], options = {}) {
+  coreInvariant(Array.isArray(commands), 'entity commands must be an array');
+  const sequences = new Set();
+  const normalized = commands.map((command, index) => {
+    coreInvariant(command && typeof command === 'object', 'entity command must be an object');
+    coreInvariant(ENTITY_COMMAND_KINDS.includes(command.kind), `unknown entity command kind "${command.kind}"`);
+    const sequence = Math.max(0, Math.floor(finiteNumber(command.sequence, index)));
+    coreInvariant(!sequences.has(sequence), `duplicate entity command sequence ${sequence}`);
+    sequences.add(sequence);
+    return {
+      ...command,
+      sequence,
+      id: requireEntityId(command.id, 'entity command id'),
+    };
+  });
+  const nextSequence = Math.max(
+    Math.floor(finiteNumber(options.nextSequence, normalized.length)),
+    normalized.reduce((maximum, command) => Math.max(maximum, command.sequence + 1), 0),
+  );
+  return freezeEntityCommandBuffer(nextSequence, normalized);
+}
+
+function enqueueEntityCommand(buffer, command) {
+  coreInvariant(buffer && Array.isArray(buffer.commands), 'entity command buffer is required');
+  const sequence = Math.max(0, Math.floor(finiteNumber(buffer.nextSequence, buffer.commands.length)));
+  return freezeEntityCommandBuffer(sequence + 1, [...buffer.commands, { ...command, sequence }]);
+}
+
+export function queueEntitySpawn(buffer, entity, options = {}) {
+  return enqueueEntityCommand(buffer, {
+    kind: 'spawn',
+    id: entityIdFor(entity, options),
+    entity,
+    onDuplicate: requireEntityCommandPolicy(
+      options.onDuplicate ?? 'error',
+      ['error', 'replace', 'ignore'],
+      'duplicate entity',
+    ),
+  });
+}
+
+export function queueEntityDespawn(buffer, id, options = {}) {
+  return enqueueEntityCommand(buffer, {
+    kind: 'despawn',
+    id: requireEntityId(id),
+    onMissing: requireEntityCommandPolicy(
+      options.onMissing ?? 'ignore',
+      ['error', 'ignore'],
+      'missing entity',
+    ),
+  });
+}
+
+export function queueEntityReplace(buffer, id, entity, options = {}) {
+  return enqueueEntityCommand(buffer, {
+    kind: 'replace',
+    id: requireEntityId(id),
+    entity,
+    onMissing: requireEntityCommandPolicy(
+      options.onMissing ?? 'error',
+      ['error', 'ignore', 'spawn'],
+      'missing entity',
+    ),
+  });
+}
+
+export function queueEntityPatch(buffer, id, patch, options = {}) {
+  coreInvariant(
+    patch && typeof patch === 'object' && !Array.isArray(patch),
+    'entity patch must be an object',
+  );
+  return enqueueEntityCommand(buffer, {
+    kind: 'patch',
+    id: requireEntityId(id),
+    patch: Object.freeze({ ...patch }),
+    onMissing: requireEntityCommandPolicy(
+      options.onMissing ?? 'error',
+      ['error', 'ignore'],
+      'missing entity',
+    ),
+  });
+}
+
+function entityCommandEvent(kind, command, values = {}) {
+  return Object.freeze({
+    kind,
+    id: command.id,
+    commandKind: command.kind,
+    commandSequence: command.sequence,
+    ...values,
+  });
+}
+
+export function flushEntityCommands(world, buffer) {
+  coreInvariant(world && Array.isArray(world.entities), 'entity world is required');
+  coreInvariant(buffer && Array.isArray(buffer.commands), 'entity command buffer is required');
+  const entries = world.entities.map((entry) => ({ ...entry }));
+  let nextSequence = Math.max(0, Math.floor(finiteNumber(world.nextSequence, entries.length)));
+  let changed = false;
+  const events = [];
+
+  const findIndex = (id) => entries.findIndex((entry) => entry.id === id);
+  for (const command of buffer.commands) {
+    const index = findIndex(command.id);
+    if (command.kind === 'spawn') {
+      if (index >= 0) {
+        if (command.onDuplicate === 'ignore') {
+          events.push(entityCommandEvent('ignored', command, { reason: 'duplicate' }));
+          continue;
+        }
+        coreInvariant(command.onDuplicate === 'replace', `duplicate entity id "${command.id}"`);
+        const previous = entries[index].entity;
+        entries[index] = { ...entries[index], entity: command.entity };
+        events.push(entityCommandEvent('replaced', command, { previous, entity: command.entity }));
+        changed = true;
+        continue;
+      }
+      entries.push({ id: command.id, sequence: nextSequence++, entity: command.entity });
+      events.push(entityCommandEvent('spawned', command, { entity: command.entity }));
+      changed = true;
+      continue;
+    }
+
+    if (command.kind === 'despawn') {
+      if (index < 0) {
+        coreInvariant(command.onMissing !== 'error', `missing entity id "${command.id}"`);
+        events.push(entityCommandEvent('ignored', command, { reason: 'missing' }));
+        continue;
+      }
+      const [removed] = entries.splice(index, 1);
+      events.push(entityCommandEvent('despawned', command, { previous: removed.entity }));
+      changed = true;
+      continue;
+    }
+
+    if (index < 0) {
+      if (command.onMissing === 'ignore') {
+        events.push(entityCommandEvent('ignored', command, { reason: 'missing' }));
+        continue;
+      }
+      if (command.kind === 'replace' && command.onMissing === 'spawn') {
+        const entity = command.entity;
+        entries.push({ id: command.id, sequence: nextSequence++, entity });
+        events.push(entityCommandEvent('spawned', command, { entity }));
+        changed = true;
+        continue;
+      }
+      coreInvariant(false, `missing entity id "${command.id}"`);
+    }
+
+    const previous = entries[index].entity;
+    const entity = command.kind === 'patch'
+      ? { ...previous, ...command.patch }
+      : command.entity;
+    entries[index] = { ...entries[index], entity };
+    events.push(entityCommandEvent(command.kind === 'patch' ? 'patched' : 'replaced', command, {
+      previous,
+      entity,
+    }));
+    changed = true;
+  }
+
+  return Object.freeze({
+    world: freezeEntityWorldState(
+      Math.max(0, Math.floor(finiteNumber(world.revision, 0))) + (changed ? 1 : 0),
+      nextSequence,
+      entries,
+    ),
+    buffer: freezeEntityCommandBuffer(buffer.nextSequence, []),
+    events: Object.freeze(events),
+    changed,
+  });
+}
+
+export function getEntityWorldEntry(world, id) {
+  coreInvariant(world && Array.isArray(world.entities), 'entity world is required');
+  return world.entities.find((entry) => entry.id === String(id));
+}
+
+export function getEntityWorldValue(world, id) {
+  return getEntityWorldEntry(world, id)?.entity;
+}
+
+export function hasEntityWorldValue(world, id) {
+  return getEntityWorldEntry(world, id) !== undefined;
+}
+
+export function entityWorldIds(world) {
+  coreInvariant(world && Array.isArray(world.entities), 'entity world is required');
+  return Object.freeze(world.entities.map((entry) => entry.id));
+}
+
+export function entityWorldValues(world) {
+  coreInvariant(world && Array.isArray(world.entities), 'entity world is required');
+  return Object.freeze(world.entities.map((entry) => entry.entity));
+}
+
+export function queryEntityWorld(world, options = {}) {
+  coreInvariant(world && Array.isArray(world.entities), 'entity world is required');
+  const ids = options.ids === undefined ? null : new Set(options.ids.map(String));
+  const predicate = options.predicate;
+  coreInvariant(predicate === undefined || typeof predicate === 'function', 'entity query predicate must be a function');
+  return Object.freeze(world.entities
+    .filter((entry) => (!ids || ids.has(entry.id)) && (!predicate || predicate(entry.entity, entry)))
+    .map((entry) => entry.entity));
+}
+
+export function createEntityRegistry(entities = [], options = {}) {
+  let world = createEntityWorld(entities, options);
+  let buffer = createEntityCommandBuffer();
+  const registry = {
+    queueSpawn(entity, commandOptions = {}) {
+      buffer = queueEntitySpawn(buffer, entity, { ...commandOptions, getId: options.getId });
+      return registry;
+    },
+    queueDespawn(id, commandOptions = {}) {
+      buffer = queueEntityDespawn(buffer, id, commandOptions);
+      return registry;
+    },
+    queueReplace(id, entity, commandOptions = {}) {
+      buffer = queueEntityReplace(buffer, id, entity, commandOptions);
+      return registry;
+    },
+    queuePatch(id, patch, commandOptions = {}) {
+      buffer = queueEntityPatch(buffer, id, patch, commandOptions);
+      return registry;
+    },
+    flush() {
+      const result = flushEntityCommands(world, buffer);
+      world = result.world;
+      buffer = result.buffer;
+      return result;
+    },
+    reset(nextEntities = []) {
+      world = createEntityWorld(nextEntities, options);
+      buffer = createEntityCommandBuffer();
+      return registry;
+    },
+    get(id) {
+      return getEntityWorldValue(world, id);
+    },
+    has(id) {
+      return hasEntityWorldValue(world, id);
+    },
+    ids() {
+      return entityWorldIds(world);
+    },
+    values() {
+      return entityWorldValues(world);
+    },
+    query(queryOptions = {}) {
+      return queryEntityWorld(world, queryOptions);
+    },
+    snapshot() {
+      return world;
+    },
+    pending() {
+      return buffer;
+    },
+  };
+  return registry;
+}
+
+function arcadeGameplayInvariant(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+function arcadeGameplayFinite(value, fallback = 0) {
+  return Number.isFinite(value) ? Number(value) : fallback;
+}
+
+function arcadeGameplayNonNegative(value, label) {
+  const resolved = arcadeGameplayFinite(value, Number.NaN);
+  arcadeGameplayInvariant(Number.isFinite(resolved) && resolved >= 0, `${label} must be non-negative`);
+  return resolved;
+}
+
+function arcadeGameplayPrecision(value, fallback = 6) {
+  const resolved = Math.floor(arcadeGameplayFinite(value, fallback));
+  return Math.max(0, Math.min(12, resolved));
+}
+
+function arcadeGameplayRound(value, precision = 6) {
+  const resolvedPrecision = arcadeGameplayPrecision(precision);
+  const factor = 10 ** resolvedPrecision;
+  return Number((Math.round((value + Number.EPSILON) * factor) / factor).toFixed(resolvedPrecision));
+}
+
+function arcadeGameplayResourceId(value, label = 'resource id') {
+  const id = String(value ?? '').trim();
+  arcadeGameplayInvariant(id.length > 0, `${label} is required`);
+  return id;
+}
+
+function normalizeArcadeResourcePool(pool, index = 0) {
+  arcadeGameplayInvariant(pool && typeof pool === 'object', `resource pool ${index} must be an object`);
+  const id = arcadeGameplayResourceId(pool.id ?? pool.kind, `resource pool ${index} id`);
+  const minimum = arcadeGameplayFinite(pool.min ?? pool.minimum, 0);
+  const maximum = arcadeGameplayFinite(pool.max ?? pool.maximum, Number.NaN);
+  arcadeGameplayInvariant(Number.isFinite(maximum) && maximum >= minimum, `resource pool "${id}" maximum must be at least its minimum`);
+  const precision = arcadeGameplayPrecision(pool.precision, 6);
+  const value = clampNumber(arcadeGameplayFinite(pool.value, minimum), minimum, maximum);
+  return Object.freeze({
+    id,
+    value: arcadeGameplayRound(value, precision),
+    min: minimum,
+    max: maximum,
+    regenPerUnit: arcadeGameplayNonNegative(pool.regenPerUnit ?? pool.regenPerSecond ?? 0, `resource pool "${id}" regeneration`),
+    decayPerUnit: arcadeGameplayNonNegative(pool.decayPerUnit ?? pool.decayPerSecond ?? 0, `resource pool "${id}" decay`),
+    precision,
+    ...(pool.metadata === undefined ? {} : { metadata: pool.metadata }),
+  });
+}
+
+function freezeArcadeResourceState(ownerId, revision, pools) {
+  return Object.freeze({
+    ownerId: String(ownerId ?? ''),
+    revision: Math.max(0, Math.floor(arcadeGameplayFinite(revision, 0))),
+    pools: Object.freeze(pools.map((pool, index) => normalizeArcadeResourcePool(pool, index))),
+  });
+}
+
+function normalizeArcadeResourceState(state) {
+  arcadeGameplayInvariant(state && Array.isArray(state.pools), 'resource pool state is required');
+  const seen = new Set();
+  const pools = state.pools.map((pool, index) => {
+    const normalized = normalizeArcadeResourcePool(pool, index);
+    arcadeGameplayInvariant(!seen.has(normalized.id), `duplicate resource pool "${normalized.id}"`);
+    seen.add(normalized.id);
+    return normalized;
+  });
+  return freezeArcadeResourceState(state.ownerId, state.revision, pools);
+}
+
+function arcadeResourceEvent(kind, state, pool, amount, before, after, extra = {}) {
+  return Object.freeze({
+    kind,
+    ownerId: state.ownerId,
+    resourceId: pool.id,
+    amount: arcadeGameplayRound(amount, pool.precision),
+    before: arcadeGameplayRound(before, pool.precision),
+    after: arcadeGameplayRound(after, pool.precision),
+    ...extra,
+  });
+}
+
+export function createResourcePoolState(ownerId, pools = [], options = {}) {
+  arcadeGameplayInvariant(Array.isArray(pools), 'resource pools must be an array');
+  return normalizeArcadeResourceState({ ownerId, pools, revision: options.revision ?? 0 });
+}
+
+export function getResourcePool(state, resourceId) {
+  const normalized = normalizeArcadeResourceState(state);
+  const id = arcadeGameplayResourceId(resourceId);
+  return normalized.pools.find((pool) => pool.id === id) ?? null;
+}
+
+export function getResourceRatio(state, resourceId) {
+  const pool = getResourcePool(state, resourceId);
+  if (!pool) return 0;
+  const span = pool.max - pool.min;
+  return span <= 0 ? 1 : clampNumber((pool.value - pool.min) / span, 0, 1);
+}
+
+export function stepResourcePools(state, delta, options = {}) {
+  const normalized = normalizeArcadeResourceState(state);
+  const elapsed = arcadeGameplayNonNegative(delta, 'resource step delta');
+  arcadeGameplayInvariant(
+    options.canRegenerate === undefined || typeof options.canRegenerate === 'function',
+    'resource regeneration predicate must be a function',
+  );
+  arcadeGameplayInvariant(
+    options.canDecay === undefined || typeof options.canDecay === 'function',
+    'resource decay predicate must be a function',
+  );
+  const events = [];
+  let changed = false;
+  const pools = normalized.pools.map((pool) => {
+    let value = pool.value;
+    if (pool.regenPerUnit > 0 && value < pool.max && options.canRegenerate?.(pool, normalized) !== false) {
+      const before = value;
+      value = arcadeGameplayRound(clampNumber(value + pool.regenPerUnit * elapsed, pool.min, pool.max), pool.precision);
+      if (value !== before) {
+        events.push(arcadeResourceEvent('regenerated', normalized, pool, value - before, before, value));
+        changed = true;
+      }
+    }
+    if (pool.decayPerUnit > 0 && value > pool.min && options.canDecay?.(pool, normalized) !== false) {
+      const before = value;
+      value = arcadeGameplayRound(clampNumber(value - pool.decayPerUnit * elapsed, pool.min, pool.max), pool.precision);
+      if (value !== before) {
+        events.push(arcadeResourceEvent('decayed', normalized, pool, before - value, before, value));
+        changed = true;
+      }
+    }
+    return Object.freeze({ ...pool, value });
+  });
+  return Object.freeze({
+    state: freezeArcadeResourceState(normalized.ownerId, normalized.revision + (changed ? 1 : 0), pools),
+    events: Object.freeze(events),
+    changed,
+  });
+}
+
+function normalizeArcadeResourceCosts(costs) {
+  arcadeGameplayInvariant(Array.isArray(costs), 'resource costs must be an array');
+  return costs.map((cost, index) => {
+    arcadeGameplayInvariant(cost && typeof cost === 'object', `resource cost ${index} must be an object`);
+    return Object.freeze({
+      resourceId: arcadeGameplayResourceId(cost.resourceId ?? cost.id ?? cost.kind, `resource cost ${index} id`),
+      amount: arcadeGameplayNonNegative(cost.amount, `resource cost ${index} amount`),
+    });
+  });
+}
+
+function aggregateArcadeResourceCosts(costs) {
+  const totals = new Map();
+  for (const cost of normalizeArcadeResourceCosts(costs)) {
+    totals.set(cost.resourceId, (totals.get(cost.resourceId) ?? 0) + cost.amount);
+  }
+  return totals;
+}
+
+export function canPayResourceCosts(state, costs) {
+  const normalized = normalizeArcadeResourceState(state);
+  const totals = aggregateArcadeResourceCosts(costs);
+  return [...totals].every(([resourceId, amount]) => {
+    const pool = normalized.pools.find((candidate) => candidate.id === resourceId);
+    return pool !== undefined && pool.value - amount >= pool.min;
+  });
+}
+
+export function payResourceCosts(state, costs, options = {}) {
+  const normalized = normalizeArcadeResourceState(state);
+  const normalizedCosts = normalizeArcadeResourceCosts(costs);
+  const totals = aggregateArcadeResourceCosts(normalizedCosts);
+  const blocked = normalizedCosts.find((cost) => {
+    const pool = normalized.pools.find((candidate) => candidate.id === cost.resourceId);
+    return pool === undefined || pool.value - (totals.get(cost.resourceId) ?? 0) < pool.min;
+  });
+  if (blocked) {
+    const pool = normalized.pools.find((candidate) => candidate.id === blocked.resourceId);
+    const before = pool?.value ?? 0;
+    const eventPool = pool ?? normalizeArcadeResourcePool({ id: blocked.resourceId, value: 0, min: 0, max: 0 });
+    return Object.freeze({
+      state: normalized,
+      events: Object.freeze([
+        arcadeResourceEvent('blocked', normalized, eventPool, totals.get(blocked.resourceId) ?? blocked.amount, before, before, {
+          reason: options.reason ?? 'insufficient-resource',
+        }),
+      ]),
+      ok: false,
+    });
+  }
+  const events = [];
+  const pools = normalized.pools.map((pool) => {
+    const amount = totals.get(pool.id) ?? 0;
+    if (amount <= 0) return pool;
+    const before = pool.value;
+    const value = arcadeGameplayRound(clampNumber(before - amount, pool.min, pool.max), pool.precision);
+    events.push(arcadeResourceEvent('spent', normalized, pool, before - value, before, value, {
+      reason: options.reason ?? 'cost',
+    }));
+    return Object.freeze({ ...pool, value });
+  });
+  return Object.freeze({
+    state: freezeArcadeResourceState(normalized.ownerId, normalized.revision + (events.length > 0 ? 1 : 0), pools),
+    events: Object.freeze(events),
+    ok: true,
+  });
+}
+
+export function gainResource(state, resourceId, amount, options = {}) {
+  const normalized = normalizeArcadeResourceState(state);
+  const id = arcadeGameplayResourceId(resourceId);
+  const gain = arcadeGameplayNonNegative(amount, 'resource gain');
+  let event = null;
+  const pools = normalized.pools.map((pool) => {
+    if (pool.id !== id) return pool;
+    const before = pool.value;
+    const value = arcadeGameplayRound(clampNumber(before + gain, pool.min, pool.max), pool.precision);
+    if (value !== before) {
+      event = arcadeResourceEvent('gained', normalized, pool, value - before, before, value, {
+        reason: options.reason ?? 'gain',
+      });
+    }
+    return Object.freeze({ ...pool, value });
+  });
+  arcadeGameplayInvariant(normalized.pools.some((pool) => pool.id === id), `unknown resource pool "${id}"`);
+  return Object.freeze({
+    state: freezeArcadeResourceState(normalized.ownerId, normalized.revision + (event ? 1 : 0), pools),
+    events: Object.freeze(event ? [event] : []),
+    changed: event !== null,
+  });
+}
+
+export function setResourceValue(state, resourceId, value, options = {}) {
+  const normalized = normalizeArcadeResourceState(state);
+  const id = arcadeGameplayResourceId(resourceId);
+  const requested = arcadeGameplayFinite(value, Number.NaN);
+  arcadeGameplayInvariant(Number.isFinite(requested), 'resource value must be finite');
+  let event = null;
+  const pools = normalized.pools.map((pool) => {
+    if (pool.id !== id) return pool;
+    const before = pool.value;
+    const next = arcadeGameplayRound(clampNumber(requested, pool.min, pool.max), pool.precision);
+    if (next !== before) {
+      event = arcadeResourceEvent('set', normalized, pool, Math.abs(next - before), before, next, {
+        reason: options.reason ?? 'set',
+      });
+    }
+    return Object.freeze({ ...pool, value: next });
+  });
+  arcadeGameplayInvariant(normalized.pools.some((pool) => pool.id === id), `unknown resource pool "${id}"`);
+  return Object.freeze({
+    state: freezeArcadeResourceState(normalized.ownerId, normalized.revision + (event ? 1 : 0), pools),
+    events: Object.freeze(event ? [event] : []),
+    changed: event !== null,
+  });
+}
+
+function freezeGameplayActionState(state) {
+  return Object.freeze({
+    ownerId: String(state.ownerId ?? ''),
+    cooldowns: Object.freeze({ ...createCooldownState(state.cooldowns) }),
+    resources: normalizeArcadeResourceState(state.resources),
+    queuedActionId: state.queuedActionId === undefined || state.queuedActionId === null
+      ? null
+      : String(state.queuedActionId),
+    queueRemaining: arcadeGameplayNonNegative(state.queueRemaining ?? 0, 'gameplay action queue remaining'),
+    revision: Math.max(0, Math.floor(arcadeGameplayFinite(state.revision, 0))),
+  });
+}
+
+export function createGameplayActionState(ownerId, resources, options = {}) {
+  return freezeGameplayActionState({
+    ownerId,
+    resources,
+    cooldowns: options.cooldowns ?? {},
+    queuedActionId: options.queuedActionId ?? null,
+    queueRemaining: options.queueRemaining ?? 0,
+    revision: options.revision ?? 0,
+  });
+}
+
+function arcadeGameplayActionEvent(kind, state, actionId, extra = {}) {
+  return Object.freeze({
+    kind,
+    ownerId: state.ownerId,
+    ...(actionId === undefined || actionId === null ? {} : { actionId: String(actionId) }),
+    ...extra,
+  });
+}
+
+function normalizeGameplayActionDefinition(action) {
+  arcadeGameplayInvariant(action && typeof action === 'object', 'gameplay action definition is required');
+  const id = String(action.id ?? '').trim();
+  arcadeGameplayInvariant(id.length > 0, 'gameplay action id is required');
+  return Object.freeze({
+    id,
+    cooldown: arcadeGameplayNonNegative(action.cooldown ?? 0, `gameplay action "${id}" cooldown`),
+    costs: Object.freeze(normalizeArcadeResourceCosts(action.costs ?? [])),
+    queueWindow: arcadeGameplayNonNegative(action.queueWindow ?? 0, `gameplay action "${id}" queue window`),
+    ...(action.metadata === undefined ? {} : { metadata: action.metadata }),
+  });
+}
+
+export function stepGameplayActionState(state, delta, options = {}) {
+  const normalized = freezeGameplayActionState(state);
+  const elapsed = arcadeGameplayNonNegative(delta, 'gameplay action delta');
+  const resourceStep = stepResourcePools(normalized.resources, elapsed, options.resources);
+  const cooldowns = stepCooldownState(normalized.cooldowns, elapsed);
+  const previousQueue = normalized.queueRemaining;
+  const queueRemaining = Math.max(0, previousQueue - elapsed);
+  const queueExpired = normalized.queuedActionId !== null && previousQueue > 0 && queueRemaining === 0;
+  const events = [
+    ...resourceStep.events.map((resourceEvent) =>
+      arcadeGameplayActionEvent('resource', normalized, null, { resourceEvent })),
+    ...(queueExpired
+      ? [arcadeGameplayActionEvent('queue-expired', normalized, normalized.queuedActionId)]
+      : []),
+  ];
+  const changed =
+    resourceStep.changed ||
+    Object.keys(cooldowns).length !== Object.keys(normalized.cooldowns).length ||
+    Object.entries(cooldowns).some(([id, value]) => value !== normalized.cooldowns[id]) ||
+    queueRemaining !== normalized.queueRemaining ||
+    queueExpired;
+  return Object.freeze({
+    state: freezeGameplayActionState({
+      ownerId: normalized.ownerId,
+      cooldowns,
+      resources: resourceStep.state,
+      queuedActionId: queueExpired ? null : normalized.queuedActionId,
+      queueRemaining: queueExpired ? 0 : queueRemaining,
+      revision: normalized.revision + (changed ? 1 : 0),
+    }),
+    events: Object.freeze(events),
+    changed,
+  });
+}
+
+export function tryStartGameplayAction(state, rawAction, options = {}) {
+  const normalized = freezeGameplayActionState(state);
+  const action = normalizeGameplayActionDefinition(rawAction);
+  const cooldownRemaining = normalized.cooldowns[action.id] ?? 0;
+  if (cooldownRemaining > 0) {
+    if (options.queueIfBlocked === true && action.queueWindow > 0) {
+      return Object.freeze({
+        state: freezeGameplayActionState({
+          ...normalized,
+          queuedActionId: action.id,
+          queueRemaining: action.queueWindow,
+          revision: normalized.revision + 1,
+        }),
+        events: Object.freeze([arcadeGameplayActionEvent('queued', normalized, action.id, {
+          remaining: cooldownRemaining,
+        })]),
+        ok: false,
+        reason: 'cooldown',
+      });
+    }
+    return Object.freeze({
+      state: normalized,
+      events: Object.freeze([arcadeGameplayActionEvent('cooldown', normalized, action.id, {
+        remaining: cooldownRemaining,
+      })]),
+      ok: false,
+      reason: 'cooldown',
+    });
+  }
+
+  const paid = payResourceCosts(normalized.resources, action.costs, {
+    reason: options.reason ?? `action:${action.id}`,
+  });
+  if (!paid.ok) {
+    return Object.freeze({
+      state: freezeGameplayActionState({ ...normalized, resources: paid.state }),
+      events: Object.freeze([
+        arcadeGameplayActionEvent('blocked', normalized, action.id),
+        ...paid.events.map((resourceEvent) =>
+          arcadeGameplayActionEvent('resource', normalized, action.id, { resourceEvent })),
+      ]),
+      ok: false,
+      reason: 'resource',
+    });
+  }
+
+  const cooldowns = action.cooldown > 0
+    ? startCooldown(normalized.cooldowns, action.id, action.cooldown)
+    : createCooldownState(normalized.cooldowns);
+  return Object.freeze({
+    state: freezeGameplayActionState({
+      ownerId: normalized.ownerId,
+      cooldowns,
+      resources: paid.state,
+      queuedActionId: null,
+      queueRemaining: 0,
+      revision: normalized.revision + 1,
+    }),
+    events: Object.freeze([
+      arcadeGameplayActionEvent('started', normalized, action.id),
+      ...paid.events.map((resourceEvent) =>
+        arcadeGameplayActionEvent('resource', normalized, action.id, { resourceEvent })),
+    ]),
+    ok: true,
+    reason: null,
+  });
+}
+
+function freezeActionGraceState(state) {
+  return Object.freeze({
+    graceDuration: arcadeGameplayNonNegative(state.graceDuration, 'action grace duration'),
+    bufferDuration: arcadeGameplayNonNegative(state.bufferDuration, 'action buffer duration'),
+    graceRemaining: arcadeGameplayNonNegative(state.graceRemaining, 'action grace remaining'),
+    bufferRemaining: arcadeGameplayNonNegative(state.bufferRemaining, 'action buffer remaining'),
+    revision: Math.max(0, Math.floor(arcadeGameplayFinite(state.revision, 0))),
+  });
+}
+
+export function createActionGraceState(options = {}) {
+  const graceDuration = arcadeGameplayNonNegative(options.graceDuration ?? 0, 'action grace duration');
+  const bufferDuration = arcadeGameplayNonNegative(options.bufferDuration ?? 0, 'action buffer duration');
+  return freezeActionGraceState({
+    graceDuration,
+    bufferDuration,
+    graceRemaining: Math.min(graceDuration, arcadeGameplayNonNegative(options.graceRemaining ?? 0, 'action grace remaining')),
+    bufferRemaining: Math.min(bufferDuration, arcadeGameplayNonNegative(options.bufferRemaining ?? 0, 'action buffer remaining')),
+    revision: options.revision ?? 0,
+  });
+}
+
+export function stepActionGrace(state, input = {}) {
+  const normalized = freezeActionGraceState(state);
+  const delta = arcadeGameplayNonNegative(input.delta ?? 1, 'action grace delta');
+  const graceDuration = arcadeGameplayNonNegative(input.graceDuration ?? normalized.graceDuration, 'action grace duration');
+  const bufferDuration = arcadeGameplayNonNegative(input.bufferDuration ?? normalized.bufferDuration, 'action buffer duration');
+  const previousGrace = normalized.graceRemaining;
+  const previousBuffer = normalized.bufferRemaining;
+  let graceRemaining = Math.max(0, previousGrace - delta);
+  let bufferRemaining = Math.max(0, previousBuffer - delta);
+  const events = [];
+  if (previousGrace > 0 && graceRemaining === 0 && input.available !== true) events.push(Object.freeze({ kind: 'grace-expired' }));
+  if (previousBuffer > 0 && bufferRemaining === 0 && input.requested !== true) events.push(Object.freeze({ kind: 'buffer-expired' }));
+  if (input.available === true) graceRemaining = graceDuration;
+  if (input.requested === true) {
+    bufferRemaining = bufferDuration;
+    events.push(Object.freeze({ kind: 'buffered' }));
+  }
+  const available = input.available === true || graceRemaining > 0;
+  const requested = input.requested === true || bufferRemaining > 0;
+  const activated = input.enabled !== false && available && requested;
+  if (activated) {
+    events.push(Object.freeze({ kind: 'activated' }));
+    if (input.consumeOnActivate !== false) {
+      graceRemaining = 0;
+      bufferRemaining = 0;
+    }
+  }
+  const changed =
+    graceDuration !== normalized.graceDuration ||
+    bufferDuration !== normalized.bufferDuration ||
+    graceRemaining !== normalized.graceRemaining ||
+    bufferRemaining !== normalized.bufferRemaining;
+  return Object.freeze({
+    state: freezeActionGraceState({
+      graceDuration,
+      bufferDuration,
+      graceRemaining,
+      bufferRemaining,
+      revision: normalized.revision + (changed ? 1 : 0),
+    }),
+    activated,
+    available,
+    requested,
+    events: Object.freeze(events),
+  });
+}
+
+export function resolveHudGauge(input = {}) {
+  const minimum = arcadeGameplayFinite(input.min ?? input.minimum, 0);
+  const maximum = arcadeGameplayFinite(input.max ?? input.maximum, 1);
+  arcadeGameplayInvariant(maximum >= minimum, 'HUD gauge maximum must be at least its minimum');
+  const value = clampNumber(arcadeGameplayFinite(input.value, minimum), minimum, maximum);
+  const span = maximum - minimum;
+  const ratio = span <= 0 ? 1 : clampNumber((value - minimum) / span, 0, 1);
+  const criticalThreshold = clampNumber(arcadeGameplayFinite(input.criticalThreshold, 0.15), 0, 1);
+  const lowThreshold = clampNumber(arcadeGameplayFinite(input.lowThreshold, 0.35), criticalThreshold, 1);
+  const state = ratio <= 0
+    ? 'empty'
+    : ratio <= criticalThreshold
+      ? 'critical'
+      : ratio <= lowThreshold
+        ? 'low'
+        : ratio >= 1
+          ? 'full'
+          : 'normal';
+  const segmentCount = Math.max(0, Math.floor(arcadeGameplayFinite(input.segments, 0)));
+  const segments = [];
+  for (let index = 0; index < segmentCount; index += 1) {
+    const start = index / segmentCount;
+    const fill = arcadeGameplayRound(clampNumber((ratio - start) * segmentCount, 0, 1), 6);
+    segments.push(Object.freeze({ index, fill, active: fill > 0, full: fill >= 1 }));
+  }
+  const pulsePeriod = Math.max(Number.EPSILON, arcadeGameplayFinite(input.pulsePeriod, 1));
+  const pulseAmount = clampNumber(arcadeGameplayFinite(input.pulseAmount, 0.3), 0, 1);
+  const time = arcadeGameplayFinite(input.time, 0);
+  const warning = state === 'critical' || state === 'low';
+  const pulse = warning
+    ? 1 - pulseAmount / 2 + Math.sin((time / pulsePeriod) * Math.PI * 2) * (pulseAmount / 2)
+    : 1;
+  return Object.freeze({
+    value,
+    min: minimum,
+    max: maximum,
+    ratio,
+    missingRatio: 1 - ratio,
+    state,
+    warning,
+    pulse,
+    direction: input.direction === 'reverse' ? 'reverse' : 'forward',
+    segments: Object.freeze(segments),
+  });
 }
 
 function normalizeHitContactRecord(record = {}) {
@@ -4935,10 +6641,13 @@ export function verifyRunSummary(summary) {
 export const ARCADE_RUNTIME_API_LEVEL = 1;
 
 export const ARCADE_RUNTIME_CAPABILITIES = Object.freeze([
+  'action-phases',
   'assets',
   'audio',
   'collision',
   'deterministic-replay',
+  'entity-world',
+  'gameplay-modules',
   'input',
   'localization',
   'netcode-adapters',

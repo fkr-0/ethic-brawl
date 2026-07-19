@@ -8,6 +8,7 @@ import {
   stepGroundedVelocity,
 } from '@/game/physics/movement';
 import { clamp } from '@/utils/math';
+import { stepActionGrace } from '../../../vendor/arcade-runtime.mjs';
 import type { Fighter } from './fighter';
 import { FRAME_DATA, type Lane } from './fighter-state';
 
@@ -76,6 +77,20 @@ function getWalkSpeed(fighter: Fighter, movement: CharacterMovementProfile): num
 
 export function updateFighterMotorFromInput(fighter: Fighter, input: FighterMotorInput): void {
   const tuning = calculateMovementTuning(fighter.stats.agility, fighter.movement);
+  const movementLocked =
+    fighter.state === 'knockdown' ||
+    fighter.state === 'gettingUp' ||
+    fighter.state === 'defeat' ||
+    fighter.state === 'victory' ||
+    fighter.hitstunFrames > 0 ||
+    fighter.blockstunFrames > 0;
+  const jumpGrace = stepActionGrace(fighter.jumpGraceState, {
+    delta: 1,
+    available: fighter.isGrounded,
+    requested: input.jumpPressed && !movementLocked,
+    enabled: !movementLocked,
+  });
+  fighter.jumpGraceState = jumpGrace.state;
 
   if (
     fighter.state === 'knockdown' ||
@@ -143,7 +158,7 @@ export function updateFighterMotorFromInput(fighter: Fighter, input: FighterMoto
     }
   }
 
-  if (input.jumpPressed && fighter.isGrounded && fighter.state !== 'jumping') {
+  if (jumpGrace.activated && fighter.state !== 'jumping') {
     fighter.velocityY = calculateJumpVelocity(
       fighter.stats.agility,
       fighter.movement.jumpMultiplier

@@ -124,4 +124,19 @@ describe('LF2-style command input', () => {
     expect(consumed.buffer.entries).toHaveLength(1);
     expect(commandSlotToLabel('BDJ')).toBe('B + v + J');
   });
+
+  it('expires stale commands through the shared input-forgiveness queue', () => {
+    const command = resolveCombatCommand({
+      block: true,
+      attackPressed: true,
+      jumpPressed: false,
+      horizontalDirection: 1,
+    });
+    let buffer = createCommandBuffer(3);
+    buffer = pushCommandBuffer(buffer, command, 2);
+    const consumed = consumeLatestCommand(buffer, 6);
+    expect(consumed.command).toBeNull();
+    expect(consumed.buffer.entries).toHaveLength(0);
+    expect(consumed.buffer.runtime?.window).toBe(3);
+  });
 });

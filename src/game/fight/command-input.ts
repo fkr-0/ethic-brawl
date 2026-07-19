@@ -1,5 +1,12 @@
 import type { Fighter } from './fighter';
 import type { Direction } from './fighter-state';
+import {
+  consumeBufferedInput,
+  createBufferedInputQueue,
+  pruneBufferedInputQueue,
+  pushBufferedInput,
+  type BufferedInputQueue,
+} from '../../../vendor/arcade-runtime.mjs';
 
 export type CommandDirection = 'left' | 'right' | 'up' | 'down' | 'neutral';
 export type RelativeCommandDirection = 'forward' | 'back' | 'up' | 'down' | 'neutral';
@@ -39,6 +46,7 @@ export interface CommandBufferEntry {
 export interface CommandBufferState {
   entries: readonly CommandBufferEntry[];
   memoryFrames: number;
+  runtime?: BufferedInputQueue<CombatCommand>;
 }
 
 const DEFAULT_COMMAND_MEMORY_FRAMES = 10;
@@ -46,7 +54,9 @@ const DEFAULT_COMMAND_MEMORY_FRAMES = 10;
 export function createCommandBuffer(
   memoryFrames = DEFAULT_COMMAND_MEMORY_FRAMES
 ): CommandBufferState {
-  return { entries: [], memoryFrames };
+  return fromRuntimeCommandBuffer(
+    createBufferedInputQueue<CombatCommand>({ window: memoryFrames, capacity: 32 })
+  );
 }
 
 export function resolveCombatCommand(input: CommandInputSnapshot): CombatCommand | null {
@@ -79,15 +89,12 @@ export function pushCommandBuffer(
   command: CombatCommand | null,
   frame: number
 ): CommandBufferState {
-  const freshEntries = buffer.entries.filter((entry) => frame - entry.frame <= buffer.memoryFrames);
-  if (!command) {
-    return { ...buffer, entries: freshEntries };
-  }
-
-  return {
-    ...buffer,
-    entries: [...freshEntries, { command, frame }],
-  };
+  const runtime = toRuntimeCommandBuffer(buffer);
+  return fromRuntimeCommandBuffer(
+    command
+      ? pushBufferedInput(runtime, command, frame)
+      : pruneBufferedInputQueue(runtime, frame)
+  );
 }
 
 export function consumeLatestCommand(
@@ -95,17 +102,39 @@ export function consumeLatestCommand(
   frame: number,
   acceptedSlots?: readonly CommandSlot[]
 ): { command: CombatCommand | null; buffer: CommandBufferState } {
-  const freshEntries = buffer.entries.filter((entry) => frame - entry.frame <= buffer.memoryFrames);
-  const match = [...freshEntries]
-    .reverse()
-    .find((entry) => !acceptedSlots || acceptedSlots.includes(entry.command.commandSlot));
-
+  const consumed = consumeBufferedInput(toRuntimeCommandBuffer(buffer), frame, {
+    predicate: (command) => !acceptedSlots || acceptedSlots.includes(command.commandSlot),
+  });
   return {
-    command: match?.command ?? null,
-    buffer: {
-      ...buffer,
-      entries: match ? freshEntries.filter((entry) => entry !== match) : freshEntries,
-    },
+    command: consumed.value,
+    buffer: fromRuntimeCommandBuffer(consumed.queue),
+  };
+}
+
+function toRuntimeCommandBuffer(buffer: CommandBufferState): BufferedInputQueue<CombatCommand> {
+  if (buffer.runtime) return buffer.runtime;
+  return {
+    window: buffer.memoryFrames,
+    capacity: Math.max(32, buffer.entries.length + 1),
+    nextSequence: buffer.entries.length,
+    entries: buffer.entries.map((entry, sequence) => ({
+      value: entry.command,
+      at: entry.frame,
+      sequence,
+    })),
+  };
+}
+
+function fromRuntimeCommandBuffer(
+  runtime: BufferedInputQueue<CombatCommand>
+): CommandBufferState {
+  return {
+    runtime,
+    memoryFrames: runtime.window,
+    entries: runtime.entries.map((entry) => ({
+      command: entry.value,
+      frame: entry.at,
+    })),
   };
 }
 

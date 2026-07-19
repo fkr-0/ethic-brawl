@@ -29,7 +29,17 @@ import {
 import { CombatVfxPool, type HitSparkConfig } from '@/render/effects/combat-vfx-pool';
 import type { ScreenEffect } from '@/render/effects/screen-effects';
 import { createFlashEffect, createGlitchEffect } from '@/render/effects/screen-effects';
-import { createSystemPipeline } from '../../../vendor/arcade-runtime.mjs';
+import {
+  createEntityCommandBuffer,
+  createEntityWorld,
+  entityWorldValues,
+  flushEntityCommands,
+  queueEntityDespawn,
+  queueEntityReplace,
+  queueEntitySpawn,
+  createSystemPipeline,
+  type EntityCommandBuffer,
+} from '../../../vendor/arcade-runtime.mjs';
 import { type FightCameraEffect, stepFightCameraEffects } from './attack-presentation-presets';
 import { type HitResult, resolveHit } from './combat';
 import { applyCombatIntent } from './combat-intent';
@@ -63,6 +73,15 @@ export interface PlayerInput {
   blockPressed: boolean;
   special: boolean;
   specialPressed: boolean;
+}
+
+function flushEntityList<Entity extends { id: string }>(
+  entities: Entity[],
+  commands: EntityCommandBuffer<Entity>
+): Entity[] {
+  if (commands.commands.length === 0) return entities;
+  const flushed = flushEntityCommands(createEntityWorld(entities), commands);
+  return [...entityWorldValues(flushed.world)];
 }
 
 export interface FightRuleSet {
@@ -481,6 +500,7 @@ export function createFightController() {
 
       if (result.type !== 'miss') {
         state.player1.registerHitTarget(state.player2.id, state.frameCount);
+        state.player1.markAttackOutcome(result.type === 'hit' ? 'hit' : 'block');
         applyHitToFighter(state.player1, state.player2, result);
 
         // Update combo
@@ -559,6 +579,7 @@ export function createFightController() {
 
       if (result.type !== 'miss') {
         state.player2.registerHitTarget(state.player1.id, state.frameCount);
+        state.player2.markAttackOutcome(result.type === 'hit' ? 'hit' : 'block');
         applyHitToFighter(state.player2, state.player1, result);
 
         // Update combo
@@ -651,18 +672,23 @@ export function createFightController() {
   function spawnSpecialEntitiesForFighter(fighter: Fighter, moves: SpecialMoveDefinition[]): void {
     if (!state) return;
 
+    let projectileCommands = createEntityCommandBuffer<ProjectileState>();
+    let fieldCommands = createEntityCommandBuffer<FieldState>();
+
     for (const move of moves) {
       const spawnX = fighter.x + (fighter.facing === 'right' ? 38 : -38);
       const spawnY = fighter.getWorldY() - 62;
 
       if (move.projectile) {
-        state.projectiles.push(
+        projectileCommands = queueEntitySpawn(
+          projectileCommands,
           spawnProjectile(move.projectile, fighter.id, spawnX, spawnY, fighter.lane, fighter.facing)
         );
       }
 
       if (move.field) {
-        state.fields.push(
+        fieldCommands = queueEntitySpawn(
+          fieldCommands,
           spawnField(
             move.field,
             fighter.id,
@@ -682,6 +708,8 @@ export function createFightController() {
         }
       }
     }
+    state.projectiles = flushEntityList(state.projectiles, projectileCommands);
+    state.fields = flushEntityList(state.fields, fieldCommands);
   }
 
   function stepFighterStatuses(): void {
@@ -698,15 +726,20 @@ export function createFightController() {
 
   function updateSpecialProjectiles(): void {
     if (!state) return;
-    state.projectiles = state.projectiles
-      .map((projectile) => updateProjectile(projectile))
-      .filter((projectile): projectile is ProjectileState => projectile !== null);
+    let commands = createEntityCommandBuffer<ProjectileState>();
+    for (const projectile of state.projectiles) {
+      const updated = updateProjectile(projectile);
+      commands = updated
+        ? queueEntityReplace(commands, projectile.id, updated)
+        : queueEntityDespawn(commands, projectile.id);
+    }
+    state.projectiles = flushEntityList(state.projectiles, commands);
   }
 
   function stepFields(): void {
     if (!state) return;
 
-    const nextFields: FieldState[] = [];
+    let commands = createEntityCommandBuffer<FieldState>();
     for (const field of state.fields) {
       const caster = field.ownerId === state.player1.id ? state.player1 : state.player2;
       const updated = updateField(field, {
@@ -714,10 +747,13 @@ export function createFightController() {
         y: caster.getWorldY() - 48,
         lane: caster.lane,
       });
-      if (!updated) continue;
+      if (!updated) {
+        commands = queueEntityDespawn(commands, field.id);
+        continue;
+      }
 
       if (!isFieldTickFrame(updated)) {
-        nextFields.push(updated);
+        commands = queueEntityReplace(commands, field.id, updated);
         continue;
       }
 
@@ -749,9 +785,9 @@ export function createFightController() {
         }
         tickedField = registerFieldHit(tickedField, target.id);
       }
-      nextFields.push(tickedField);
+      commands = queueEntityReplace(commands, field.id, tickedField);
     }
-    state.fields = nextFields;
+    state.fields = flushEntityList(state.fields, commands);
   }
 
   /**
@@ -772,7 +808,7 @@ export function createFightController() {
   function resolveProjectileHits(): void {
     if (!state) return;
 
-    const remaining: ProjectileState[] = [];
+    let commands = createEntityCommandBuffer<ProjectileState>();
     for (const projectile of state.projectiles) {
       const attacker = projectile.ownerId === state.player1.id ? state.player1 : state.player2;
       const defender = projectile.ownerId === state.player1.id ? state.player2 : state.player1;
@@ -788,12 +824,15 @@ export function createFightController() {
           ownerId: defender.id,
         })
       ) {
-        remaining.push(projectile);
         continue;
       }
 
       if (hasStatusEffect(defender.statusEffects, 'reflect')) {
-        remaining.push(reflectProjectile(projectile, defender.id));
+        commands = queueEntityReplace(
+          commands,
+          projectile.id,
+          reflectProjectile(projectile, defender.id)
+        );
         continue;
       }
 
@@ -861,11 +900,10 @@ export function createFightController() {
 
       if (result.type !== 'miss') {
         applyHitToFighter(attacker, defender, result);
-      } else {
-        remaining.push(projectile);
+        commands = queueEntityDespawn(commands, projectile.id);
       }
     }
-    state.projectiles = remaining;
+    state.projectiles = flushEntityList(state.projectiles, commands);
   }
 
   /**

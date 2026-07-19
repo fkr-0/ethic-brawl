@@ -23,4 +23,9 @@ describe('character select grid navigation', () => {
     expect(moveCharacterSelectGridIndex(1, 'up', 18)).toBe(13);
     expect(moveCharacterSelectGridIndex(16, 'down', 18)).toBe(4);
   });
+
+  it('lands on the nearest available cell in a ragged final row', () => {
+    expect(moveCharacterSelectGridIndex(1, 'up', 13)).toBe(12);
+    expect(moveCharacterSelectGridIndex(11, 'down', 13)).toBe(12);
+  });
 });
