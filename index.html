@@ -25,12 +25,25 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
       }
       
       #game-canvas {
         display: block;
         image-rendering: pixelated;
         image-rendering: crisp-edges;
+        position: relative;
+        z-index: 1;
+        background: transparent;
+      }
+
+      #ethic-pixi-bridge {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+        image-rendering: pixelated;
       }
       
       #loading {

@@ -5,7 +5,9 @@
  */
 import { defineArcadeRenderPlan } from '../../vendor/arcade-pixi-runtime.mjs';
 
-export const ETHIC_ARCADE_PIXI_RUNTIME_VERSION = '0.5.0';
+// Ethic currently carries a forward-compatible local 0.6 snapshot while the
+// shared camera/bridge contract introduced in this integration is v0.5.
+export const ETHIC_ARCADE_PIXI_RUNTIME_VERSION = '0.6.0';
 
 export const ETHIC_PIXI_LAYERS = [
   'backdrop',

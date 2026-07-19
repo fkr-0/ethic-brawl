@@ -142,6 +142,10 @@ PixiJS/WebGL is not yet the production backend, so Canvas2D remains authoritativ
 
 `src/render/arcade-runtime-adapter.ts` installs only explicitly supplied ready Canvas bridge passes. The vendored module and declaration files are hash-verified in the unit suite, preventing accidental drift between runtime code and metadata.
 
+PixiJS 8.19 is now an explicit runtime dependency. Launch with `?renderer=bridge` to move the fight background and arena into transparent Pixi-owned Canvas texture passes while fighters, VFX, foreground, and HUD remain on the authoritative Canvas2D overlay. The integration uses the v0.5 camera and bridge contract; this worktree's vendored runtime also contains a forward-compatible local 0.6 snapshot. The default remains `?renderer=canvas` until browser profiling establishes an acceptable p95 cost.
+
+The first Chromium comparison keeps Canvas as the production default: the bridge correctly isolates two passes, but full-frame Canvas texture uploads currently have a substantially higher p95 cost than direct Canvas rendering. Bridge mode remains available for migration validation and future native-Pixi replacement work.
+
 ## Project Structure
 
 ```

@@ -8,6 +8,7 @@ import { getComboDisplayText } from '@/game/fight/combo';
 import { type FightState, getLaneGroundY } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
 import { FRAME_DATA } from '@/game/fight/fighter-state';
+import { createArcadeCameraTransform } from '../../vendor/arcade-pixi-runtime.mjs';
 import type { Camera } from './camera';
 import {
   type FightGraphicsProfile,
@@ -1077,17 +1078,29 @@ export function renderFightScene(
   presentation: FightPresentationOptions = {}
 ): void {
   const graphicsProfile = resolveFightGraphicsProfile(presentation);
+  const cameraTransform = createArcadeCameraTransform({
+    x: CANVAS_WIDTH / 2,
+    y: CANVAS_HEIGHT / 2,
+    zoom: camera.zoom,
+    shakeX: camera.shakeOffsetX,
+    shakeY: camera.shakeOffsetY,
+    viewportWidth: CANVAS_WIDTH,
+    viewportHeight: CANVAS_HEIGHT,
+    anchorX: 0.5,
+    anchorY: 0.5,
+  });
   ctx.save();
-  ctx.translate(camera.shakeOffsetX, camera.shakeOffsetY);
-  ctx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-  ctx.scale(camera.zoom, camera.zoom);
-  ctx.translate(-CANVAS_WIDTH / 2, -CANVAS_HEIGHT / 2);
+  cameraTransform.applyToCanvas(ctx);
 
   // Background
-  renderBackground(ctx, camera, fightState.frameCount, graphicsProfile);
+  if (presentation.renderBackground !== false) {
+    renderBackground(ctx, camera, fightState.frameCount, graphicsProfile);
+  }
 
   // Arena
-  renderArena(ctx, camera, graphicsProfile, fightState.frameCount);
+  if (presentation.renderArena !== false) {
+    renderArena(ctx, camera, graphicsProfile, fightState.frameCount);
+  }
 
   // Fighters (sorted by lane for proper layering)
   const fighters = [fightState.player1, fightState.player2];

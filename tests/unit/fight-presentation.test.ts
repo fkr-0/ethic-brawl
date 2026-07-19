@@ -16,9 +16,11 @@ describe('Badger-compatible fight presentation contract', () => {
   it('reports the current renderer honestly and keeps the presentation renderer-neutral', () => {
     expect(getGraphicsBackendStatus()).toEqual({
       backend: 'canvas2d',
-      pixiInstalled: false,
+      pixiInstalled: true,
       rendererNeutralPresentation: true,
+      bridgeEnabled: false,
     });
+    expect(getGraphicsBackendStatus(true).backend).toBe('pixi-canvas-bridge');
   });
 
   it('raises crowd and lighting response for combos, impacts, and low-health pressure', () => {
