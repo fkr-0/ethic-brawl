@@ -40,6 +40,10 @@ export interface FighterAnimationView {
   landingImpact: number;
   turnaroundAmount: number;
   recoilOffsetX: number;
+  actionOffsetX: number;
+  actionOffsetY: number;
+  motionBlur: number;
+  impactPulse: number;
 }
 
 function getAttackPhase(
@@ -141,6 +145,10 @@ export function createFighterAnimationView(
   let flashColor: string | null = null;
   let flashIntensity = 0;
   let auraAlpha = 0;
+  let actionOffsetX = 0;
+  let actionOffsetY = 0;
+  let motionBlur = 0;
+  let impactPulse = 0;
 
   if (fighter.state === 'idle') {
     bobOffsetY += Math.abs(idleBreathPulse) * 1.4 * profile.idleBreath;
@@ -225,6 +233,8 @@ export function createFighterAnimationView(
 
   if (attackPhase === 'startup') {
     const windup = easeInOutQuad(clamp(basePhaseProgress + motionVariation.startupShift, 0, 1));
+    actionOffsetX = lerp(-6, -2, windup);
+    actionOffsetY = Math.sin(windup * Math.PI) * 1.5;
     bodyLean = lerp(-0.24, -0.04, windup);
     bodyTwist = lerp(-0.16, -0.03, windup);
     bodyWidthScale = lerp(1.08, 1.02, windup);
@@ -243,6 +253,11 @@ export function createFighterAnimationView(
     rearShinAngle = lerp(0.84, 0.58, windup);
   } else if (attackPhase === 'active') {
     const strike = easeOutQuad(clamp(basePhaseProgress + motionVariation.activeShift, 0, 1));
+    const strikePulse = Math.sin(strike * Math.PI);
+    actionOffsetX = lerp(8, 15, strike) + strikePulse * 3;
+    actionOffsetY = -strikePulse * 2.5;
+    motionBlur = 0.32 + strikePulse * 0.46;
+    impactPulse = strikePulse;
     bodyLean = lerp(0.16, 0.28, strike);
     bodyTwist = lerp(0.24, 0.06, strike);
     bodyWidthScale = lerp(0.98, 0.94, strike);
@@ -262,6 +277,10 @@ export function createFighterAnimationView(
     auraAlpha = fighter.state === 'special' ? 0.34 : 0.12;
   } else if (attackPhase === 'recovery') {
     const settle = easeOutQuad(clamp(basePhaseProgress + motionVariation.recoveryShift, 0, 1));
+    const recoveryOvershoot = Math.sin(settle * Math.PI) * (1 - settle);
+    actionOffsetX = lerp(10, 0, settle) - recoveryOvershoot * 4;
+    actionOffsetY = recoveryOvershoot * 2;
+    motionBlur = Math.max(0, (1 - settle) * 0.22);
     bodyLean = lerp(0.05, -0.1, settle);
     bodyTwist = lerp(0.08, -0.08, settle);
     bodyWidthScale = lerp(0.98, 1.04, settle);
@@ -287,6 +306,8 @@ export function createFighterAnimationView(
     switch (choreography) {
       case 'straight':
         if (attackPhase === 'active') {
+          actionOffsetX += 5 * phasePulse;
+          motionBlur = Math.max(motionBlur, 0.48 + phasePulse * 0.24);
           frontArmReach += 0.22;
           frontForeArmAngle = lerp(0.2, 0.62, phaseProgress);
           bodyLean += 0.08 * phasePulse;
@@ -294,6 +315,7 @@ export function createFighterAnimationView(
         }
         break;
       case 'sweep':
+        motionBlur = Math.max(motionBlur, 0.28 + phasePulse * 0.36);
         bodyTwist +=
           attackPhase === 'startup'
             ? lerp(-0.32, -0.12, phaseProgress)
@@ -311,6 +333,9 @@ export function createFighterAnimationView(
           frontLegAngle = lerp(-0.12, 0.86, phaseProgress);
           frontShinAngle = lerp(0.42, 1.44, phaseProgress);
         } else if (attackPhase === 'active') {
+          actionOffsetX += 3 * phasePulse;
+          actionOffsetY -= 4 * phasePulse;
+          impactPulse = Math.max(impactPulse, phasePulse * 0.9);
           bodyLean -= 0.14;
           bodyTwist += 0.14;
           frontLegAngle = lerp(1.3, 0.68, phaseProgress);
@@ -326,6 +351,7 @@ export function createFighterAnimationView(
         rearForeArmAngle = rearArmAngle - 0.68;
         bodyTwist += Math.sin(orbit * 0.7) * 0.16;
         auraAlpha = Math.max(auraAlpha, 0.2 + phasePulse * 0.14);
+        motionBlur = Math.max(motionBlur, 0.3 + phasePulse * 0.32);
         break;
       }
       case 'launcher':
@@ -336,6 +362,9 @@ export function createFighterAnimationView(
           frontArmAngle = lerp(-0.86, -0.28, phaseProgress);
           frontForeArmAngle = lerp(-1.3, -0.62, phaseProgress);
         } else if (attackPhase === 'active') {
+          actionOffsetX += 3 * phasePulse;
+          actionOffsetY -= 8 * phasePulse;
+          impactPulse = Math.max(impactPulse, phasePulse);
           bodyHeightScale += 0.14 * phasePulse;
           bobOffsetY -= 7 * phasePulse;
           frontArmAngle = lerp(-0.12, -1.42, phaseProgress);
@@ -352,6 +381,7 @@ export function createFighterAnimationView(
         rearForeArmAngle -= alternation * 0.68;
         bodyTwist += alternation * 0.15;
         afterImageAlpha = Math.max(afterImageAlpha, 0.18 + phasePulse * 0.16);
+        motionBlur = Math.max(motionBlur, 0.52 + phasePulse * 0.34);
         break;
       }
       case 'invocation':
@@ -364,6 +394,8 @@ export function createFighterAnimationView(
         headOffsetY -= 4 * phasePulse;
         auraAlpha = Math.max(auraAlpha, 0.42 + phasePulse * 0.2);
         afterImageAlpha = Math.max(afterImageAlpha, 0.2);
+        actionOffsetY -= 7 * phasePulse;
+        motionBlur = Math.max(motionBlur, 0.3 + phasePulse * 0.22);
         break;
       case 'riposte':
         if (attackPhase === 'startup') {
@@ -371,12 +403,14 @@ export function createFighterAnimationView(
           headOffsetX -= 5;
           frontArmReach = 0.38;
         } else if (attackPhase === 'active') {
+          actionOffsetX += 7 * phasePulse;
           bodyLean += 0.22;
           frontArmReach += 0.3;
           frontArmAngle = -0.08;
           frontForeArmAngle = 0.22;
           rearArmAngle = -0.84;
           afterImageAlpha = Math.max(afterImageAlpha, 0.22);
+          motionBlur = Math.max(motionBlur, 0.46);
         }
         break;
     }
@@ -439,6 +473,12 @@ export function createFighterAnimationView(
   }
 
   if (fighter.state === 'hitstun' || fighter.hitstunFrames > 0) {
+    const hitReaction = clamp(fighter.hitstunFrames / 12, 0, 1);
+    const hitJitter = Math.sin(globalFrame * 1.73 + profile.visualSeed * 3.1);
+    actionOffsetX += hitJitter * 2.4 * hitReaction;
+    actionOffsetY -=
+      Math.abs(Math.cos(globalFrame * 1.21 + profile.visualSeed)) * 1.6 * hitReaction;
+    impactPulse = Math.max(impactPulse, hitReaction);
     bodyLean = clamp((fighter.velocityX || -2) * 0.08, -0.35, 0.35);
     bodyTwist = bodyLean * 0.8;
     bodyWidthScale = 1.1;
@@ -467,6 +507,8 @@ export function createFighterAnimationView(
     clamp(fighter.landingFrames / FRAME_DATA.LANDING_IMPACT_DURATION, 0, 1)
   );
   if (landingImpact > 0) {
+    actionOffsetY += landingImpact * 2.2;
+    impactPulse = Math.max(impactPulse, landingImpact * 0.72);
     bobOffsetY += landingImpact * 4.5 * profile.recoverySpring;
     bodyHeightScale -= landingImpact * 0.16 * profile.recoverySpring;
     bodyWidthScale += landingImpact * 0.12 * profile.recoverySpring;
@@ -498,6 +540,8 @@ export function createFighterAnimationView(
     headOffsetX += recoilOffsetX * 0.45;
     headOffsetY += recoilAmount * 2;
     afterImageAlpha = Math.max(afterImageAlpha, recoilAmount * 0.14);
+    motionBlur = Math.max(motionBlur, recoilAmount * 0.26);
+    impactPulse = Math.max(impactPulse, recoilAmount * 0.65);
   }
 
   if (attackPhase) {
@@ -570,5 +614,9 @@ export function createFighterAnimationView(
     landingImpact,
     turnaroundAmount,
     recoilOffsetX,
+    actionOffsetX,
+    actionOffsetY,
+    motionBlur,
+    impactPulse,
   };
 }

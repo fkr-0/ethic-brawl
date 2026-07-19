@@ -124,6 +124,10 @@ Jumping, falling, landing, knockdown, get-up, and turnaround presentation is syn
 
 Each arena profile also runs a deterministic signature event. The market receives a moving bronze caravan, the archive performs an index scanner sweep, the final gate emits a brazier heat verdict, and the versus arena surges with a neon signal wave. These events affect backdrop motion, foreground light, crowd rhythm, and stage-specific floor geometry without changing combat determinism.
 
+Stage presentation also reacts to the fight itself. Combos, hit-freeze, blockstun, low health, and active environmental events raise crowd motion, lighting, awning flutter, archive brightness, and brazier height. A restrained event-phase strip reports incoming, active, and release windows while keeping the combat area readable.
+
+Normal and special attacks now use facing-relative anticipation, active-frame displacement, recovery overshoot, deterministic impact jitter, and additive directional trails. The visible movement remains presentation-only: hitboxes, timing, and authoritative fighter positions stay deterministic.
+
 The 1.1.0 content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
 
 Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.
@@ -132,9 +136,11 @@ The browser E2E test mounts a production build at `/ethic-brawl/`, covering depl
 
 ## Graphics Architecture and PixiJS
 
-PixiJS is **not currently installed**. Ethic Brawl and Badger Sprawl Runner both still use Canvas2D, and this pass deliberately converges their graphics concepts before changing render backends.
+PixiJS/WebGL is not yet the production backend, so Canvas2D remains authoritative. The shared `@arcade/pixi-runtime` v0.5 module is now vendored with declarations and checksum metadata, however, and Ethic Brawl's ordered pass contract is executable rather than documentary.
 
-Ethic Brawl now has a renderer-neutral fight-presentation contract in `src/render/fight-presentation.ts`. It carries stage themes and encounter profiles independently from the Canvas drawing code, providing a clean future seam for a complete PixiJS v8 adapter. See `docs/graphics-convergence.md` for the comparison and migration criteria.
+`src/render/arcade-runtime-contract.ts` defines the exact backdrop, stage-depth, arena, fighter, projectile, VFX, foreground, HUD, and scene-UI pass order. Existing Canvas background, arena, foreground, and HUD functions are marked ready for the runtime's Canvas-texture bridge; fighters, projectiles, and combat VFX remain the first native-Pixi conversion targets. The renderer-neutral fight-presentation contract in `src/render/fight-presentation.ts` continues to carry stage themes and encounter profiles independently from either backend.
+
+`src/render/arcade-runtime-adapter.ts` installs only explicitly supplied ready Canvas bridge passes. The vendored module and declaration files are hash-verified in the unit suite, preventing accidental drift between runtime code and metadata.
 
 ## Project Structure
 

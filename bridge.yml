@@ -2,13 +2,14 @@ version: 1
 name: ethic-brawl
 description: Ethic Brawl development commands
 agent:
-  notes: Canvas2D renderer with a future renderer-neutral presentation seam. Do not introduce a cross-repository runtime dependency on badger-sprawl-runner; its repository is not present in Ethic Brawl CI.
+  notes: Canvas2D remains the production renderer. The vendored arcade-pixi-runtime v0.5 contract and dependency-injected bridge adapters are the supported incremental Pixi migration seam. Do not introduce a source-level dependency on badger-sprawl-runner.
   tasks:
     - Keep production deployment subpath-safe at /ethic-brawl/.
     - Keep Stage 1 E2E coverage green.
   changelog:
     - 2026-07-14: Production subpath deployment and Stage 1 vertical slice repaired and enhanced.
     - 2026-07-14: Added renderer-neutral stage profiles, pooled combat VFX, and Badger-inspired parallax/foreground layers.
+    - 2026-07-19: Added the verified shared-runtime v0.5 render plan, projectile layer, camera/profiler helpers, and ready-pass Canvas bridge installer.
 commands:
   lint:
     run: ["pnpm", "lint"]

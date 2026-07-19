@@ -32,6 +32,61 @@ export interface FightStageEventState {
   intensity: number;
 }
 
+export interface FightStageReactionState {
+  crowdEnergy: number;
+  lightPulse: number;
+  impactPulse: number;
+  healthPressure: number;
+  comboEnergy: number;
+}
+
+export function resolveFightStageReaction(
+  state: FightState | null,
+  event: FightStageEventState
+): FightStageReactionState {
+  if (!state) {
+    return {
+      crowdEnergy: event.intensity * 0.42,
+      lightPulse: event.intensity * 0.58,
+      impactPulse: 0,
+      healthPressure: 0,
+      comboEnergy: 0,
+    };
+  }
+
+  const p1Ratio = state.player1.health / Math.max(1, state.player1.stats.maxHealth);
+  const p2Ratio = state.player2.health / Math.max(1, state.player2.stats.maxHealth);
+  const healthPressure = Math.max(0, Math.min(1, 1 - Math.min(p1Ratio, p2Ratio)));
+  const comboCount = Math.max(state.combos[0]?.count ?? 0, state.combos[1]?.count ?? 0);
+  const comboEnergy = Math.max(0, Math.min(1, comboCount / 8));
+  const stunFrames = Math.max(
+    state.player1.hitstunFrames,
+    state.player1.blockstunFrames,
+    state.player2.hitstunFrames,
+    state.player2.blockstunFrames
+  );
+  const impactPulse = Math.max(0, Math.min(1, state.hitFreezeFrames / 5 + stunFrames / 18));
+  const crowdEnergy = Math.max(
+    0,
+    Math.min(
+      1,
+      0.12 +
+        event.intensity * 0.38 +
+        healthPressure * 0.22 +
+        comboEnergy * 0.34 +
+        impactPulse * 0.42
+    )
+  );
+
+  return {
+    crowdEnergy,
+    lightPulse: Math.max(0, Math.min(1, event.intensity * 0.68 + impactPulse * 0.5)),
+    impactPulse,
+    healthPressure,
+    comboEnergy,
+  };
+}
+
 export function resolveFightStageEvent(
   frame: number,
   profile: FightGraphicsProfile
@@ -238,14 +293,17 @@ function renderForegroundCrowd(
   ctx: CanvasRenderingContext2D,
   camera: Camera,
   frame: number,
-  profile: FightGraphicsProfile
+  profile: FightGraphicsProfile,
+  reaction: FightStageReactionState
 ): void {
   ctx.save();
   ctx.fillStyle = '#05030A';
   for (let index = 0; index < 18; index += 1) {
     const worldX = index * 82 + profile.seed * 0.17;
     const x = calculateWrappedParallaxX(worldX, camera.x, 0.58, 1480, 90);
-    const bob = Math.sin(frame * 0.045 + index * 1.7) * 2;
+    const bob =
+      Math.sin(frame * (0.045 + reaction.crowdEnergy * 0.035) + index * 1.7) *
+      (2 + reaction.crowdEnergy * 5);
     const height = 24 + (index % 5) * 4;
     const y = CANVAS_HEIGHT - height + bob;
     ctx.globalAlpha = 0.42 + (index % 3) * 0.06;
@@ -253,12 +311,15 @@ function renderForegroundCrowd(
     ctx.arc(x + 11, y - 8, 7, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillRect(x, y - 4, 22, height);
-    if (index % 4 === 0) {
+    if (index % 4 === 0 || (reaction.crowdEnergy > 0.62 && index % 3 === 0)) {
       ctx.strokeStyle = `${profile.accent}55`;
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(x + 11, y + 4);
-      ctx.lineTo(x + 8 + Math.sin(frame * 0.08 + index) * 13, y - 19);
+      ctx.lineTo(
+        x + 8 + Math.sin(frame * 0.08 + index) * (13 + reaction.crowdEnergy * 8),
+        y - 19 - reaction.crowdEnergy * 15
+      );
       ctx.stroke();
     }
   }
@@ -269,10 +330,12 @@ export function renderFightForeground(
   ctx: CanvasRenderingContext2D,
   camera: Camera,
   frame: number,
-  profile: FightGraphicsProfile
+  profile: FightGraphicsProfile,
+  fightState: FightState | null = null
 ): void {
   const stageEvent = resolveFightStageEvent(frame, profile);
-  renderForegroundCrowd(ctx, camera, frame, profile);
+  const reaction = resolveFightStageReaction(fightState, stageEvent);
+  renderForegroundCrowd(ctx, camera, frame, profile, reaction);
 
   ctx.save();
   switch (profile.foregroundMotif) {
@@ -287,8 +350,9 @@ export function renderFightForeground(
           ctx.beginPath();
           ctx.moveTo(x + strip * 38, CANVAS_HEIGHT - 160);
           ctx.lineTo(x + strip * 38 + 28, CANVAS_HEIGHT - 160);
-          ctx.lineTo(x + strip * 38 + 20, CANVAS_HEIGHT - 137);
-          ctx.lineTo(x + strip * 38 + 6, CANVAS_HEIGHT - 137);
+          const flutter = Math.sin(frame * 0.08 + strip + side) * reaction.crowdEnergy * 5;
+          ctx.lineTo(x + strip * 38 + 20, CANVAS_HEIGHT - 137 + flutter);
+          ctx.lineTo(x + strip * 38 + 6, CANVAS_HEIGHT - 137 - flutter * 0.5);
           ctx.fill();
         }
         ctx.fillStyle = `${profile.accent}44`;
@@ -298,7 +362,7 @@ export function renderFightForeground(
     }
     case 'archive_columns': {
       ctx.fillStyle = '#080610';
-      ctx.globalAlpha = 0.88;
+      ctx.globalAlpha = Math.min(1, 0.82 + reaction.lightPulse * 0.18);
       ctx.fillRect(0, 0, 58, CANVAS_HEIGHT);
       ctx.fillRect(CANVAS_WIDTH - 58, 0, 58, CANVAS_HEIGHT);
       ctx.strokeStyle = `${profile.accent}77`;
@@ -323,7 +387,7 @@ export function renderFightForeground(
         ctx.fillRect(x, CANVAS_HEIGHT - 210, 60, 210);
         ctx.fillStyle = profile.floorHighlight;
         ctx.fillRect(x + 8, CANVAS_HEIGHT - 204, 44, 9);
-        const flameHeight = 26 + Math.sin(frame * 0.18 + x) * 7;
+        const flameHeight = 26 + Math.sin(frame * 0.18 + x) * 7 + reaction.lightPulse * 18;
         const flame = ctx.createRadialGradient(
           x + 30,
           CANVAS_HEIGHT - 224,
@@ -361,6 +425,40 @@ export function renderFightForeground(
   ctx.fillStyle = bottomShade;
   ctx.fillRect(0, CANVAS_HEIGHT - 110, CANVAS_WIDTH, 110);
   renderStageEventForeground(ctx, frame, profile, stageEvent);
+  ctx.restore();
+}
+
+export function renderFightStageCue(
+  ctx: CanvasRenderingContext2D,
+  frame: number,
+  profile: FightGraphicsProfile,
+  fightState: FightState | null = null
+): void {
+  const event = resolveFightStageEvent(frame, profile);
+  if (event.phase === 'idle') return;
+  const reaction = resolveFightStageReaction(fightState, event);
+  const width = 230;
+  const height = 25;
+  const x = CANVAS_WIDTH / 2 - width / 2;
+  const y = 89;
+  const phaseLabel = event.phase === 'warning' ? 'INCOMING' : event.phase.toUpperCase();
+
+  ctx.save();
+  ctx.globalAlpha = 0.72 + reaction.lightPulse * 0.24;
+  ctx.fillStyle = 'rgba(7, 4, 14, 0.88)';
+  ctx.fillRect(x, y, width, height);
+  ctx.strokeStyle = event.phase === 'warning' ? profile.secondaryAccent : profile.accent;
+  ctx.lineWidth = 1.5 + reaction.impactPulse * 1.5;
+  ctx.strokeRect(x, y, width, height);
+
+  ctx.fillStyle = event.phase === 'warning' ? profile.secondaryAccent : profile.accent;
+  ctx.fillRect(x, y + height - 3, width * event.phaseProgress, 3);
+  ctx.font = 'bold 10px "Courier New", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(event.label, x + 8, y + 16);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#F5EFFF';
+  ctx.fillText(phaseLabel, x + width - 8, y + 16);
   ctx.restore();
 }
 

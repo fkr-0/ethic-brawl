@@ -37,4 +37,34 @@ describe('fighter animation view', () => {
     expect(getUp.bodyHeightScale).toBeGreaterThan(0.62);
     expect(getUp.bodyHeightScale).toBeLessThan(1.05);
   });
+
+  it('adds deterministic anticipation, lunge, blur, and recovery overshoot to attacks', () => {
+    const runtime = createFightRuntime();
+    const state = runtime.getState();
+    if (!state) throw new Error('Missing fight state fixture');
+    const fighter = state.player1;
+    expect(fighter.startAttack(0, 0)).toBe(true);
+    if (!fighter.currentAttack) throw new Error('Missing attack fixture');
+
+    fighter.attackFrame = Math.max(0, fighter.currentAttack.startup - 2);
+    const startup = createFighterAnimationView(fighter, 12);
+    expect(startup.actionOffsetX).toBeLessThan(0);
+    expect(startup.motionBlur).toBe(0);
+
+    fighter.attackFrame =
+      fighter.currentAttack.startup + Math.max(0, Math.floor(fighter.currentAttack.active / 2));
+    const active = createFighterAnimationView(fighter, 18);
+    expect(active.actionOffsetX).toBeGreaterThan(8);
+    expect(active.motionBlur).toBeGreaterThan(0.3);
+    expect(active.impactPulse).toBeGreaterThan(0);
+
+    fighter.attackFrame =
+      fighter.currentAttack.startup +
+      fighter.currentAttack.active +
+      fighter.currentAttack.recovery -
+      2;
+    const recovery = createFighterAnimationView(fighter, 30);
+    expect(Math.abs(recovery.actionOffsetX)).toBeLessThan(active.actionOffsetX);
+    expect(recovery.motionBlur).toBeLessThan(active.motionBlur);
+  });
 });

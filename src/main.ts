@@ -14,6 +14,7 @@ import {
   getGraphicsBackendStatus,
   resolveFightGraphicsProfile,
   resolveFightStageEvent,
+  resolveFightStageReaction,
 } from '@/render';
 import {
   getCharacterAnimationMap,
@@ -213,6 +214,7 @@ async function main() {
       encounterIndex: appState.stageEncounterIndex,
     });
     const stageEvent = resolveFightStageEvent(fightState?.frameCount ?? 0, graphicsProfile);
+    const stageReaction = resolveFightStageReaction(fightState, stageEvent);
     const particleStats = fightState?.particlePool.getStats();
     return {
       ready: sceneManager.getCurrentScene() !== 'loading',
@@ -257,6 +259,9 @@ async function main() {
         stageEventId: stageEvent.id,
         stageEventPhase: stageEvent.phase,
         stageEventIntensity: stageEvent.intensity,
+        stageCrowdEnergy: stageReaction.crowdEnergy,
+        stageLightPulse: stageReaction.lightPulse,
+        stageImpactPulse: stageReaction.impactPulse,
       },
       fight: {
         player1Character: fightState?.player1.characterId ?? null,

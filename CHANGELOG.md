@@ -2,6 +2,27 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.3.0] - 2026-07-19
+
+### Added
+
+- Combat-reactive stage choreography that derives crowd energy, lighting pulse, impact response, combo pressure, and low-health tension from deterministic fight state.
+- A compact stage-event cue showing warning, active, and release phases without obscuring the fight HUD.
+- Directional attack anticipation, active-frame lunges, recovery overshoot, deterministic hit jitter, and additive sprite motion trails.
+- A verified `@arcade/pixi-runtime` v0.5 render plan, camera/profiler support, a dedicated projectile layer, checksum metadata, declarations, and ready-pass Canvas bridge installer for incremental Pixi migration.
+- Browser and unit observability for action offsets, motion blur, impact pulse, crowd energy, stage lighting, and shared-runtime bridge order.
+
+### Changed
+
+- Market awnings, archive columns, gate braziers, and foreground crowds now react to stage-event intensity and combat momentum.
+- Sprite shadows follow attack displacement so strong lunges remain grounded instead of visually sliding away from their contact point.
+- Shared-runtime tests now verify vendored runtime hashes using repository-root paths across Node and Vite test environments.
+
+### Fixed
+
+- Added Node type declarations required by checksum and bridge-contract tests.
+- Removed timing-fragile active-frame browser assertions while preserving deterministic motion validation.
+
 ## [1.2.0] - 2026-07-19
 
 ### Added

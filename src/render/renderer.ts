@@ -16,6 +16,7 @@ import {
   renderCombatScreenFeedback,
   renderFightBackdrop,
   renderFightForeground,
+  renderFightStageCue,
   resolveFightGraphicsProfile,
   resolveFightStageEvent,
 } from './fight-presentation';
@@ -132,6 +133,10 @@ export interface FighterAnimationSnapshot {
   turnaroundAmount: number;
   turnScaleX: number;
   rotation: number;
+  actionOffsetX: number;
+  actionOffsetY: number;
+  motionBlur: number;
+  impactPulse: number;
 }
 
 const fighterClipTransitionCache = new Map<string, SpriteClipTransition>();
@@ -523,11 +528,13 @@ function renderFighterWithSprite(
       : 1;
   const turnGhostAlpha =
     animation.turnaroundAmount > 0 ? Math.sin(turnaroundPhase * Math.PI) * 0.34 : 0;
+  const facingSign = facingRight ? 1 : -1;
+  const actionOffsetX = animation.actionOffsetX * facingSign;
 
   ctx.save();
   ctx.globalAlpha = fighter.state === 'knockdown' ? 0.28 : 0.22;
   ctx.fillStyle = '#05030A';
-  ctx.translate(screenX, screenY + 3);
+  ctx.translate(screenX + actionOffsetX * 0.24, screenY + 3 + animation.actionOffsetY * 0.12);
   ctx.scale(animation.shadowScaleX, animation.shadowScaleY);
   ctx.beginPath();
   ctx.ellipse(0, 0, 34, 9, 0, 0, Math.PI * 2);
@@ -540,12 +547,19 @@ function renderFighterWithSprite(
     offsetX: number,
     opacity: number,
     blur = 0,
-    poseFacingRight = facingRight
+    poseFacingRight = facingRight,
+    additive = false
   ): boolean => {
     ctx.save();
-    ctx.translate(screenX + offsetX + animation.recoilOffsetX, screenY + animation.bobOffsetY);
+    ctx.translate(
+      screenX + offsetX + animation.recoilOffsetX + actionOffsetX,
+      screenY + animation.bobOffsetY + animation.actionOffsetY
+    );
     ctx.rotate(rotation);
     ctx.scale(stretchX * turnScaleX, stretchY);
+    if (additive) {
+      ctx.globalCompositeOperation = 'screen';
+    }
     if (blur > 0) {
       ctx.filter = `blur(${blur}px) saturate(1.35)`;
     } else if (animation.flashIntensity > 0) {
@@ -579,20 +593,26 @@ function renderFighterWithSprite(
 
   const velocity = fighter.moveVelocityX + fighter.velocityX;
   const trailDirection = velocity === 0 ? (facingRight ? -1 : 1) : velocity > 0 ? -1 : 1;
-  if (animation.afterImageAlpha > 0.04) {
+  const trailAlpha = Math.max(animation.afterImageAlpha, animation.motionBlur * 0.32);
+  const trailDistance = 10 + animation.motionBlur * 18;
+  if (trailAlpha > 0.04) {
     drawSpritePose(
       currentClip,
       animState.currentFrame,
-      trailDirection * 18,
-      animation.afterImageAlpha * 0.42,
-      1.4
+      trailDirection * trailDistance,
+      trailAlpha * 0.36,
+      1.2 + animation.motionBlur * 1.2,
+      facingRight,
+      true
     );
     drawSpritePose(
       currentClip,
       animState.currentFrame,
-      trailDirection * 9,
-      animation.afterImageAlpha * 0.68,
-      0.7
+      trailDirection * trailDistance * 0.52,
+      trailAlpha * 0.62,
+      0.55 + animation.motionBlur * 0.55,
+      facingRight,
+      true
     );
   }
 
@@ -630,6 +650,10 @@ function renderFighterWithSprite(
     turnaroundAmount: animation.turnaroundAmount,
     turnScaleX,
     rotation,
+    actionOffsetX,
+    actionOffsetY: animation.actionOffsetY,
+    motionBlur: animation.motionBlur,
+    impactPulse: animation.impactPulse,
   });
 
   if (transition) {
@@ -1093,7 +1117,7 @@ export function renderFightScene(
   }
 
   fightState.particlePool.render(ctx);
-  renderFightForeground(ctx, camera, fightState.frameCount, graphicsProfile);
+  renderFightForeground(ctx, camera, fightState.frameCount, graphicsProfile, fightState);
 
   if (fightState.hitFreezeFrames > 0) {
     ctx.save();
@@ -1111,6 +1135,7 @@ export function renderFightScene(
   }
 
   renderCombatScreenFeedback(ctx, fightState);
+  renderFightStageCue(ctx, fightState.frameCount, graphicsProfile, fightState);
 
   // HUD
   const p1Char = CHARACTERS[fightState.player1.characterId as keyof typeof CHARACTERS];

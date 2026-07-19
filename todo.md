@@ -2,7 +2,7 @@
 
 ## Current release status
 
-- Automated gate includes lint, typecheck, 88 unit tests, production build, and two Chromium E2E specifications covering Stage 1 plus sprite correctness/animation fluidity.
+- Automated gate includes lint, typecheck, 91 unit tests, production build, and two Chromium E2E specifications covering Stage 1, sprite correctness/animation fluidity, combat-reactive stages, and the shared Pixi bridge contract.
 - Remaining blocker: manual browser/canvas validation and release packaging notes.
 - Release rule: do not tag `v1.0.0` until every item in `Release-blocking manual validation` is checked.
 

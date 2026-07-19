@@ -8,6 +8,7 @@ import {
   resolveCombatScreenFeedback,
   resolveFightGraphicsProfile,
   resolveFightStageEvent,
+  resolveFightStageReaction,
 } from '@/render/fight-presentation';
 import { describe, expect, it } from 'vitest';
 
@@ -18,6 +19,28 @@ describe('Badger-compatible fight presentation contract', () => {
       pixiInstalled: false,
       rendererNeutralPresentation: true,
     });
+  });
+
+  it('raises crowd and lighting response for combos, impacts, and low-health pressure', () => {
+    const runtime = createFightRuntime();
+    const state = runtime.getState();
+    if (!state) throw new Error('Missing fight state fixture');
+    const profile = resolveFightGraphicsProfile({ theme: 'babylon', encounterIndex: 2 });
+    const event = resolveFightStageEvent(0, profile);
+    const calm = resolveFightStageReaction(state, event);
+
+    state.player1.health = state.player1.stats.maxHealth * 0.18;
+    state.combos[0].count = 7;
+    state.combos[0].isActive = true;
+    state.hitFreezeFrames = 4;
+    state.player2.hitstunFrames = 12;
+    const excited = resolveFightStageReaction(state, event);
+
+    expect(excited.crowdEnergy).toBeGreaterThan(calm.crowdEnergy);
+    expect(excited.lightPulse).toBeGreaterThan(calm.lightPulse);
+    expect(excited.impactPulse).toBeGreaterThan(0);
+    expect(excited.healthPressure).toBeGreaterThan(0.75);
+    expect(excited.comboEnergy).toBeGreaterThan(0.8);
   });
 
   it('cycles every stage event through warning, active, and release phases deterministically', () => {

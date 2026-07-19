@@ -77,29 +77,79 @@ async function pressAndObserveClip(
   }
 }
 
+async function startBrowserSnapshotCapture(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const captureWindow = window as Window & {
+      __ETHIC_BRAWL_ANIMATION_CAPTURE__?: {
+        active: boolean;
+        samples: E2EProbeSnapshot[];
+      };
+    };
+    const capture = { active: true, samples: [] as E2EProbeSnapshot[] };
+    captureWindow.__ETHIC_BRAWL_ANIMATION_CAPTURE__ = capture;
+    const recordFrame = () => {
+      if (!capture.active) return;
+      const snapshot = window.__ETHIC_BRAWL_E2E__?.getSnapshot();
+      if (snapshot) capture.samples.push(snapshot);
+      requestAnimationFrame(recordFrame);
+    };
+    requestAnimationFrame(recordFrame);
+  });
+}
+
+async function stopBrowserSnapshotCapture(page: Page): Promise<E2EProbeSnapshot[]> {
+  return page.evaluate(() => {
+    const captureWindow = window as Window & {
+      __ETHIC_BRAWL_ANIMATION_CAPTURE__?: {
+        active: boolean;
+        samples: E2EProbeSnapshot[];
+      };
+    };
+    const capture = captureWindow.__ETHIC_BRAWL_ANIMATION_CAPTURE__;
+    if (!capture) return [];
+    capture.active = false;
+    return capture.samples;
+  });
+}
+
 async function observeAttackClipSequence(
   page: Page,
   key: string,
   prefix: 'attack_light' | 'attack_special'
 ): Promise<E2EProbeSnapshot[]> {
-  const startup = await pressAndObserveClip(page, key, `${prefix}_startup`);
-  const active = await waitForPlayerOneAnimation(
-    page,
-    `${prefix}_active`,
-    (animation) => animation.clipId === `${prefix}_active`
+  await startBrowserSnapshotCapture(page);
+
+  await page.keyboard.down(key);
+  await page.waitForTimeout(55);
+  await page.keyboard.up(key);
+  await page.waitForTimeout(900);
+
+  const samples = await stopBrowserSnapshotCapture(page);
+  const animations = playerOneAnimations(samples);
+  const startupIndex = animations.findIndex(({ clipId }) => clipId === `${prefix}_startup`);
+  const activeIndex = animations.findIndex(
+    ({ clipId, motionBlur }, index) =>
+      index > startupIndex && clipId === `${prefix}_active` && motionBlur > 0.25
   );
-  const recovery = await waitForPlayerOneAnimation(
-    page,
-    `${prefix}_recovery`,
-    (animation) => animation.clipId === `${prefix}_recovery`
+  const recoveryIndex = animations.findIndex(
+    ({ clipId }, index) => index > activeIndex && clipId === `${prefix}_recovery`
   );
-  const settled = await waitForPlayerOneAnimation(
-    page,
-    'idle after attack',
-    (animation, snapshot) => animation.clipId === 'idle' && snapshot.fight.player1State === 'idle',
-    1_800
+  const settledIndex = animations.findIndex(
+    ({ clipId }, index) => index > recoveryIndex && clipId === 'idle'
   );
-  return [startup, active, recovery, settled];
+
+  const indices = [startupIndex, activeIndex, recoveryIndex, settledIndex];
+  if (indices.some((index) => index < 0)) {
+    const observed = animations.map(
+      ({ state, clipId, attackPhase, motionBlur }) =>
+        `${state}:${clipId}:${attackPhase ?? 'none'}:${motionBlur.toFixed(2)}`
+    );
+    throw new Error(
+      `Incomplete ${prefix} browser-frame sequence. Observed: ${[...new Set(observed)].join(' -> ')}`
+    );
+  }
+
+  return indices.map((index) => samples[index] as E2EProbeSnapshot);
 }
 
 function playerOneAnimations(samples: E2EProbeSnapshot[]) {
@@ -170,6 +220,8 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(snapshot.renderer.stageEventId).toBe('signal_surge');
   expect(snapshot.renderer.stageEventIntensity).toBeGreaterThanOrEqual(0);
   expect(snapshot.renderer.stageEventIntensity).toBeLessThanOrEqual(1);
+  expect(snapshot.renderer.stageCrowdEnergy).toBeGreaterThanOrEqual(0);
+  expect(snapshot.renderer.stageCrowdEnergy).toBeLessThanOrEqual(1);
 
   const idleAnimations = playerOneAnimations(await collectSnapshots(page, 720, 55)).filter(
     ({ clipId }) => clipId === 'idle'
@@ -220,6 +272,9 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     'recovery',
     null,
   ]);
+  expect(lightAttackAnimations[0]?.actionOffsetX).toBeLessThan(0);
+  expect(lightAttackAnimations[1]?.actionOffsetX).toBeGreaterThan(6);
+  expect(lightAttackAnimations[1]?.motionBlur).toBeGreaterThan(0.25);
   expect(
     lightAttackAnimations.some(
       ({ transitionFromClipId, transitionAlpha }) =>
@@ -263,25 +318,69 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   await tapKey(page, 's', 70);
   await expect.poll(async () => (await getSnapshot(page)).fight.player1Lane).toBe(1);
 
-  for (let attempt = 0; attempt < 12; attempt += 1) {
+  const enemyHealthBefore = (await getSnapshot(page)).fight.player2Health;
+  expect(enemyHealthBefore).not.toBeNull();
+  const contactSamples: E2EProbeSnapshot[] = [];
+  let enemyHealthAfter = enemyHealthBefore;
+
+  for (let attempt = 0; attempt < 8; attempt += 1) {
     snapshot = await getSnapshot(page);
+    const player1Lane = snapshot.fight.player1Lane;
+    const player2Lane = snapshot.fight.player2Lane;
+    if (player1Lane !== null && player2Lane !== null && player1Lane !== player2Lane) {
+      await tapKey(page, player1Lane < player2Lane ? 'w' : 's', 75);
+      await page.waitForTimeout(280);
+    }
+
+    snapshot = await getSnapshot(page);
+    const player1X = snapshot.fight.player1X;
+    const player2X = snapshot.fight.player2X;
+    if (player1X === null || player2X === null) continue;
+    const pursuitKey = player2X >= player1X ? 'd' : 'a';
+
+    await tapKey(page, pursuitKey, 35);
+    await startBrowserSnapshotCapture(page);
+    await page.keyboard.down(pursuitKey);
+    let reachedContact = false;
+    const pursuitDeadline = Date.now() + 1_500;
+    while (Date.now() < pursuitDeadline) {
+      const pursuitSnapshot = await getSnapshot(page);
+      const currentPlayer1X = pursuitSnapshot.fight.player1X;
+      const currentPlayer2X = pursuitSnapshot.fight.player2X;
+      const currentPlayer1Lane = pursuitSnapshot.fight.player1Lane;
+      const currentPlayer2Lane = pursuitSnapshot.fight.player2Lane;
+      if (
+        currentPlayer1X !== null &&
+        currentPlayer2X !== null &&
+        currentPlayer1Lane === currentPlayer2Lane &&
+        Math.abs(currentPlayer2X - currentPlayer1X) <= 52
+      ) {
+        reachedContact = true;
+        break;
+      }
+      if (currentPlayer1Lane !== currentPlayer2Lane) break;
+      await page.waitForTimeout(20);
+    }
+
+    if (reachedContact) {
+      await page.keyboard.down('j');
+      await page.waitForTimeout(55);
+      await page.keyboard.up('j');
+      await page.waitForTimeout(420);
+    }
+    await page.keyboard.up(pursuitKey);
+    await page.waitForTimeout(160);
+    contactSamples.push(...(await stopBrowserSnapshotCapture(page)));
+    enemyHealthAfter = (await getSnapshot(page)).fight.player2Health;
     if (
-      snapshot.fight.player1X !== null &&
-      snapshot.fight.player2X !== null &&
-      snapshot.fight.player2X - snapshot.fight.player1X <= 56
+      enemyHealthAfter !== null &&
+      enemyHealthBefore !== null &&
+      enemyHealthAfter < enemyHealthBefore
     ) {
       break;
     }
-    await tapKey(page, 'd', 120);
   }
-  const enemyHealthBefore = (await getSnapshot(page)).fight.player2Health;
-  expect(enemyHealthBefore).not.toBeNull();
-  await page.keyboard.down('j');
-  const contactSamplesPromise = collectSnapshots(page, 620, 16);
-  await page.waitForTimeout(55);
-  await page.keyboard.up('j');
-  const contactSamples = await contactSamplesPromise;
-  const enemyHealthAfter = contactSamples.at(-1)?.fight.player2Health;
+
   expect(enemyHealthAfter).not.toBeNull();
   expect(enemyHealthAfter as number).toBeLessThan(enemyHealthBefore as number);
   expect(
@@ -291,6 +390,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
         sample.fight.player2Animation?.clipId === 'hitstun'
     )
   ).toBe(true);
+  expect(contactSamples.some((sample) => sample.renderer.stageImpactPulse > 0)).toBe(true);
 
   await tapKey(page, 'Backspace');
   await waitForScene(page, 'results');
