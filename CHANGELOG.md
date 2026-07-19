@@ -2,6 +2,26 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.4.0] - 2026-07-19
+
+### Added
+
+- An opt-in PixiJS bridge that mirrors the deterministic Canvas fight presentation through the shared arcade runtime.
+- Dedicated background, stage, fighter, projectile, effects, and foreground render passes with reusable runtime objects.
+- Browser performance comparison between the established Canvas renderer and the bridge path.
+- Unit contracts for bridge initialization, render-plan ordering, projectile routing, and renderer lifecycle.
+
+### Changed
+
+- Fight presentation now emits bridge-ready positional and combat-effect data without coupling simulation state to PixiJS.
+- Renderer selection can be exercised through direct-launch parameters while Canvas remains the safe default.
+- Shared runtime metadata and dependencies are pinned for reproducible builds.
+
+### Fixed
+
+- Bridge activation and scene changes now preserve the existing deterministic combat timeline and E2E probes.
+- Runtime teardown no longer leaves bridge display objects or frame state attached between scenes.
+
 ## [1.3.0] - 2026-07-19
 
 ### Added

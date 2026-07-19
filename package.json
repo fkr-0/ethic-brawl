@@ -1,6 +1,6 @@
 {
   "name": "ethic-brawl",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A 2.5D cyberpunk philosophical arena-brawler with absurd humor",
   "type": "module",
   "scripts": {
@@ -23,7 +23,13 @@
     "assets:build": "python scripts/build-release-atlases.py && python scripts/build-character-extensions.py",
     "assets:check": "node scripts/check-release-assets.mjs"
   },
-  "keywords": ["game", "brawler", "cyberpunk", "philosophy", "canvas"],
+  "keywords": [
+    "game",
+    "brawler",
+    "cyberpunk",
+    "philosophy",
+    "canvas"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
