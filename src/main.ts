@@ -36,7 +36,7 @@ import {
   renderHelpOverlay,
   renderInputPanels,
 } from '@/ui/screens/app-shell-renderers';
-import { createArcadeFrameProfiler } from '../vendor/arcade-pixi-runtime.mjs';
+import { createArcadeFrameProfiler } from '../vendor/arcade-runtime.mjs';
 import { buildAppScenes, createInitialAppShellState } from './app/app-shell/scene-factory';
 
 async function main() {

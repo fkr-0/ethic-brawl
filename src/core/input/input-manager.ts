@@ -1,12 +1,12 @@
 /**
- * Shared arcade-core semantic input adapter for both Ethic Brawl players.
+ * Shared arcade-runtime semantic input adapter for both Ethic Brawl players.
  */
 
 import {
   createActionInput,
   type ActionBinding,
   type ActionState,
-} from '../../../vendor/arcade-core.mjs';
+} from '../../../vendor/arcade-runtime.mjs';
 import {
   GAME_ACTIONS,
   type GameAction,

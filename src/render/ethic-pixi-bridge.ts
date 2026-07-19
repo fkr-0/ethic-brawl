@@ -3,8 +3,8 @@ import * as PIXI from 'pixi.js';
 import {
   createArcadeCameraTransform,
   createArcadePixiRuntime,
-} from '../../vendor/arcade-pixi-runtime.mjs';
-import type { ArcadePixiRuntime } from '../../vendor/arcade-pixi-runtime.mjs';
+} from '../../vendor/arcade-runtime.mjs';
+import type { ArcadePixiRuntime } from '../../vendor/arcade-runtime.mjs';
 import { installEthicCanvasBridgePasses } from './arcade-runtime-adapter';
 import { ETHIC_PIXI_LAYERS } from './arcade-runtime-contract';
 import type { FightPresentationOptions } from './fight-presentation';

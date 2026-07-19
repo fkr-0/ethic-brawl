@@ -2,14 +2,14 @@ version: 1
 name: ethic-brawl
 description: Ethic Brawl development commands
 agent:
-  notes: Canvas2D remains the authoritative renderer. The vendored arcade-pixi-runtime v0.6 contract, lazy PixiJS bridge, and dependency-injected adapters are the supported incremental migration seam. Keep the Canvas fallback and do not introduce a source-level dependency on badger-sprawl-runner.
+  notes: Canvas2D remains the authoritative renderer. The vendored arcade-runtime v0.8 merged core/Pixi contract, lazy PixiJS bridge, and dependency-injected adapters are the supported incremental migration seam. Keep the Canvas fallback and do not introduce a source-level dependency on badger-sprawl-runner.
   tasks:
     - Keep production deployment subpath-safe at /ethic-brawl/.
     - Keep Stage 1 E2E coverage green.
   changelog:
     - 2026-07-14: Production subpath deployment and Stage 1 vertical slice repaired and enhanced.
     - 2026-07-14: Added renderer-neutral stage profiles, pooled combat VFX, and Badger-inspired parallax/foreground layers.
-    - 2026-07-19: Added the verified shared-runtime v0.6 lifecycle, deterministic ordering, context recovery, one-texture stage bridge, and renderer performance route.
+    - 2026-07-19: Added the verified shared arcade-runtime v0.8 core, lifecycle, deterministic ordering, context recovery, one-texture stage bridge, and renderer performance route.
 commands:
   lint:
     run: ["pnpm", "lint"]

@@ -8,7 +8,7 @@ import { getComboDisplayText } from '@/game/fight/combo';
 import { type FightState, getLaneGroundY } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
 import { FRAME_DATA } from '@/game/fight/fighter-state';
-import { createArcadeCameraTransform } from '../../vendor/arcade-pixi-runtime.mjs';
+import { createArcadeCameraTransform } from '../../vendor/arcade-runtime.mjs';
 import type { Camera } from './camera';
 import {
   type FightGraphicsProfile,

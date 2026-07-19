@@ -4,11 +4,11 @@ import {
   createArcadePixiRuntime,
   createCanvasTexturePass,
   defineArcadeRenderPlan,
-} from '../../vendor/arcade-pixi-runtime.mjs';
+} from '../../vendor/arcade-runtime.mjs';
 import type {
   ArcadePixiNamespace,
   ArcadePixiRuntimeOptions,
-} from '../../vendor/arcade-pixi-runtime.mjs';
+} from '../../vendor/arcade-runtime.mjs';
 
 class MockContainer {
   label = '';
@@ -100,7 +100,7 @@ async function createRuntime(overrides: Partial<ArcadePixiRuntimeOptions> = {}) 
   });
 }
 
-describe('arcade-pixi-runtime core', () => {
+describe('arcade-runtime Pixi core', () => {
   it('executes systems and passes in deterministic priority/order/registration order', async () => {
     const runtime = await createRuntime();
     const calls: string[] = [];

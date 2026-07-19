@@ -148,7 +148,7 @@ PixiJS/WebGL is not yet the default backend, so Canvas2D remains authoritative. 
 
 PixiJS 8.19 is an explicit but dynamically loaded runtime dependency. Launch with `?renderer=bridge` to move the fight background and arena into one transparent Pixi-owned stage texture while fighters, projectiles, VFX, foreground, and HUD remain on the authoritative Canvas2D overlay. Failed bridge initialization falls back to Canvas2D. The default remains `?renderer=canvas` until native-pass parity and browser p95 profiling justify migration.
 
-See `docs/arcade-pixi-runtime-review.md` for the suitability review and migration criteria.
+See `docs/arcade-runtime-review.md` for the suitability review and migration criteria.
 
 The release Chromium comparison keeps Canvas as the production default. In the final release-gate run, direct Canvas measured a 1.1 ms p95 while the one-texture bridge measured 6.2 ms p95: comfortably inside a 60 FPS frame budget, but materially slower because the stage canvas must be uploaded each frame. Bridge mode remains available for migration validation and native-Pixi replacement work.
 
