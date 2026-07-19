@@ -86,6 +86,8 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   expect(bootSnapshot.sprites.failedCharacters).toEqual([]);
   expect(bootSnapshot.canvas.width).toBe(960);
   expect(bootSnapshot.canvas.height).toBe(540);
+  expect(bootSnapshot.canvas.clientWidth).toBe(1280);
+  expect(bootSnapshot.canvas.clientHeight).toBe(720);
   expect(bootSnapshot.renderer.backend).toBe('canvas2d');
   expect(bootSnapshot.renderer.pixiInstalled).toBe(true);
   expect(bootSnapshot.renderer.bridgeEnabled).toBe(false);

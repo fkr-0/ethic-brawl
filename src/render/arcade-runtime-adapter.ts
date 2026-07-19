@@ -1,4 +1,5 @@
 import {
+  createCanvasTexturePass,
   createCanvasTexturePassOptions,
   installArcadeRenderPlan,
 } from '../../vendor/arcade-pixi-runtime.mjs';
@@ -27,6 +28,33 @@ export interface EthicCanvasBridgeOptions {
   PIXI: ArcadePixiNamespace;
   drawers: Partial<Record<EthicCanvasBridgePassName, EthicCanvasBridgeDrawer>>;
   canvasFactory?: (width: number, height: number) => HTMLCanvasElement;
+}
+
+export const ETHIC_STAGE_CANVAS_PASS_NAME = 'stage-canvas';
+
+/**
+ * Composite ready stage drawers into one uploaded canvas texture.
+ *
+ * The generic installer below remains useful while migrating individual
+ * passes. The browser bridge uses this compositor to avoid uploading one
+ * full-size texture for every logical stage layer.
+ */
+export function installEthicStageCanvasBridge(options: EthicCanvasBridgeOptions) {
+  const orderedDrawers = ETHIC_PIXI_BRIDGE_PASSES.flatMap((descriptor) => {
+    const draw = options.drawers[descriptor.name as EthicCanvasBridgePassName];
+    return draw ? [{ descriptor, draw }] : [];
+  });
+
+  return createCanvasTexturePass(options.runtime, {
+    PIXI: options.PIXI,
+    name: ETHIC_STAGE_CANVAS_PASS_NAME,
+    layer: 'world',
+    order: 0,
+    draw: (context, frame) => {
+      for (const { draw } of orderedDrawers) draw(context, frame);
+    },
+    ...(options.canvasFactory ? { canvasFactory: options.canvasFactory } : {}),
+  });
 }
 
 /**

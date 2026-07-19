@@ -63,3 +63,45 @@ test('compares Canvas-only and opt-in bridge frame performance before defaulting
     await page.evaluate(() => window.__ETHIC_BRAWL_E2E__?.getSnapshot().renderer.backend)
   ).toBe('canvas2d');
 });
+
+test('fills the available viewport while preserving 16:9 renderer alignment', async ({ page }) => {
+  await page.setViewportSize({ width: 1000, height: 1000 });
+  await page.goto('?renderer=bridge');
+  await page.waitForFunction(() => window.__ETHIC_BRAWL_E2E__?.getSnapshot().ready === true);
+  await page.evaluate(async () => {
+    const api = window.__ETHIC_BRAWL_E2E__;
+    if (!api) throw new Error('E2E probe unavailable');
+    await api.transitionTo('character-select');
+    await api.transitionTo('fight');
+  });
+  await page.waitForFunction(
+    () => window.__ETHIC_BRAWL_E2E__?.getSnapshot().currentScene === 'fight'
+  );
+
+  const readRects = () =>
+    page.evaluate(() => {
+      const game = document.getElementById('game-canvas')?.getBoundingClientRect();
+      const bridge = document.getElementById('ethic-pixi-bridge')?.getBoundingClientRect();
+      return game && bridge
+        ? {
+            game: { x: game.x, y: game.y, width: game.width, height: game.height },
+            bridge: { x: bridge.x, y: bridge.y, width: bridge.width, height: bridge.height },
+          }
+        : null;
+    });
+
+  const expectAligned = (
+    actual: Awaited<ReturnType<typeof readRects>>,
+    expected: { x: number; y: number; width: number; height: number }
+  ) => {
+    expect(actual).not.toBeNull();
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(actual?.game[key]).toBeCloseTo(expected[key], 0);
+      expect(actual?.bridge[key]).toBeCloseTo(actual?.game[key] ?? 0, 1);
+    }
+  };
+
+  expectAligned(await readRects(), { x: 0, y: 218.75, width: 1000, height: 562.5 });
+  await page.setViewportSize({ width: 1600, height: 700 });
+  expectAligned(await readRects(), { x: 177.78, y: 0, width: 1244.44, height: 700 });
+});

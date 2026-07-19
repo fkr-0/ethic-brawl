@@ -30,7 +30,7 @@ pnpm test:e2e
 pnpm release:check
 ```
 
-`pnpm release:check` runs the automated release gate in order: lint, typecheck, unit tests, production build, and both Chromium E2E specifications.
+`pnpm release:check` runs the automated release gate in order: lint, typecheck, unit tests, production build, and all three Chromium E2E specifications.
 
 The Stage 1 browser test builds a production bundle and serves it below `/ethic-brawl/`, matching the artifacts-hub deployment layout. It verifies that relative bundle and sprite URLs resolve, all 18 coded character sprite atlases load, vertical and horizontal roster navigation work, the renderer reports the Canvas2D backend and correct Babylon graphics profile, the opponent AI advances and escalates from easy to medium to hard, real keyboard movement and attack input damage an opponent, and the pooled VFX runtime emits without recycling under the tested combat load. It also verifies the Market Procession, Archive Lockdown, and Gate Judgment rule IDs, their 99/84/72-second clocks, encounter durability and conviction differences, defeat/retry behavior, all three encounter transitions, and the complete trial/upgrade/results route.
 
@@ -38,7 +38,9 @@ The focused sprite-animation E2E specification audits the actual post-keyed brow
 
 Stage presentation tests verify that all four deterministic signature events cycle through idle, warning, active, and release phases with bounded intensity. The Stage 1 browser route confirms the Market Caravan, Archive Scan, and Gate Heat Wave identities remain attached to the correct encounters.
 
-Shared-runtime tests verify ordered Pixi pass descriptors, ready Canvas bridge installation, declaration compatibility, metadata versioning, and the SHA-256 hash of the vendored runtime module.
+Shared-runtime tests verify deterministic system/pass execution, context-loss restoration, synchronous and asynchronous profiling, invalidatable Canvas texture passes, ordered Pixi descriptors, composite stage bridging, declaration compatibility, metadata versioning, and SHA-256 hashes for both vendored runtime files.
+
+The renderer-bridge browser route runs the same fight in Canvas-only and opt-in Pixi bridge modes. It requires a successful lazy Pixi initialization, one active `stage-canvas` pass, a ready context, at least 90 measured frames per mode, and a bounded bridge p95 cost. This comparison is diagnostic evidence; Canvas2D remains the release baseline until native fighter, projectile, and VFX passes reach parity.
 
 ## Manual browser smoke test
 
