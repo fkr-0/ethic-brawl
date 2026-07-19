@@ -17,21 +17,33 @@
         height: 100%;
         overflow: hidden;
         background-color: #1A0A2E;
+        overscroll-behavior: none;
       }
       
       #game-container {
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
+        overflow: hidden;
+        touch-action: none;
       }
       
-      #game-canvas {
+      #game-canvas,
+      #ethic-pixi-bridge {
+        width: min(100vw, calc(100vh * 16 / 9)) !important;
+        height: min(100vh, calc(100vw * 9 / 16)) !important;
+        width: min(100vw, calc(100dvh * 16 / 9)) !important;
+        height: min(100dvh, calc(100vw * 9 / 16)) !important;
         display: block;
         image-rendering: pixelated;
         image-rendering: crisp-edges;
+      }
+
+      #game-canvas {
         position: relative;
         z-index: 1;
         background: transparent;
@@ -43,7 +55,6 @@
         top: 50%;
         transform: translate(-50%, -50%);
         z-index: 0;
-        image-rendering: pixelated;
       }
       
       #loading {

@@ -2,6 +2,14 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.3.2] - 2026-07-19
+
+### Fixed
+
+- The game surface now expands to the largest available 16:9 viewport area instead of remaining at a fixed 960×540 CSS size.
+- Canvas2D and the optional Pixi bridge now share identical responsive dimensions, preserving exact layer alignment after browser resizes.
+- Viewport sizing uses dynamic viewport units where available and prevents page scrolling or touch overscroll around the game.
+
 ## [1.3.1] - 2026-07-19
 
 ### Added
