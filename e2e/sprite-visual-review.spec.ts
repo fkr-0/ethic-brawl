@@ -1,15 +1,23 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Page, test, type TestInfo } from '@playwright/test';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import type { E2EProbeSnapshot } from '../src/app/e2e-probe';
 
-const REVIEW_DIR = join(process.cwd(), 'generated', 'sprite-visual-review');
+const CANONICAL_REVIEW_DIR = join(process.cwd(), 'generated', 'sprite-visual-review');
+
+function reviewDirectory(testInfo: TestInfo): string {
+  const configured = process.env.ETHIC_SPRITE_REVIEW_DIR;
+  return configured
+    ? resolve(process.cwd(), configured)
+    : testInfo.outputPath('sprite-visual-review');
+}
 
 async function captureRecord(
+  reviewDir: string,
   file: string
 ): Promise<{ file: string; bytes: number; sha256: string }> {
-  const bytes = await readFile(join(REVIEW_DIR, file));
+  const bytes = await readFile(join(reviewDir, file));
   return {
     file,
     bytes: bytes.byteLength,
@@ -122,9 +130,13 @@ async function captureReviewAttack(page: Page): Promise<BrowserFrameCapture> {
   throw new Error(`active review attack was not captured; observed ${observed.join(' -> ')}`);
 }
 
-test('writes idle and active-attack sprite review captures', async ({ page, browserName }) => {
+test('writes idle and active-attack sprite review captures', async ({
+  page,
+  browserName,
+}, testInfo) => {
   test.skip(browserName !== 'chromium', 'visual review PNGs are produced once with Chromium');
-  await mkdir(REVIEW_DIR, { recursive: true });
+  const reviewDir = reviewDirectory(testInfo);
+  await mkdir(reviewDir, { recursive: true });
   await page.goto('index.html');
   await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', 'start');
   await enterFoucaultMatch(page);
@@ -140,14 +152,14 @@ test('writes idle and active-attack sprite review captures', async ({ page, brow
   const idle = await snapshot(page);
   expect(idle.fight.player1Character).toBe('foucault');
   expect(idle.fight.player1Animation?.clipId).toBe('idle');
-  await canvas.screenshot({ path: join(REVIEW_DIR, 'ethic-fight-idle.png') });
+  await canvas.screenshot({ path: join(reviewDir, 'ethic-fight-idle.png') });
 
   const activeCapture = await captureReviewAttack(page);
   const active = activeCapture.snapshot;
   const encodedPng = activeCapture.dataUrl.split(',', 2)[1];
   if (!encodedPng) throw new Error('active-frame canvas capture did not contain PNG data');
   await writeFile(
-    join(REVIEW_DIR, 'ethic-light-attack-active.png'),
+    join(reviewDir, 'ethic-light-attack-active.png'),
     Buffer.from(encodedPng, 'base64')
   );
 
@@ -156,11 +168,11 @@ test('writes idle and active-attack sprite review captures', async ({ page, brow
   expect(active.fight.player1Animation?.depthScale).toBeGreaterThan(0.8);
 
   const captures = await Promise.all([
-    captureRecord('ethic-fight-idle.png'),
-    captureRecord('ethic-light-attack-active.png'),
+    captureRecord(reviewDir, 'ethic-fight-idle.png'),
+    captureRecord(reviewDir, 'ethic-light-attack-active.png'),
   ]);
   await writeFile(
-    join(REVIEW_DIR, 'index.json'),
+    join(reviewDir, 'index.json'),
     `${JSON.stringify(
       {
         generatedAt: new Date().toISOString(),
@@ -200,4 +212,18 @@ test('writes idle and active-attack sprite review captures', async ({ page, brow
       2
     )}\n`
   );
+
+  for (const file of ['ethic-fight-idle.png', 'ethic-light-attack-active.png', 'index.json']) {
+    await testInfo.attach(file, {
+      path: join(reviewDir, file),
+      contentType: file.endsWith('.json') ? 'application/json' : 'image/png',
+    });
+  }
+
+  if (reviewDir === CANONICAL_REVIEW_DIR) {
+    testInfo.annotations.push({
+      type: 'review-output',
+      description: 'Updated generated/sprite-visual-review canonical captures',
+    });
+  }
 });
