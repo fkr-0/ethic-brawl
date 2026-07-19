@@ -174,6 +174,10 @@ export function createFightRuntime() {
     return controller.getState();
   }
 
+  function getCamera() {
+    return camera;
+  }
+
   /** Deterministic browser-test seam; normal gameplay never calls this. */
   function resolveMatchForTesting(winner: 1 | 2): void {
     const state = controller.getState();
@@ -194,6 +198,7 @@ export function createFightRuntime() {
     hasRoundWinner,
     getResult,
     getState,
+    getCamera,
     getPlayer2AIDifficulty,
     resolveMatchForTesting,
   };

@@ -12,7 +12,7 @@ import {
 
 describe('shared Pixi runtime contract', () => {
   it('pins the common runtime and preserves deterministic pass order', () => {
-    expect(ETHIC_ARCADE_PIXI_RUNTIME_VERSION).toBe('0.5.0');
+    expect(ETHIC_ARCADE_PIXI_RUNTIME_VERSION).toBe('0.6.0');
     expect(ETHIC_PIXI_LAYERS).toEqual([
       'backdrop',
       'world-back',
@@ -48,8 +48,10 @@ describe('shared Pixi runtime contract', () => {
     const runtimeModule = readFileSync(resolve(process.cwd(), 'vendor/arcade-pixi-runtime.mjs'));
     const metadata = JSON.parse(
       readFileSync(resolve(process.cwd(), 'vendor/arcade-pixi-runtime.meta.json'), 'utf8')
-    ) as { version: string; sha256: string };
+    ) as { version: string; sha256: string; typesSha256: string };
     expect(metadata.version).toBe(ETHIC_ARCADE_PIXI_RUNTIME_VERSION);
     expect(createHash('sha256').update(runtimeModule).digest('hex')).toBe(metadata.sha256);
+    const runtimeTypes = readFileSync(resolve(process.cwd(), 'vendor/arcade-pixi-runtime.d.mts'));
+    expect(createHash('sha256').update(runtimeTypes).digest('hex')).toBe(metadata.typesSha256);
   });
 });

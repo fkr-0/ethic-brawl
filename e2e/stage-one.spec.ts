@@ -87,7 +87,9 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   expect(bootSnapshot.canvas.width).toBe(960);
   expect(bootSnapshot.canvas.height).toBe(540);
   expect(bootSnapshot.renderer.backend).toBe('canvas2d');
-  expect(bootSnapshot.renderer.pixiInstalled).toBe(false);
+  expect(bootSnapshot.renderer.pixiInstalled).toBe(true);
+  expect(bootSnapshot.renderer.bridgeEnabled).toBe(false);
+  expect(bootSnapshot.renderer.bridgeRequested).toBe(false);
   expect(bootSnapshot.renderer.rendererNeutralPresentation).toBe(true);
 
   await tapKey(page, 's');

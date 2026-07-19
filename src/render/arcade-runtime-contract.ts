@@ -5,7 +5,7 @@
  */
 import { defineArcadeRenderPlan } from '../../vendor/arcade-pixi-runtime.mjs';
 
-export const ETHIC_ARCADE_PIXI_RUNTIME_VERSION = '0.5.0';
+export const ETHIC_ARCADE_PIXI_RUNTIME_VERSION = '0.6.0';
 
 export const ETHIC_PIXI_LAYERS = [
   'backdrop',

@@ -17,6 +17,7 @@ import {
   updateBindingForAction,
 } from '@/core/input/input-binding';
 import type { InputState } from '@/core/input/input-manager';
+import type { FightPresentationOptions } from '@/render';
 import {
   renderCharacterSelect,
   renderLoading,
@@ -40,6 +41,7 @@ interface SceneUpdateContext {
   transitionTo: (target: SceneName) => Promise<boolean>;
   fightRuntime: FightRuntime;
   onSettingsChanged?: (settings: SettingsState) => void;
+  getFightPresentationOverrides?: () => Partial<FightPresentationOptions>;
 }
 
 /**
@@ -448,6 +450,7 @@ interface BuildScenesDeps {
   transitionTo: (target: SceneName) => Promise<boolean>;
   getCharacterIdsList?: () => CharacterId[];
   onSettingsChanged?: (settings: SettingsState) => void;
+  getFightPresentationOverrides?: () => Partial<FightPresentationOptions>;
 }
 
 export interface AppShellState {
@@ -647,6 +650,7 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         deps.fightRuntime.render(ctx, {
           theme: appState.gameMode === 'stage' ? 'babylon' : 'neon_arena',
           encounterIndex: appState.stageEncounterIndex,
+          ...deps.getFightPresentationOverrides?.(),
         });
         if (appState.gameMode === 'stage') {
           const encounter = getStageOneEncounter(appState.stageEncounterIndex);

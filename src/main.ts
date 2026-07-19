@@ -12,9 +12,11 @@ import { createInputManager, createSceneManager } from '@/core';
 import {
   getFighterAnimationSnapshot,
   getGraphicsBackendStatus,
+  isEthicPixiBridgeRequested,
   resolveFightGraphicsProfile,
   resolveFightStageEvent,
   resolveFightStageReaction,
+  tryCreateEthicPixiBridge,
 } from '@/render';
 import {
   getCharacterAnimationMap,
@@ -34,6 +36,7 @@ import {
   renderHelpOverlay,
   renderInputPanels,
 } from '@/ui/screens/app-shell-renderers';
+import { createArcadeFrameProfiler } from '../vendor/arcade-pixi-runtime.mjs';
 import { buildAppScenes, createInitialAppShellState } from './app/app-shell/scene-factory';
 
 async function main() {
@@ -75,6 +78,26 @@ async function main() {
   const inputManager = createInputManager();
   const keyboard = inputManager.getKeyboard();
   const fightRuntime = createFightRuntime();
+  const bridgeRequested = isEthicPixiBridgeRequested();
+  const renderProfiler = createArcadeFrameProfiler({ sampleSize: 240 });
+  const gameContainer = document.getElementById('game-container');
+  const bridgeAttempt =
+    bridgeRequested && gameContainer
+      ? await tryCreateEthicPixiBridge({
+          mount: gameContainer,
+          sourceCanvas: canvas,
+          fightRuntime,
+          width: canvas.width,
+          height: canvas.height,
+        })
+      : {
+          controller: null,
+          failureReason: bridgeRequested ? 'Game container unavailable' : null,
+        };
+  const pixiBridge = bridgeAttempt.controller;
+  if (pixiBridge) {
+    window.addEventListener('pagehide', () => pixiBridge.destroy(), { once: true });
+  }
   const appState = createInitialAppShellState();
   appState.settings = loadAppSettings(appState.settings);
   inputManager.setBindings(appState.settings.bindings);
@@ -95,10 +118,20 @@ async function main() {
           inputManager.setBindings(settings.bindings);
           saveAppSettings(settings);
         },
+        getFightPresentationOverrides: () =>
+          pixiBridge ? { renderBackground: false, renderArena: false } : {},
       },
       appState
     ),
     initialScene: 'loading',
+    clear: (canvasContext, scene) => {
+      if (pixiBridge && scene === 'fight') {
+        canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
+        return;
+      }
+      canvasContext.fillStyle = '#1A0A2E';
+      canvasContext.fillRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
+    },
   });
   sceneManagerRef = sceneManager;
 
@@ -193,14 +226,28 @@ async function main() {
       }
     },
     () => {
+      const currentScene = sceneManager.getCurrentScene();
+      const profileOptions = {
+        theme: appState.gameMode === 'stage' ? ('babylon' as const) : ('neon_arena' as const),
+        encounterIndex: appState.stageEncounterIndex,
+      };
+      pixiBridge?.setPresentation(profileOptions);
+      const startedAt = performance.now();
+      pixiBridge?.render(currentScene === 'fight', startedAt);
       sceneManager.render();
-      if (sceneManager.getCurrentScene() === 'fight') {
+      if (currentScene === 'fight') {
         renderInputPanels(ctx, latestInput.player1, latestInput.player2);
       }
       if (helpOpen) {
         renderHelpOverlay(ctx);
       }
       renderDebugInfo(ctx, gameLoop.getFPS(), gameLoop.getFrameCount());
+      if (currentScene === 'fight') {
+        renderProfiler.record(
+          pixiBridge ? 'bridge:fight' : 'canvas:fight',
+          performance.now() - startedAt
+        );
+      }
       updateE2EStatus(getE2ESnapshot());
     }
   );
@@ -208,7 +255,8 @@ async function main() {
   const getE2ESnapshot = (): E2EProbeSnapshot => {
     const spriteReport = getSpriteLoadReport();
     const fightState = fightRuntime.getState();
-    const graphicsBackend = getGraphicsBackendStatus();
+    const bridgeSnapshot = pixiBridge?.snapshot() ?? null;
+    const graphicsBackend = getGraphicsBackendStatus(Boolean(pixiBridge));
     const graphicsProfile = resolveFightGraphicsProfile({
       theme: appState.gameMode === 'stage' ? 'babylon' : 'neon_arena',
       encounterIndex: appState.stageEncounterIndex,
@@ -254,6 +302,12 @@ async function main() {
       },
       renderer: {
         ...graphicsBackend,
+        bridgeRequested,
+        bridgeFailureReason: bridgeAttempt.failureReason,
+        bridgeContextState: bridgeSnapshot?.contextState ?? null,
+        bridgePasses: bridgeSnapshot?.activePassNames ?? [],
+        renderPerformance: renderProfiler.snapshot(pixiBridge ? 'bridge:fight' : 'canvas:fight'),
+        bridgePerformance: bridgeSnapshot?.performance.frame ?? null,
         theme: graphicsProfile.theme,
         profileId: graphicsProfile.id,
         stageEventId: stageEvent.id,

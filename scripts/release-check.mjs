@@ -24,5 +24,5 @@ for (const [command, args] of commands) {
 }
 
 console.info(
-  '\nRelease check passed, including the Stage 1 and sprite-animation browser E2E specifications.'
+  '\nRelease check passed, including Stage 1, sprite-animation, and renderer-bridge browser E2E specifications.'
 );

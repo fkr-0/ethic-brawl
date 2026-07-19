@@ -2,7 +2,7 @@
 
 ## Current release status
 
-- Automated gate includes lint, typecheck, 91 unit tests, production build, and two Chromium E2E specifications covering Stage 1, sprite correctness/animation fluidity, combat-reactive stages, and the shared Pixi bridge contract.
+- Automated gate includes lint, typecheck, 99 unit tests, production build, and three Chromium E2E specifications covering Stage 1, sprite correctness/animation fluidity, combat-reactive stages, and Canvas-versus-Pixi bridge validation.
 - Remaining blocker: manual browser/canvas validation and release packaging notes.
 - Release rule: do not tag `v1.0.0` until every item in `Release-blocking manual validation` is checked.
 
@@ -33,13 +33,13 @@
   - Replaced fixed white-background chroma keying with adaptive edge-connected extraction for mixed legacy and dark-gradient sheets.
   - Added browser validation of all 448 atlas cells and real-input E2E checks for idle/run continuity, phase blends, specials, lane depth, hitstun, and reset cleanliness.
   - Added Market Procession, Archive Lockdown, and Gate Judgment rule presets with distinct timers, durability, conviction, and special readiness.
-  - PixiJS remains intentionally uninstalled until both projects have a concrete reason to replace their complete Canvas2D backends.
+  - PixiJS is dynamically loaded only for the opt-in bridge; Canvas2D remains authoritative until native fighter, projectile, and VFX passes reach parity.
 
 ## Release-blocking manual validation
 
 - [ ] Run the automated gate one final time on the release candidate
   - Command: `pnpm release:check`
-  - Expected result: lint exits zero, typecheck exits zero, all unit tests pass, production build succeeds, and both Chromium E2E specifications pass.
+  - Expected result: lint exits zero, typecheck exits zero, all unit tests pass, production build succeeds, and all three Chromium E2E specifications pass.
   - Record in release notes: command, exit status, test count, build artifact names, date, and commit SHA.
 
 - [ ] Manual browser smoke test before tagging

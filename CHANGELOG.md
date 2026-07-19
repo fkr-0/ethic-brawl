@@ -2,6 +2,29 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [1.3.1] - 2026-07-19
+
+### Added
+
+- `@arcade/pixi-runtime` v0.6 with deterministic pass execution, WebGL context-loss pause/resume, asynchronous profiling, and invalidatable Canvas texture passes.
+- A lazy-loaded PixiJS 8.19 stage bridge enabled with `?renderer=bridge`.
+- Browser telemetry for bridge request/fallback state, active runtime passes, context state, and Canvas/Pixi frame summaries.
+- Direct runtime lifecycle tests plus a Canvas-versus-bridge browser performance route.
+- `docs/arcade-pixi-runtime-review.md` with the migration verdict, closed findings, and native-pass roadmap.
+
+### Changed
+
+- Background and arena now share one composited `stage-canvas` upload in bridge mode instead of uploading two full-size textures per frame.
+- The shared render-plan installer is generically typed, and checksum tests verify both the runtime module and declaration file.
+- PixiJS is dynamically imported only when bridge mode is requested; the default Canvas2D bundle remains the correctness baseline.
+
+### Fixed
+
+- Render-pass `order` now governs update execution as well as Pixi z-order.
+- Context loss no longer allows frames to continue against a lost renderer and restores the previous running state only after recovery.
+- Failed Pixi initialization now records the cause and falls back to Canvas2D instead of aborting startup.
+- Same-size Canvas texture resizes no longer reset and re-upload the backing canvas.
+
 ## [1.3.0] - 2026-07-19
 
 ### Added

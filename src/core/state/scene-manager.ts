@@ -34,6 +34,7 @@ export interface Scene {
 export interface SceneManagerConfig {
   scenes: Scene[];
   initialScene: SceneName;
+  clear?: (ctx: CanvasRenderingContext2D, scene: SceneName | null) => void;
 }
 
 /**
@@ -156,8 +157,12 @@ export function createSceneManager(config: SceneManagerConfig) {
     if (!ctx) return;
 
     // Clear canvas
-    ctx.fillStyle = '#1A0A2E';
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    if (config.clear) {
+      config.clear(ctx, currentScene?.name ?? null);
+    } else {
+      ctx.fillStyle = '#1A0A2E';
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
 
     // Render current scene
     if (currentScene) {

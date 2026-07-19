@@ -1,6 +1,7 @@
 import type { SceneName } from '@/core';
 import type { FighterAnimationSnapshot } from '@/render';
 import type { SpriteValidationReport } from '@/render/sprites';
+import type { ArcadePerformanceSummary } from '../../vendor/arcade-pixi-runtime.mjs';
 import type { AppShellState } from './app-shell/scene-factory';
 
 export interface E2EProbeSnapshot {
@@ -42,9 +43,16 @@ export interface E2EProbeSnapshot {
     failedCharacters: string[];
   };
   renderer: {
-    backend: 'canvas2d';
-    pixiInstalled: false;
+    backend: 'canvas2d' | 'pixi-canvas-bridge';
+    pixiInstalled: true;
     rendererNeutralPresentation: true;
+    bridgeEnabled: boolean;
+    bridgeRequested: boolean;
+    bridgeFailureReason: string | null;
+    bridgeContextState: 'ready' | 'lost' | null;
+    bridgePasses: string[];
+    renderPerformance: ArcadePerformanceSummary;
+    bridgePerformance: ArcadePerformanceSummary | null;
     theme: 'neon_arena' | 'babylon';
     profileId: string;
     stageEventId: string;
@@ -141,6 +149,13 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
   element.dataset.loadedCharacters = String(snapshot.sprites.loadedCharacters);
   element.dataset.failedCharacters = snapshot.sprites.failedCharacters.join(',');
   element.dataset.rendererBackend = snapshot.renderer.backend;
+  element.dataset.rendererBridge = String(snapshot.renderer.bridgeEnabled);
+  element.dataset.rendererBridgeRequested = String(snapshot.renderer.bridgeRequested);
+  element.dataset.rendererBridgeFailure = snapshot.renderer.bridgeFailureReason ?? '';
+  element.dataset.rendererBridgeContext = snapshot.renderer.bridgeContextState ?? 'none';
+  element.dataset.rendererBridgePasses = snapshot.renderer.bridgePasses.join(',');
+  element.dataset.rendererMeanMs = String(snapshot.renderer.renderPerformance.meanMs);
+  element.dataset.rendererP95Ms = String(snapshot.renderer.renderPerformance.p95Ms);
   element.dataset.graphicsTheme = snapshot.renderer.theme;
   element.dataset.graphicsProfile = snapshot.renderer.profileId;
   element.dataset.stageEvent = snapshot.renderer.stageEventId;

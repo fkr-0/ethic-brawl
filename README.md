@@ -136,11 +136,17 @@ The browser E2E test mounts a production build at `/ethic-brawl/`, covering depl
 
 ## Graphics Architecture and PixiJS
 
-PixiJS/WebGL is not yet the production backend, so Canvas2D remains authoritative. The shared `@arcade/pixi-runtime` v0.5 module is now vendored with declarations and checksum metadata, however, and Ethic Brawl's ordered pass contract is executable rather than documentary.
+PixiJS/WebGL is not yet the default backend, so Canvas2D remains authoritative. The shared `@arcade/pixi-runtime` v0.6 module is vendored with declarations and checksum metadata, and Ethic Brawl's ordered pass contract is executable rather than documentary.
 
-`src/render/arcade-runtime-contract.ts` defines the exact backdrop, stage-depth, arena, fighter, projectile, VFX, foreground, HUD, and scene-UI pass order. Existing Canvas background, arena, foreground, and HUD functions are marked ready for the runtime's Canvas-texture bridge; fighters, projectiles, and combat VFX remain the first native-Pixi conversion targets. The renderer-neutral fight-presentation contract in `src/render/fight-presentation.ts` continues to carry stage themes and encounter profiles independently from either backend.
+`src/render/arcade-runtime-contract.ts` defines the exact backdrop, stage-depth, arena, fighter, projectile, VFX, foreground, HUD, and scene-UI pass order. Existing Canvas stage drawing is bridge-ready; fighters, projectiles, and combat VFX remain the first native-Pixi conversion targets. The renderer-neutral fight-presentation contract in `src/render/fight-presentation.ts` continues to carry stage themes and encounter profiles independently from either backend.
 
-`src/render/arcade-runtime-adapter.ts` installs only explicitly supplied ready Canvas bridge passes. The vendored module and declaration files are hash-verified in the unit suite, preventing accidental drift between runtime code and metadata.
+`src/render/arcade-runtime-adapter.ts` can install explicitly supplied logical passes or composite the stage into one `stage-canvas` texture. The vendored module and declaration files are both hash-verified in the unit suite, preventing accidental drift between runtime code and metadata.
+
+PixiJS 8.19 is an explicit but dynamically loaded runtime dependency. Launch with `?renderer=bridge` to move the fight background and arena into one transparent Pixi-owned stage texture while fighters, projectiles, VFX, foreground, and HUD remain on the authoritative Canvas2D overlay. Failed bridge initialization falls back to Canvas2D. The default remains `?renderer=canvas` until native-pass parity and browser p95 profiling justify migration.
+
+See `docs/arcade-pixi-runtime-review.md` for the suitability review and migration criteria.
+
+The release Chromium comparison keeps Canvas as the production default. In the final release-gate run, direct Canvas measured a 1.1 ms p95 while the one-texture bridge measured 6.2 ms p95: comfortably inside a 60 FPS frame budget, but materially slower because the stage canvas must be uploaded each frame. Bridge mode remains available for migration validation and native-Pixi replacement work.
 
 ## Project Structure
 

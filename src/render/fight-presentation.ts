@@ -287,6 +287,8 @@ function renderStageEventForeground(
 export interface FightPresentationOptions {
   theme?: FightArenaThemeId;
   encounterIndex?: number;
+  renderBackground?: boolean;
+  renderArena?: boolean;
 }
 
 function renderForegroundCrowd(
@@ -645,15 +647,17 @@ function createSeededRandom(seed: number): () => number {
   };
 }
 
-export function getGraphicsBackendStatus(): {
-  backend: GraphicsBackendId;
-  pixiInstalled: false;
+export function getGraphicsBackendStatus(bridgeEnabled = false): {
+  backend: GraphicsBackendId | 'pixi-canvas-bridge';
+  pixiInstalled: true;
   rendererNeutralPresentation: true;
+  bridgeEnabled: boolean;
 } {
   return {
-    backend: 'canvas2d',
-    pixiInstalled: false,
+    backend: bridgeEnabled ? 'pixi-canvas-bridge' : 'canvas2d',
+    pixiInstalled: true,
     rendererNeutralPresentation: true,
+    bridgeEnabled,
   };
 }
 

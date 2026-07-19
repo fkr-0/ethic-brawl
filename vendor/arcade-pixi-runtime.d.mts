@@ -50,6 +50,7 @@ export type ArcadePerformanceSummary = {
 export type ArcadeFrameProfiler = {
   record(name: string, durationMs: number): number;
   measure<T>(name: string, callback: () => T): T;
+  measureAsync<T>(name: string, callback: () => Promise<T>): Promise<T>;
   snapshot(name: string): ArcadePerformanceSummary;
   snapshot(): Readonly<Record<string, ArcadePerformanceSummary>>;
   compare(baselineName: string, candidateName: string): Readonly<{
@@ -81,15 +82,18 @@ export declare function defineArcadeRenderPlan<T extends ArcadeRenderPlanEntry>(
   options?: { layers?: readonly string[] },
 ): readonly Readonly<T & { order: number; priority: number; enabled: boolean }>[];
 
-export declare function installArcadeRenderPlan(
+export declare function installArcadeRenderPlan<State = unknown>(
   runtime: ArcadePixiRuntime,
   plan: readonly ArcadeRenderPlanEntry[],
   implementations: Record<
     string,
-    | ArcadePixiPassOptions<any>
-    | ((descriptor: ArcadeRenderPlanEntry, runtime: ArcadePixiRuntime) => ArcadePixiPassOptions<any>)
+    | ArcadePixiPassOptions<State>
+    | ((
+        descriptor: ArcadeRenderPlanEntry,
+        runtime: ArcadePixiRuntime,
+      ) => ArcadePixiPassOptions<State>)
   >,
-): Readonly<Record<string, ArcadePixiPassHandle<any>>>;
+): Readonly<Record<string, ArcadePixiPassHandle<State>>>;
 
 export type ArcadePixiFrame = {
   runtime: ArcadePixiRuntime;
@@ -104,6 +108,7 @@ export type ArcadePixiTelemetry = {
   backend: unknown;
   contextLosses: number;
   contextRestores: number;
+  contextState: 'ready' | 'lost';
   assetsLoaded: number;
   framesRendered: number;
   ticks: number;
@@ -228,6 +233,10 @@ export type CanvasTexturePassState = {
   sprite: import('pixi.js').Sprite;
   width: number;
   height: number;
+  dirty: boolean;
+  redraws: number;
+  skippedFrames: number;
+  invalidate(): void;
 };
 
 export type CanvasTexturePassOptions = {
@@ -246,6 +255,10 @@ export type CanvasTexturePassOptions = {
   enabled?: boolean;
   clear?: boolean;
   resizeWithRuntime?: boolean;
+  shouldDraw?: (
+    frame: ArcadePixiFrame,
+    pass: ArcadePixiPassContext<CanvasTexturePassState>,
+  ) => boolean;
   canvasFactory?: (width: number, height: number) => HTMLCanvasElement;
   onResize?: (
     size: { width: number; height: number; runtime: ArcadePixiRuntime },

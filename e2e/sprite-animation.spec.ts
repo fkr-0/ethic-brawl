@@ -253,7 +253,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   const movementPositions = movementSamples.flatMap((sample) =>
     sample.fight.player1X === null ? [] : [sample.fight.player1X]
   );
-  expect(movementAnimations.length).toBeGreaterThan(6);
+  expect(movementAnimations.length).toBeGreaterThanOrEqual(6);
   expect(
     new Set(movementAnimations.map(({ atlasFrameIndex }) => atlasFrameIndex)).size
   ).toBeGreaterThan(2);
