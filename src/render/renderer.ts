@@ -388,19 +388,24 @@ function getNamedAnimationClip(
   return animMap.manifest.clips.find((clip) => clip.id === clipId) ?? null;
 }
 
-function resolveBakuninAnimationV2Clip(
+function resolveAuthoredAnimationV2Clip(
   fighter: Fighter,
   animMap: CharacterAnimationMap,
   currentClip: AnimationClip | null,
   currentClipIsPlaying: boolean
 ): AnimationClip | null {
-  if (fighter.characterId !== 'bakunin') return null;
+  const hasAuthoredLocomotion =
+    getNamedAnimationClip(animMap, 'walk_forward_v2') !== null ||
+    getNamedAnimationClip(animMap, 'run_v2') !== null ||
+    getNamedAnimationClip(animMap, 'jump_takeoff_v2') !== null;
+  if (!hasAuthoredLocomotion) return null;
 
   if (fighter.laneChangeTimer > 0 && fighter.laneChangeStartLane !== fighter.targetLane) {
-    return getNamedAnimationClip(
+    const laneClip = getNamedAnimationClip(
       animMap,
       fighter.targetLane > fighter.laneChangeStartLane ? 'lane_away_v2' : 'lane_toward_v2'
     );
+    if (laneClip) return laneClip;
   }
 
   if (fighter.state === 'walking') {
@@ -472,7 +477,7 @@ function renderFighterWithSprite(
     targetClip = getStateClip(animMap, 'landing');
     poseProgress = 1 - Math.min(1, fighter.landingFrames / FRAME_DATA.LANDING_IMPACT_DURATION);
   } else if (!targetClip) {
-    targetClip = resolveBakuninAnimationV2Clip(
+    targetClip = resolveAuthoredAnimationV2Clip(
       fighter,
       animMap,
       animState.currentClip,

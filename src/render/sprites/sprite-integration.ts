@@ -30,6 +30,7 @@ export interface CharacterSpriteDescriptor {
   extendedPath?: string;
   additionalPaths?: readonly string[];
   layout: 'legacy' | 'roster' | 'animation-v2';
+  animationV2Profile?: 'complete' | 'movement-defense';
 }
 
 export interface SpriteLoadReport {
@@ -87,9 +88,17 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
     layout: 'roster',
   },
   hegel: {
-    corePath: 'assets/sprites/roster/hegel/source/hegel_core_4x4.png',
+    corePath: 'assets/sprites/roster/hegel/source/animation-v2/hegel_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/hegel/source/animation-v2/hegel_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/hegel/source/animation-v2/hegel_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/hegel/source/animation-v2/hegel_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/hegel/source/animation-v2/hegel_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/hegel/source/hegel_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/hegel/source/hegel_extended_4x4.png',
-    layout: 'roster',
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   nietzsche: {
     corePath: 'assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png',
@@ -121,6 +130,7 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
     ],
     extendedPath: 'assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png',
     layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   schmitt: {
     corePath: 'assets/sprites/roster/schmitt/source/schmitt_core_4x4.png',
@@ -143,9 +153,17 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
     layout: 'roster',
   },
   stirner: {
-    corePath: 'assets/sprites/roster/stirner/source/stirner_core_4x4.png',
+    corePath:
+      'assets/sprites/roster/stirner/source/animation-v2/stirner_walk_forward_backward_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/stirner/source/animation-v2/stirner_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/stirner/source/animation-v2/stirner_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/stirner/source/animation-v2/stirner_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/stirner/source/stirner_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/stirner/source/stirner_extended_4x4.png',
-    layout: 'roster',
+    layout: 'animation-v2',
+    animationV2Profile: 'movement-defense',
   },
 };
 
@@ -202,7 +220,16 @@ function createDiogenesManifest(): SpriteManifest {
   return manifest;
 }
 
-const BAKUNIN_LEGACY_FRAME_OFFSET = 80;
+type AnimationV2Profile = NonNullable<CharacterSpriteDescriptor['animationV2Profile']>;
+
+const COMPLETE_ANIMATION_V2_LEGACY_FRAME_OFFSET = 80;
+const MOVEMENT_DEFENSE_LEGACY_FRAME_OFFSET = 64;
+
+function getAnimationV2LegacyFrameOffset(profile: AnimationV2Profile): number {
+  return profile === 'complete'
+    ? COMPLETE_ANIMATION_V2_LEGACY_FRAME_OFFSET
+    : MOVEMENT_DEFENSE_LEGACY_FRAME_OFFSET;
+}
 
 function offsetAnimationClip(clip: AnimationClip, frameOffset: number): AnimationClip {
   return {
@@ -214,7 +241,19 @@ function offsetAnimationClip(clip: AnimationClip, frameOffset: number): Animatio
   };
 }
 
-function getBakuninV2FrameLabel(index: number): FrameLabel {
+function getAnimationV2FrameLabel(index: number, profile: AnimationV2Profile): FrameLabel {
+  if (profile === 'movement-defense') {
+    if (index < 32) {
+      return (['run_1', 'run_2', 'run_3', 'run_4'] as const)[index % 4] ?? 'run_1';
+    }
+    if (index < 40) return 'jump_rise';
+    if (index < 44) return 'land';
+    if (index < 48) return 'idle';
+    if (index < 56) return 'spare';
+    if (index < 60) return 'crouch';
+    return 'guard';
+  }
+
   if (index < 8) return 'idle';
   if (index < 16) return 'taunt_or_pose';
   if (index < 48) {
@@ -228,8 +267,73 @@ function getBakuninV2FrameLabel(index: number): FrameLabel {
   return 'guard';
 }
 
-function createBakuninAnimationV2Manifest(): SpriteManifest {
-  const legacyManifest = createRosterManifest('bakunin', true);
+function createAuthoredAnimationV2Clips(profile: AnimationV2Profile): AnimationClip[] {
+  if (profile === 'movement-defense') {
+    return [
+      createClip('walk_forward_v2', 'Forward Walk', [0, 1, 2, 3, 4, 5, 6, 7], 'loop', 4),
+      createClip('walk_backward_v2', 'Backward Walk', [8, 9, 10, 11, 12, 13, 14, 15], 'loop', 5),
+      createClip('run_start_v2', 'Run Acceleration', [16, 17, 18, 19], 'once', 3),
+      createClip('run_v2', 'Run Loop', [20, 21, 22, 23, 24, 25, 26, 27], 'loop', 3),
+      createClip('run_stop_v2', 'Run Brake', [28, 29, 30, 31], 'once', 4),
+      createClip('jump_takeoff_v2', 'Jump Takeoff', [32, 33, 34, 35], 'once', 3),
+      createClip('jump_air_v2', 'Airborne Arc', [36, 37, 38, 39], 'once', 4),
+      createClip('land_v2', 'Landing Impact', [40, 41, 42, 43], 'once', 3),
+      createClip('land_recovery_v2', 'Landing Recovery', [44, 45, 46, 47], 'once', 4),
+      createClip('lane_away_v2', 'Rear Lane Shift', [48, 49, 50, 51], 'once', 3),
+      createClip('lane_toward_v2', 'Front Lane Shift', [52, 53, 54, 55], 'once', 3),
+      createClip('crouch_v2', 'Crouch Transition', [56, 57, 58, 59], 'once', 4),
+      createClip('guard_v2', 'Guard Transition', [60, 61, 62, 63], 'once', 4),
+    ];
+  }
+
+  return [
+    createClip('idle_v2', 'Authored Idle', [0, 1, 2, 3, 4, 5, 6, 7], 'loop', 7),
+    createClip('turn_left_v2', 'Turn Left', [8, 9, 10, 11], 'once', 3),
+    createClip('turn_right_v2', 'Turn Right', [12, 13, 14, 15], 'once', 3),
+    createClip('walk_forward_v2', 'Forward Walk', [16, 17, 18, 19, 20, 21, 22, 23], 'loop', 4),
+    createClip('walk_backward_v2', 'Backward Walk', [24, 25, 26, 27, 28, 29, 30, 31], 'loop', 5),
+    createClip('run_start_v2', 'Run Acceleration', [32, 33, 34, 35], 'once', 3),
+    createClip('run_v2', 'Run Loop', [36, 37, 38, 39, 40, 41, 42, 43], 'loop', 3),
+    createClip('run_stop_v2', 'Run Brake', [44, 45, 46, 47], 'once', 4),
+    createClip('jump_takeoff_v2', 'Jump Takeoff', [48, 49, 50, 51], 'once', 3),
+    createClip('jump_air_v2', 'Airborne Arc', [52, 53, 54, 55], 'once', 4),
+    createClip('land_v2', 'Landing Impact', [56, 57, 58, 59], 'once', 3),
+    createClip('land_recovery_v2', 'Landing Recovery', [60, 61, 62, 63], 'once', 4),
+    createClip('lane_away_v2', 'Rear Lane Shift', [64, 65, 66, 67], 'once', 3),
+    createClip('lane_toward_v2', 'Front Lane Shift', [68, 69, 70, 71], 'once', 3),
+    createClip('crouch_v2', 'Crouch Transition', [72, 73, 74, 75], 'once', 4),
+    createClip('guard_v2', 'Guard Transition', [76, 77, 78, 79], 'once', 4),
+  ];
+}
+
+function createAnimationV2StateMappings(
+  profile: AnimationV2Profile
+): SpriteManifest['stateMappings'] {
+  return [
+    { state: 'idle', clipId: profile === 'complete' ? 'idle_v2' : 'idle' },
+    { state: 'walking', clipId: 'walk_forward_v2' },
+    { state: 'running', clipId: 'run_v2' },
+    { state: 'jumping', clipId: 'jump_takeoff_v2' },
+    { state: 'falling', clipId: 'jump_air_v2' },
+    { state: 'landing', clipId: 'land_v2' },
+    { state: 'crouching', clipId: 'crouch_v2' },
+    { state: 'blocking', clipId: 'guard_v2' },
+    { state: 'attacking', clipId: 'attack_1' },
+    { state: 'special', clipId: 'special' },
+    { state: 'hitstun', clipId: 'hitstun' },
+    { state: 'knockdown', clipId: 'knockdown' },
+    { state: 'gettingUp', clipId: 'getup' },
+    { state: 'victory', clipId: 'victory' },
+    { state: 'defeat', clipId: 'knockdown' },
+  ];
+}
+
+function createAnimationV2Manifest(
+  characterId: CharacterId,
+  profile: AnimationV2Profile
+): SpriteManifest {
+  const legacyManifest = createRosterManifest(characterId, true);
+  const legacyFrameOffset = getAnimationV2LegacyFrameOffset(profile);
   const legacyClipIds = new Set([
     'air_attack',
     'attack_light_startup',
@@ -253,62 +357,30 @@ function createBakuninAnimationV2Manifest(): SpriteManifest {
     'getup',
     'victory',
   ]);
-  const authoredClips = [
-    createClip('idle_v2', 'Volatile Idle', [0, 1, 2, 3, 4, 5, 6, 7], 'loop', 7),
-    createClip('turn_left_v2', 'Turn Left', [8, 9, 10, 11], 'once', 3),
-    createClip('turn_right_v2', 'Turn Right', [12, 13, 14, 15], 'once', 3),
-    createClip('walk_forward_v2', 'Charging Walk', [16, 17, 18, 19, 20, 21, 22, 23], 'loop', 4),
-    createClip('walk_backward_v2', 'Guarded Backstep', [24, 25, 26, 27, 28, 29, 30, 31], 'loop', 5),
-    createClip('run_start_v2', 'Run Acceleration', [32, 33, 34, 35], 'once', 3),
-    createClip('run_v2', 'Explosive Run', [36, 37, 38, 39, 40, 41, 42, 43], 'loop', 3),
-    createClip('run_stop_v2', 'Run Brake', [44, 45, 46, 47], 'once', 4),
-    createClip('jump_takeoff_v2', 'Reckless Takeoff', [48, 49, 50, 51], 'once', 3),
-    createClip('jump_air_v2', 'Reckless Air Arc', [52, 53, 54, 55], 'once', 4),
-    createClip('land_v2', 'Impact Landing', [56, 57, 58, 59], 'once', 3),
-    createClip('land_recovery_v2', 'Landing Recovery', [60, 61, 62, 63], 'once', 4),
-    createClip('lane_away_v2', 'Rear Lane Shift', [64, 65, 66, 67], 'once', 3),
-    createClip('lane_toward_v2', 'Front Lane Shift', [68, 69, 70, 71], 'once', 3),
-    createClip('crouch_v2', 'Crouch Transition', [72, 73, 74, 75], 'once', 4),
-    createClip('guard_v2', 'Crossed Bomb-Arm Guard', [76, 77, 78, 79], 'once', 4),
-  ];
+  if (profile === 'movement-defense') legacyClipIds.add('idle');
+  const authoredClips = createAuthoredAnimationV2Clips(profile);
   const legacyCombatClips = legacyManifest.clips
     .filter((clip) => legacyClipIds.has(clip.id))
-    .map((clip) => offsetAnimationClip(clip, BAKUNIN_LEGACY_FRAME_OFFSET));
+    .map((clip) => offsetAnimationClip(clip, legacyFrameOffset));
 
   return {
-    characterId: 'bakunin',
+    characterId,
     frames: [
-      ...Array.from({ length: BAKUNIN_LEGACY_FRAME_OFFSET }, (_, index) => ({
+      ...Array.from({ length: legacyFrameOffset }, (_, index) => ({
         index,
-        label: getBakuninV2FrameLabel(index),
+        label: getAnimationV2FrameLabel(index, profile),
         pivot: { x: 0.5, y: 1 },
         duration: 4,
       })),
       ...legacyManifest.frames.map((frame) => ({
         ...frame,
-        index: frame.index + BAKUNIN_LEGACY_FRAME_OFFSET,
+        index: frame.index + legacyFrameOffset,
       })),
     ],
     clips: [...authoredClips, ...legacyCombatClips],
-    stateMappings: [
-      { state: 'idle', clipId: 'idle_v2' },
-      { state: 'walking', clipId: 'walk_forward_v2' },
-      { state: 'running', clipId: 'run_v2' },
-      { state: 'jumping', clipId: 'jump_takeoff_v2' },
-      { state: 'falling', clipId: 'jump_air_v2' },
-      { state: 'landing', clipId: 'land_v2' },
-      { state: 'crouching', clipId: 'crouch_v2' },
-      { state: 'blocking', clipId: 'guard_v2' },
-      { state: 'attacking', clipId: 'attack_1' },
-      { state: 'special', clipId: 'special' },
-      { state: 'hitstun', clipId: 'hitstun' },
-      { state: 'knockdown', clipId: 'knockdown' },
-      { state: 'gettingUp', clipId: 'getup' },
-      { state: 'victory', clipId: 'victory' },
-      { state: 'defeat', clipId: 'knockdown' },
-    ],
+    stateMappings: createAnimationV2StateMappings(profile),
     attackPhaseMappings: [...legacyManifest.attackPhaseMappings],
-    fallbackClip: 'idle_v2',
+    fallbackClip: profile === 'complete' ? 'idle_v2' : 'idle',
   };
 }
 
@@ -529,8 +601,10 @@ export function createCharacterSpriteManifest(
   let manifest: SpriteManifest;
 
   if (descriptor.layout === 'animation-v2') {
-    manifest = createBakuninAnimationV2Manifest();
-    return addAuthoredSpecialClips(manifest, characterId, true, BAKUNIN_LEGACY_FRAME_OFFSET);
+    const profile = descriptor.animationV2Profile ?? 'complete';
+    const legacyFrameOffset = getAnimationV2LegacyFrameOffset(profile);
+    manifest = createAnimationV2Manifest(characterId, profile);
+    return addAuthoredSpecialClips(manifest, characterId, true, legacyFrameOffset);
   }
 
   if (descriptor.layout === 'roster') {

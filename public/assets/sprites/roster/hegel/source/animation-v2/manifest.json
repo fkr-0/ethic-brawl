@@ -1,0 +1,1049 @@
+{
+  "authored_frame_count": 80,
+  "cell_size": [
+    256,
+    256
+  ],
+  "character": "hegel",
+  "layout": "five 4x4 RGBA sheets, row-major",
+  "runtime_note": "Legacy core and extended sheets are appended by the runtime for combat-only fallback frames.",
+  "sheets": [
+    {
+      "clips": {
+        "idle_v2": {
+          "duration": 7,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop"
+        },
+        "turn_left_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "turn_right_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 0,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            62,
+            36,
+            164,
+            219
+          ],
+          "visible_coverage": 0.2868
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            49,
+            35,
+            161,
+            221
+          ],
+          "visible_coverage": 0.2867
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            29,
+            34,
+            172,
+            222
+          ],
+          "visible_coverage": 0.2902
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            26,
+            33,
+            170,
+            223
+          ],
+          "visible_coverage": 0.2968
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            63,
+            35,
+            166,
+            220
+          ],
+          "visible_coverage": 0.2826
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            55,
+            0,
+            163,
+            253
+          ],
+          "visible_coverage": 0.2831
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            42,
+            0,
+            162,
+            255
+          ],
+          "visible_coverage": 0.2804
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            34,
+            0,
+            156,
+            255
+          ],
+          "visible_coverage": 0.2757
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            80,
+            30,
+            117,
+            226
+          ],
+          "visible_coverage": 0.2141
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            63,
+            30,
+            115,
+            226
+          ],
+          "visible_coverage": 0.2113
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            47,
+            29,
+            120,
+            227
+          ],
+          "visible_coverage": 0.2157
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            40,
+            29,
+            115,
+            227
+          ],
+          "visible_coverage": 0.2125
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            48,
+            0,
+            134,
+            200
+          ],
+          "visible_coverage": 0.2225
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            73,
+            0,
+            109,
+            200
+          ],
+          "visible_coverage": 0.2036
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            55,
+            0,
+            116,
+            200
+          ],
+          "visible_coverage": 0.2126
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            36,
+            0,
+            113,
+            200
+          ],
+          "visible_coverage": 0.2129
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_idle_turn_4x4.png",
+      "output_sha256": "a1f60b1ec4d927cbe7d8a711311503a9f847d8ec407ab00435a487885f01bfd7",
+      "sheet_index": 0,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/023_upload_file_00000000cbfc81f4aec952df29668fad.png",
+      "source_sha256": "cb461fae92c61ee17ef129cbbf46f2c4db878fe9d7cb089d41f8f25b2a52957c"
+    },
+    {
+      "clips": {
+        "walk_backward_v2": {
+          "duration": 5,
+          "frames": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "loop"
+        },
+        "walk_forward_v2": {
+          "duration": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 16,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            64,
+            36,
+            163,
+            219
+          ],
+          "visible_coverage": 0.2812
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            50,
+            37,
+            159,
+            219
+          ],
+          "visible_coverage": 0.2806
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            29,
+            37,
+            172,
+            219
+          ],
+          "visible_coverage": 0.2836
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            26,
+            36,
+            169,
+            220
+          ],
+          "visible_coverage": 0.2908
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            65,
+            35,
+            164,
+            219
+          ],
+          "visible_coverage": 0.2766
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            56,
+            0,
+            161,
+            253
+          ],
+          "visible_coverage": 0.2766
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            42,
+            0,
+            162,
+            255
+          ],
+          "visible_coverage": 0.2746
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            35,
+            0,
+            153,
+            254
+          ],
+          "visible_coverage": 0.2693
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            83,
+            30,
+            113,
+            226
+          ],
+          "visible_coverage": 0.2079
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            64,
+            30,
+            114,
+            226
+          ],
+          "visible_coverage": 0.2071
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            49,
+            32,
+            117,
+            224
+          ],
+          "visible_coverage": 0.2108
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            40,
+            31,
+            114,
+            225
+          ],
+          "visible_coverage": 0.2068
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            50,
+            0,
+            132,
+            199
+          ],
+          "visible_coverage": 0.2174
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            73,
+            0,
+            107,
+            198
+          ],
+          "visible_coverage": 0.1993
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            56,
+            0,
+            116,
+            198
+          ],
+          "visible_coverage": 0.2077
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            39,
+            0,
+            109,
+            198
+          ],
+          "visible_coverage": 0.2075
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_walk_forward_backward_4x4.png",
+      "output_sha256": "901ac1d362882e2a405c51b0abd792ef5c8434d170c649208cbc18eb90bcd140",
+      "sheet_index": 1,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_walk.png",
+      "source_sha256": "3e09e5486107b6a60889354d79cd83d80716fe3397714118c7b16ab580a7d761"
+    },
+    {
+      "clips": {
+        "run_start_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "run_stop_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "run_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 32,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            76,
+            38,
+            142,
+            212
+          ],
+          "visible_coverage": 0.2726
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            29,
+            46,
+            175,
+            204
+          ],
+          "visible_coverage": 0.2413
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            23,
+            45,
+            188,
+            205
+          ],
+          "visible_coverage": 0.2679
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            21,
+            46,
+            184,
+            201
+          ],
+          "visible_coverage": 0.2571
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            45,
+            37,
+            200,
+            194
+          ],
+          "visible_coverage": 0.2822
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            30,
+            55,
+            208,
+            178
+          ],
+          "visible_coverage": 0.2607
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            12,
+            39,
+            244,
+            194
+          ],
+          "visible_coverage": 0.2639
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            30,
+            208,
+            188
+          ],
+          "visible_coverage": 0.2894
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            43,
+            27,
+            203,
+            229
+          ],
+          "visible_coverage": 0.2811
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            30,
+            47,
+            196,
+            171
+          ],
+          "visible_coverage": 0.2632
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            19,
+            29,
+            237,
+            186
+          ],
+          "visible_coverage": 0.2505
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            0,
+            20,
+            205,
+            236
+          ],
+          "visible_coverage": 0.2672
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            38,
+            0,
+            208,
+            196
+          ],
+          "visible_coverage": 0.2929
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            42,
+            23,
+            168,
+            175
+          ],
+          "visible_coverage": 0.2505
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            52,
+            2,
+            158,
+            200
+          ],
+          "visible_coverage": 0.2641
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            42,
+            0,
+            136,
+            202
+          ],
+          "visible_coverage": 0.2504
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_run_start_loop_stop_4x4.png",
+      "output_sha256": "cba898192f5f4ea5ac317c67c109010625952530e54aaa6132cf36b4832c48c0",
+      "sheet_index": 2,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_run.png",
+      "source_sha256": "81d1faee89c08f31f916d2b181fe3a44bd8e987b2133f22fa2beb8714379c7c0"
+    },
+    {
+      "clips": {
+        "jump_air_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "jump_takeoff_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "land_recovery_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "land_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 48,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            69,
+            46,
+            131,
+            210
+          ],
+          "visible_coverage": 0.2645
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            43,
+            98,
+            170,
+            158
+          ],
+          "visible_coverage": 0.2269
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            17,
+            38,
+            239,
+            218
+          ],
+          "visible_coverage": 0.284
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            0,
+            12,
+            183,
+            224
+          ],
+          "visible_coverage": 0.2818
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            31,
+            0,
+            183,
+            230
+          ],
+          "visible_coverage": 0.2672
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            14,
+            0,
+            242,
+            232
+          ],
+          "visible_coverage": 0.2699
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            234
+          ],
+          "visible_coverage": 0.2574
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            52,
+            173,
+            201
+          ],
+          "visible_coverage": 0.2706
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            23,
+            31,
+            163,
+            202
+          ],
+          "visible_coverage": 0.2612
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            42,
+            96,
+            153,
+            139
+          ],
+          "visible_coverage": 0.1992
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            27,
+            81,
+            159,
+            152
+          ],
+          "visible_coverage": 0.2127
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            8,
+            49,
+            157,
+            184
+          ],
+          "visible_coverage": 0.2432
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            34,
+            5,
+            157,
+            219
+          ],
+          "visible_coverage": 0.2799
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            44,
+            2,
+            127,
+            222
+          ],
+          "visible_coverage": 0.2662
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            38,
+            0,
+            130,
+            224
+          ],
+          "visible_coverage": 0.2672
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            24,
+            1,
+            129,
+            223
+          ],
+          "visible_coverage": 0.2619
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_jump_land_recovery_4x4.png",
+      "output_sha256": "5ab8cf3d44b5d415f0b33da59276d1e180a0be6e6c9280c51ba8ad5588fd3de1",
+      "sheet_index": 3,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_jump.png",
+      "source_sha256": "40d883fad1ae4f5d838c6fcd7b619746cf3fa4d4cbd845fc66a0ed26733ac1c6"
+    },
+    {
+      "clips": {
+        "crouch_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "guard_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "lane_away_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "lane_toward_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 64,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            52,
+            19,
+            158,
+            224
+          ],
+          "visible_coverage": 0.3084
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            24,
+            20,
+            221,
+            222
+          ],
+          "visible_coverage": 0.3562
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            33,
+            23,
+            180,
+            220
+          ],
+          "visible_coverage": 0.2871
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            34,
+            22,
+            151,
+            221
+          ],
+          "visible_coverage": 0.2966
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            48,
+            15,
+            160,
+            219
+          ],
+          "visible_coverage": 0.2967
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            24,
+            14,
+            227,
+            220
+          ],
+          "visible_coverage": 0.3505
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            57,
+            16,
+            148,
+            218
+          ],
+          "visible_coverage": 0.2698
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            44,
+            10,
+            144,
+            224
+          ],
+          "visible_coverage": 0.2834
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            56,
+            0,
+            135,
+            256
+          ],
+          "visible_coverage": 0.2771
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            34,
+            38,
+            136,
+            218
+          ],
+          "visible_coverage": 0.2629
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            25,
+            67,
+            149,
+            189
+          ],
+          "visible_coverage": 0.2164
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            14,
+            27,
+            153,
+            229
+          ],
+          "visible_coverage": 0.2757
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            53,
+            0,
+            139,
+            207
+          ],
+          "visible_coverage": 0.2706
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            33,
+            0,
+            150,
+            207
+          ],
+          "visible_coverage": 0.309
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            13,
+            0,
+            206,
+            207
+          ],
+          "visible_coverage": 0.3457
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            24,
+            0,
+            145,
+            207
+          ],
+          "visible_coverage": 0.275
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_lane_guard_crouch_4x4.png",
+      "output_sha256": "8a48ee867020f32f4a4af1edf092a0298460eeb69913eb082481c7815cb8e712",
+      "sheet_index": 4,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_crouch.png",
+      "source_sha256": "012a95d037d6290f91d791d6e19c824e78c94d09c617d441f5b064de10b32fa9"
+    }
+  ],
+  "version": 1
+}

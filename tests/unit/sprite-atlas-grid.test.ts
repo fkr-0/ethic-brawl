@@ -22,43 +22,89 @@ describe('sprite sheet decoding', () => {
     expect((frames[15]?.y ?? 0) + (frames[15]?.frameHeight ?? 0)).toBe(546);
   });
 
-  it('binds Bakunin locomotion to the five authored Animation v2 sheets', () => {
-    const descriptor = CHARACTER_SPRITE_PATHS.bakunin;
-    const manifest = createCharacterSpriteManifest('bakunin');
+  it('binds authored Animation v2 locomotion while retaining legacy combat frames', () => {
+    for (const characterId of ['bakunin', 'hegel'] as const) {
+      const descriptor = CHARACTER_SPRITE_PATHS[characterId];
+      const manifest = createCharacterSpriteManifest(characterId);
+      const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
+      const states = new Map(
+        manifest.stateMappings.map((mapping) => [mapping.state, mapping.clipId])
+      );
+
+      expect(descriptor.layout, characterId).toBe('animation-v2');
+      expect(
+        [
+          descriptor.corePath,
+          ...(descriptor.additionalPaths ?? []),
+          ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
+        ],
+        characterId
+      ).toHaveLength(7);
+      expect(manifest.frames, characterId).toHaveLength(112);
+      expect(clips.get('idle_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+        0, 1, 2, 3, 4, 5, 6, 7,
+      ]);
+      expect(clips.get('walk_forward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+        16, 17, 18, 19, 20, 21, 22, 23,
+      ]);
+      expect(clips.get('run_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+        36, 37, 38, 39, 40, 41, 42, 43,
+      ]);
+      expect(clips.get('jump_air_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+        52, 53, 54, 55,
+      ]);
+      expect(clips.get('guard_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+        76, 77, 78, 79,
+      ]);
+      expect(states.get('walking')).toBe('walk_forward_v2');
+      expect(states.get('running')).toBe('run_v2');
+      expect(states.get('blocking')).toBe('guard_v2');
+      expect(
+        clips.get('attack_light_active')?.frames.every(({ frameIndex }) => frameIndex >= 80)
+      ).toBe(true);
+      expect(
+        clips.get(`${characterId}_BFA`)?.frames.every(({ frameIndex }) => frameIndex >= 80)
+      ).toBe(true);
+    }
+  });
+
+  it('binds Stirner movement and defense sheets with legacy idle and combat fallback', () => {
+    const descriptor = CHARACTER_SPRITE_PATHS.stirner;
+    const manifest = createCharacterSpriteManifest('stirner');
     const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
     const states = new Map(
       manifest.stateMappings.map((mapping) => [mapping.state, mapping.clipId])
     );
 
     expect(descriptor.layout).toBe('animation-v2');
+    expect(descriptor.animationV2Profile).toBe('movement-defense');
     expect([
       descriptor.corePath,
       ...(descriptor.additionalPaths ?? []),
       ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
-    ]).toHaveLength(7);
-    expect(manifest.frames).toHaveLength(112);
-    expect(clips.get('idle_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+    ]).toHaveLength(6);
+    expect(manifest.frames).toHaveLength(96);
+    expect(clips.get('walk_forward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
       0, 1, 2, 3, 4, 5, 6, 7,
     ]);
-    expect(clips.get('walk_forward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      16, 17, 18, 19, 20, 21, 22, 23,
-    ]);
     expect(clips.get('run_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      36, 37, 38, 39, 40, 41, 42, 43,
+      20, 21, 22, 23, 24, 25, 26, 27,
     ]);
     expect(clips.get('jump_air_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      52, 53, 54, 55,
+      36, 37, 38, 39,
     ]);
     expect(clips.get('guard_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      76, 77, 78, 79,
+      60, 61, 62, 63,
     ]);
+    expect(states.get('idle')).toBe('idle');
     expect(states.get('walking')).toBe('walk_forward_v2');
     expect(states.get('running')).toBe('run_v2');
     expect(states.get('blocking')).toBe('guard_v2');
+    expect(clips.get('idle')?.frames.every(({ frameIndex }) => frameIndex >= 64)).toBe(true);
     expect(
-      clips.get('attack_light_active')?.frames.every(({ frameIndex }) => frameIndex >= 80)
+      clips.get('attack_light_active')?.frames.every(({ frameIndex }) => frameIndex >= 64)
     ).toBe(true);
-    expect(clips.get('bakunin_BFA')?.frames.every(({ frameIndex }) => frameIndex >= 80)).toBe(true);
+    expect(clips.get('stirner_BFA')?.frames.every(({ frameIndex }) => frameIndex >= 64)).toBe(true);
   });
 
   it('maps the legacy motion blueprint to the correct frames', () => {

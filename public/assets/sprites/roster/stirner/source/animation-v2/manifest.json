@@ -1,0 +1,995 @@
+{
+  "authored_frame_count": 64,
+  "cell_size": [
+    256,
+    256
+  ],
+  "character": "stirner",
+  "layout": "4 normalized 4x4 RGBA sheets, row-major",
+  "runtime_note": "Legacy core and extended sheets are appended by the runtime for missing authored states and combat fallback frames.",
+  "sheets": [
+    {
+      "clips": {
+        "walk_backward_v2": {
+          "duration": 5,
+          "frames": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "loop"
+        },
+        "walk_forward_v2": {
+          "duration": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 0,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            50,
+            20,
+            190,
+            229
+          ],
+          "source_frame": 0,
+          "visible_coverage": 0.3017
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            27,
+            21,
+            187,
+            228
+          ],
+          "source_frame": 1,
+          "visible_coverage": 0.3044
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            20,
+            20,
+            171,
+            229
+          ],
+          "source_frame": 2,
+          "visible_coverage": 0.2874
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            7,
+            23,
+            181,
+            226
+          ],
+          "source_frame": 3,
+          "visible_coverage": 0.2925
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            56,
+            15,
+            194,
+            228
+          ],
+          "source_frame": 4,
+          "visible_coverage": 0.3033
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            35,
+            15,
+            189,
+            228
+          ],
+          "source_frame": 5,
+          "visible_coverage": 0.2969
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            33,
+            15,
+            172,
+            228
+          ],
+          "source_frame": 6,
+          "visible_coverage": 0.2881
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            8,
+            18,
+            182,
+            225
+          ],
+          "source_frame": 7,
+          "visible_coverage": 0.2964
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            74,
+            14,
+            149,
+            242
+          ],
+          "source_frame": 8,
+          "visible_coverage": 0.2511
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            50,
+            15,
+            148,
+            241
+          ],
+          "source_frame": 9,
+          "visible_coverage": 0.2518
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            52,
+            15,
+            138,
+            241
+          ],
+          "source_frame": 10,
+          "visible_coverage": 0.2435
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            26,
+            17,
+            158,
+            239
+          ],
+          "source_frame": 11,
+          "visible_coverage": 0.2585
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            57,
+            0,
+            153,
+            222
+          ],
+          "source_frame": 12,
+          "visible_coverage": 0.2592
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            59,
+            0,
+            145,
+            222
+          ],
+          "source_frame": 13,
+          "visible_coverage": 0.2611
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            40,
+            0,
+            146,
+            219
+          ],
+          "source_frame": 14,
+          "visible_coverage": 0.2504
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            36,
+            0,
+            140,
+            222
+          ],
+          "source_frame": 15,
+          "visible_coverage": 0.2571
+        }
+      ],
+      "output": "assets/sprites/roster/stirner/source/animation-v2/stirner_walk_forward_backward_4x4.png",
+      "output_sha256": "f55c28db5e3fee71d62a8fafbd8987cd14de2e1f03a4ab8abf84d5ff760d218c",
+      "sheet_index": 0,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/stirner/stirner_walk.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "80f3a50b3a2c59c6b9b92d5faf2f2a9c65dc518a940143a72d3723f3b2d7ad23"
+    },
+    {
+      "clips": {
+        "run_start_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "run_stop_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "run_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 16,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            59,
+            39,
+            146,
+            217
+          ],
+          "source_frame": 0,
+          "visible_coverage": 0.3097
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            36,
+            62,
+            182,
+            194
+          ],
+          "source_frame": 1,
+          "visible_coverage": 0.2571
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            25,
+            62,
+            188,
+            194
+          ],
+          "source_frame": 2,
+          "visible_coverage": 0.2593
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            5,
+            65,
+            190,
+            191
+          ],
+          "source_frame": 3,
+          "visible_coverage": 0.2662
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            33,
+            0,
+            208,
+            239
+          ],
+          "source_frame": 4,
+          "visible_coverage": 0.2731
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            33,
+            0,
+            158,
+            239
+          ],
+          "source_frame": 5,
+          "visible_coverage": 0.2267
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            17,
+            0,
+            178,
+            239
+          ],
+          "source_frame": 6,
+          "visible_coverage": 0.2457
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            0,
+            199,
+            201
+          ],
+          "source_frame": 7,
+          "visible_coverage": 0.264
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            31,
+            29,
+            207,
+            227
+          ],
+          "source_frame": 8,
+          "visible_coverage": 0.2635
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            33,
+            53,
+            158,
+            172
+          ],
+          "source_frame": 9,
+          "visible_coverage": 0.2256
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            13,
+            29,
+            187,
+            227
+          ],
+          "source_frame": 10,
+          "visible_coverage": 0.2594
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            1,
+            7,
+            198,
+            249
+          ],
+          "source_frame": 11,
+          "visible_coverage": 0.2742
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            33,
+            0,
+            223,
+            197
+          ],
+          "source_frame": 12,
+          "visible_coverage": 0.2708
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            0,
+            33,
+            210,
+            166
+          ],
+          "source_frame": 13,
+          "visible_coverage": 0.24
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            34,
+            0,
+            185,
+            199
+          ],
+          "source_frame": 14,
+          "visible_coverage": 0.2725
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            35,
+            0,
+            146,
+            201
+          ],
+          "source_frame": 15,
+          "visible_coverage": 0.3006
+        }
+      ],
+      "output": "assets/sprites/roster/stirner/source/animation-v2/stirner_run_start_loop_stop_4x4.png",
+      "output_sha256": "2f172a832eeec68f961a9bda730cc758c3cf55c71a6e62922d9be450dad841d7",
+      "sheet_index": 1,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/stirner/stirner_run.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "3c3ce398e31217b172210e5c72d8a39be082c43c519381796cc60a5727f3f6f0"
+    },
+    {
+      "clips": {
+        "jump_air_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "jump_takeoff_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "land_recovery_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "land_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 32,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            61,
+            52,
+            166,
+            199
+          ],
+          "source_frame": 0,
+          "visible_coverage": 0.2811
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            36,
+            96,
+            165,
+            155
+          ],
+          "source_frame": 1,
+          "visible_coverage": 0.2387
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            11,
+            34,
+            177,
+            217
+          ],
+          "source_frame": 2,
+          "visible_coverage": 0.2651
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            10,
+            32,
+            194,
+            213
+          ],
+          "source_frame": 3,
+          "visible_coverage": 0.2714
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            38,
+            44,
+            212,
+            198
+          ],
+          "source_frame": 4,
+          "visible_coverage": 0.2375
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            32,
+            27,
+            183,
+            222
+          ],
+          "source_frame": 5,
+          "visible_coverage": 0.2409
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            12,
+            27,
+            244,
+            222
+          ],
+          "source_frame": 6,
+          "visible_coverage": 0.2458
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            68,
+            185,
+            181
+          ],
+          "source_frame": 7,
+          "visible_coverage": 0.22
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            60,
+            35,
+            179,
+            185
+          ],
+          "source_frame": 8,
+          "visible_coverage": 0.225
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            10,
+            56,
+            208,
+            200
+          ],
+          "source_frame": 9,
+          "visible_coverage": 0.2454
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            20,
+            92,
+            163,
+            164
+          ],
+          "source_frame": 10,
+          "visible_coverage": 0.2191
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            6,
+            47,
+            166,
+            209
+          ],
+          "source_frame": 11,
+          "visible_coverage": 0.2422
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            50,
+            3,
+            180,
+            211
+          ],
+          "source_frame": 12,
+          "visible_coverage": 0.2772
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            51,
+            0,
+            117,
+            212
+          ],
+          "source_frame": 13,
+          "visible_coverage": 0.2369
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            16,
+            0,
+            159,
+            212
+          ],
+          "source_frame": 14,
+          "visible_coverage": 0.253
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            20,
+            0,
+            153,
+            212
+          ],
+          "source_frame": 15,
+          "visible_coverage": 0.2813
+        }
+      ],
+      "output": "assets/sprites/roster/stirner/source/animation-v2/stirner_jump_land_recovery_4x4.png",
+      "output_sha256": "2f23b5ec4035678d3e4015e0dcf6c49d956fafc42dbac7513045cc2cd3f309ab",
+      "sheet_index": 2,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/stirner/stirner_jump.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "e0b870cb322e196b2ef640364daabf935adf36f463f3a1a5521b8fe780cf3e6a"
+    },
+    {
+      "clips": {
+        "crouch_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "guard_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "lane_away_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "lane_toward_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 48,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            45,
+            47,
+            211,
+            209
+          ],
+          "source_frame": 0,
+          "visible_coverage": 0.289
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            0,
+            50,
+            256,
+            206
+          ],
+          "source_frame": 1,
+          "visible_coverage": 0.3249
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            0,
+            47,
+            256,
+            209
+          ],
+          "source_frame": 3,
+          "visible_coverage": 0.3333
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            0,
+            47,
+            139,
+            209
+          ],
+          "source_frame": 4,
+          "visible_coverage": 0.2734
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            39,
+            0,
+            217,
+            256
+          ],
+          "source_frame": 5,
+          "visible_coverage": 0.3048
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "source_frame": 6,
+          "visible_coverage": 0.3071
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "source_frame": 8,
+          "visible_coverage": 0.3129
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            0,
+            146,
+            256
+          ],
+          "source_frame": 9,
+          "visible_coverage": 0.2612
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            40,
+            0,
+            216,
+            256
+          ],
+          "source_frame": 10,
+          "visible_coverage": 0.2888
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "source_frame": 11,
+          "visible_coverage": 0.3088
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "source_frame": 13,
+          "visible_coverage": 0.2988
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            0,
+            0,
+            141,
+            256
+          ],
+          "source_frame": 14,
+          "visible_coverage": 0.2746
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            43,
+            0,
+            213,
+            230
+          ],
+          "source_frame": 15,
+          "visible_coverage": 0.2886
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            230
+          ],
+          "source_frame": 16,
+          "visible_coverage": 0.3312
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            230
+          ],
+          "source_frame": 18,
+          "visible_coverage": 0.3012
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            0,
+            0,
+            142,
+            230
+          ],
+          "source_frame": 19,
+          "visible_coverage": 0.2587
+        }
+      ],
+      "output": "assets/sprites/roster/stirner/source/animation-v2/stirner_lane_guard_crouch_4x4.png",
+      "output_sha256": "c0aca5664580dc1782d3ba59757548876348d134ca0db536382c29142f2b53e0",
+      "sheet_index": 3,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/stirner/004_upload_file_000000000ea081f4bb93012bbf36176e.png",
+      "source_frames": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        13,
+        14,
+        15,
+        16,
+        18,
+        19
+      ],
+      "source_grid": [
+        5,
+        4
+      ],
+      "source_sha256": "9325b5a4f129a5f9cb16f893b6e21589ce2b267f2730a1946b341246a3a16398"
+    }
+  ],
+  "version": 1
+}

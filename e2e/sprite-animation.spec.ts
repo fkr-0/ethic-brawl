@@ -197,7 +197,11 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   );
   for (const characterId of RELEASE_ROSTER_IDS) {
     expect(validation.characters[characterId].frameCount, `${characterId} release frame bank`).toBe(
-      characterId === 'bakunin' ? 112 : 32
+      characterId === 'bakunin' || characterId === 'hegel'
+        ? 112
+        : characterId === 'stirner'
+          ? 96
+          : 32
     );
   }
   expect(validation.invalidCharacters).toEqual([]);
