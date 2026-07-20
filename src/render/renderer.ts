@@ -381,6 +381,51 @@ export function renderFighter(
   }
 }
 
+function getNamedAnimationClip(
+  animMap: CharacterAnimationMap,
+  clipId: string
+): AnimationClip | null {
+  return animMap.manifest.clips.find((clip) => clip.id === clipId) ?? null;
+}
+
+function resolveBakuninAnimationV2Clip(
+  fighter: Fighter,
+  animMap: CharacterAnimationMap,
+  currentClip: AnimationClip | null,
+  currentClipIsPlaying: boolean
+): AnimationClip | null {
+  if (fighter.characterId !== 'bakunin') return null;
+
+  if (fighter.laneChangeTimer > 0 && fighter.laneChangeStartLane !== fighter.targetLane) {
+    return getNamedAnimationClip(
+      animMap,
+      fighter.targetLane > fighter.laneChangeStartLane ? 'lane_away_v2' : 'lane_toward_v2'
+    );
+  }
+
+  if (fighter.state === 'walking') {
+    const signedVelocity = fighter.moveVelocityX + fighter.velocityX;
+    const facingDirection = fighter.facing === 'right' ? 1 : -1;
+    const isBackingAway = signedVelocity !== 0 && Math.sign(signedVelocity) !== facingDirection;
+    return getNamedAnimationClip(animMap, isBackingAway ? 'walk_backward_v2' : 'walk_forward_v2');
+  }
+
+  if (fighter.state === 'running') {
+    return getNamedAnimationClip(animMap, fighter.stateFrame < 12 ? 'run_start_v2' : 'run_v2');
+  }
+
+  if (fighter.state === 'idle') {
+    if (currentClip?.id === 'run_stop_v2') {
+      return currentClipIsPlaying ? currentClip : null;
+    }
+    if (currentClip?.id === 'run_start_v2' || currentClip?.id === 'run_v2') {
+      return getNamedAnimationClip(animMap, 'run_stop_v2');
+    }
+  }
+
+  return null;
+}
+
 /**
  * Render fighter with sprite system
  */
@@ -427,7 +472,17 @@ function renderFighterWithSprite(
     targetClip = getStateClip(animMap, 'landing');
     poseProgress = 1 - Math.min(1, fighter.landingFrames / FRAME_DATA.LANDING_IMPACT_DURATION);
   } else if (!targetClip) {
-    targetClip = getStateClip(animMap, fighter.state);
+    targetClip = resolveBakuninAnimationV2Clip(
+      fighter,
+      animMap,
+      animState.currentClip,
+      animState.isPlaying
+    );
+    if (targetClip && fighter.laneChangeTimer > 0) {
+      poseProgress = 1 - fighter.laneChangeTimer / FRAME_DATA.LANE_CHANGE_DURATION;
+      effectiveState = 'walking';
+    }
+    targetClip ??= getStateClip(animMap, fighter.state);
     if (fighter.state === 'gettingUp') {
       poseProgress = Math.min(1, fighter.stateFrame / Math.max(1, FRAME_DATA.GET_UP_DURATION - 1));
     } else if (fighter.state === 'knockdown') {

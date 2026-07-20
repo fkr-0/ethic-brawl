@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { createAtlasFramesFromGrid, createDefaultManifest } from '@/render/sprites/sprite-assets';
 import {
+  CHARACTER_SPRITE_PATHS,
+  createCharacterSpriteManifest,
+} from '@/render/sprites/sprite-integration';
+import {
   applySpriteBackgroundKey,
   calculateNormalizedSpriteScale,
   TARGET_FIGHTER_VISIBLE_HEIGHT,
@@ -16,6 +20,45 @@ describe('sprite sheet decoding', () => {
     expect(frames[15]).toMatchObject({ x: 384, y: 409, frameWidth: 128, frameHeight: 137 });
     expect((frames[15]?.x ?? 0) + (frames[15]?.frameWidth ?? 0)).toBe(512);
     expect((frames[15]?.y ?? 0) + (frames[15]?.frameHeight ?? 0)).toBe(546);
+  });
+
+  it('binds Bakunin locomotion to the five authored Animation v2 sheets', () => {
+    const descriptor = CHARACTER_SPRITE_PATHS.bakunin;
+    const manifest = createCharacterSpriteManifest('bakunin');
+    const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
+    const states = new Map(
+      manifest.stateMappings.map((mapping) => [mapping.state, mapping.clipId])
+    );
+
+    expect(descriptor.layout).toBe('animation-v2');
+    expect([
+      descriptor.corePath,
+      ...(descriptor.additionalPaths ?? []),
+      ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
+    ]).toHaveLength(7);
+    expect(manifest.frames).toHaveLength(112);
+    expect(clips.get('idle_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7,
+    ]);
+    expect(clips.get('walk_forward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      16, 17, 18, 19, 20, 21, 22, 23,
+    ]);
+    expect(clips.get('run_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      36, 37, 38, 39, 40, 41, 42, 43,
+    ]);
+    expect(clips.get('jump_air_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      52, 53, 54, 55,
+    ]);
+    expect(clips.get('guard_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      76, 77, 78, 79,
+    ]);
+    expect(states.get('walking')).toBe('walk_forward_v2');
+    expect(states.get('running')).toBe('run_v2');
+    expect(states.get('blocking')).toBe('guard_v2');
+    expect(
+      clips.get('attack_light_active')?.frames.every(({ frameIndex }) => frameIndex >= 80)
+    ).toBe(true);
+    expect(clips.get('bakunin_BFA')?.frames.every(({ frameIndex }) => frameIndex >= 80)).toBe(true);
   });
 
   it('maps the legacy motion blueprint to the correct frames', () => {

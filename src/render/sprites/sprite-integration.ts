@@ -14,7 +14,13 @@ import {
   createDefaultManifest,
   loadImage,
 } from './sprite-assets';
-import type { CharacterAnimationMap, SpriteAtlas, SpriteManifest } from './types';
+import type {
+  AnimationClip,
+  CharacterAnimationMap,
+  FrameLabel,
+  SpriteAtlas,
+  SpriteManifest,
+} from './types';
 
 /**
  * Character sprite asset paths
@@ -22,7 +28,8 @@ import type { CharacterAnimationMap, SpriteAtlas, SpriteManifest } from './types
 export interface CharacterSpriteDescriptor {
   corePath: string;
   extendedPath?: string;
-  layout: 'legacy' | 'roster';
+  additionalPaths?: readonly string[];
+  layout: 'legacy' | 'roster' | 'animation-v2';
 }
 
 export interface SpriteLoadReport {
@@ -104,9 +111,16 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
     layout: 'roster',
   },
   bakunin: {
-    corePath: 'assets/sprites/roster/bakunin/source/bakunin_core_4x4.png',
+    corePath: 'assets/sprites/roster/bakunin/source/animation-v2/bakunin_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/bakunin/source/animation-v2/bakunin_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/bakunin/source/animation-v2/bakunin_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/bakunin/source/animation-v2/bakunin_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/bakunin/source/animation-v2/bakunin_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/bakunin/source/bakunin_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png',
-    layout: 'roster',
+    layout: 'animation-v2',
   },
   schmitt: {
     corePath: 'assets/sprites/roster/schmitt/source/schmitt_core_4x4.png',
@@ -186,6 +200,116 @@ function createDiogenesManifest(): SpriteManifest {
   ];
 
   return manifest;
+}
+
+const BAKUNIN_LEGACY_FRAME_OFFSET = 80;
+
+function offsetAnimationClip(clip: AnimationClip, frameOffset: number): AnimationClip {
+  return {
+    ...clip,
+    frames: clip.frames.map((frame) => ({
+      ...frame,
+      frameIndex: frame.frameIndex + frameOffset,
+    })),
+  };
+}
+
+function getBakuninV2FrameLabel(index: number): FrameLabel {
+  if (index < 8) return 'idle';
+  if (index < 16) return 'taunt_or_pose';
+  if (index < 48) {
+    return (['run_1', 'run_2', 'run_3', 'run_4'] as const)[index % 4] ?? 'run_1';
+  }
+  if (index < 56) return 'jump_rise';
+  if (index < 60) return 'land';
+  if (index < 64) return 'idle';
+  if (index < 72) return 'spare';
+  if (index < 76) return 'crouch';
+  return 'guard';
+}
+
+function createBakuninAnimationV2Manifest(): SpriteManifest {
+  const legacyManifest = createRosterManifest('bakunin', true);
+  const legacyClipIds = new Set([
+    'air_attack',
+    'attack_light_startup',
+    'attack_light_active',
+    'attack_light_recovery',
+    'attack_medium_startup',
+    'attack_medium_active',
+    'attack_medium_recovery',
+    'attack_heavy_startup',
+    'attack_heavy_active',
+    'attack_heavy_recovery',
+    'attack_special_startup',
+    'attack_special_active',
+    'attack_special_recovery',
+    'attack_1',
+    'attack_2',
+    'attack_3',
+    'special',
+    'hitstun',
+    'knockdown',
+    'getup',
+    'victory',
+  ]);
+  const authoredClips = [
+    createClip('idle_v2', 'Volatile Idle', [0, 1, 2, 3, 4, 5, 6, 7], 'loop', 7),
+    createClip('turn_left_v2', 'Turn Left', [8, 9, 10, 11], 'once', 3),
+    createClip('turn_right_v2', 'Turn Right', [12, 13, 14, 15], 'once', 3),
+    createClip('walk_forward_v2', 'Charging Walk', [16, 17, 18, 19, 20, 21, 22, 23], 'loop', 4),
+    createClip('walk_backward_v2', 'Guarded Backstep', [24, 25, 26, 27, 28, 29, 30, 31], 'loop', 5),
+    createClip('run_start_v2', 'Run Acceleration', [32, 33, 34, 35], 'once', 3),
+    createClip('run_v2', 'Explosive Run', [36, 37, 38, 39, 40, 41, 42, 43], 'loop', 3),
+    createClip('run_stop_v2', 'Run Brake', [44, 45, 46, 47], 'once', 4),
+    createClip('jump_takeoff_v2', 'Reckless Takeoff', [48, 49, 50, 51], 'once', 3),
+    createClip('jump_air_v2', 'Reckless Air Arc', [52, 53, 54, 55], 'once', 4),
+    createClip('land_v2', 'Impact Landing', [56, 57, 58, 59], 'once', 3),
+    createClip('land_recovery_v2', 'Landing Recovery', [60, 61, 62, 63], 'once', 4),
+    createClip('lane_away_v2', 'Rear Lane Shift', [64, 65, 66, 67], 'once', 3),
+    createClip('lane_toward_v2', 'Front Lane Shift', [68, 69, 70, 71], 'once', 3),
+    createClip('crouch_v2', 'Crouch Transition', [72, 73, 74, 75], 'once', 4),
+    createClip('guard_v2', 'Crossed Bomb-Arm Guard', [76, 77, 78, 79], 'once', 4),
+  ];
+  const legacyCombatClips = legacyManifest.clips
+    .filter((clip) => legacyClipIds.has(clip.id))
+    .map((clip) => offsetAnimationClip(clip, BAKUNIN_LEGACY_FRAME_OFFSET));
+
+  return {
+    characterId: 'bakunin',
+    frames: [
+      ...Array.from({ length: BAKUNIN_LEGACY_FRAME_OFFSET }, (_, index) => ({
+        index,
+        label: getBakuninV2FrameLabel(index),
+        pivot: { x: 0.5, y: 1 },
+        duration: 4,
+      })),
+      ...legacyManifest.frames.map((frame) => ({
+        ...frame,
+        index: frame.index + BAKUNIN_LEGACY_FRAME_OFFSET,
+      })),
+    ],
+    clips: [...authoredClips, ...legacyCombatClips],
+    stateMappings: [
+      { state: 'idle', clipId: 'idle_v2' },
+      { state: 'walking', clipId: 'walk_forward_v2' },
+      { state: 'running', clipId: 'run_v2' },
+      { state: 'jumping', clipId: 'jump_takeoff_v2' },
+      { state: 'falling', clipId: 'jump_air_v2' },
+      { state: 'landing', clipId: 'land_v2' },
+      { state: 'crouching', clipId: 'crouch_v2' },
+      { state: 'blocking', clipId: 'guard_v2' },
+      { state: 'attacking', clipId: 'attack_1' },
+      { state: 'special', clipId: 'special' },
+      { state: 'hitstun', clipId: 'hitstun' },
+      { state: 'knockdown', clipId: 'knockdown' },
+      { state: 'gettingUp', clipId: 'getup' },
+      { state: 'victory', clipId: 'victory' },
+      { state: 'defeat', clipId: 'knockdown' },
+    ],
+    attackPhaseMappings: [...legacyManifest.attackPhaseMappings],
+    fallbackClip: 'idle_v2',
+  };
 }
 
 /**
@@ -349,13 +473,19 @@ function getSpecialFramePhases(
 function addAuthoredSpecialClips(
   manifest: SpriteManifest,
   characterId: CharacterId,
-  hasExtended: boolean
+  hasExtended: boolean,
+  frameOffset = 0
 ): SpriteManifest {
   const knownClipIds = new Set(manifest.clips.map(({ id }) => id));
   const commandMappings = [...(manifest.commandSpecialMappings ?? [])];
 
   for (const special of getSpecialsForCharacter(characterId)) {
-    const phases = getSpecialFramePhases(special, hasExtended);
+    const sourcePhases = getSpecialFramePhases(special, hasExtended);
+    const phases = {
+      startup: sourcePhases.startup.map((frame) => frame + frameOffset),
+      active: sourcePhases.active.map((frame) => frame + frameOffset),
+      recovery: sourcePhases.recovery.map((frame) => frame + frameOffset),
+    };
     const baseClipId = special.animation.casterClipId;
     const phaseClipIds = {
       startup: `${baseClipId}_startup`,
@@ -398,6 +528,11 @@ export function createCharacterSpriteManifest(
   const descriptor = CHARACTER_SPRITE_PATHS[characterId];
   let manifest: SpriteManifest;
 
+  if (descriptor.layout === 'animation-v2') {
+    manifest = createBakuninAnimationV2Manifest();
+    return addAuthoredSpecialClips(manifest, characterId, true, BAKUNIN_LEGACY_FRAME_OFFSET);
+  }
+
   if (descriptor.layout === 'roster') {
     manifest = createRosterManifest(characterId, hasExtended);
     if (characterId === 'diogenes') {
@@ -424,12 +559,16 @@ async function buildCharacterAtlas(
   characterId: CharacterId,
   descriptor: CharacterSpriteDescriptor
 ): Promise<{ atlas: SpriteAtlas; hasExtended: boolean }> {
-  const coreImage = await loadImage(descriptor.corePath);
-  const extendedImage = descriptor.extendedPath ? await loadImage(descriptor.extendedPath) : null;
+  const sheetPaths = [
+    descriptor.corePath,
+    ...(descriptor.additionalPaths ?? []),
+    ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
+  ];
+  const sourceImages = await Promise.all(sheetPaths.map((path) => loadImage(path)));
   const normalizeRosterSheet = (
     image: HTMLImageElement | HTMLCanvasElement
   ): HTMLImageElement | HTMLCanvasElement => {
-    if (descriptor.layout !== 'roster' || image.width !== 512 || image.height <= 512) {
+    if (image.width !== 512 || image.height <= 512) {
       return image;
     }
     const normalized = document.createElement('canvas');
@@ -440,32 +579,31 @@ async function buildCharacterAtlas(
     normalizedContext.drawImage(image, 0, image.height - 512, 512, 512, 0, 0, 512, 512);
     return normalized;
   };
-  const coreSheet = normalizeRosterSheet(coreImage);
-  const extendedSheet = extendedImage ? normalizeRosterSheet(extendedImage) : null;
+  const sheets = sourceImages.map((image) => normalizeRosterSheet(image));
+  const coreSheet = sheets[0];
+  if (!coreSheet) {
+    throw new Error(`No sprite sheets configured for ${characterId}`);
+  }
   const atlasImage = document.createElement('canvas');
-  atlasImage.width = Math.max(coreSheet.width, extendedSheet?.width ?? 0);
-  atlasImage.height = coreSheet.height + (extendedSheet?.height ?? 0);
+  atlasImage.width = Math.max(...sheets.map((sheet) => sheet.width));
+  atlasImage.height = sheets.reduce((height, sheet) => height + sheet.height, 0);
   const atlasContext = atlasImage.getContext('2d');
   if (!atlasContext) {
     throw new Error(`Unable to create sprite atlas canvas for ${characterId}`);
   }
-  atlasContext.drawImage(coreSheet, 0, 0);
-  if (extendedSheet) {
-    atlasContext.drawImage(extendedSheet, 0, coreSheet.height);
-  }
-
-  const frames = createAtlasFramesFromGrid(coreSheet, 4, 4, {
-    cropPixels: GRID_SPACING,
-  });
-  if (extendedSheet) {
+  const frames: SpriteAtlas['frames'] = [];
+  let destinationOffsetY = 0;
+  sheets.forEach((sheet, sheetIndex) => {
+    atlasContext.drawImage(sheet, 0, destinationOffsetY);
     frames.push(
-      ...createAtlasFramesFromGrid(extendedSheet, 4, 4, {
-        indexOffset: 16,
-        destinationOffsetY: coreSheet.height,
+      ...createAtlasFramesFromGrid(sheet, 4, 4, {
+        indexOffset: sheetIndex * 16,
+        destinationOffsetY,
         cropPixels: GRID_SPACING,
       })
     );
-  }
+    destinationOffsetY += sheet.height;
+  });
 
   return {
     atlas: {
@@ -475,7 +613,7 @@ async function buildCharacterAtlas(
       frameWidth: Math.floor(coreSheet.width / 4),
       frameHeight: Math.floor(coreSheet.height / 4),
     },
-    hasExtended: Boolean(extendedSheet),
+    hasExtended: descriptor.layout === 'animation-v2' || Boolean(descriptor.extendedPath),
   };
 }
 

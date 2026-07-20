@@ -24,7 +24,9 @@
     "test:e2e:sprites": "playwright test e2e/sprite-animation.spec.ts",
     "test:e2e:sprite-review": "playwright test e2e/sprite-visual-review.spec.ts",
     "test:e2e:sprite-review:update": "ETHIC_SPRITE_REVIEW_DIR=generated/sprite-visual-review playwright test e2e/sprite-visual-review.spec.ts",
-    "assets:build": "python scripts/build-release-atlases.py && python scripts/build-character-extensions.py",
+    "assets:build": "python3 scripts/build-bakunin-animation-v2.py && python scripts/build-release-atlases.py && python scripts/build-character-extensions.py",
+    "assets:bakunin-v2": "python3 scripts/build-bakunin-animation-v2.py",
+    "assets:bakunin-v2:check": "python3 scripts/build-bakunin-animation-v2.py --check",
     "assets:check": "node scripts/check-release-assets.mjs",
     "prompts:v2:generate": "python3 docs/prompts/fighter-animation-v2/render-prompts.py",
     "prompts:v2:check": "python3 docs/prompts/fighter-animation-v2/render-prompts.py --check"
