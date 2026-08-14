@@ -1,0 +1,171 @@
+{
+  "_BufferResource-BdwCxOaH.js": {
+    "file": "assets/BufferResource-BdwCxOaH.js",
+    "name": "BufferResource",
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js"
+    ]
+  },
+  "_Filter-BXE9QSG3.js": {
+    "file": "assets/Filter-BXE9QSG3.js",
+    "name": "Filter",
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js"
+    ]
+  },
+  "_RenderTargetSystem-BUz1NokF.js": {
+    "file": "assets/RenderTargetSystem-BUz1NokF.js",
+    "name": "RenderTargetSystem",
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js",
+      "_Filter-BXE9QSG3.js"
+    ]
+  },
+  "_arcade-runtime-wrx4aJHO.js": {
+    "file": "assets/arcade-runtime-wrx4aJHO.js",
+    "name": "arcade-runtime"
+  },
+  "_campaign-CpLIgRa4.js": {
+    "file": "assets/campaign-CpLIgRa4.js",
+    "name": "campaign"
+  },
+  "_ethic-pixi-bridge-DonK8OfC.js": {
+    "file": "assets/ethic-pixi-bridge-DonK8OfC.js",
+    "name": "ethic-pixi-bridge",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_fighter-content-vakCD92S.js"
+    ],
+    "dynamicImports": [
+      "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/environment-browser/browserAll.mjs",
+      "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/environment-webworker/webworkerAll.mjs",
+      "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/gpu/WebGPURenderer.mjs",
+      "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/gl/WebGLRenderer.mjs",
+      "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/canvas/CanvasRenderer.mjs",
+      "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/scene/text-bitmap/BitmapFont.mjs"
+    ]
+  },
+  "_fighter-content-vakCD92S.js": {
+    "file": "assets/fighter-content-vakCD92S.js",
+    "name": "fighter-content",
+    "imports": [
+      "_arcade-runtime-wrx4aJHO.js"
+    ]
+  },
+  "_items-hVh3VMOn.js": {
+    "file": "assets/items-hVh3VMOn.js",
+    "name": "items"
+  },
+  "index.html": {
+    "file": "assets/index-vYHA8bSK.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_fighter-content-vakCD92S.js",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_campaign-CpLIgRa4.js",
+      "_items-hVh3VMOn.js"
+    ],
+    "dynamicImports": [
+      "_ethic-pixi-bridge-DonK8OfC.js"
+    ]
+  },
+  "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/environment-browser/browserAll.mjs": {
+    "file": "assets/browserAll-G7Q-3HzJ.js",
+    "name": "browserAll",
+    "src": "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/environment-browser/browserAll.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js",
+      "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/environment-webworker/webworkerAll.mjs",
+      "index.html",
+      "_fighter-content-vakCD92S.js",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_campaign-CpLIgRa4.js",
+      "_items-hVh3VMOn.js",
+      "_Filter-BXE9QSG3.js"
+    ]
+  },
+  "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/environment-webworker/webworkerAll.mjs": {
+    "file": "assets/webworkerAll-Y6eFcfe-.js",
+    "name": "webworkerAll",
+    "src": "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/environment-webworker/webworkerAll.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js",
+      "_Filter-BXE9QSG3.js",
+      "index.html",
+      "_fighter-content-vakCD92S.js",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_campaign-CpLIgRa4.js",
+      "_items-hVh3VMOn.js"
+    ]
+  },
+  "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/canvas/CanvasRenderer.mjs": {
+    "file": "assets/CanvasRenderer-v3XdqnkE.js",
+    "name": "CanvasRenderer",
+    "src": "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/canvas/CanvasRenderer.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js",
+      "_RenderTargetSystem-BUz1NokF.js",
+      "index.html",
+      "_fighter-content-vakCD92S.js",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_campaign-CpLIgRa4.js",
+      "_items-hVh3VMOn.js",
+      "_Filter-BXE9QSG3.js"
+    ]
+  },
+  "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/gl/WebGLRenderer.mjs": {
+    "file": "assets/WebGLRenderer-CP3SAhC2.js",
+    "name": "WebGLRenderer",
+    "src": "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/gl/WebGLRenderer.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js",
+      "_BufferResource-BdwCxOaH.js",
+      "_RenderTargetSystem-BUz1NokF.js",
+      "index.html",
+      "_fighter-content-vakCD92S.js",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_campaign-CpLIgRa4.js",
+      "_items-hVh3VMOn.js",
+      "_Filter-BXE9QSG3.js"
+    ]
+  },
+  "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/gpu/WebGPURenderer.mjs": {
+    "file": "assets/WebGPURenderer-CiMr-x8m.js",
+    "name": "WebGPURenderer",
+    "src": "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/rendering/renderers/gpu/WebGPURenderer.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js",
+      "_BufferResource-BdwCxOaH.js",
+      "_RenderTargetSystem-BUz1NokF.js",
+      "index.html",
+      "_fighter-content-vakCD92S.js",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_campaign-CpLIgRa4.js",
+      "_items-hVh3VMOn.js",
+      "_Filter-BXE9QSG3.js"
+    ]
+  },
+  "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/scene/text-bitmap/BitmapFont.mjs": {
+    "file": "assets/BitmapFont-DnzhjHIL.js",
+    "name": "BitmapFont",
+    "src": "node_modules/.pnpm/pixi.js@8.19.0/node_modules/pixi.js/lib/scene/text-bitmap/BitmapFont.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_ethic-pixi-bridge-DonK8OfC.js",
+      "index.html",
+      "_fighter-content-vakCD92S.js",
+      "_arcade-runtime-wrx4aJHO.js",
+      "_campaign-CpLIgRa4.js",
+      "_items-hVh3VMOn.js"
+    ]
+  }
+}

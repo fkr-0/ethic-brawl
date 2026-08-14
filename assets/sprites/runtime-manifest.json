@@ -1,0 +1,1735 @@
+{
+  "schemaVersion": 1,
+  "copied": [
+    {
+      "path": "assets/sprites/enemies/crowd.png",
+      "category": "enemy",
+      "bytes": 11800,
+      "sha256": "0866c43c0695cd9b43ebe39e2e68fd83b52c29968dfe4785ae2c28d37b811a27"
+    },
+    {
+      "path": "assets/sprites/enemies/machines-apocalypse.png",
+      "category": "enemy",
+      "bytes": 8218,
+      "sha256": "734a8d27bc4e2ee5c6e97c647ea509e3b0ef57c0104d7f7568f9bd6bd3186328"
+    },
+    {
+      "path": "assets/sprites/enemies/street.png",
+      "category": "enemy",
+      "bytes": 11814,
+      "sha256": "31f3925b471697286d74413a1d5d27f5ab4a97aea6ff3a01bd1115fcded69071"
+    },
+    {
+      "path": "assets/sprites/items/icons-1.png",
+      "category": "item-icons",
+      "bytes": 6303,
+      "sha256": "d63598e5be41571fdf73a5e66ddd5e26f5f0c49f9c872030a362fd34e8cb101c"
+    },
+    {
+      "path": "assets/sprites/items/icons-2.png",
+      "category": "item-icons",
+      "bytes": 5221,
+      "sha256": "73ba4a2832314f07fd2275b638612e5386513eca67262949e602d76a746e9c3f"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 727213,
+      "sha256": "db53ef2b11e7250ac2fe6f373dc111a2f4768d03de16402cfeb95ebb311706d0"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 960659,
+      "sha256": "55f81cffabe915e84d077e9eb6a7d30f508c946e4b9ee7facb71e8c07f354e7a"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 831247,
+      "sha256": "66c5a4454eeee6b354c65eeeb59a985a8103c1ead7900a12afa6359dac9a083d"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 619845,
+      "sha256": "3f072da46405dd8f705093b5b6708d96062fd806dd9f2487c6ba2c55f2562659"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 707455,
+      "sha256": "aedee45bdf844bd7a7d123e66a3716cdee01b4a7e00814045ee693b1e8e643e6"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 641784,
+      "sha256": "e56817d9de2b638aec6623f486aa9c38ab1154bb45f1b2567f09a505041f0c50"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 725866,
+      "sha256": "ea96dcc5c2d9b88ef7543799bbd6efc91afce5019266c0b6b3a2ab8d8b302c22"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 869275,
+      "sha256": "8f31b81ed954e42405997e8e8ec719fdfa9ccccfa2697467acf5dc9dd5e6cb96"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 780541,
+      "sha256": "b9538ec8d01a61302521c8be9128865f44283cc8477a726fac7040465a7409e1"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/anselm_core_4x4.png",
+      "category": "fighter",
+      "bytes": 36165,
+      "sha256": "640605103696aa6089191e4fc2288aa8bf14b8fd17b9c21f9bc3161dbe38b7f9"
+    },
+    {
+      "path": "assets/sprites/roster/anselm/source/anselm_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 36501,
+      "sha256": "57d9f0d39e31bc02ebb3ae80f1861669459535c45ab35cfbe793510437cdf425"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 1050005,
+      "sha256": "278798f557d2f3482989c365e316eec86d476c5403645d696998c0e619e87858"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 875162,
+      "sha256": "e803aa8b48468f53e493d784a3709606d985b34f39528d1f1a373582224b7e7c"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 914448,
+      "sha256": "a40ef2f4d7d762e33b276bb61696727de7b32889c9abd313bfcf63893ae43e5a"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 913436,
+      "sha256": "5d68911d5284c10837db661dc219c706119756703d83256eefa1d52bbdd06468"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 812009,
+      "sha256": "56ac9f06d1a913cbdabe752f71c4c8f88ba12c0b4377f6a33b426f9cfc68bc69"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 883721,
+      "sha256": "8fc6ca4c8ebacdb7e17e81458c1de1ec1c478441a94918017782fd227bc0ed33"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 964048,
+      "sha256": "65da33e380cb18877da37bd5f35ac1ccde98edd4c9f37f5e8819b0f75f639bf4"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 1018910,
+      "sha256": "4ea69a38648d16e0a2cc5daa9221486508ec73d1991b0fe2da2614abde350643"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 862570,
+      "sha256": "b3015b5148c612f825ec7800ad9343d06755e474d4074732334420a41164b9e8"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 988206,
+      "sha256": "a7f74dc9540b93259edeec27f6d71e2d41033f60da4e67892fa483dd9cbcc41a"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 723513,
+      "sha256": "f40a0b7a637e51f12f7e1447456b5158445e1232ae4bd0ac81e26422e20332b5"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 877021,
+      "sha256": "2f9013fd6bc3a01611dbe8feb9d0fd07f99b67d5176e67c1c60fed8b5575fd70"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/animation-v2/aquinas_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 954957,
+      "sha256": "0603fd897950a65d0f996f60dc2167dc6219f08b43bc90037d966918602feef5"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/aquinas_core_4x4.png",
+      "category": "fighter",
+      "bytes": 33424,
+      "sha256": "76a5e511f6c0e3023cc68415772ee2eccf2212587a583d068136bf51b117dff9"
+    },
+    {
+      "path": "assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 34042,
+      "sha256": "ce06e5cbf06573d796deade4196e2d206eb5dd68c7ac85c3a75d6b1b881885a1"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 736531,
+      "sha256": "0694a9d7bcfb8578b80790a5d4b03a0fc5188fdfe03f43bff86eb5f694ed8525"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 814131,
+      "sha256": "7a839435e728851b5335cf1d4938709211133f907f253f63562de939b2865815"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 620898,
+      "sha256": "89f65d991f8cd3e6febf2056b5284b2ee20bcdccf3fd91d31358ef2c8c9fb274"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 834995,
+      "sha256": "8a930d00c5ec6e366afdcf9aae3ffe097fc07120b63e883450e931719b1d669a"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 792814,
+      "sha256": "f1d61c7d2ec7957281907c0bb430e3d6374040f7619e2577d466b1670c9558f6"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 863536,
+      "sha256": "401dc3b9cc18993e1efb0be7b15debf51e788909399ae3702c6089e697af35de"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 684596,
+      "sha256": "b0e4c03b0c4506afac51d6e381b234b9ba1367d89ab95d924a174b1a467049ce"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 689379,
+      "sha256": "828320c6d004b4845d2c08f118683624ed338d64f8aead8964365783eb4c1dc7"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 773253,
+      "sha256": "cf838301f355fecbde97fedc3e69c288377db921b042cfe4508665179a13c0fb"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 1028391,
+      "sha256": "95633f2094404b2adac77c2ecc28208acd30081a3f5abbba1f1106169f603464"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 371149,
+      "sha256": "d67229c9a45e93e3191636e1cec16bda338f67f2c61846d94d4d90f5d078dd13"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 807961,
+      "sha256": "edc47cff7c2382a087297e50e2e034d34b9c675b0828da0bcc54f1b0ab33d201"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/animation-v2/aristotle_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 665710,
+      "sha256": "fdeb4ad7eb32afc919f21770f9b13baf68544154155b1ed9f4e9c32ec337d780"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/aristotle_core_4x4.png",
+      "category": "fighter",
+      "bytes": 35408,
+      "sha256": "4d29a554af07d766219e436d294f41c4a24966a42fee05113899b92b4437286c"
+    },
+    {
+      "path": "assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 35658,
+      "sha256": "94da147e25c9c2b27a1c2691ba49177f7e3d218e1891dec95b2f4e8bf97e4ce2"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 734885,
+      "sha256": "d0fa3903f6fa1802c32f34133a0ebd1158e9f40fcb031775f2dae53badc43b68"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 1255527,
+      "sha256": "d7ac948062b688717ae6d0cb3ade970cf4ce35acf43bb3ac6c159c7e663337be"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 931199,
+      "sha256": "4cb5dbe3645e7e9c506abc8b3a12660758e171ec4a599dbca43c9007cb1a0f2b"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 631198,
+      "sha256": "6aeb4047d9b25687e5df3181612fba8b7f51e088a1f7b6871e3833bac55a9059"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 842266,
+      "sha256": "716880cae3ab4d5e4b963b619f07b37c8c54d318361fac4b6efc880b86f18f1b"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 749511,
+      "sha256": "7bbf9f8f3e203c7c7b8881c387a9b632d3036c6386489b412b704c8a612350a4"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 983488,
+      "sha256": "b7e9f7ab6a0bb846fc94c581657b5af9feba680df57b1cce105a3ed60c2b1a3d"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 1335046,
+      "sha256": "878fc00344fe06c2ce4ee5e78557017dd14cfd42cf72a3c1585828d259276dfc"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 1314449,
+      "sha256": "fa588119ff6e80f7cab23c35e2af62990a8b8f13c8a565286e8b0b381b653c57"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 847172,
+      "sha256": "8ae6082eb869ed77fd51eb482dbf0a2ef5bc0eef5c93ac349413254abd3599e5"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 1249538,
+      "sha256": "5e10c09e7c1a115f9ab5f8805c5680a647ac17631921032e61512c8a86c1cf0a"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 1484809,
+      "sha256": "c4f4fbb2e3a62fd97d15cca77e9b33c0c715f3e340f21d85a69745b7696386b4"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 902506,
+      "sha256": "adbdbd4d3ba21679f0e0730e6ab410bc5b1f99aa804984ded03a9601894fc77c"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/bakunin_core_4x4.png",
+      "category": "fighter",
+      "bytes": 35316,
+      "sha256": "b998235a1ce43db6e10805c380f85f0ed1bb1b5b4cfcd22e698a036570a6252c"
+    },
+    {
+      "path": "assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 35804,
+      "sha256": "b973124169311f2481887846feeb13fc11d855597d76b1d6b8b7be899e38582d"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 651582,
+      "sha256": "624db122164de3c15a97809dca05ef3854d29d5884cf95e0afa480755f66945c"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 786997,
+      "sha256": "e872152a196ba77b6e65f1a68c0125defa8d7df1858f127182d9a188b261850f"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 491888,
+      "sha256": "7a551e3d411883c0297b39f3aa56947d248c518fa224f95fc1adf05e3fc73b82"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 745591,
+      "sha256": "5f37d3314d157f249275ce6bba169760846157cd4c148ce7bfb28a5b653227f2"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 653349,
+      "sha256": "1c07aa35a977dfaa797f5eca27a5bb41a27fa4c983d8646cb557f7347ef0523b"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 454522,
+      "sha256": "17a0e4cff98b628d7d0ed6c8afb9bfdadc276b297417605d7c050d30fe852312"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 465803,
+      "sha256": "31388cfc137a96bc899e4af130de7c5d369c2f8b666e77d22fb19157746d87b0"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 683585,
+      "sha256": "e7c897ce94ad510063342b66f676be20793a8f87de5bd9d335688763c9ebfb18"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 867671,
+      "sha256": "5fd1bf228a4a3f9a24f3c0030b6ace36c27d8a6ef0abb8a7d2e837b39dded409"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 429052,
+      "sha256": "ac5795ccf9ce1a70128429fe5e247dd9f9fba4e4f055540c32d87aac1d4f63e8"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 286048,
+      "sha256": "346be3226c1e03f86c2e9c4995f54673d289dd59f38a7a62e9dac9c87d510828"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 741179,
+      "sha256": "ff53dd196b7ae6684db2c0b8cd88e0cb83a457435593399dca26f5f6fc978d6d"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/animation-v2/camus_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 532048,
+      "sha256": "59728e6e9ea5acf11c8df22b6ab4f26ba974a273ae4f383af12b1302b15b387f"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/camus_core_4x4.png",
+      "category": "fighter",
+      "bytes": 267228,
+      "sha256": "dc4e801aab26332c6af539411bcbef516b5230f9d82c7ebab8c8feb2f666ef41"
+    },
+    {
+      "path": "assets/sprites/roster/camus/source/camus_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 159477,
+      "sha256": "a6463f4bcc35cf59b47789a036f1a723e09e72ccf8d821fa60f0254f59a262c3"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 1190634,
+      "sha256": "e66fa8c2c0624bc6e00353a27dc2d8a0a267aa2e19d1b45790c9c37ff9d39f08"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 1028610,
+      "sha256": "5b5ce87ae203e0c07378aeb9df3c8e7e563517107f805a7db4f14bda39a1f674"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 1284734,
+      "sha256": "fb0af17b3734dd032cba9c41affb735b716ae67c6097edbd9d126d679d8f0454"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 1138005,
+      "sha256": "6b017706840a032f46c7e1c6b4de58aec532ecaa117d74df23ed47681a4177fa"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 756810,
+      "sha256": "9433a6b3767f77cb758c36cc5c74043139f843b176be41b6fec149e17aa38ef0"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 1171355,
+      "sha256": "e8b25bfda2f8de877887645cc91acf978d099a75d93ee9d91d22120c0da0cd81"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 1232624,
+      "sha256": "47cbca725e6292737710da2733a54bdc1ae810d2f111b0e53c1353bc0208123a"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 863384,
+      "sha256": "64950e90d3fc96a0185a38603a6dbed8bfb40c35dc4206bff3d5117084e913dc"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 985545,
+      "sha256": "f3143a142bcf7d444b81cc00fbe4b0104b2476a15823949bac652ab69a15aac3"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 1022934,
+      "sha256": "0f7d4e30c1e2d2a46e00cad1925e930ce234712b8c43a97d35c72bc7fc3d9a14"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 753117,
+      "sha256": "3efbc63ca30fc23856232e4ef3c27db03d815a3f252b191b642b8f1631ed5163"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 1218512,
+      "sha256": "50edcbd08bd1af597909f4777872ee291903cfdef91d188883f6a8bdd1ed7ca3"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 1025892,
+      "sha256": "802ad3c9a3b7e2feadea49e399f4e576104f21b7d4d1da7627c22df4bf396cb0"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png",
+      "category": "fighter",
+      "bytes": 7152,
+      "sha256": "eab850ecbd420334861544364a5b4093a3e6427e92784f4c942f89929d51486b"
+    },
+    {
+      "path": "assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 220843,
+      "sha256": "8c22e465e865ad4a37947a220e79f85ac1028c6071ce2e15ae719e57619edc24"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 1032115,
+      "sha256": "9491ad57e2391433c9fb08afc79a4d77ece0d299e815c46699dc1da712daaf8f"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 946348,
+      "sha256": "4ca3242ad6e49d0b7b02596d1e0558054ac79f651b0d9c6e17810796969b714b"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 795257,
+      "sha256": "29c74ac79e501fcda8b61f30f8b43a5eaa483a1ffdd29479a7831fb7862a760c"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 947803,
+      "sha256": "865005b11f67ce70bba8b68d148bf7236ecf3111e4a4bba130cf5f5cb8a2ea52"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 851355,
+      "sha256": "01f4439db43bcd999857f4d1b4ccf21deb921fda5b2d51e096aae6a90fce210a"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 782726,
+      "sha256": "d1b58c0572fd352be0bbd6aee985dbf30fc98ca5458f8bf611b20255947d48db"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 737856,
+      "sha256": "9fe554f56629cc7c68aaf30ea767e4008ead1701b3cd5b8b052a26d2c886ac45"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 950604,
+      "sha256": "32d4a07e840e734a0c96409776b383f76e1857e157aed724d81d594429509325"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 838648,
+      "sha256": "1793c1752a14b3b1169d9008b25306ee834ad055d1094566289437c8247d61e9"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 888060,
+      "sha256": "72b32bba738628f6b7f65d2fc3d35131a61a38f5dcc91cd381f526f7d0cf349b"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 525356,
+      "sha256": "36dbb4a7f204045b5ae4f70ebfef506453973007ea59c1d5bc8bd0e71c920606"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 913911,
+      "sha256": "9f88a9337aa2c2ccbeaf6d6e404054b9e46f27b51515caae4c6d3c4b36c5e895"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/animation-v2/diogenes_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 779007,
+      "sha256": "a3ed7872f82c6111973ae553bf69f18cbde4a163a9a4d8c89c262247c3e0566f"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/diogenes_core_4x4.png",
+      "category": "fighter",
+      "bytes": 283835,
+      "sha256": "ac26eebf1d3caa044ea7903422a770b63e6424aa18f66b66e865d5972da4f7f4"
+    },
+    {
+      "path": "assets/sprites/roster/diogenes/source/diogenes_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 198089,
+      "sha256": "cff9626e73f02cd29feb645c99ee45270ef399899c1612652706d9de14c77d3f"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 687334,
+      "sha256": "ea5d72afa9ea1c517a03f915787ee5a6c0d2fc9170384bb4c51b12fa5940312b"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 837656,
+      "sha256": "37d821b008422d41af8a55a456b67c8b5807ae210cdeabda6bb4dd7557ac3a97"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 567198,
+      "sha256": "978038a9d4e50b9b7d630044e46bc820dec3d0f8132e2ae52843f938533c3298"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 777630,
+      "sha256": "ece3142da21f37585fac857deae29ae512fe0adf9043e56642755570f61c95bb"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 845899,
+      "sha256": "3011fe549e7a017478b581f3d54298610147cd53c919a5be1265455d0abb98a6"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 460234,
+      "sha256": "7e417c717ee8a5d9943b7ee85ec5992085e2098438386a5b4860e8a1f9f83ef8"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 524785,
+      "sha256": "6bc39e6162e8790e5b3a5ff0383182d096d7619e3a9b532ae71b413712bb66f8"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 689792,
+      "sha256": "2576e94d066f1ca0570cac8d75b7351c817c3143df5a5e7df2c4b2b64c175cda"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 556272,
+      "sha256": "264ef096029b02dff28e2acf6e63fe9ac658f487fc74b670b2aa8ec81bf78533"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 410483,
+      "sha256": "279753b4df112c010bed346cc22624f1dc0e42d4e74683d016f518a6af8804bb"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 438604,
+      "sha256": "576af2de372a6d02b8baf44afd3005e52e8f1ef13d09eab40b52c60c55a5bedb"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 954707,
+      "sha256": "9ffa8526c199504bd432083bfab55e531145bfcb37174c7c604271ed571c358d"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/animation-v2/foucault_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 777577,
+      "sha256": "de2c781435cc62a60f5e526a28f972a9b24c70e023909ce6660e2c42c12ab7ca"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/foucault_core_4x4.png",
+      "category": "fighter",
+      "bytes": 37923,
+      "sha256": "3fcfc20d4cd0dde9bd0cbd46b18b7ff023b71d309700bb926e67c3a8a9c1ca85"
+    },
+    {
+      "path": "assets/sprites/roster/foucault/source/foucault_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 38406,
+      "sha256": "75df56100f63b87100cee29ded73bb31b9d2d68b94e0f4ee5949d13ecca1cfa9"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 1180879,
+      "sha256": "6e57d9ef30d16ee36372b48b45d3ea545ac060cb9e01b7bdb9dc73fda05b8c53"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 1064413,
+      "sha256": "274046acbfc775175402dae14edc1b8ac352201171920b7ae52c8206f221600d"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 667966,
+      "sha256": "a1f60b1ec4d927cbe7d8a711311503a9f847d8ec407ab00435a487885f01bfd7"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 639349,
+      "sha256": "e3a2e5e862e94e13a817d6d8bdc8dc5aef6fb5548b38b05e24ca88c005cc24f6"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 1096427,
+      "sha256": "716dca612fb50a6a2850c2a8f0e61c72771f5d64e065e16d68cdea33c67f009c"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 690356,
+      "sha256": "ce7623e25af8f227282045cd9f701d324157d2022c4e37f0830dd9b9aff79e1d"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 759695,
+      "sha256": "083677700fb3d1ebc2fb194360f89dd920ccc21443f54915c78b1792dfcb4daf"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 766101,
+      "sha256": "e9b98e6f9910398d7d323260fccbe4ac4ffae3035921d281d3b49cfbe498eacd"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 1156567,
+      "sha256": "2ee2a364e5108f557d092a76467de1fcb2305e0027f1f955dd304a9d50366958"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 710411,
+      "sha256": "a134476c24e4864eb38643d55e16f6ecbe9c968975c6dcd0d6276aa6acfb3def"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 997446,
+      "sha256": "7523f1e21d01cc14857f41314aef5e0b50aa33b46ca72502becc05d19cc9f5c5"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 1402312,
+      "sha256": "287b34d15070c1eb924bf745c385d35933943537f54b556bf1391111151f7e93"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/animation-v2/hegel_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 648051,
+      "sha256": "8029bf3b65f8a57f1d785cc18b00a1ad8040dc286b5befabedb9609869d8ad4a"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/hegel_core_4x4.png",
+      "category": "fighter",
+      "bytes": 34416,
+      "sha256": "ac862aaece7fa78723db8949a71fc681b4b1ae042752af6fe7a445fa1fd6e2a9"
+    },
+    {
+      "path": "assets/sprites/roster/hegel/source/hegel_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 34795,
+      "sha256": "c67ec044e6b4d3d8a605829b002caaf507827544edcb8065a900db25eb9079ef"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 1127973,
+      "sha256": "b1731da57ded2e5a213a5f37fe7f2a8b69da763ddce1c03d1d692736e347784a"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 649449,
+      "sha256": "1899bcc11a049d38ce717db9938cacb9072c0c0716b945c21327b703f628281f"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 742076,
+      "sha256": "45ef61725ff73a3036fbda54a639dc155d853e2c164876e4894681257d85ab5b"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 741570,
+      "sha256": "cbb5d12fd441275d768ec311b1e587fc115af229b12c8a72e2c16b7ae41df4d8"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 659873,
+      "sha256": "0acf55c94dae10ea3d04562e5366e14aa26ea695504a35acc5d6d2b6b1e90553"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 769934,
+      "sha256": "c0c4747bc13c5d02c8ceb32162b43b952c4f7809ff634347031de8c213376d64"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 782999,
+      "sha256": "46f939a641756684a61f07a4c9257d780a93bb16229e4d2afc3eacd5e40f0b9d"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 641444,
+      "sha256": "46565e5389a9320d2468d6300a1daa669f7bd8bbd2f079e1df3ace80dcd1a22a"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 653601,
+      "sha256": "ee8a7d628530315b862fc9ea52cf02d080deb7f1e803a9264ddfc69084bbc81d"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 780230,
+      "sha256": "ddb9f261e055ff21722bd8f2acdd3ceb8e34930cefdadce91dcc988c46a481fd"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 854870,
+      "sha256": "940825d07969d4be498061e76fbf881d25242babb466972aa56a954dc33da767"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 691323,
+      "sha256": "86fdae0e3db477b790110cfcab4057ab74a90dc1fa431ddb47f636990b5213e6"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/animation-v2/kant_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 716405,
+      "sha256": "3822fd3c10d5688d761c3add7661e7ffcb28fa9ec6c5949941551fc8464fb06b"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/kant_core_4x4.png",
+      "category": "fighter",
+      "bytes": 35955,
+      "sha256": "5ea7a1a2470cf9472fe171d82dd4cbd0bd89a9f25c11679f387fe4a937a20ab8"
+    },
+    {
+      "path": "assets/sprites/roster/kant/source/kant_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 36178,
+      "sha256": "d5920029dcef4477ded0840208060f580a1b33c93ead8eb7654b11fc060b59af"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 1159660,
+      "sha256": "3acd926847960f81e474ee20f600f3e18fd58f4814f73f1e6549602b89599e16"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 686073,
+      "sha256": "49040886ed12e757380ffa711187d464a25deba184b270c6846dc00d6abdd032"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 589415,
+      "sha256": "ad475dfcbbfb8976599eb9baf37942ff5a6f6d44b1a06ded4b28a31cfa1730d1"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 742988,
+      "sha256": "18fd854305e8fd7dc04705848d3f3c2997db83bc8695b5b8ca9f117b43866d24"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 696295,
+      "sha256": "816f29aca955c0b11349e6d031968b3abc1259629068af04a652a6130c3833b3"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 552821,
+      "sha256": "5f7085df581aeff38a1ec09bf0eb6df730f94743e8cd21171d9809eb2170e79c"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 798431,
+      "sha256": "94906035e4c1020417dfa3dbe9d2a1d98aaa3821521d6f7278b8f7c1e62b50e0"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 670632,
+      "sha256": "7a10ae843f7075b6ecba1c84fc6fc5db46ea0bb521504b09c2aa4f552d816857"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 598888,
+      "sha256": "eddd7956c5f8619e8e3e5ff42a73f5d11e14206fb5781be09df84ebd49b76fa8"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 588699,
+      "sha256": "b3801bd8d1049353baf35933502bda6c283f559e7c1b4ac957301766a4bf1510"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 554172,
+      "sha256": "42fd0703504a343feaa2584a699190d477640d033e218b3bf1ee1f3d01f3d542"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 711222,
+      "sha256": "f5725e34f0ce67d9916d8ed1b95f8d34713e67ad9d1164948a5042b032e7a6fa"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 829744,
+      "sha256": "ec4d57a0902cb3ad463987013859793645a4de1a0afbbb72dbe4cf56d4e8188f"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png",
+      "category": "fighter",
+      "bytes": 7770,
+      "sha256": "56191f7123029e9e634b69e6d68a197ecea5852483dd642cba0cd44363ad424f"
+    },
+    {
+      "path": "assets/sprites/roster/kierkegaard/source/kierkegaard_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 160464,
+      "sha256": "6f700b7f23774ee94112f5f3d02d3601e6f70f2e5e537659ecb5f6fd59b61de4"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 968459,
+      "sha256": "d5614c76b0a024d7c669095556c0d4c1824bc86d48550fefd76d3af6d676c7e3"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 880551,
+      "sha256": "436a839b6e116948741124cb4e6e5d480efc7b6eed34d3e05ed4a09e9d3f70a0"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 906049,
+      "sha256": "f848afbc557e5520cdde5d26c12f439fc827f3cde64105dbeb1c55c6b8ee24c7"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 817378,
+      "sha256": "25d30d38b27a2cc6b7b3abf9fec14d9fcfb84c7c5ffbdbf32d795f65e39d31c5"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 940792,
+      "sha256": "4689485408dfb3193a52e1e9fc418d2af95d4bb9e33d831d2ac97f5dd80e8fc8"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 723956,
+      "sha256": "8a970e598332d9164a16877a12dcb40a0ebf50b99396b546b12f7f93f4a52587"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 808849,
+      "sha256": "d8078f3fbc3e6c7656517d02ec1ac4565e527783536b1f2468373b91bf0067dc"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 822846,
+      "sha256": "12fa2995e74c7b5e25237e2d0989b34eb5b71efe9559a9331d0d81ebf82d5a90"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 848746,
+      "sha256": "513312db8c71b4bdc9adf2334e956a8e04d7697807a2be17714b0345a7fbba17"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 815565,
+      "sha256": "386ca11160deb7a7deb82cfff72c83d2a6e035785a7ae2cac9e9e4d40fb7dec3"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 818626,
+      "sha256": "6d4bf5e1d75bab45fe3da59d5cc56a339390b5b3adcfef0e48e7970b8ebcd081"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 976644,
+      "sha256": "cd1b04574c55c8af6b4313e39c7e74481a34e1ecb1e4c450e48ebfd45133653e"
+    },
+    {
+      "path": "assets/sprites/roster/leibniz/source/animation-v2/leibniz_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 893677,
+      "sha256": "d4782bb6257d4b5931e5ce85da55005c0878e2b28963d7e423a87d24f2d53e54"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 791679,
+      "sha256": "6005119b2696c2ec808b9d70cdd1cd331b9ba80f065bf63ccb45d48769485311"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 692153,
+      "sha256": "e319d2204f80f198b8731fb2cc185833d1370d295815f50419e48af94724669e"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 650964,
+      "sha256": "68fee4307c76cfa97fe6e05df3f918459647f1a352576df3177171b83473dec0"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 555267,
+      "sha256": "2bb339bf5e47b1377f7332cd211f0286e46c9ffd24b671be54f9fb9370e983dc"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 885847,
+      "sha256": "92836c9587df76fed20286d8d3d91b23b5e102eccab6265fbd3143968c854b71"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 737045,
+      "sha256": "14e21612776a1f1bad86e66082cec6e39ec6365033769062a1eaae54762c5525"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 616774,
+      "sha256": "26c7da0f2ff1203a612333097c3290dea60523e33dd1c821679e63d9d6495fe2"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 673805,
+      "sha256": "ab04deaf57052f391191bb52811d5898949c9d4c7832d2fda901be7f8d0fc002"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 715094,
+      "sha256": "fd5ef6a3f177e114b29450a2ccbe5cf3e35ef38a37d99be02bda80e8c711e743"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 650088,
+      "sha256": "cb87f9edf3fe709b7e6e703a3350000c9d761ee61ea11c747a31bc65067954c2"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 427145,
+      "sha256": "2eb33149802d91eac1d7eed512bfe9ac95060072f147135ab29f7ab50ab729aa"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 717481,
+      "sha256": "9387845a1ed9f7b8fbbf4c45297dab350a7ccd01e01dba5b2e77d454a06d6445"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 762850,
+      "sha256": "5c0b81e54f19a85f88edf5e46eb6f67018daef3949cc2eae6ddae986dfa83835"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/machiavelli_core_4x4.png",
+      "category": "fighter",
+      "bytes": 280053,
+      "sha256": "d7555ab508b2280fb686b267a18a8a442924a10c4f0b5f4341930aa9b34a49bf"
+    },
+    {
+      "path": "assets/sprites/roster/machiavelli/source/machiavelli_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 188482,
+      "sha256": "71c8606387225ea9d96cd4adc62872f4915747f28102a8c89c6083d55beafaf9"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 925596,
+      "sha256": "65b757b0e3096dbdfd6195f0b47603144ae1eac0dd552e42c94af0b622ea245a"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 786462,
+      "sha256": "bdf3c9c839477c92ac9c9d5646fc4a7fcbc790e6afc5e13aa0f697eb55ee8128"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 816053,
+      "sha256": "c9d71bba89f4a4f6531b00b805e6b61ef5c41624935360bf1b695993be7e819f"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 907042,
+      "sha256": "6c3776fd8bf71a43860676c5529a764a17750aff380d900b2e6e1d76b86f56e3"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 819728,
+      "sha256": "a0585f888b39439d86fb07f588cdcd62e112197d62d64538dddfcd7777056f6b"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 704114,
+      "sha256": "2a13c91f884b7207d08400f46f3041a9f38960ec73ea981314b14ad3ec5081e3"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 778387,
+      "sha256": "26d3d366dd44af87de1d86018f183b98ec625bab2d64a8ede34f2b8d45c4a1e8"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 778024,
+      "sha256": "c102899d187f33c72e77e538553907bf2ec95ffe7aecaf36d46a64e73a0a0c6b"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 836012,
+      "sha256": "7f3333ebda7c008cf809e778563c070a12c06d05766aad5ddcc2d808e179ce10"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 763819,
+      "sha256": "ab401d09b389cdb4f0a2325fd7bf5f69de8f16129fdc4871ce119d80a855d159"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 745273,
+      "sha256": "f1c271ace43a76c75ece121fc7f504ca601fb844db588514d17431bfd5e0e645"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 1025464,
+      "sha256": "edfbc58c2e4347eb2dc4135aa4b6625cf4e809dfaa59c5d81a159f3954ef3dbf"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/animation-v2/marx_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 813909,
+      "sha256": "fef02f7bad725362010a98e363c43117209d6217a39907bf6fa5799da7599570"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/marx_core_4x4.png",
+      "category": "fighter",
+      "bytes": 33565,
+      "sha256": "b59edb5bb6e16b853bd7e2f8a81533710b2a29a417f5ce8c70852dc39179911d"
+    },
+    {
+      "path": "assets/sprites/roster/marx/source/marx_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 34173,
+      "sha256": "c59e7be8180beaaef87be6ca9fb5cd96cf911982212ef743876770a925f2b120"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 758914,
+      "sha256": "388797ab1cab911b92b2981c657f17ab8a0a50cb5c902648a15105830e4d925b"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 769275,
+      "sha256": "4eb3999c7a73f09103cb1e30454d5d9c7bfc87fbb609a0be0fd1c6d9b68dd266"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 674357,
+      "sha256": "c06a0e6df190a9411defa6da7eef77d6db8f563c263ce9328c9749e1967dfcdb"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 896027,
+      "sha256": "6eb62f455bffc9e391bd23cf690c8aa87e62745839a224709c4897066facbeaf"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 781340,
+      "sha256": "c15c39d2191d262531cb45548116028ead0e2418768f55f3c93eac874e552a03"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 614272,
+      "sha256": "77874f3faa8a09b810cf28ffe483554f64d1e1d50e0b05a8884a7998c5e87bfd"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 809054,
+      "sha256": "2b253cf37ab05d10c9ea123871668fbd352d96afb0299024b33a1b9c174d167f"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 631759,
+      "sha256": "4a59bda03f778ce7c2dab09e3309518ca05cabeb214409f0feea28d005c07de3"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 806956,
+      "sha256": "6194811f4e177a96bda904848f077a9063d0c3566691f2789c4a5225e8e91d66"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 749722,
+      "sha256": "a526448d9faa91eda1a44a2af343acedad688871b5ef7074731421660e125932"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 660236,
+      "sha256": "74def26f2f8d65e8d0d46d42238a2eff04c453d428e8eef0580f2f16e4c39417"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 1012117,
+      "sha256": "29b29ecce1263e617493363835d26601f8e280d8599979ebdc456a85b52cce4a"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 1024026,
+      "sha256": "2e5f0dfd0a2dabd9f62bf9dcf6f5309ec875959d1178183c00fd337f89bb5a9d"
+    },
+    {
+      "path": "assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png",
+      "category": "fighter",
+      "bytes": 7764,
+      "sha256": "9631193a108afb96606d3b0be213042421c2272dc5cb510258bda160d35786d1"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 852015,
+      "sha256": "6b7c946a26d15e401355e47921f9bb12f31b6b54dd6bf5a9e3a0023353cddf17"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 811101,
+      "sha256": "a9404c398ab7f0c48ba93b550a4b16f0386f761bbf5f124aad5c94f05fb0872f"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 945080,
+      "sha256": "04e6687a3d3e2c828b14c6177b1ead41b84ce0a41765bc2038c39b4ac5420ce4"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 608707,
+      "sha256": "cb7cc5d69793210034cdb7d8da4283433caef59090c99609bd8fd272fc05c751"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 709071,
+      "sha256": "ce897d07874f2dc997ff69ccca784c18587138855562ad167497316b80f30310"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 951326,
+      "sha256": "2765ff7a5aed6cb7ab71ff553ecf4b901fbe96df0f0c92158814dd51816123a0"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 1022382,
+      "sha256": "605b41257816381a8ecd1ac6f3fbcf55bba594399550920164c40d04729bf7c8"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 754115,
+      "sha256": "e2ecb7c8efb7920acb80ea8a7caffa3857eaf64610e99abcf1c9411ffbba9bd8"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 827577,
+      "sha256": "1ca3cd96addbffd2f73a1da801a62c3ff9add4d6164c9a879be2c377feb542f5"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 1081646,
+      "sha256": "d333e362ebb331d5936e818bc98d527a84cead43dc0ecb164c019a77fac9e169"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 404445,
+      "sha256": "6ee4466d5932394993401796adfdae277a4b075fbc7067a50a74c73de78fa1d4"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 1210569,
+      "sha256": "47a9edf77a469f088820fb89cc988ddfa07956f10b959976a6ac010fe52fbbf1"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/animation-v2/schmitt_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 1065066,
+      "sha256": "4e004cd54dc12e652428a41e0804af22ef95e97968e3564718afecdb2c20fd5d"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/schmitt_core_4x4.png",
+      "category": "fighter",
+      "bytes": 34050,
+      "sha256": "89b4e1f173122193ff7d06513e6dfc25973a5bff6a40a35b70ecce86ed58a6d7"
+    },
+    {
+      "path": "assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 34743,
+      "sha256": "24bb8e890398003b6fc5f7524b4b1a3c4d9ab71ade911b162b6ccba64ea8b2d3"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 938678,
+      "sha256": "c5cc4d3aa9e6385c5173de1d3fe42c8c0af15570d5a2a11412c497406bffbcb1"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 837274,
+      "sha256": "c4de4394a356b826842f9a1b5b1f68b9d357d9c497b85ef2720ba6a8398c1437"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 475500,
+      "sha256": "8531705790da56badf3e52069395aaa7e21560b8f3ba7c07bd8b0564efbee058"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 863394,
+      "sha256": "3d8f299acedec9e86a50118435aa39037a47145351cc29c13b356669c7b57662"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 880697,
+      "sha256": "d49180cff3f8196ae8bf3113d887631ffa5a8886da008dc79d55a6914c8086e8"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 564603,
+      "sha256": "554e049392c07cd5b924f875ba90f93aa6cff9996c1d70c4e4bed0cf8fe467b2"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 604653,
+      "sha256": "3258b1d5357c51c2e09e51988c0e6f725ebbb7d5613389da2248f75649b48ee6"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 783779,
+      "sha256": "091f4fe9efc0cf202866720790af46290accf98fd137d83a41310d2fe02a224e"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 719738,
+      "sha256": "10b3cf6e387a5d411969d08ccb0b8e753ff4cdb8bc5c4d417e2d17221c2377d7"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 589863,
+      "sha256": "1e849a2d92d764e47253122c2e77b966554f409138eead5f6916269a1cf5efbe"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 298039,
+      "sha256": "9c3f236046667b6d6a8d03b95b2fe62c1ce1412c34e7935ed26eb82903cee17c"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 612332,
+      "sha256": "a43a4cf773aa2d591b956b4539d02b0443fe36939d44e065b4069624ed5aa8e5"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/animation-v2/socrates_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 750119,
+      "sha256": "72903a0999c0eabc20c3e3062d48cbd06d9d76ebf288493a5100305d28bf3a3a"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/socrates_core_4x4.png",
+      "category": "fighter",
+      "bytes": 32886,
+      "sha256": "09bc26f934fd3698de3016ef17f474eb53a62ef583d517e537d823d20acebf86"
+    },
+    {
+      "path": "assets/sprites/roster/socrates/source/socrates_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 33736,
+      "sha256": "c406728333516ed87c78d29a743fd2cf445e08fb5dedd1cb9568c46a67dc5f5d"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_advanced_guard_4x4.png",
+      "category": "fighter",
+      "bytes": 1009211,
+      "sha256": "5dd451e9edb52347496d86e26914854b7eff49550a5bd32419ad014dfcda03d8"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_damage_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 753736,
+      "sha256": "9cf974f86ce972899a0ead2f4e33e5b2dce709006212888e4c8e1b3b08b53d4b"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_idle_turn_4x4.png",
+      "category": "fighter",
+      "bytes": 912134,
+      "sha256": "a6d63b285d42888706bce720ff59304c562b26f4165c11066f77451c3cddec37"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_intro_taunt_victory_defeat_4x4.png",
+      "category": "fighter",
+      "bytes": 829191,
+      "sha256": "560f508caa559e49d2307cdd489b16b1b5b9570332aa783333ea8a431132b758"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_item_interactions_4x4.png",
+      "category": "fighter",
+      "bytes": 835251,
+      "sha256": "4199c1660358a27b961bf5a31c96358a7cbdbe6f1fa054440b7ae61708ea99bc"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_jump_land_recovery_4x4.png",
+      "category": "fighter",
+      "bytes": 720620,
+      "sha256": "85d518d98acb803fc3af461cd99b432f2941f0d38d103b1ce5089fc84f99d12a"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_lane_guard_crouch_4x4.png",
+      "category": "fighter",
+      "bytes": 808348,
+      "sha256": "027df4709051110b9a1fff281cababff63e6c5f012c59c673f84e80d6ca34e94"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_mobility_throw_4x4.png",
+      "category": "fighter",
+      "bytes": 802107,
+      "sha256": "6d507d3aa440a2b9dcfbe3e9e282889117d47b6fcb4c5f1a5ed1df7c6746fdee"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_normal_attacks_4x4.png",
+      "category": "fighter",
+      "bytes": 838249,
+      "sha256": "339390b1f21e7bb5757b4523eaf0b249c6a07cd46bb78cf77c081a4c73568394"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_run_start_loop_stop_4x4.png",
+      "category": "fighter",
+      "bytes": 772457,
+      "sha256": "16fbc5c52fcc99f17764d5bfdf3215c7abc9952991d11250e5c3168682cfb432"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_special_effects_4x4.png",
+      "category": "fighter",
+      "bytes": 1122448,
+      "sha256": "0340dbf3502239969639ca1a54f5a8213db458e000388e97faeb632a2ed7c22d"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_specials_4x4.png",
+      "category": "fighter",
+      "bytes": 954023,
+      "sha256": "f1d040e5223353a405070307539a10c31f0a9a467228aebbcea4d8cd590749d3"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/animation-v2/stirner_walk_forward_backward_4x4.png",
+      "category": "fighter",
+      "bytes": 844675,
+      "sha256": "df1ef1520351470537ee19f08ff3671d5d69dcb05ca8d7a7a54674eeb539348a"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/stirner_core_4x4.png",
+      "category": "fighter",
+      "bytes": 7808,
+      "sha256": "854d840d6207bbfe1153847488d2fe9426a01363c64af0b912c7afac4e6d9566"
+    },
+    {
+      "path": "assets/sprites/roster/stirner/source/stirner_extended_4x4.png",
+      "category": "fighter",
+      "bytes": 186509,
+      "sha256": "a473c4c9f65b4b1d94c6945777b2a5c6045c8459d8b449b2b551e20e0ad4f886"
+    }
+  ],
+  "missing": [
+    {
+      "path": "assets/sprites/items/bat.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/boulder_carry_heavy.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/boulder_throw_body.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/boulder.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/bow_draw.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/bow.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/civic_mace.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/computer_terminal_hack.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/computer_terminal_ion_cannon_deploy.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/computer_terminal_smash.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/computer_terminal.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/foldable_chair_smash.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/foldable_chair.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/grenade.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/katana_signature_flourish.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/katana.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/minidrone.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/molotov_cocktail.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/neon_duelist_sword.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/pipe.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/riot_breaker_mace.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/rocket_launcher_bracing.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/rocket_launcher_fire.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/rocket_launcher.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/rusted_short_sword.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/shovel.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/sniper_rifle_bracing.png",
+      "category": "item-body-pose"
+    },
+    {
+      "path": "assets/sprites/items/sniper_rifle.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/street_argument_bat.png",
+      "category": "item-overlay"
+    },
+    {
+      "path": "assets/sprites/items/uzi.png",
+      "category": "item-overlay"
+    }
+  ]
+}
