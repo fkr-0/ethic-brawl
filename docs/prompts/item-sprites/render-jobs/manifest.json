@@ -1,0 +1,427 @@
+{
+  "jobs": [
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__bat",
+      "markdown": "overlays/bat.md",
+      "outputImage": "assets/sprites/items/bat.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__boulder",
+      "markdown": "overlays/boulder.md",
+      "outputImage": "assets/sprites/items/boulder.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__bow",
+      "markdown": "overlays/bow.md",
+      "outputImage": "assets/sprites/items/bow.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__civic_mace",
+      "markdown": "overlays/civic_mace.md",
+      "outputImage": "assets/sprites/items/civic_mace.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__computer_terminal",
+      "markdown": "overlays/computer_terminal.md",
+      "outputImage": "assets/sprites/items/computer_terminal.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__foldable_chair",
+      "markdown": "overlays/foldable_chair.md",
+      "outputImage": "assets/sprites/items/foldable_chair.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__grenade",
+      "markdown": "overlays/grenade.md",
+      "outputImage": "assets/sprites/items/grenade.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__katana",
+      "markdown": "overlays/katana.md",
+      "outputImage": "assets/sprites/items/katana.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__minidrone",
+      "markdown": "overlays/minidrone.md",
+      "outputImage": "assets/sprites/items/minidrone.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__molotov_cocktail",
+      "markdown": "overlays/molotov_cocktail.md",
+      "outputImage": "assets/sprites/items/molotov_cocktail.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__neon_duelist_sword",
+      "markdown": "overlays/neon_duelist_sword.md",
+      "outputImage": "assets/sprites/items/neon_duelist_sword.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__pipe",
+      "markdown": "overlays/pipe.md",
+      "outputImage": "assets/sprites/items/pipe.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__riot_breaker_mace",
+      "markdown": "overlays/riot_breaker_mace.md",
+      "outputImage": "assets/sprites/items/riot_breaker_mace.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__rocket_launcher",
+      "markdown": "overlays/rocket_launcher.md",
+      "outputImage": "assets/sprites/items/rocket_launcher.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__rusted_short_sword",
+      "markdown": "overlays/rusted_short_sword.md",
+      "outputImage": "assets/sprites/items/rusted_short_sword.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__shovel",
+      "markdown": "overlays/shovel.md",
+      "outputImage": "assets/sprites/items/shovel.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__sniper_rifle",
+      "markdown": "overlays/sniper_rifle.md",
+      "outputImage": "assets/sprites/items/sniper_rifle.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__street_argument_bat",
+      "markdown": "overlays/street_argument_bat.md",
+      "outputImage": "assets/sprites/items/street_argument_bat.png"
+    },
+    {
+      "cellSize": [
+        96,
+        96
+      ],
+      "frames": 8,
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "jobId": "item_overlay__uzi",
+      "markdown": "overlays/uzi.md",
+      "outputImage": "assets/sprites/items/uzi.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__boulder_carry_heavy",
+      "markdown": "body-poses/boulder_carry_heavy.md",
+      "outputImage": "assets/sprites/items/boulder_carry_heavy.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__boulder_throw_body",
+      "markdown": "body-poses/boulder_throw_body.md",
+      "outputImage": "assets/sprites/items/boulder_throw_body.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__bow_draw",
+      "markdown": "body-poses/bow_draw.md",
+      "outputImage": "assets/sprites/items/bow_draw.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__computer_terminal_hack",
+      "markdown": "body-poses/computer_terminal_hack.md",
+      "outputImage": "assets/sprites/items/computer_terminal_hack.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__computer_terminal_ion_cannon_deploy",
+      "markdown": "body-poses/computer_terminal_ion_cannon_deploy.md",
+      "outputImage": "assets/sprites/items/computer_terminal_ion_cannon_deploy.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__computer_terminal_smash",
+      "markdown": "body-poses/computer_terminal_smash.md",
+      "outputImage": "assets/sprites/items/computer_terminal_smash.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__foldable_chair_smash",
+      "markdown": "body-poses/foldable_chair_smash.md",
+      "outputImage": "assets/sprites/items/foldable_chair_smash.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__katana_signature_flourish",
+      "markdown": "body-poses/katana_signature_flourish.md",
+      "outputImage": "assets/sprites/items/katana_signature_flourish.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__rocket_launcher_bracing",
+      "markdown": "body-poses/rocket_launcher_bracing.md",
+      "outputImage": "assets/sprites/items/rocket_launcher_bracing.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__rocket_launcher_fire",
+      "markdown": "body-poses/rocket_launcher_fire.md",
+      "outputImage": "assets/sprites/items/rocket_launcher_fire.png"
+    },
+    {
+      "cellSize": [
+        256,
+        256
+      ],
+      "frames": 1,
+      "grid": {
+        "columns": 1,
+        "rows": 1
+      },
+      "jobId": "item_body_pose__sniper_rifle_bracing",
+      "markdown": "body-poses/sniper_rifle_bracing.md",
+      "outputImage": "assets/sprites/items/sniper_rifle_bracing.png"
+    }
+  ],
+  "schemaVersion": 1,
+  "source": "src/content/items/item-visual-data.ts",
+  "sourceSha256": "dfd2fdd56c04ea5b4ccfec1e80c55c847335745b55d0760664a7f19d17dc0558"
+}

@@ -1,0 +1,92 @@
+---
+generated: true
+generated_by: "docs/prompts/fighter-animation-v2/render-prompts.py"
+prompt_pack_version: 3
+character_id: "machiavelli"
+character_title: "Niccolò Machiavelli"
+prompt_id: "core_4x4"
+job_id: "machiavelli__core_4x4"
+status: rendered_unreviewed
+output_image: "assets/sprites/roster/machiavelli/source/machiavelli_core_4x4.png"
+frames: 16
+grid:
+  columns: 4
+  rows: 4
+cell_size: [256, 256]
+output_size: [1024, 1024]
+reference_images:
+  - "assets/sprites/roster/machiavelli/source/machiavelli_extended_4x4.png"
+source_character: "characters/machiavelli/prompts.yml"
+source_pack: "docs/prompts/fighter-animation-v2/prompt-pack.yml"
+---
+
+# Niccolò Machiavelli — `core_4x4`
+
+This file is one complete Animation v2 render job. Copy only the text in the **Prompt** block into the rendering model.
+
+## Render target
+
+- Output image: `assets/sprites/roster/machiavelli/source/machiavelli_core_4x4.png`
+- Sheet geometry: 4×4 cells, 16 frames, row-major
+- Output geometry: 1024×1024 RGBA, 256×256 per cell
+- Review state: `rendered_unreviewed`
+
+## Suggested reference images
+
+- `assets/sprites/roster/machiavelli/source/machiavelli_extended_4x4.png`
+
+## Runtime clip plan
+
+_No clip metadata is defined for this sheet._
+
+## Prompt
+
+```text
+Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: Niccolò Machiavelli.
+Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16 cells.
+Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.
+
+Niccolò Machiavelli — The Strategist; role: feint assassin.
+Biography: Florentine diplomat and author of The Prince recast as a courtly assassin of tactics. He treats combat as statecraft: a retreat is a lunge, a bow hides a blade, and a trap is simply policy made visible. His arc is observation, conspiracy, execution.
+Appearance: slick dark hair, pointed beard, narrow calculating eyes, dark renaissance doublet, black cloak wedges, oxblood trim, gloves, hard boots, hidden dagger and parchment seal.
+Palette: black #111014, cloak #07070A, oxblood #6E1720, steel #6F7880, parchment #D4B48C, trap magenta #FF00FF.
+Animation identity: predatory stillness, stalking walk, sudden low burst run, compact tactical jump, cloak-curtain block.
+Normals: Court Feint: false bow into hidden-hand poke, tiny oxblood slash, deceptive opener; Prince's Edict: diagonal cloak slash plus thrust, oxblood slash and steel glint, launcher pressure; Palace Coup: low-to-high cloak-banner strike, magenta crack, heavy launcher
+Specials: B>A Prince's Gambit Lunge: startup false retreat cloak hides arm, active abrupt diagonal blade lunge, impact magenta exposed mark, recovery slides past line; B<A Court Intrigue Parry: startup smug exposed shoulder, active cloak curtain shield, impact dagger riposte from darkness, recovery cloak closes; BvA Coup Trap: startup kneeling gloved setup, active small magenta floor sigil, impact root spark arms, recovery withdraws without looking; B>J Opportunist Dash: startup low loaded boot, active black afterimage cross-up, impact reappears behind-angle, recovery cloak settles
+Appearance continuity: slick dark hair, pointed beard, narrow calculating eyes, dark renaissance doublet, black cloak wedges, oxblood trim, gloves, hard boots, hidden dagger and parchment seal
+Palette anchors: black #111014, cloak #07070A, oxblood #6E1720, steel #6F7880, parchment #D4B48C, trap magenta #FF00FF
+Animation identity: predatory stillness, stalking walk, sudden low burst run, compact tactical jump, cloak-curtain block
+
+Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
+Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
+True alpha transparency only. One complete full-body fighter in every cell. Orthographic side-view arcade camera. Stable grounded baseline.
+Keep character identity, face, costume, permanent prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Every cell is one clean animation drawing, never a blurred in-between.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show motion through stride, compression, weight transfer,
+overlap, recoil, and counter-swing. Never bake progressive screen translation into a sheet; the game engine owns world movement.
+Keep feet, hair, cloth, props, weapons, particles, projectiles, and effect trails fully inside their cell. Never connect marks across boundaries.
+Temporary items or special props may appear only in the rows that explicitly require them. They must not alter the reusable idle silhouette.
+Only the named fighter may appear. Hit-reaction and throw frames must not include a second complete opponent body.
+
+SHEET: FOUNDATIONAL CORE GAMEPLAY POSES.
+Row 1: four distinct idle and combat-ready breathing poses forming a subtle loop.
+Row 2: four readable forward-run phases with alternating contacts, passing poses, and airborne compression.
+Row 3: jump takeoff, airborne rise, airborne apex, and grounded landing recovery.
+Row 4: light strike, medium strike, heavy strike, and character-signature neutral pose.
+Every frame must be distinct, gameplay-readable, root-stable, and useful as a resilient fallback when a specialized sheet is unavailable.
+
+NEGATIVE PROMPT:
+blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette
+blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+background, scenery, checkerboard, text, letters, equations, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing permanent prop size,
+camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
+excessive glow, effects hiding the body, giant projectiles, detached limbs, cast shadows extending into neighboring cells
+```
+
+## Acceptance
+
+Review the rendered sheet against [`REVIEW_CHECKLIST.md`](../../REVIEW_CHECKLIST.md) before slicing or runtime integration.
