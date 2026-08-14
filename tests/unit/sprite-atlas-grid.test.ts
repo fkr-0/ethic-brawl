@@ -22,6 +22,56 @@ describe('sprite sheet decoding', () => {
     expect((frames[15]?.y ?? 0) + (frames[15]?.frameHeight ?? 0)).toBe(546);
   });
 
+  it('binds Foucault as a complete authored Animation v2 fighter', () => {
+    const descriptor = CHARACTER_SPRITE_PATHS.foucault;
+    const manifest = createCharacterSpriteManifest('foucault');
+    const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
+    const states = new Map(
+      manifest.stateMappings.map((mapping) => [mapping.state, mapping.clipId])
+    );
+    const phaseMappings = new Map(
+      manifest.attackPhaseMappings.map((mapping) => [
+        `${mapping.attackId}:${mapping.phase}`,
+        mapping.clipId,
+      ])
+    );
+
+    expect(descriptor.layout).toBe('animation-v2');
+    expect(descriptor.animationV2Profile).toBe('full');
+    expect([descriptor.corePath, ...(descriptor.additionalPaths ?? [])]).toHaveLength(13);
+    expect(manifest.frames).toHaveLength(208);
+    expect(clips.get('attack_light_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      81, 82,
+    ]);
+    expect(clips.get('attack_medium_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      85, 86,
+    ]);
+    expect(clips.get('attack_heavy_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      89, 90,
+    ]);
+    expect(clips.get('air_attack')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      92, 93, 94, 95,
+    ]);
+    expect(clips.get('foucault_BFA')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      160, 161, 162, 163,
+    ]);
+    expect(clips.get('foucault_BDJ')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      172, 173, 174, 175,
+    ]);
+    expect(states.get('hitstun')).toBe('hitstun');
+    expect(states.get('idle')).toBe('idle');
+    expect(states.get('running')).toBe('run');
+    expect(states.get('jumping')).toBe('jump_rise');
+    expect(states.get('landing')).toBe('land');
+    expect(states.get('blocking')).toBe('guard');
+    expect(states.get('knockdown')).toBe('knockdown');
+    expect(states.get('gettingUp')).toBe('getup');
+    expect(states.get('victory')).toBe('victory');
+    expect(states.get('defeat')).toBe('defeat_v2');
+    expect(phaseMappings.get('foucault_discipline_beam:active')).toBe('foucault_BFA_active');
+    expect(manifest.commandSpecialMappings).toHaveLength(4);
+  });
+
   it('binds authored Animation v2 locomotion while retaining legacy combat frames', () => {
     for (const characterId of ['bakunin', 'hegel'] as const) {
       const descriptor = CHARACTER_SPRITE_PATHS[characterId];
@@ -208,9 +258,16 @@ describe('sprite sheet decoding', () => {
     const middleLaneDepth = 0.925;
     const regularScale = calculateNormalizedSpriteScale(118, middleLaneDepth);
     const smallSheetScale = calculateNormalizedSpriteScale(69, middleLaneDepth);
+    const highResolutionScale = calculateNormalizedSpriteScale(720, middleLaneDepth);
+    const highResolutionBackScale = calculateNormalizedSpriteScale(720, 0.82);
 
     expect(118 * regularScale).toBeCloseTo(TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth, 5);
     expect(69 * smallSheetScale).toBeCloseTo(TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth, 5);
+    expect(720 * highResolutionScale).toBeCloseTo(
+      TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth,
+      5
+    );
     expect(smallSheetScale).toBeGreaterThan(regularScale);
+    expect(highResolutionBackScale).toBeLessThan(highResolutionScale);
   });
 });

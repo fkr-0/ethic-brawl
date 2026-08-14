@@ -29,10 +29,20 @@ describe('v1.1 release content contract', () => {
         `${characterId} command slots`
       ).toBe(4);
       expect(specials.every(({ animation }) => animation.casterClipId.length > 0)).toBe(true);
-      expect(
-        CHARACTER_SPRITE_PATHS[characterId].extendedPath,
-        `${characterId} extended animation bank`
-      ).toMatch(/^assets\/sprites\/.+_extended_4x4\.png$/);
+      const spriteDescriptor = CHARACTER_SPRITE_PATHS[characterId];
+      if (spriteDescriptor.animationV2Profile === 'full') {
+        expect(
+          [spriteDescriptor.corePath, ...(spriteDescriptor.additionalPaths ?? [])],
+          `${characterId} full Animation v2 banks`
+        ).toHaveLength(13);
+        expect(
+          spriteDescriptor.additionalPaths?.every((path) => path.includes('/animation-v2/'))
+        ).toBe(true);
+      } else {
+        expect(spriteDescriptor.extendedPath, `${characterId} extended animation bank`).toMatch(
+          /^assets\/sprites\/.+_extended_4x4\.png$/
+        );
+      }
     }
   });
 

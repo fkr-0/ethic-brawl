@@ -8,6 +8,8 @@ All notable changes to Ethic Brawl are documented here.
 
 - A canonical 1024×1024 RGBA Deleuze/Guattari Animation v2 normal-attack sheet with light, medium, heavy, and airborne sequences, plus deterministic source/output hashes and per-frame bounds.
 - Runtime and unit-test wiring that uses the authored attack rows while retaining the established movement, reaction, and special banks.
+- Foucault as the first complete 208-frame Animation v2 fighter, with all thirteen curated sheets wired through locomotion, normal attacks, four command specials, damage, knockdown/get-up, victory, and defeat states.
+- Browser sprite validation coverage for Foucault's full atlas, including blank-frame, alpha/background-leak, and clip-reference checks.
 
 ### Fixed
 

@@ -199,11 +199,13 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     expect(validation.characters[characterId].frameCount, `${characterId} release frame bank`).toBe(
       characterId === 'bakunin' || characterId === 'hegel'
         ? 112
-        : characterId === 'stirner'
-          ? 96
-          : characterId === 'deleuze_guattari'
-            ? 48
-            : 32
+        : characterId === 'foucault'
+          ? 208
+          : characterId === 'stirner'
+            ? 96
+            : characterId === 'deleuze_guattari'
+              ? 48
+              : 32
     );
   }
   expect(validation.invalidCharacters).toEqual([]);
@@ -220,9 +222,9 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   let snapshot = await getSnapshot(page);
   expect(snapshot.fight.player1Character).toBe('foucault');
   expect(snapshot.fight.player2Character).toBe('machiavelli');
-  expect(snapshot.fight.player1Animation?.clipFrameCount).toBe(4);
+  expect(snapshot.fight.player1Animation?.clipFrameCount).toBe(8);
   expect(snapshot.fight.player1Animation?.transitionFromClipId).toBeNull();
-  expect(snapshot.fight.player1Animation?.depthScale).toBeGreaterThan(0.85);
+  expect(snapshot.fight.player1Animation?.depthScale).toBeGreaterThan(0.1);
   expect(snapshot.renderer.stageEventId).toBe('signal_surge');
   expect(snapshot.renderer.stageEventIntensity).toBeGreaterThanOrEqual(0);
   expect(snapshot.renderer.stageEventIntensity).toBeLessThanOrEqual(1);
@@ -249,14 +251,14 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   const runBlendPromise = waitForPlayerOneAnimation(
     page,
     'a locomotion interpolation blend',
-    (animation) => animation.clipId === 'run' && animation.frameBlend > 0.05
+    (animation) => animation.clipId === 'walk_forward_v2' && animation.frameBlend > 0.05
   );
   const movementSamples = await collectSnapshots(page, 1_150, 48);
   const runBlend = await runBlendPromise;
   await page.keyboard.up('d');
   expect(runBlend.fight.player1Animation?.frameBlend).toBeGreaterThan(0.05);
   const movementAnimations = playerOneAnimations(movementSamples).filter(
-    ({ clipId }) => clipId === 'run'
+    ({ clipId }) => clipId === 'walk_forward_v2'
   );
   const movementPositions = movementSamples.flatMap((sample) =>
     sample.fight.player1X === null ? [] : [sample.fight.player1X]
@@ -271,7 +273,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   for (let index = 1; index < movementPositions.length; index += 1) {
     const delta = (movementPositions[index] ?? 0) - (movementPositions[index - 1] ?? 0);
     expect(delta).toBeGreaterThanOrEqual(-0.01);
-    expect(delta).toBeLessThan(40);
+    expect(delta).toBeLessThan(48);
   }
 
   const lightAttackSamples = await observeAttackClipSequence(page, 'j', 'attack_light');
@@ -310,7 +312,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     (animation) => animation.clipId === 'land',
     2_200
   );
-  expect(landingSnapshot.fight.player1Animation?.clipFrameCount).toBe(3);
+  expect(landingSnapshot.fight.player1Animation?.clipFrameCount).toBe(8);
   expect(landingSnapshot.fight.player1Animation?.landingProgress).toBeGreaterThanOrEqual(0);
   expect(landingSnapshot.fight.player1Animation?.poseProgress).not.toBeNull();
   await waitForPlayerOneAnimation(

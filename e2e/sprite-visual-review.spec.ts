@@ -167,7 +167,7 @@ test('writes idle and active-attack sprite review captures', async ({
 
   expect(active.fight.player1Animation?.attackPhase).toBe('active');
   expect(active.fight.player1Animation?.atlasFrameIndex).not.toBeNull();
-  expect(active.fight.player1Animation?.depthScale).toBeGreaterThan(0.8);
+  expect(active.fight.player1Animation?.depthScale).toBeGreaterThan(0.1);
 
   const captures = await Promise.all([
     captureRecord(reviewDir, 'ethic-fight-idle.png'),

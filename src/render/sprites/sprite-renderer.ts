@@ -403,7 +403,7 @@ export function calculateNormalizedSpriteScale(
 ): number {
   const safeOpaqueHeight = Math.max(1, representativeOpaqueHeight);
   const normalizedScale = TARGET_FIGHTER_VISIBLE_HEIGHT / safeOpaqueHeight;
-  return Math.max(0.65, Math.min(2.1, normalizedScale * laneDepthScale * presentationScale));
+  return Math.max(0.1, Math.min(2.1, normalizedScale * laneDepthScale * presentationScale));
 }
 
 /**
@@ -450,7 +450,7 @@ export function resolveFighterSpriteRenderScale(
     fighterSpriteNormalizationCache.set(atlas.characterId, normalization);
   }
 
-  return Math.max(0.65, Math.min(2.1, normalization * laneDepthScale * presentationScale));
+  return Math.max(0.1, Math.min(2.1, normalization * laneDepthScale * presentationScale));
 }
 
 /**
