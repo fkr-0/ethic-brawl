@@ -53,6 +53,11 @@
       "!**/tests.bak",
       "!**/playwright-report",
       "!**/test-results",
+      "!**/.ws-bridge",
+      "!**/assets/sprites/roster/**/animation-v2/manifest.json",
+      "!**/public/assets/sprites/roster/**/animation-v2/manifest.json",
+      "!**/docs/prompts/**/provenance/*.json",
+      "!**/docs/prompts/fullset/manifest.json",
       "!**/vendor",
       "!**/test-sprites.html",
       "!**/trunk"

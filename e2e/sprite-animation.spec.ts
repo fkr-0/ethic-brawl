@@ -201,7 +201,9 @@ test('validates every sprite cell and exercises fluid browser animation transiti
         ? 112
         : characterId === 'stirner'
           ? 96
-          : 32
+          : characterId === 'deleuze_guattari'
+            ? 48
+            : 32
     );
   }
   expect(validation.invalidCharacters).toEqual([]);

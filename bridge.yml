@@ -7,10 +7,10 @@ agent:
     - Keep production deployment subpath-safe at /ethic-brawl/.
     - Keep Stage 1 E2E coverage green.
   changelog:
-    - 2026-07-14: Production subpath deployment and Stage 1 vertical slice repaired and enhanced.
-    - 2026-07-14: Added renderer-neutral stage profiles, pooled combat VFX, and Badger-inspired parallax/foreground layers.
-    - 2026-07-19: Added the verified shared arcade-runtime v0.8 core, lifecycle, deterministic ordering, context recovery, one-texture stage bridge, and renderer performance route.
-    - 2026-07-19: Synchronized arcade-runtime v0.9 release metadata and removed the duplicated consumer-side version literal.
+    - "2026-07-14: Production subpath deployment and Stage 1 vertical slice repaired and enhanced."
+    - "2026-07-14: Added renderer-neutral stage profiles, pooled combat VFX, and Badger-inspired parallax/foreground layers."
+    - "2026-07-19: Added the verified shared arcade-runtime v0.8 core, lifecycle, deterministic ordering, context recovery, one-texture stage bridge, and renderer performance route."
+    - "2026-07-19: Synchronized arcade-runtime v0.9 release metadata and removed the duplicated consumer-side version literal."
 commands:
   lint:
     run: ["pnpm", "lint"]

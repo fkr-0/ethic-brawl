@@ -2,6 +2,18 @@
 
 All notable changes to Ethic Brawl are documented here.
 
+## [Unreleased]
+
+### Added
+
+- A canonical 1024×1024 RGBA Deleuze/Guattari Animation v2 normal-attack sheet with light, medium, heavy, and airborne sequences, plus deterministic source/output hashes and per-frame bounds.
+- Runtime and unit-test wiring that uses the authored attack rows while retaining the established movement, reaction, and special banks.
+
+### Fixed
+
+- Restored the missing generic Animation v2 builder referenced by the package scripts and made it validate all currently integrated v2 fighters.
+- Corrected bridge changelog YAML entries so the workspace bridge can parse and expose project commands again.
+
 ## [1.5.1] - 2026-07-19
 
 ### Added

@@ -29,6 +29,7 @@ export interface CharacterSpriteDescriptor {
   corePath: string;
   extendedPath?: string;
   additionalPaths?: readonly string[];
+  normalAttackPath?: string;
   layout: 'legacy' | 'roster' | 'animation-v2';
   animationV2Profile?: 'complete' | 'movement-defense';
 }
@@ -112,6 +113,8 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
   deleuze_guattari: {
     corePath: 'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png',
     extendedPath: 'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_extended_4x4.png',
+    normalAttackPath:
+      'assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_normal_attacks_4x4.png',
     layout: 'roster',
   },
   marx: {
@@ -493,6 +496,44 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
   return manifest;
 }
 
+function createNormalAttackV2Manifest(characterId: CharacterId): SpriteManifest {
+  const manifest = createRosterManifest(characterId, true);
+  const frameOffset = 32;
+  const labels: FrameLabel[] = [
+    ...Array<FrameLabel>(4).fill('attack_1'),
+    ...Array<FrameLabel>(4).fill('attack_2'),
+    ...Array<FrameLabel>(4).fill('attack_3'),
+    ...Array<FrameLabel>(4).fill('air_attack_or_air_kick'),
+  ];
+  manifest.frames.push(
+    ...labels.map((label, index) => ({
+      index: frameOffset + index,
+      label,
+      pivot: { x: 0.5, y: 1 },
+      duration: 3,
+    }))
+  );
+
+  const replaceClip = (id: string, name: string, frames: number[], duration: number) => {
+    manifest.clips = manifest.clips.filter((clip) => clip.id !== id);
+    manifest.clips.push(createClip(id, name, frames, 'once', duration));
+  };
+  const replaceAttack = (kind: 'light' | 'medium' | 'heavy', start: number, duration: number) => {
+    replaceClip(`attack_${kind}_startup`, `${kind} wind-up`, [start], duration);
+    replaceClip(`attack_${kind}_active`, `${kind} strike`, [start + 1, start + 2], duration);
+    replaceClip(`attack_${kind}_recovery`, `${kind} recovery`, [start + 3], duration);
+  };
+
+  replaceAttack('light', frameOffset, 3);
+  replaceAttack('medium', frameOffset + 4, 3);
+  replaceAttack('heavy', frameOffset + 8, 4);
+  replaceClip('attack_1', 'Authored Light Attack', [32, 33, 34, 35], 3);
+  replaceClip('attack_2', 'Authored Medium Attack', [36, 37, 38, 39], 3);
+  replaceClip('attack_3', 'Authored Heavy Attack', [40, 41, 42, 43], 4);
+  replaceClip('air_attack', 'Authored Air Attack', [44, 45, 46, 47], 3);
+  return manifest;
+}
+
 interface SpecialFramePhases {
   startup: number[];
   active: number[];
@@ -607,6 +648,11 @@ export function createCharacterSpriteManifest(
     return addAuthoredSpecialClips(manifest, characterId, true, legacyFrameOffset);
   }
 
+  if (descriptor.normalAttackPath) {
+    manifest = createNormalAttackV2Manifest(characterId);
+    return addAuthoredSpecialClips(manifest, characterId, true);
+  }
+
   if (descriptor.layout === 'roster') {
     manifest = createRosterManifest(characterId, hasExtended);
     if (characterId === 'diogenes') {
@@ -637,6 +683,7 @@ async function buildCharacterAtlas(
     descriptor.corePath,
     ...(descriptor.additionalPaths ?? []),
     ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
+    ...(descriptor.normalAttackPath ? [descriptor.normalAttackPath] : []),
   ];
   const sourceImages = await Promise.all(sheetPaths.map((path) => loadImage(path)));
   const normalizeRosterSheet = (

@@ -33,6 +33,8 @@
     "assets:hegel-v2:check": "python3 scripts/build-character-animation-v2.py --character hegel --check",
     "assets:stirner-v2": "python3 scripts/build-character-animation-v2.py --character stirner",
     "assets:stirner-v2:check": "python3 scripts/build-character-animation-v2.py --character stirner --check",
+    "assets:deleuze-guattari-v2": "python3 scripts/build-character-animation-v2.py --character deleuze_guattari",
+    "assets:deleuze-guattari-v2:check": "python3 scripts/build-character-animation-v2.py --character deleuze_guattari --check",
     "assets:check": "node scripts/check-release-assets.mjs",
     "prompts:v2:generate": "python3 docs/prompts/fighter-animation-v2/render-prompts.py",
     "prompts:v2:check": "python3 docs/prompts/fighter-animation-v2/render-prompts.py --check"

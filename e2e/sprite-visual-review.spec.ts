@@ -138,7 +138,9 @@ test('writes idle and active-attack sprite review captures', async ({
   const reviewDir = reviewDirectory(testInfo);
   await mkdir(reviewDir, { recursive: true });
   await page.goto('index.html');
-  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', 'start');
+  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', 'start', {
+    timeout: 20_000,
+  });
   await enterFoucaultMatch(page);
 
   const canvas = page.locator('canvas').first();

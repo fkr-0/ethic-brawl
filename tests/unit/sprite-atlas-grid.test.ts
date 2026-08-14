@@ -107,6 +107,35 @@ describe('sprite sheet decoding', () => {
     expect(clips.get('stirner_BFA')?.frames.every(({ frameIndex }) => frameIndex >= 64)).toBe(true);
   });
 
+  it('binds Deleuze/Guattari authored normal attacks after the legacy banks', () => {
+    const descriptor = CHARACTER_SPRITE_PATHS.deleuze_guattari;
+    const manifest = createCharacterSpriteManifest('deleuze_guattari');
+    const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
+
+    expect(descriptor.normalAttackPath).toMatch(
+      /animation-v2\/deleuze_guattari_normal_attacks_4x4\.png$/
+    );
+    expect(manifest.frames).toHaveLength(48);
+    expect(clips.get('attack_light_startup')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      32,
+    ]);
+    expect(clips.get('attack_light_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      33, 34,
+    ]);
+    expect(clips.get('attack_medium_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      37, 38,
+    ]);
+    expect(clips.get('attack_heavy_recovery')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      43,
+    ]);
+    expect(clips.get('air_attack')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      44, 45, 46, 47,
+    ]);
+    expect(
+      clips.get('deleuze_guattari_BFA')?.frames.every(({ frameIndex }) => frameIndex < 32)
+    ).toBe(true);
+  });
+
   it('maps the legacy motion blueprint to the correct frames', () => {
     const manifest = createDefaultManifest('camus');
     const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));

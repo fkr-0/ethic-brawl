@@ -2,7 +2,7 @@
 
 A 2.5D cyberpunk philosophical arena-brawler with absurdist humor. Battle as neon-cyberpunk versions of historical philosophers in a futuristic dystopia where ideas are fought with fists.
 
-**Current release candidate: 1.1.0.** Local Versus and the complete three-encounter Babylon Story route are playable. Five later story routes are authored previews and remain locked.
+**Current release candidate: 1.5.1.** Local Versus and the complete three-encounter Babylon Story route are playable. Five later story routes are authored previews and remain locked.
 
 ## Quick Start
 
@@ -56,7 +56,7 @@ pnpm release:check
 
 ## Characters
 
-The 1.1.0 release roster contains 13 fighters: Camus, Machiavelli, Diogenes, Leibniz, Foucault, Deleuze & Guattari, Marx, Bakunin, Schmitt, Socrates, Kant, Kierkegaard, and Stirner. Every release fighter has a three-hit normal chain, four command specials, a unique gimmick, and a 32-frame core-plus-extended animation set.
+The release roster contains 13 fighters: Camus, Machiavelli, Diogenes, Leibniz, Foucault, Deleuze & Guattari, Marx, Bakunin, Schmitt, Socrates, Kant, Kierkegaard, and Stirner. Every release fighter has a three-hit normal chain, four command specials, a unique gimmick, and a 32-frame core-plus-extended animation set.
 
 ### Albert Camus - "The Absurdist"
 - **Style:** Balanced fighter with resilience under pressure
@@ -128,13 +128,13 @@ Stage presentation also reacts to the fight itself. Combos, hit-freeze, blockstu
 
 Normal and special attacks now use facing-relative anticipation, active-frame displacement, recovery overshoot, deterministic impact jitter, and additive directional trails. The visible movement remains presentation-only: hitboxes, timing, and authoritative fighter positions stay deterministic.
 
-The 1.1.0 content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
+The content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
 
 Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.
 
 The browser E2E test mounts a production build at `/ethic-brawl/`, covering deployed bundle and sprite URLs, two-dimensional roster navigation, real keyboard combat, defeat/retry behavior, escalating AI, all three encounters, and the complete campaign route.
 
-Fine-grained replacement prompts for idle, forward/backward walking, run start/loop/stop, jump/landing, lane changes, crouch, and guard cycles live in `docs/prompts/fighter-animation-v2/`. They reuse each character's existing `characters/<id>/prompts.yml` identity bible and keep root movement outside the generated frames so the runtime remains authoritative. Run `pnpm prompts:v2:generate` to create one Markdown render job per character and sheet, or `pnpm prompts:v2:check` to verify the generated set.
+Fine-grained replacement prompts for locomotion, defense, reactions, normal attacks, specials, and presentation cycles live in `docs/prompts/fighter-animation-v2/`. Deleuze & Guattari now use the first integrated authored Animation v2 normal-attack sheet; `pnpm assets:animation-v2` deterministically normalizes it to the runtime grid and validates every integrated v2 bank. They reuse each character's existing `characters/<id>/prompts.yml` identity bible and keep root movement outside the generated frames so the runtime remains authoritative. Run `pnpm prompts:v2:generate` to create one Markdown render job per character and sheet, or `pnpm prompts:v2:check` to verify the generated set.
 
 The project uses Biome 2.5.4. `pnpm lint` and `pnpm lint:fix` run the normal release checks; `pnpm imports:fix` deliberately invokes Biome Assist for a separate import/export organization pass so routine formatting does not produce unrelated barrel-file churn.
 
