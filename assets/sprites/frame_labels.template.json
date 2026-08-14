@@ -1,0 +1,31 @@
+{
+  "characterId": "camus",
+  "frames": [
+    { "index": 0, "label": "idle", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 8 },
+    { "index": 1, "label": "guard", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 1 },
+    { "index": 2, "label": "taunt_or_pose", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 4 },
+    { "index": 3, "label": "run_1", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 3 },
+    { "index": 4, "label": "run_2", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 3 },
+    { "index": 5, "label": "run_3", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 3 },
+    { "index": 6, "label": "run_4", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 3 },
+    { "index": 7, "label": "crouch", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 1 },
+    { "index": 8, "label": "jump_rise", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 1 },
+    {
+      "index": 9,
+      "label": "air_attack_or_air_kick",
+      "pivot": { "x": 0.5, "y": 1.0 },
+      "duration": 1
+    },
+    { "index": 10, "label": "land", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 1 },
+    { "index": 11, "label": "attack_1", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 4 },
+    { "index": 12, "label": "attack_2", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 4 },
+    { "index": 13, "label": "attack_3", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 4 },
+    {
+      "index": 14,
+      "label": "victory_or_quote_pose",
+      "pivot": { "x": 0.5, "y": 1.0 },
+      "duration": 8
+    },
+    { "index": 15, "label": "spare", "pivot": { "x": 0.5, "y": 1.0 }, "duration": 1 }
+  ]
+}

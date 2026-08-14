@@ -1,0 +1,1049 @@
+{
+  "authored_frame_count": 80,
+  "cell_size": [
+    256,
+    256
+  ],
+  "character": "bakunin",
+  "layout": "five 4x4 RGBA sheets, row-major",
+  "runtime_note": "Legacy core and extended sheets are appended by the runtime for combat-only fallback frames.",
+  "sheets": [
+    {
+      "clips": {
+        "idle_v2": {
+          "duration": 7,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop"
+        },
+        "turn_left_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "turn_right_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 0,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            44,
+            31,
+            208,
+            225
+          ],
+          "visible_coverage": 0.3555
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            45,
+            38,
+            199,
+            218
+          ],
+          "visible_coverage": 0.3619
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            14,
+            37,
+            198,
+            219
+          ],
+          "visible_coverage": 0.3447
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            0,
+            36,
+            205,
+            220
+          ],
+          "visible_coverage": 0.3417
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            47,
+            0,
+            205,
+            245
+          ],
+          "visible_coverage": 0.3658
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            33,
+            27,
+            202,
+            219
+          ],
+          "visible_coverage": 0.3513
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            20,
+            0,
+            236,
+            248
+          ],
+          "visible_coverage": 0.3327
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            27,
+            191,
+            221
+          ],
+          "visible_coverage": 0.3465
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            46,
+            13,
+            165,
+            243
+          ],
+          "visible_coverage": 0.2998
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            31,
+            13,
+            169,
+            243
+          ],
+          "visible_coverage": 0.3061
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            20,
+            16,
+            174,
+            240
+          ],
+          "visible_coverage": 0.2983
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            10,
+            14,
+            186,
+            242
+          ],
+          "visible_coverage": 0.3235
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            43,
+            0,
+            177,
+            206
+          ],
+          "visible_coverage": 0.3183
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            46,
+            0,
+            177,
+            208
+          ],
+          "visible_coverage": 0.3105
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            24,
+            0,
+            170,
+            206
+          ],
+          "visible_coverage": 0.2864
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            11,
+            0,
+            184,
+            208
+          ],
+          "visible_coverage": 0.3107
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_idle_turn_4x4.png",
+      "output_sha256": "4cb5dbe3645e7e9c506abc8b3a12660758e171ec4a599dbca43c9007cb1a0f2b",
+      "sheet_index": 0,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/016_upload_file_00000000545481f49052690ef0cb25b5.png",
+      "source_sha256": "98d27c4b6beb56d8e69de50708140ab665e1ac4e498ad8e81e9f7fa3d4c0c85f"
+    },
+    {
+      "clips": {
+        "walk_backward_v2": {
+          "duration": 5,
+          "frames": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "loop"
+        },
+        "walk_forward_v2": {
+          "duration": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 16,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            53,
+            36,
+            203,
+            218
+          ],
+          "visible_coverage": 0.3455
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            0,
+            34,
+            230,
+            220
+          ],
+          "visible_coverage": 0.332
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            16,
+            34,
+            196,
+            220
+          ],
+          "visible_coverage": 0.3337
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            1,
+            34,
+            187,
+            220
+          ],
+          "visible_coverage": 0.3327
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            47,
+            31,
+            204,
+            213
+          ],
+          "visible_coverage": 0.3513
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            33,
+            30,
+            194,
+            214
+          ],
+          "visible_coverage": 0.3331
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            9,
+            32,
+            247,
+            212
+          ],
+          "visible_coverage": 0.3304
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            30,
+            183,
+            214
+          ],
+          "visible_coverage": 0.3221
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            62,
+            13,
+            181,
+            243
+          ],
+          "visible_coverage": 0.3103
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            50,
+            16,
+            169,
+            240
+          ],
+          "visible_coverage": 0.3002
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            22,
+            16,
+            181,
+            240
+          ],
+          "visible_coverage": 0.3194
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            15,
+            13,
+            175,
+            243
+          ],
+          "visible_coverage": 0.31
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            47,
+            0,
+            192,
+            217
+          ],
+          "visible_coverage": 0.3344
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            33,
+            0,
+            185,
+            217
+          ],
+          "visible_coverage": 0.3251
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            9,
+            0,
+            184,
+            217
+          ],
+          "visible_coverage": 0.3271
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            4,
+            0,
+            190,
+            217
+          ],
+          "visible_coverage": 0.3254
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_walk_forward_backward_4x4.png",
+      "output_sha256": "a4d3baad371cbd5fbf69186d1f954ad905f8001843d51faf1900f9c34323649f",
+      "sheet_index": 1,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_walk.png",
+      "source_sha256": "d381d77cb22165aee82d5005260c51ee1f452963e6e19b0574f69453fa7f5aaf"
+    },
+    {
+      "clips": {
+        "run_start_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "run_stop_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "run_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 32,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            25,
+            45,
+            192,
+            198
+          ],
+          "visible_coverage": 0.3217
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            9,
+            51,
+            192,
+            190
+          ],
+          "visible_coverage": 0.3087
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            3,
+            49,
+            253,
+            192
+          ],
+          "visible_coverage": 0.3007
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            0,
+            49,
+            216,
+            192
+          ],
+          "visible_coverage": 0.3372
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            22,
+            27,
+            227,
+            198
+          ],
+          "visible_coverage": 0.3487
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            22,
+            51,
+            188,
+            174
+          ],
+          "visible_coverage": 0.2843
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            10,
+            29,
+            246,
+            196
+          ],
+          "visible_coverage": 0.2941
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            23,
+            212,
+            187
+          ],
+          "visible_coverage": 0.3274
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            27,
+            11,
+            220,
+            245
+          ],
+          "visible_coverage": 0.313
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            13,
+            51,
+            193,
+            161
+          ],
+          "visible_coverage": 0.2795
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            6,
+            12,
+            250,
+            244
+          ],
+          "visible_coverage": 0.3013
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            0,
+            7,
+            222,
+            249
+          ],
+          "visible_coverage": 0.3428
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            22,
+            0,
+            227,
+            191
+          ],
+          "visible_coverage": 0.3559
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            15,
+            15,
+            182,
+            176
+          ],
+          "visible_coverage": 0.2875
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            6,
+            0,
+            250,
+            191
+          ],
+          "visible_coverage": 0.3118
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            0,
+            0,
+            186,
+            191
+          ],
+          "visible_coverage": 0.3201
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_run_start_loop_stop_4x4.png",
+      "output_sha256": "6291466338f32cfb692234e55acad10e56116f71378b1a2405999f6b866e34e9",
+      "sheet_index": 2,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_run.png",
+      "source_sha256": "0909f99c81013f9ea791398f7b263d3f3812477a83040b4f65b8df02c2170874"
+    },
+    {
+      "clips": {
+        "jump_air_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "jump_takeoff_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "land_recovery_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "land_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 48,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            65,
+            74,
+            191,
+            179
+          ],
+          "visible_coverage": 0.3013
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            0,
+            82,
+            239,
+            171
+          ],
+          "visible_coverage": 0.2725
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            30,
+            52,
+            177,
+            202
+          ],
+          "visible_coverage": 0.2621
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            13,
+            33,
+            179,
+            218
+          ],
+          "visible_coverage": 0.2738
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            73,
+            42,
+            183,
+            203
+          ],
+          "visible_coverage": 0.2903
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            0,
+            36,
+            240,
+            202
+          ],
+          "visible_coverage": 0.266
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            29,
+            36,
+            227,
+            201
+          ],
+          "visible_coverage": 0.2655
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            0,
+            23,
+            174,
+            200
+          ],
+          "visible_coverage": 0.2674
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            58,
+            45,
+            172,
+            167
+          ],
+          "visible_coverage": 0.256
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            55,
+            56,
+            172,
+            200
+          ],
+          "visible_coverage": 0.2381
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            33,
+            63,
+            223,
+            193
+          ],
+          "visible_coverage": 0.2277
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            0,
+            56,
+            152,
+            200
+          ],
+          "visible_coverage": 0.2223
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            71,
+            1,
+            167,
+            197
+          ],
+          "visible_coverage": 0.2803
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            54,
+            0,
+            162,
+            197
+          ],
+          "visible_coverage": 0.2642
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            31,
+            0,
+            225,
+            197
+          ],
+          "visible_coverage": 0.2584
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            0,
+            0,
+            147,
+            197
+          ],
+          "visible_coverage": 0.2528
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_jump_land_recovery_4x4.png",
+      "output_sha256": "ce783b52afa4bdd9ef30897aeda15d75818848ff508659427ee305fa1b9d5dda",
+      "sheet_index": 3,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_jump.png",
+      "source_sha256": "f95c269422d22d592baca72b1446b6a53121deedd1a9fab087e16c34153c0c50"
+    },
+    {
+      "clips": {
+        "crouch_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "guard_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "lane_away_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "lane_toward_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 64,
+      "frames": [
+        {
+          "frame": 0,
+          "opaque_bounds": [
+            29,
+            21,
+            201,
+            228
+          ],
+          "visible_coverage": 0.391
+        },
+        {
+          "frame": 1,
+          "opaque_bounds": [
+            23,
+            34,
+            198,
+            215
+          ],
+          "visible_coverage": 0.3882
+        },
+        {
+          "frame": 2,
+          "opaque_bounds": [
+            23,
+            41,
+            189,
+            209
+          ],
+          "visible_coverage": 0.3583
+        },
+        {
+          "frame": 3,
+          "opaque_bounds": [
+            4,
+            28,
+            189,
+            221
+          ],
+          "visible_coverage": 0.3757
+        },
+        {
+          "frame": 4,
+          "opaque_bounds": [
+            29,
+            30,
+            196,
+            216
+          ],
+          "visible_coverage": 0.3764
+        },
+        {
+          "frame": 5,
+          "opaque_bounds": [
+            26,
+            41,
+            205,
+            204
+          ],
+          "visible_coverage": 0.3842
+        },
+        {
+          "frame": 6,
+          "opaque_bounds": [
+            29,
+            33,
+            194,
+            212
+          ],
+          "visible_coverage": 0.3866
+        },
+        {
+          "frame": 7,
+          "opaque_bounds": [
+            5,
+            30,
+            189,
+            216
+          ],
+          "visible_coverage": 0.3726
+        },
+        {
+          "frame": 8,
+          "opaque_bounds": [
+            33,
+            21,
+            189,
+            203
+          ],
+          "visible_coverage": 0.3409
+        },
+        {
+          "frame": 9,
+          "opaque_bounds": [
+            24,
+            56,
+            186,
+            200
+          ],
+          "visible_coverage": 0.3129
+        },
+        {
+          "frame": 10,
+          "opaque_bounds": [
+            11,
+            77,
+            245,
+            179
+          ],
+          "visible_coverage": 0.2856
+        },
+        {
+          "frame": 11,
+          "opaque_bounds": [
+            0,
+            16,
+            199,
+            208
+          ],
+          "visible_coverage": 0.359
+        },
+        {
+          "frame": 12,
+          "opaque_bounds": [
+            25,
+            0,
+            187,
+            218
+          ],
+          "visible_coverage": 0.3554
+        },
+        {
+          "frame": 13,
+          "opaque_bounds": [
+            32,
+            0,
+            188,
+            218
+          ],
+          "visible_coverage": 0.3635
+        },
+        {
+          "frame": 14,
+          "opaque_bounds": [
+            26,
+            0,
+            188,
+            218
+          ],
+          "visible_coverage": 0.3653
+        },
+        {
+          "frame": 15,
+          "opaque_bounds": [
+            6,
+            0,
+            184,
+            218
+          ],
+          "visible_coverage": 0.3536
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_lane_guard_crouch_4x4.png",
+      "output_sha256": "f7682f210c430fa6566b7368e337ab44230fed94f684c0012f4747b7041f7434",
+      "sheet_index": 4,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_crouch.png",
+      "source_sha256": "e8defb2e51cbcc29962c26dcf26aee43808ea8ed38071a7e3c095b0f8af48a74"
+    }
+  ],
+  "version": 1
+}

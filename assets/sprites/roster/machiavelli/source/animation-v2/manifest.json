@@ -1,0 +1,5702 @@
+{
+  "action_curation": {
+    "path": "characters/machiavelli/animation-v2.actions.json",
+    "review": {
+      "available_kinds": [
+        "normal_attacks",
+        "mobility_throw",
+        "item_interactions",
+        "advanced_guard",
+        "damage_recovery",
+        "specials",
+        "special_effects",
+        "intro_taunt_victory_defeat"
+      ],
+      "mapping_basis": "Prompt character_id and prompt_id metadata, never filename chronology.",
+      "missing_kinds": [],
+      "notes": [
+        "Runtime-keyed blank phases in advanced guard and damage recovery are replaced with adjacent valid phases from the same authored row.",
+        "Existing frame selection and cleanup overrides are retained when the canonical source hash is unchanged.",
+        "Existing frame selection and cleanup overrides are retained when the canonical source hash is unchanged.",
+        "Existing frame selection and cleanup overrides are retained when the canonical source hash is unchanged.",
+        "Existing frame selection and cleanup overrides are retained when the canonical source hash is unchanged.",
+        "Duplicate candidates were collapsed by SHA-256 and resolved by explicit override or deterministic quality score.",
+        "Existing frame selection and cleanup overrides are retained when the canonical source hash is unchanged.",
+        "Neutral frame order and offsets are provisional until gameplay-scale motion review."
+      ],
+      "preserved_hand_tuning": [
+        "normal_attacks",
+        "mobility_throw",
+        "item_interactions",
+        "advanced_guard",
+        "damage_recovery",
+        "specials",
+        "special_effects",
+        "intro_taunt_victory_defeat"
+      ],
+      "reset_to_source_defaults": [],
+      "selection_manifest": "docs/prompts/fullset/manifest.json",
+      "status": "source_curated"
+    },
+    "sha256": "079bf0b66fcfea9941f6b2d2541d05c0552d3e44825d6e86e50a066a063b64ab"
+  },
+  "authored_frame_count": 208,
+  "cell_size": [
+    256,
+    256
+  ],
+  "character": "machiavelli",
+  "curation": {
+    "path": "characters/machiavelli/animation-v2.atlas.json",
+    "review": {
+      "missing_base_actions": [],
+      "notes": [
+        "Canonical sources are selected from prompt/image pairs in docs/prompts/fullset.",
+        "Existing frame selection, scale, and root offsets were retained only when the chosen image hash matched the previously curated source.",
+        "Existing reviewed sheets without a correctly paired fullset prompt are retained rather than silently dropped.",
+        "Sheets whose source changed use neutral frame order and offsets and require a gameplay-scale motion review."
+      ],
+      "preserved_hand_tuning": [
+        "idle_turn_4x4",
+        "walk_forward_backward_4x4",
+        "run_start_loop_stop_4x4",
+        "jump_land_recovery_4x4",
+        "lane_guard_crouch_4x4"
+      ],
+      "reset_to_source_defaults": [],
+      "retained_without_fullset_pair": [],
+      "selection_manifest": "docs/prompts/fullset/manifest.json",
+      "source_hashes": {
+        "machiavelli/crouch": "bf01ce7f6c3126a69df0860fb2e8965034cbbf6bd23cc91408eac3769049f4d6",
+        "machiavelli/idle": "f0937b2c58cf39125163b3e4ed5085a5faa19f6c13dd74e6dfdbe52ec059cb0e",
+        "machiavelli/jump": "7fb14a3a33f2ba7601bea012a5ca68adfad6bf8c58d66eb9ee983b811f406d76",
+        "machiavelli/mixed": "ae426ed38f7a99cfadb6b40b55e9f233012dc830d82ebb976b1b9e9eb723a082",
+        "machiavelli/run": "4e3b14a7a244ddf5128388bbaea06e90e84bdd41e970a59808e4b6773a8756bf",
+        "machiavelli/walk": "c0821560e94d0f07de0cc544f3a99d72e2ae28158750cbb7f055614c270dd735"
+      },
+      "status": "source_curated",
+      "strategy": "hand-curated frame selection, sequence reconstruction, per-frame scaling, silhouette centering, ground alignment, and source rejection"
+    },
+    "sha256": "5dfd378e9f92fedf83de5b0b1fc317831fef30a1bf22aa6779b75229fe8100de"
+  },
+  "layout": "13 normalized 4x4 RGBA sheets, row-major",
+  "runtime_note": "The legacy core sheet and optional extended sheet are appended by the runtime for missing authored states and combat fallback frames.",
+  "sheets": [
+    {
+      "background_mode": "light-edge",
+      "background_overrides": [],
+      "background_threshold": 60.0,
+      "clips": {
+        "idle_v2": {
+          "duration": 7,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop"
+        },
+        "turn_left_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "turn_right_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 0,
+      "frame_offsets": [
+        [
+          6,
+          -10
+        ],
+        [
+          11,
+          -9
+        ],
+        [
+          19,
+          -9
+        ],
+        [
+          20,
+          -9
+        ],
+        [
+          4,
+          -7
+        ],
+        [
+          10,
+          -8
+        ],
+        [
+          14,
+          -8
+        ],
+        [
+          4,
+          -7
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          -4,
+          3
+        ],
+        [
+          23,
+          3
+        ],
+        [
+          26,
+          2
+        ],
+        [
+          26,
+          2
+        ],
+        [
+          23,
+          3
+        ],
+        [
+          -4,
+          3
+        ],
+        [
+          3,
+          0
+        ]
+      ],
+      "frame_scales": [
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92,
+        0.92
+      ],
+      "frames": [
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 0,
+          "offset": [
+            6,
+            -10
+          ],
+          "opaque_bounds": [
+            51,
+            37,
+            155,
+            209
+          ],
+          "scale": 0.92,
+          "source_frame": 0,
+          "visible_coverage": 0.2672
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 1,
+          "offset": [
+            11,
+            -9
+          ],
+          "opaque_bounds": [
+            50,
+            39,
+            156,
+            207
+          ],
+          "scale": 0.92,
+          "source_frame": 1,
+          "visible_coverage": 0.2681
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 2,
+          "offset": [
+            19,
+            -9
+          ],
+          "opaque_bounds": [
+            50,
+            35,
+            156,
+            211
+          ],
+          "scale": 0.92,
+          "source_frame": 2,
+          "visible_coverage": 0.2683
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 3,
+          "offset": [
+            20,
+            -9
+          ],
+          "opaque_bounds": [
+            52,
+            36,
+            151,
+            210
+          ],
+          "scale": 0.92,
+          "source_frame": 3,
+          "visible_coverage": 0.262
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 4,
+          "offset": [
+            4,
+            -7
+          ],
+          "opaque_bounds": [
+            55,
+            36,
+            146,
+            210
+          ],
+          "scale": 0.92,
+          "source_frame": 4,
+          "visible_coverage": 0.2563
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 5,
+          "offset": [
+            10,
+            -8
+          ],
+          "opaque_bounds": [
+            54,
+            39,
+            149,
+            207
+          ],
+          "scale": 0.92,
+          "source_frame": 6,
+          "visible_coverage": 0.2468
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 6,
+          "offset": [
+            14,
+            -8
+          ],
+          "opaque_bounds": [
+            54,
+            39,
+            148,
+            207
+          ],
+          "scale": 0.92,
+          "source_frame": 7,
+          "visible_coverage": 0.2507
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 7,
+          "offset": [
+            4,
+            -7
+          ],
+          "opaque_bounds": [
+            55,
+            36,
+            146,
+            210
+          ],
+          "scale": 0.92,
+          "source_frame": 4,
+          "visible_coverage": 0.2563
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 8,
+          "offset": [
+            3,
+            0
+          ],
+          "opaque_bounds": [
+            54,
+            42,
+            148,
+            204
+          ],
+          "scale": 0.92,
+          "source_frame": 8,
+          "visible_coverage": 0.254
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 9,
+          "offset": [
+            -4,
+            3
+          ],
+          "opaque_bounds": [
+            53,
+            42,
+            150,
+            204
+          ],
+          "scale": 0.92,
+          "source_frame": 9,
+          "visible_coverage": 0.2397
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 10,
+          "offset": [
+            23,
+            3
+          ],
+          "opaque_bounds": [
+            56,
+            40,
+            144,
+            206
+          ],
+          "scale": 0.92,
+          "source_frame": 10,
+          "visible_coverage": 0.2259
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 11,
+          "offset": [
+            26,
+            2
+          ],
+          "opaque_bounds": [
+            53,
+            41,
+            151,
+            205
+          ],
+          "scale": 0.92,
+          "source_frame": 11,
+          "visible_coverage": 0.2579
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 12,
+          "offset": [
+            26,
+            2
+          ],
+          "opaque_bounds": [
+            53,
+            41,
+            151,
+            205
+          ],
+          "scale": 0.92,
+          "source_frame": 11,
+          "visible_coverage": 0.2579
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 13,
+          "offset": [
+            23,
+            3
+          ],
+          "opaque_bounds": [
+            56,
+            40,
+            144,
+            206
+          ],
+          "scale": 0.92,
+          "source_frame": 10,
+          "visible_coverage": 0.2259
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 14,
+          "offset": [
+            -4,
+            3
+          ],
+          "opaque_bounds": [
+            53,
+            42,
+            150,
+            204
+          ],
+          "scale": 0.92,
+          "source_frame": 9,
+          "visible_coverage": 0.2397
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 15,
+          "offset": [
+            3,
+            0
+          ],
+          "opaque_bounds": [
+            54,
+            42,
+            148,
+            204
+          ],
+          "scale": 0.92,
+          "source_frame": 8,
+          "visible_coverage": 0.254
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_idle_turn_4x4.png",
+      "output_sha256": "68fee4307c76cfa97fe6e05df3f918459647f1a352576df3177171b83473dec0",
+      "sheet_index": 0,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/idle_turn_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        4,
+        8,
+        9,
+        10,
+        11,
+        11,
+        10,
+        9,
+        8
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "f0937b2c58cf39125163b3e4ed5085a5faa19f6c13dd74e6dfdbe52ec059cb0e"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "walk_backward_v2": {
+          "duration": 5,
+          "frames": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "loop"
+        },
+        "walk_forward_v2": {
+          "duration": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 16,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            38,
+            17,
+            189,
+            239
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.1509
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            30,
+            33,
+            169,
+            223
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.1543
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            12,
+            24,
+            188,
+            232
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.3188
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            7,
+            21,
+            179,
+            235
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.3182
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            53,
+            0,
+            181,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.1455
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            27,
+            0,
+            172,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3088
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            10,
+            0,
+            181,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3253
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            16,
+            0,
+            164,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2983
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            43,
+            0,
+            189,
+            241
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2666
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            38,
+            1,
+            148,
+            240
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2549
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            27,
+            0,
+            160,
+            241
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2482
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            7,
+            1,
+            163,
+            240
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2624
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            37,
+            7,
+            170,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2713
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            31,
+            7,
+            148,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2549
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            27,
+            7,
+            159,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2663
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            25,
+            7,
+            145,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2458
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_walk_forward_backward_4x4.png",
+      "output_sha256": "5c0b81e54f19a85f88edf5e46eb6f67018daef3949cc2eae6ddae986dfa83835",
+      "sheet_index": 1,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/walk_forward_backward_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "78100ded57b6eff1c1b1a2994dec39d6607ca28cf6d21f3c8e9a0293077a070b"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "run_start_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "run_stop_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "run_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "loop"
+        }
+      },
+      "frame_offset": 32,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            38,
+            71,
+            154,
+            185
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.1099
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            15,
+            69,
+            177,
+            187
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.1126
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            15,
+            62,
+            241,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2422
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            64,
+            205,
+            192
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2369
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            22,
+            0,
+            206,
+            252
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2289
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            11,
+            0,
+            200,
+            246
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.2313
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            24,
+            0,
+            185,
+            241
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2273
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            8,
+            0,
+            188,
+            252
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2258
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            17,
+            43,
+            184,
+            198
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.218
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            19,
+            46,
+            170,
+            191
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2128
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            26,
+            47,
+            178,
+            195
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2103
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            25,
+            52,
+            184,
+            192
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2128
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            48,
+            23,
+            207,
+            177
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.248
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            46,
+            240,
+            162
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2577
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            55,
+            21,
+            145,
+            189
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2314
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            37,
+            12,
+            120,
+            199
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2045
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_run_start_loop_stop_4x4.png",
+      "output_sha256": "cb87f9edf3fe709b7e6e703a3350000c9d761ee61ea11c747a31bc65067954c2",
+      "sheet_index": 2,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/run_start_loop_stop_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "7fb14a3a33f2ba7601bea012a5ca68adfad6bf8c58d66eb9ee983b811f406d76"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "jump_air_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "jump_takeoff_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "land_recovery_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "land_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 48,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            45,
+            45,
+            141,
+            171
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.1801
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            45,
+            149,
+            171
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.1974
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            2,
+            45,
+            161,
+            172
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2079
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            2,
+            45,
+            170,
+            171
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2091
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            37,
+            16,
+            146,
+            240
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.1833
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            17,
+            17,
+            151,
+            239
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.2049
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            16,
+            180,
+            240
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2234
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            15,
+            17,
+            164,
+            239
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.1988
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            30,
+            0,
+            165,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2203
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            3,
+            0,
+            173,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.24
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            17,
+            0,
+            159,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2134
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            0,
+            164,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2125
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            0,
+            164,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2125
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            17,
+            0,
+            159,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2134
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            3,
+            0,
+            173,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.24
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            30,
+            0,
+            165,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2203
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_jump_land_recovery_4x4.png",
+      "output_sha256": "14e21612776a1f1bad86e66082cec6e39ec6365033769062a1eaae54762c5525",
+      "sheet_index": 3,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/jump_land_recovery_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        11,
+        10,
+        9,
+        8
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "c0821560e94d0f07de0cc544f3a99d72e2ae28158750cbb7f055614c270dd735"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_overrides": [],
+      "background_threshold": 60.0,
+      "clips": {
+        "crouch_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "guard_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "lane_away_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "lane_toward_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 64,
+      "frame_offsets": [
+        [
+          -2,
+          -10
+        ],
+        [
+          4,
+          -10
+        ],
+        [
+          19,
+          -10
+        ],
+        [
+          20,
+          -10
+        ],
+        [
+          8,
+          -10
+        ],
+        [
+          12,
+          -7
+        ],
+        [
+          20,
+          -8
+        ],
+        [
+          20,
+          -10
+        ],
+        [
+          13,
+          -10
+        ],
+        [
+          36,
+          24
+        ],
+        [
+          26,
+          22
+        ],
+        [
+          20,
+          13
+        ],
+        [
+          12,
+          27
+        ],
+        [
+          32,
+          27
+        ],
+        [
+          16,
+          27
+        ],
+        [
+          29,
+          28
+        ]
+      ],
+      "frame_scales": [
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.84,
+        0.84,
+        0.84,
+        0.84,
+        0.92,
+        0.95,
+        0.95,
+        0.92,
+        0.94,
+        0.94,
+        0.94,
+        0.94
+      ],
+      "frames": [
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 0,
+          "offset": [
+            -2,
+            -10
+          ],
+          "opaque_bounds": [
+            57,
+            45,
+            141,
+            201
+          ],
+          "scale": 0.9,
+          "source_frame": 0,
+          "visible_coverage": 0.2326
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 1,
+          "offset": [
+            4,
+            -10
+          ],
+          "opaque_bounds": [
+            55,
+            56,
+            145,
+            190
+          ],
+          "scale": 0.9,
+          "source_frame": 1,
+          "visible_coverage": 0.21
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 2,
+          "offset": [
+            19,
+            -10
+          ],
+          "opaque_bounds": [
+            50,
+            52,
+            156,
+            194
+          ],
+          "scale": 0.9,
+          "source_frame": 2,
+          "visible_coverage": 0.2332
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 3,
+          "offset": [
+            20,
+            -10
+          ],
+          "opaque_bounds": [
+            56,
+            55,
+            145,
+            191
+          ],
+          "scale": 0.9,
+          "source_frame": 3,
+          "visible_coverage": 0.2259
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 4,
+          "offset": [
+            8,
+            -10
+          ],
+          "opaque_bounds": [
+            67,
+            31,
+            123,
+            215
+          ],
+          "scale": 0.84,
+          "source_frame": 4,
+          "visible_coverage": 0.1892
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 5,
+          "offset": [
+            12,
+            -7
+          ],
+          "opaque_bounds": [
+            48,
+            34,
+            160,
+            212
+          ],
+          "scale": 0.84,
+          "source_frame": 5,
+          "visible_coverage": 0.2033
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 6,
+          "offset": [
+            20,
+            -8
+          ],
+          "opaque_bounds": [
+            53,
+            33,
+            149,
+            213
+          ],
+          "scale": 0.84,
+          "source_frame": 6,
+          "visible_coverage": 0.1967
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 7,
+          "offset": [
+            20,
+            -10
+          ],
+          "opaque_bounds": [
+            58,
+            31,
+            139,
+            215
+          ],
+          "scale": 0.84,
+          "source_frame": 7,
+          "visible_coverage": 0.1995
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 8,
+          "offset": [
+            13,
+            -10
+          ],
+          "opaque_bounds": [
+            63,
+            37,
+            130,
+            209
+          ],
+          "scale": 0.92,
+          "source_frame": 8,
+          "visible_coverage": 0.2037
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 9,
+          "offset": [
+            36,
+            24
+          ],
+          "opaque_bounds": [
+            49,
+            102,
+            157,
+            144
+          ],
+          "scale": 0.95,
+          "source_frame": 9,
+          "visible_coverage": 0.2046
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 10,
+          "offset": [
+            26,
+            22
+          ],
+          "opaque_bounds": [
+            46,
+            110,
+            163,
+            136
+          ],
+          "scale": 0.95,
+          "source_frame": 10,
+          "visible_coverage": 0.1924
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 11,
+          "offset": [
+            20,
+            13
+          ],
+          "opaque_bounds": [
+            60,
+            68,
+            136,
+            178
+          ],
+          "scale": 0.92,
+          "source_frame": 11,
+          "visible_coverage": 0.2109
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 12,
+          "offset": [
+            12,
+            27
+          ],
+          "opaque_bounds": [
+            61,
+            42,
+            134,
+            204
+          ],
+          "scale": 0.94,
+          "source_frame": 12,
+          "visible_coverage": 0.2308
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 13,
+          "offset": [
+            32,
+            27
+          ],
+          "opaque_bounds": [
+            61,
+            44,
+            134,
+            202
+          ],
+          "scale": 0.94,
+          "source_frame": 13,
+          "visible_coverage": 0.2755
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 14,
+          "offset": [
+            16,
+            27
+          ],
+          "opaque_bounds": [
+            65,
+            44,
+            126,
+            202
+          ],
+          "scale": 0.94,
+          "source_frame": 14,
+          "visible_coverage": 0.2595
+        },
+        {
+          "background_mode": "light-edge",
+          "background_threshold": 60.0,
+          "frame": 15,
+          "offset": [
+            29,
+            28
+          ],
+          "opaque_bounds": [
+            60,
+            44,
+            136,
+            202
+          ],
+          "scale": 0.94,
+          "source_frame": 15,
+          "visible_coverage": 0.2318
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_lane_guard_crouch_4x4.png",
+      "output_sha256": "26c7da0f2ff1203a612333097c3290dea60523e33dd1c821679e63d9d6495fe2",
+      "sheet_index": 4,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/lane_guard_crouch_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "bf01ce7f6c3126a69df0860fb2e8965034cbbf6bd23cc91408eac3769049f4d6"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "air_attack_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "attack_heavy_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "attack_light_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "attack_medium_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 80,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            61,
+            36,
+            130,
+            204
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2421
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            11,
+            60,
+            245,
+            180
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2559
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            52,
+            256,
+            188
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2722
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            37,
+            174,
+            203
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2287
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            28,
+            47,
+            227,
+            185
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.262
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            33,
+            230,
+            223
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3648
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            4,
+            49,
+            251,
+            183
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.267
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            45,
+            187,
+            187
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2572
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            5,
+            61,
+            210,
+            195
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2464
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            18,
+            1,
+            215,
+            219
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.3514
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            39,
+            7,
+            208,
+            207
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.4121
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            29,
+            21,
+            157,
+            192
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2414
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            26,
+            0,
+            229,
+            188
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2262
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            15,
+            256,
+            186
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2729
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            15,
+            214,
+            173
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2274
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            11,
+            64,
+            159,
+            137
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2144
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_normal_attacks_4x4.png",
+      "output_sha256": "fd5ef6a3f177e114b29450a2ccbe5cf3e35ef38a37d99be02bda80e8c711e743",
+      "sheet_index": 5,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/normal_attacks_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "936f61df0b8493f4494c835d6201c5579093420719b0115108db3f616763c8f7"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "dash_backward_v2": {
+          "duration": 2,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "dash_forward_v2": {
+          "duration": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "evade_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "throw_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 96,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            31,
+            31,
+            171,
+            213
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.3291
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            3,
+            55,
+            223,
+            190
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2995
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            10,
+            83,
+            241,
+            162
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2956
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            4,
+            64,
+            210,
+            181
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.3302
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            40,
+            31,
+            174,
+            201
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2996
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            26,
+            29,
+            166,
+            207
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.283
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            23,
+            54,
+            224,
+            180
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3312
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            25,
+            15,
+            162,
+            221
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.3063
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            34,
+            29,
+            220,
+            227
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2867
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            74,
+            67,
+            182,
+            189
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2076
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            46,
+            205,
+            210
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.284
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            31,
+            21,
+            171,
+            235
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2898
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            31,
+            0,
+            220,
+            190
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.0776
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            12,
+            0,
+            244,
+            190
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.0483
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            208,
+            190
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.0463
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            17,
+            0,
+            158,
+            190
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2985
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_mobility_throw_4x4.png",
+      "output_sha256": "ab04deaf57052f391191bb52811d5898949c9d4c7832d2fda901be7f8d0fc002",
+      "sheet_index": 6,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/mobility_evasion_throw_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "e94d344c0eea591416e648f77c00d4c171974d878f71f94d4d963eadda825b31"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "item_pickup_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "item_swing_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "item_throw_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "item_use_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 112,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            62,
+            122,
+            194,
+            116
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.1757
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            63,
+            256,
+            174
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.3244
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            63,
+            254,
+            174
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.3459
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            28,
+            67,
+            127,
+            169
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2229
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            39,
+            46,
+            217,
+            142
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2431
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            43,
+            256,
+            213
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3503
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            58,
+            250,
+            198
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2668
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            1,
+            55,
+            197,
+            133
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2096
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            44,
+            3,
+            212,
+            154
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.255
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            157
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.37
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            247,
+            156
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.3198
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            34,
+            0,
+            145,
+            156
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2258
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            39,
+            29,
+            217,
+            122
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2278
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            27,
+            256,
+            124
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3157
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            20,
+            256,
+            131
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2992
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            5,
+            193,
+            146
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2306
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_item_interactions_4x4.png",
+      "output_sha256": "92836c9587df76fed20286d8d3d91b23b5e102eccab6265fbd3143968c854b71",
+      "sheet_index": 7,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/item_interactions_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "33ad6a5a894c0184fef68a3791bc2ba21182bfbc0c50b282015980b2f8e37209"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "counter_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "guard_break_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "guard_hold_v2": {
+          "duration": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "loop"
+        },
+        "parry_v2": {
+          "duration": 2,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 128,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            59,
+            77,
+            197,
+            162
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2319
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            59,
+            77,
+            197,
+            162
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2319
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            73,
+            237,
+            165
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.3201
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            19,
+            74,
+            133,
+            165
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2208
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            48,
+            46,
+            208,
+            210
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2318
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            45,
+            256,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3418
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            45,
+            256,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2966
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            47,
+            185,
+            140
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2099
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            43,
+            0,
+            213,
+            135
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2303
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            135
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.3202
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            253,
+            135
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2797
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            19,
+            24,
+            157,
+            111
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.1807
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            41,
+            1,
+            215,
+            122
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.222
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            2,
+            256,
+            121
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3065
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            1,
+            256,
+            122
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2737
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            188,
+            123
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2089
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_advanced_guard_4x4.png",
+      "output_sha256": "6005119b2696c2ec808b9d70cdd1cd331b9ba80f065bf63ccb45d48769485311",
+      "sheet_index": 8,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/guard_parry_break_4x4.png",
+      "source_frames": [
+        0,
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "ae047716d9c04b4175359f1bc60ceee19c4318d952747072d62b897fc4d00869"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "get_up_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "hit_heavy_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "hit_light_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "knockdown_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 144,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            48,
+            77,
+            208,
+            160
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2494
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            77,
+            256,
+            159
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.349
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            71,
+            247,
+            166
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.3118
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            42,
+            71,
+            126,
+            165
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2175
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            46,
+            36,
+            210,
+            220
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2515
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            36,
+            256,
+            152
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3425
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            47,
+            248,
+            141
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2998
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            29,
+            52,
+            148,
+            136
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.209
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            34,
+            0,
+            222,
+            142
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2367
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            34,
+            0,
+            222,
+            142
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2367
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            84,
+            236,
+            172
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.1393
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            84,
+            236,
+            172
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.1393
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            22,
+            70,
+            234,
+            81
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.1583
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            35,
+            256,
+            117
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2674
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            242,
+            151
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3109
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            29,
+            0,
+            139,
+            151
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2186
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_damage_recovery_4x4.png",
+      "output_sha256": "e319d2204f80f198b8731fb2cc185833d1370d295815f50419e48af94724669e",
+      "sheet_index": 9,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/reactions_knockdown_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        8,
+        11,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "52d3c3c4b55c4c02b8f3b463ed60a42cb63184e29c68e53abc38fa262db452fc"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "special_1_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "special_2_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "special_3_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "special_4_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 160,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            52,
+            27,
+            153,
+            226
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.3383
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            7,
+            70,
+            249,
+            183
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.3367
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            64,
+            256,
+            189
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2857
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            69,
+            211,
+            184
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2628
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            44,
+            27,
+            170,
+            226
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3465
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            42,
+            31,
+            155,
+            222
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3612
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            17,
+            39,
+            238,
+            214
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3616
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            30,
+            186,
+            223
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2728
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            21,
+            66,
+            235,
+            149
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2299
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            52,
+            242,
+            179
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2928
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            52,
+            233,
+            185
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.1959
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            46,
+            26,
+            153,
+            202
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2483
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            26,
+            51,
+            229,
+            150
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2359
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            32,
+            223,
+            176
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3202
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            41,
+            38,
+            194,
+            175
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2887
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            66,
+            11,
+            126,
+            214
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2623
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_specials_4x4.png",
+      "output_sha256": "9387845a1ed9f7b8fbbf4c45297dab350a7ccd01e01dba5b2e77d454a06d6445",
+      "sheet_index": 10,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/specials_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "502b4b3f399991f2e1d6eea1e869a3af9968dae4f609d0552398a6fe64553f9a"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "special_fx_1_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "special_fx_2_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "special_fx_3_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "special_fx_4_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 176,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            22,
+            103,
+            216,
+            134
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2001
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            29,
+            81,
+            218,
+            160
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.157
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            37,
+            46,
+            191,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2085
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            87,
+            213,
+            154
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.0798
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            44,
+            115,
+            167,
+            106
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.0179
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            28,
+            37,
+            160,
+            195
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.2657
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            18,
+            29,
+            225,
+            227
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2838
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            23,
+            70,
+            166,
+            160
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.1565
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            69,
+            92,
+            113,
+            112
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.015
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            97,
+            176,
+            117
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.1368
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            23,
+            0,
+            184,
+            214
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2125
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            14,
+            101,
+            190,
+            109
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.0272
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            67,
+            235,
+            110
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.0992
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            61,
+            244,
+            112
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2207
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            18,
+            11,
+            195,
+            168
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.173
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            93,
+            206,
+            78
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.0372
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_special_effects_4x4.png",
+      "output_sha256": "2eb33149802d91eac1d7eed512bfe9ac95060072f147135ab29f7ab50ab729aa",
+      "sheet_index": 11,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/special_effects_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "42157253cc7888ee40e139c4bb34ebdac26b8a55bc59e048a3b132ccdc9086f3"
+    },
+    {
+      "background_mode": "background-aware",
+      "background_overrides": [],
+      "background_threshold": 55.0,
+      "clips": {
+        "defeat_v2": {
+          "duration": 5,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "intro_v2": {
+          "duration": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "taunt_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "victory_v2": {
+          "duration": 5,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 192,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            38,
+            36,
+            166,
+            220
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.095
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            47,
+            28,
+            179,
+            228
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.1613
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            52,
+            32,
+            117,
+            224
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.0897
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            7,
+            52,
+            186,
+            204
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.0527
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            66,
+            0,
+            109,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.0918
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            41,
+            0,
+            177,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.067
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            33,
+            0,
+            172,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.1445
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            16,
+            0,
+            176,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.0982
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            65,
+            0,
+            191,
+            252
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.0938
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            1,
+            218,
+            250
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.1088
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            16,
+            0,
+            176,
+            251
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.3161
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            7,
+            1,
+            182,
+            251
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3284
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            33,
+            24,
+            222,
+            188
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.3429
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            72,
+            256,
+            142
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2406
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            138,
+            255,
+            84
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.1733
+        },
+        {
+          "background_mode": "background-aware",
+          "background_threshold": 55.0,
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            149,
+            229,
+            77
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.182
+        }
+      ],
+      "output": "assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_intro_taunt_victory_defeat_4x4.png",
+      "output_sha256": "2bb339bf5e47b1377f7332cd211f0286e46c9ffd24b671be54f9fb9370e983dc",
+      "sheet_index": 12,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/machiavelli/selected/intro_taunt_victory_defeat_4x4.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "ed95e82ae5d29ce71d06671ca609e4ab228b041197e551907e10c1f6b51cd4ad"
+    }
+  ],
+  "version": 1
+}

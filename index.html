@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ethic Brawl - A 2.5D cyberpunk philosophical arena-brawler" />
+    <title>Ethic Brawl</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #1A0A2E;
+        overscroll-behavior: none;
+      }
+      
+      #game-container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        touch-action: none;
+      }
+      
+      #game-canvas,
+      #ethic-pixi-bridge {
+        width: min(100vw, calc(100vh * 16 / 9));
+        height: min(100vh, calc(100vw * 9 / 16));
+        display: block;
+        image-rendering: pixelated;
+      }
+
+      #game-canvas {
+        position: relative;
+        z-index: 1;
+        background: transparent;
+      }
+
+      #ethic-pixi-bridge {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+      }
+
+      @supports (height: 100dvh) {
+        #game-container {
+          height: 100dvh;
+        }
+
+        #game-canvas,
+        #ethic-pixi-bridge {
+          width: min(100vw, calc(100dvh * 16 / 9));
+          height: min(100dvh, calc(100vw * 9 / 16));
+        }
+      }
+      
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #1A0A2E;
+        color: #00F5FF;
+        font-family: 'Courier New', monospace;
+        font-size: 24px;
+        z-index: 1000;
+      }
+      
+      #loading.hidden {
+        display: none;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DQuxcB9g.js"></script>
+  </head>
+  <body>
+    <div id="loading">INITIALIZING ETHIC BRAWL...</div>
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+    </div>
+  </body>
+</html>

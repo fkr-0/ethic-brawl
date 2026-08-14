@@ -1,0 +1,219 @@
+{
+  "authored_frame_count": 16,
+  "cell_size": [
+    256,
+    256
+  ],
+  "character": "deleuze_guattari",
+  "clips": {
+    "air_attack_v2": {
+      "duration": 3,
+      "frames": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "mode": "once"
+    },
+    "attack_heavy_v2": {
+      "duration": 4,
+      "frames": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "mode": "once"
+    },
+    "attack_light_v2": {
+      "duration": 3,
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mode": "once"
+    },
+    "attack_medium_v2": {
+      "duration": 3,
+      "frames": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "mode": "once"
+    }
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "opaque_bounds": [
+        51,
+        23,
+        137,
+        222
+      ],
+      "visible_coverage": 0.2451
+    },
+    {
+      "frame": 1,
+      "opaque_bounds": [
+        27,
+        21,
+        226,
+        224
+      ],
+      "visible_coverage": 0.2927
+    },
+    {
+      "frame": 2,
+      "opaque_bounds": [
+        30,
+        22,
+        134,
+        225
+      ],
+      "visible_coverage": 0.2453
+    },
+    {
+      "frame": 3,
+      "opaque_bounds": [
+        51,
+        23,
+        134,
+        224
+      ],
+      "visible_coverage": 0.247
+    },
+    {
+      "frame": 4,
+      "opaque_bounds": [
+        42,
+        18,
+        152,
+        217
+      ],
+      "visible_coverage": 0.2437
+    },
+    {
+      "frame": 5,
+      "opaque_bounds": [
+        1,
+        20,
+        255,
+        215
+      ],
+      "visible_coverage": 0.2773
+    },
+    {
+      "frame": 6,
+      "opaque_bounds": [
+        0,
+        19,
+        250,
+        217
+      ],
+      "visible_coverage": 0.2939
+    },
+    {
+      "frame": 7,
+      "opaque_bounds": [
+        46,
+        18,
+        135,
+        218
+      ],
+      "visible_coverage": 0.2475
+    },
+    {
+      "frame": 8,
+      "opaque_bounds": [
+        48,
+        52,
+        136,
+        204
+      ],
+      "visible_coverage": 0.2298
+    },
+    {
+      "frame": 9,
+      "opaque_bounds": [
+        37,
+        14,
+        124,
+        216
+      ],
+      "visible_coverage": 0.2477
+    },
+    {
+      "frame": 10,
+      "opaque_bounds": [
+        23,
+        24,
+        207,
+        208
+      ],
+      "visible_coverage": 0.2874
+    },
+    {
+      "frame": 11,
+      "opaque_bounds": [
+        42,
+        24,
+        135,
+        207
+      ],
+      "visible_coverage": 0.2299
+    },
+    {
+      "frame": 12,
+      "opaque_bounds": [
+        36,
+        0,
+        161,
+        201
+      ],
+      "visible_coverage": 0.2442
+    },
+    {
+      "frame": 13,
+      "opaque_bounds": [
+        48,
+        2,
+        208,
+        203
+      ],
+      "visible_coverage": 0.1663
+    },
+    {
+      "frame": 14,
+      "opaque_bounds": [
+        0,
+        52,
+        222,
+        166
+      ],
+      "visible_coverage": 0.2771
+    },
+    {
+      "frame": 15,
+      "opaque_bounds": [
+        37,
+        46,
+        159,
+        162
+      ],
+      "visible_coverage": 0.2332
+    }
+  ],
+  "layout": "one 4x4 RGBA normal-attack sheet, row-major",
+  "output": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_normal_attacks_4x4.png",
+  "output_sha256": "0f416fbc8a76fd92e9c49f67a1c5822cd14fb97ed18d5a98ba0c451d8fa28996",
+  "runtime_note": "Authored normal and air attacks are appended after the legacy core and extended sheets; legacy movement, reactions, and specials remain active.",
+  "source": "assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_normal_attacks_poc_4x4.png",
+  "source_sha256": "3dd19b43127725a04e44d13393299df1c71608533eb9c4c4b96ba9c614a60db3",
+  "version": 1
+}
