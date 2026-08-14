@@ -26,4 +26,25 @@ describe('Stage Mode opponent AI', () => {
 
     expect(runtime.getPlayer2AIDifficulty()).toBe('hard');
   });
+
+  it('drives both fighters in AI showcase mode', () => {
+    const runtime = createFightRuntime();
+    runtime.reset(
+      { player1: 'camus', player2: 'nietzsche' },
+      { player1AIDifficulty: 'medium', player2AIDifficulty: 'medium' }
+    );
+    const input = createEmptyPlayerInput();
+    const startingPlayer1X = runtime.getState()?.player1.x;
+    const startingPlayer2X = runtime.getState()?.player2.x;
+
+    for (let frame = 0; frame < 20; frame++) {
+      runtime.update(1000 / 60, input, input, true, true);
+    }
+
+    const state = runtime.getState();
+    expect(state?.player1.x).toBeGreaterThan(startingPlayer1X as number);
+    expect(state?.player2.x).toBeLessThan(startingPlayer2X as number);
+    expect(runtime.getPlayer1AIDifficulty()).toBe('medium');
+    expect(runtime.getPlayer2AIDifficulty()).toBe('medium');
+  });
 });

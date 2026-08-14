@@ -2,19 +2,121 @@
 
 All notable changes to Ethic Brawl are documented here.
 
-## [Unreleased]
+## [1.8.0] - Planned
+
+- Add physical-device and sustained-session evidence before considering a native-renderer default change.
+
+## [1.7.3] - Unreleased
+
+- No changes yet.
+
+## [1.7.2] - Release candidate
 
 ### Added
 
-- A canonical 1024×1024 RGBA Deleuze/Guattari Animation v2 normal-attack sheet with light, medium, heavy, and airborne sequences, plus deterministic source/output hashes and per-frame bounds.
-- Runtime and unit-test wiring that uses the authored attack rows while retaining the established movement, reaction, and special banks.
-- Foucault as the first complete 208-frame Animation v2 fighter, with all thirteen curated sheets wired through locomotion, normal attacks, four command specials, damage, knockdown/get-up, victory, and defeat states.
-- Browser sprite validation coverage for Foucault's full atlas, including blank-frame, alpha/background-leak, and clip-reference checks.
+- Semantic device-aware command bars across the arcade shell, replacing keyboard-only footer prose while preserving the game's doctrinal verbs and neon terminal identity.
+- Measured text fitting and bounded wrapping through Arcade Runtime 1.12.0.
+- Browser evidence for a persisted custom keybinding appearing in the live help overlay.
+- A runtime-derived catalog covering 298 fighter, enemy, item-overlay, body-pose, and icon assets.
+- Deterministic one-job-per-file corpora containing 270 fighter jobs and 30 item/body-pose jobs with exact geometry and provenance.
+- Machine-readable sprite audit evidence, a labeled contact sheet, and the searchable Sprite Signal Deck review interface.
+- Project-local OpenCode auditors for independent runtime, prompt, pipeline, and review-UX sweeps.
+- A declarative settings model that owns tab order, row counts, labels, descriptions, values, and activation behavior from one source of truth.
+- Versioned and runtime-validated settings persistence with backward-compatible loading of legacy payloads.
+- Renderer-neutral accessibility controls for impact motion and combat flashes across Canvas and the retained Pixi bridge.
+- Three AI spectator densities: minimal broadcast, tactical intent, and a deliberately strange laboratory feed with action, attack, chain, and energy telemetry.
+- Browser coverage for navigating, persisting, restoring, and applying accessibility and spectator preferences through the real game shell.
+- A lazy native-renderer loader with disabled, ready, failed, and destroyed diagnostics plus safe Canvas fallback.
+- Manifest-driven production bundle budgets and Chromium/Firefox network tests proving that Canvas mode fetches no Pixi assets.
+- A tracked 1254×1254 RGB render-source normalization contract that converts border-sampled chroma-key source grids into exact 1024×1024 RGBA runtime sheets.
+
+### Changed
+
+- The help overlay now renders the active player binding profiles instead of static default bindings.
+- Start, settings, roster and results screens describe commands as actions that can resolve to keyboard, gamepad, pointer or touch labels.
+- Migrated the vendored Arcade Runtime to 1.12.0.
+- Sprite packaging now projects runtime-declared files from the canonical `assets/sprites` tree instead of relying on ignored `public/` copies.
+- Normal and stage matches load only their selected matchup; exhaustive full-roster loading is an explicit review operation.
+- Animation v2 locomotion clips now use the intended continuous transition cadence.
+- Rebuilt the settings screen around reusable arcade tabs and setting-row primitives with clearer hierarchy, explanatory copy, and stronger focus states.
+- Fight presentation policy is now configured independently from combat simulation, preserving deterministic gameplay while allowing sensory output to be scaled or disabled.
+- The Pixi implementation is now a true dynamic capability instead of being re-exported through the general render barrel.
+- Narrow Pixi imports and native ownership reduce the optional renderer's primary chunk from roughly 851 kB to 314 kB while removing the previous >500 kB build warning.
 
 ### Fixed
 
-- Restored the missing generic Animation v2 builder referenced by the package scripts and made it validate all currently integrated v2 fighters.
-- Corrected bridge changelog YAML entries so the workspace bridge can parse and expose project commands again.
+- Removed character-count truncation from shared screen copy so layout follows actual font metrics and Unicode code points.
+- Corrected shared chip auto-sizing and dynamic focus replacement behavior through the Runtime upgrade.
+- Eliminated the source/public split that caused 112 fighter sprite 404s despite existing artwork.
+- Concurrent requests for the same fighter atlas now share one in-flight load.
+- Settings navigation and rendering can no longer drift through duplicated hard-coded row counts.
+- Malformed localStorage enum values are ignored instead of being trusted as application state.
+- The default page no longer preloads the opt-in Pixi runtime.
+- Bridge initialization failures no longer abort the entire game startup.
+- Legacy roster audit geometry now mirrors the runtime loader: 384/512 square sheets are accepted and 512×N legacy sheets are audited after the same bottom-crop normalization used at runtime, eliminating false release errors without weakening Animation-v2's strict 1024×1024 contract.
+- Playwright now allows a 60-second production-server startup window, avoiding false failures under temporary build contention.
+- Renderer lifecycle tests now classify failed response URLs directly instead of treating Chromium's URL-free duplicate 404 messages as renderer regressions; dedicated sprite tests remain responsible for roster-asset completeness.
+
+## [1.7.1] - 2026-07-23
+
+### Added
+
+- Deterministic tactical AI decisions for direct pursuit, dash approaches, lane alignment, circling, jump-ins, retreat feints, rapid block/evasion reactions, and directional command-special rotation.
+- Roster-wide unit certification that every coded fighter cycles its complete authored normal chain and that all eight directional command slots are exercised.
+- Chromium and Firefox browser coverage for natural AI-vs-AI rounds, enforcing a 7–17 second duration window while observing movement, lane changes, normal attacks, combos, and command specials.
+- Browser diagnostics for current AI actions, active attacks, chain progress, round timing, winners, and maximum combos.
+
+### Changed
+
+- AI Showcase now uses a dedicated 15-second sprint rule set with increased durability, preventing one-hit specials while keeping roster-review rounds compact.
+- Medium and hard AI profiles make shorter, more decisive tactical choices and use seeded variation instead of non-reproducible per-frame randomness.
+
+### Fixed
+
+- The AI Showcase matchup title no longer overlaps the fight timer, health bars, or special meters; it now occupies a separate lower HUD band and shrinks safely for long fighter names.
+- Computer fighters now re-press attacks when recovery ends, allowing complete character-specific normal chains instead of stalling after a single random attack edge.
+- AI fighters now close horizontal and lane distance deliberately rather than drifting off target during long random actions.
+- Repository lint now leaves generated Animation v2 action/atlas metadata to the dedicated release-asset gate instead of demanding unrelated formatter rewrites.
+- The release workflow no longer calls the removed Animation v2 prompt generator after prompt jobs were intentionally moved outside the tracked release checkout.
+
+## [1.7.0] - 2026-07-21
+
+### Added
+
+- AI-vs-AI showcase mode with the full coded fighter roster, independent difficulty-configured controllers, animation-review labeling, and quick rematches.
+- Browser coverage for selecting Nietzsche and confirming that both computer-controlled fighters move and animate.
+- Border-sampled dark-edge/background-aware cleanup for generated sprite sheets with opaque black, light paper, or transparent dark-residue backgrounds.
+
+### Changed
+
+- Nietzsche locomotion and action sheets now use explicit background cleanup policies recorded in their generated manifests.
+- Release metadata now targets the 1.7.0 minor train, with 1.7.1 and 1.8.0 reserved for the next patch and minor tracks.
+
+### Fixed
+
+- Opaque black edges and dark RGB residue no longer survive Nietzsche atlas normalization, while disconnected black line art remains protected.
+- Deferred sprite texture creation is now classified as GPU upload traffic rather than per-frame CPU allocation, preventing false Firefox hardware-budget failures.
+
+## [1.6.0] - 2026-07-21
+
+### Added
+
+- Cached browser resource-size accounting instead of rescanning every resource entry on every rendered frame.
+- Retained native Pixi ownership for procedural scenery, arena geometry, fighter actors, special projectiles, combat screen feedback and fight HUD presentation.
+- Chromium and Firefox lifecycle certification for resize, pause/resume, synthetic context loss/restoration, sustained memory sampling, zero-upload enforcement and teardown.
+- Semantic plus image-statistics Canvas/native visual-parity certification.
+- Release-train and cross-repository Runtime provenance checks.
+
+### Changed
+
+- Removed the final full-frame Canvas-to-texture stage upload; remaining Canvas work is limited to direct authored telegraph and transient-effect overlays.
+- Split the former 1.2 MB main bundle into a 78.82 kB initial chunk plus Runtime, fighter-content, campaign, items and lazy Pixi chunks.
+- Migrated to Arcade Runtime 1.10.0 and removed consumer-local API-level-1 version aliases.
+
+### Fixed
+
+- Release CI now installs and executes Firefox instead of declaring a Firefox project while provisioning Chromium only.
+- Release validation prevents package and vendored-Runtime versions from drifting.
 
 ## [1.5.1] - 2026-07-19
 

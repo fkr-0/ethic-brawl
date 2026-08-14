@@ -289,6 +289,11 @@ export interface FightPresentationOptions {
   encounterIndex?: number;
   renderBackground?: boolean;
   renderArena?: boolean;
+  renderActors?: boolean;
+  renderScreenFeedback?: boolean;
+  renderHud?: boolean;
+  screenFeedbackScale?: number;
+  fighterFlashScale?: number;
 }
 
 function renderForegroundCrowd(

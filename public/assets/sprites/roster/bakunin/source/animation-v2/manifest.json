@@ -1,14 +1,36 @@
 {
-  "authored_frame_count": 80,
+  "action_curation": {
+    "path": "characters/bakunin/animation-v2.actions.json",
+    "review": {
+      "available_kinds": [
+        "normal_attacks",
+        "mobility_throw",
+        "item_interactions",
+        "advanced_guard",
+        "damage_recovery",
+        "specials",
+        "special_effects",
+        "intro_taunt_victory_defeat"
+      ],
+      "mapping_basis": "Files are ordered chronologically and mapped to the expanded Animation v2 action-job order. Each generated sheet remains subject to gameplay-scale visual review.",
+      "missing_kinds": [],
+      "source_directory": "docs/prompts/fighter-animation-v2/render-jobs/bakunin",
+      "status": "provisional_integrated"
+    },
+    "sha256": "8fadc865139761caa8c1c0662dbe4a84031ae16a685c3e74b920cee3793fdcdb"
+  },
+  "authored_frame_count": 208,
   "cell_size": [
     256,
     256
   ],
   "character": "bakunin",
-  "layout": "five 4x4 RGBA sheets, row-major",
-  "runtime_note": "Legacy core and extended sheets are appended by the runtime for combat-only fallback frames.",
+  "layout": "13 normalized 4x4 RGBA sheets, row-major",
+  "runtime_note": "The legacy core sheet and optional extended sheet are appended by the runtime for missing authored states and combat fallback frames.",
   "sheets": [
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "idle_v2": {
           "duration": 7,
@@ -46,165 +68,327 @@
         }
       },
       "frame_offset": 0,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             44,
             31,
             208,
             225
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.3555
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             45,
             38,
             199,
             218
           ],
+          "scale": 1.0,
+          "source_frame": 1,
           "visible_coverage": 0.3619
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             14,
             37,
             198,
             219
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.3447
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             36,
             205,
             220
           ],
+          "scale": 1.0,
+          "source_frame": 3,
           "visible_coverage": 0.3417
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             47,
             0,
             205,
             245
           ],
+          "scale": 1.0,
+          "source_frame": 4,
           "visible_coverage": 0.3658
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             33,
             27,
             202,
             219
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.3513
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             20,
             0,
             236,
             248
           ],
+          "scale": 1.0,
+          "source_frame": 6,
           "visible_coverage": 0.3327
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             27,
             191,
             221
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.3465
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             46,
             13,
             165,
             243
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.2998
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             31,
             13,
             169,
             243
           ],
+          "scale": 1.0,
+          "source_frame": 9,
           "visible_coverage": 0.3061
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             20,
             16,
             174,
             240
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2983
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             10,
             14,
             186,
             242
           ],
+          "scale": 1.0,
+          "source_frame": 11,
           "visible_coverage": 0.3235
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             43,
             0,
             177,
             206
           ],
+          "scale": 1.0,
+          "source_frame": 12,
           "visible_coverage": 0.3183
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             46,
             0,
             177,
             208
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.3105
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             24,
             0,
             170,
             206
           ],
+          "scale": 1.0,
+          "source_frame": 14,
           "visible_coverage": 0.2864
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             11,
             0,
             184,
             208
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.3107
         }
       ],
@@ -212,9 +396,33 @@
       "output_sha256": "4cb5dbe3645e7e9c506abc8b3a12660758e171ec4a599dbca43c9007cb1a0f2b",
       "sheet_index": 0,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/016_upload_file_00000000545481f49052690ef0cb25b5.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "98d27c4b6beb56d8e69de50708140ab665e1ac4e498ad8e81e9f7fa3d4c0c85f"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "walk_backward_v2": {
           "duration": 5,
@@ -246,175 +454,361 @@
         }
       },
       "frame_offset": 16,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             53,
             36,
             203,
             218
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.3455
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
-            34,
+            35,
             230,
-            220
+            219
           ],
-          "visible_coverage": 0.332
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.3309
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             16,
             34,
             196,
             220
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.3337
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             1,
-            34,
+            35,
             187,
-            220
+            219
           ],
-          "visible_coverage": 0.3327
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.3314
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             47,
             31,
-            204,
+            203,
             213
           ],
-          "visible_coverage": 0.3513
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3503
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             33,
             30,
             194,
             214
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.3331
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             9,
             32,
-            247,
+            246,
             212
           ],
-          "visible_coverage": 0.3304
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3293
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             30,
             183,
             214
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.3221
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             62,
             13,
             181,
             243
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.3103
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             50,
             16,
             169,
             240
           ],
-          "visible_coverage": 0.3002
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2993
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             22,
             16,
             181,
             240
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.3194
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             15,
-            13,
+            14,
             175,
-            243
+            242
           ],
-          "visible_coverage": 0.31
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3087
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             47,
             0,
-            192,
+            191,
             217
           ],
-          "visible_coverage": 0.3344
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.3333
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             33,
             0,
             185,
             217
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.3251
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             9,
             0,
-            184,
+            183,
             217
           ],
-          "visible_coverage": 0.3271
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3259
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             4,
             0,
             190,
             217
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.3254
         }
       ],
       "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_walk_forward_backward_4x4.png",
-      "output_sha256": "a4d3baad371cbd5fbf69186d1f954ad905f8001843d51faf1900f9c34323649f",
+      "output_sha256": "adbdbd4d3ba21679f0e0730e6ab410bc5b1f99aa804984ded03a9601894fc77c",
       "sheet_index": 1,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_walk.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "d381d77cb22165aee82d5005260c51ee1f452963e6e19b0574f69453fa7f5aaf"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "run_start_v2": {
           "duration": 3,
@@ -452,175 +846,361 @@
         }
       },
       "frame_offset": 32,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             25,
             45,
             192,
             198
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.3217
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             9,
-            51,
+            52,
             192,
-            190
+            189
           ],
-          "visible_coverage": 0.3087
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.3072
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             3,
             49,
             253,
             192
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.3007
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
-            49,
+            50,
             216,
-            192
+            191
           ],
-          "visible_coverage": 0.3372
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.3359
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             22,
             27,
-            227,
+            226,
             198
           ],
-          "visible_coverage": 0.3487
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3474
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             22,
             51,
             188,
             174
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.2843
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             10,
             29,
-            246,
+            245,
             196
           ],
-          "visible_coverage": 0.2941
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2932
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             23,
             212,
             187
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.3274
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             27,
             11,
             220,
             245
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.313
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             13,
-            51,
+            52,
             193,
-            161
+            160
           ],
-          "visible_coverage": 0.2795
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2792
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             6,
             12,
             250,
             244
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.3013
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
-            7,
+            8,
             222,
-            249
+            248
           ],
-          "visible_coverage": 0.3428
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3416
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             22,
             0,
-            227,
+            226,
             191
           ],
-          "visible_coverage": 0.3559
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.3543
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             15,
             15,
             182,
             176
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.2875
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             6,
             0,
-            250,
+            249,
             191
           ],
-          "visible_coverage": 0.3118
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3108
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             0,
             186,
             191
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.3201
         }
       ],
       "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_run_start_loop_stop_4x4.png",
-      "output_sha256": "6291466338f32cfb692234e55acad10e56116f71378b1a2405999f6b866e34e9",
+      "output_sha256": "8ae6082eb869ed77fd51eb482dbf0a2ef5bc0eef5c93ac349413254abd3599e5",
       "sheet_index": 2,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_run.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "0909f99c81013f9ea791398f7b263d3f3812477a83040b4f65b8df02c2170874"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "jump_air_v2": {
           "duration": 4,
@@ -664,175 +1244,361 @@
         }
       },
       "frame_offset": 48,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             65,
             74,
             191,
             179
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.3013
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             82,
             239,
             171
           ],
-          "visible_coverage": 0.2725
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2722
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             30,
             52,
             177,
             202
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.2621
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             13,
-            33,
+            34,
             179,
-            218
+            217
           ],
-          "visible_coverage": 0.2738
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2727
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             73,
             42,
-            183,
+            182,
             203
           ],
-          "visible_coverage": 0.2903
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2891
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             36,
             240,
             202
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.266
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             29,
             36,
-            227,
-            201
+            226,
+            202
           ],
-          "visible_coverage": 0.2655
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2646
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             23,
             174,
             200
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.2674
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             58,
             45,
             172,
             167
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.256
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             55,
-            56,
+            57,
             172,
-            200
+            199
           ],
-          "visible_coverage": 0.2381
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.236
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             33,
             63,
             223,
             193
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2277
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
-            56,
+            57,
             152,
-            200
+            199
           ],
-          "visible_coverage": 0.2223
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2212
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             71,
             1,
-            167,
+            166,
             197
           ],
-          "visible_coverage": 0.2803
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2793
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             54,
             0,
             162,
             197
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.2642
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             31,
             0,
-            225,
+            224,
             197
           ],
-          "visible_coverage": 0.2584
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2576
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             0,
             147,
             197
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.2528
         }
       ],
       "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_jump_land_recovery_4x4.png",
-      "output_sha256": "ce783b52afa4bdd9ef30897aeda15d75818848ff508659427ee305fa1b9d5dda",
+      "output_sha256": "7bbf9f8f3e203c7c7b8881c387a9b632d3036c6386489b412b704c8a612350a4",
       "sheet_index": 3,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_jump.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "f95c269422d22d592baca72b1446b6a53121deedd1a9fab087e16c34153c0c50"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "crouch_v2": {
           "duration": 4,
@@ -876,173 +1642,3541 @@
         }
       },
       "frame_offset": 64,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             29,
             21,
             201,
             228
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.391
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             23,
-            34,
+            35,
             198,
-            215
+            214
           ],
-          "visible_coverage": 0.3882
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.3865
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             23,
             41,
             189,
             209
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.3583
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             4,
-            28,
+            29,
             189,
-            221
+            220
           ],
-          "visible_coverage": 0.3757
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.3746
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             29,
             30,
-            196,
+            195,
             216
           ],
-          "visible_coverage": 0.3764
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3745
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             26,
             41,
             205,
             204
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.3842
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             29,
             33,
-            194,
+            193,
             212
           ],
-          "visible_coverage": 0.3866
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3846
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             5,
             30,
             189,
             216
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.3726
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             33,
             21,
             189,
             203
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.3409
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             24,
-            56,
+            57,
             186,
-            200
+            199
           ],
-          "visible_coverage": 0.3129
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.3112
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             11,
             77,
             245,
             179
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2856
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
-            16,
+            17,
             199,
-            208
+            207
           ],
-          "visible_coverage": 0.359
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.358
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             25,
             0,
-            187,
+            186,
             218
           ],
-          "visible_coverage": 0.3554
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.354
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             32,
             0,
             188,
             218
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.3635
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             26,
             0,
-            188,
+            187,
             218
           ],
-          "visible_coverage": 0.3653
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3639
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             6,
             0,
             184,
             218
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.3536
         }
       ],
       "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_lane_guard_crouch_4x4.png",
-      "output_sha256": "f7682f210c430fa6566b7368e337ab44230fed94f684c0012f4747b7041f7434",
+      "output_sha256": "b7e9f7ab6a0bb846fc94c581657b5af9feba680df57b1cce105a3ed60c2b1a3d",
       "sheet_index": 4,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin_crouch.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "e8defb2e51cbcc29962c26dcf26aee43808ea8ed38071a7e3c095b0f8af48a74"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "air_attack_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "attack_heavy_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "attack_light_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "attack_medium_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 80,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            79,
+            256,
+            141
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.0721
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.1041
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2194
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            80,
+            256,
+            141
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.1449
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            5,
+            256,
+            251
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.1376
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.2297
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3089
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            21,
+            256,
+            235
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2763
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            245
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.3937
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.44
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.4226
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            243
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.4057
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            15,
+            256,
+            166
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2664
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2802
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3214
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            15,
+            251,
+            165
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.3128
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_normal_attacks_4x4.png",
+      "output_sha256": "5e10c09e7c1a115f9ab5f8805c5680a647ac17631921032e61512c8a86c1cf0a",
+      "sheet_index": 5,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/018_create-image-request_20260721T144104Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "e525999679140cd435a89340a987ac0dd8a759391e53daca7ab0f93772a08a46"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "dash_backward_v2": {
+          "duration": 2,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "dash_forward_v2": {
+          "duration": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "evade_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "throw_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 96,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            18,
+            64,
+            225,
+            192
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.3629
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            40,
+            15,
+            187,
+            241
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.4324
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            79,
+            213,
+            177
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.3412
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            6,
+            89,
+            172,
+            167
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2796
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            18,
+            0,
+            209,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3497
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            34,
+            0,
+            222,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3488
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            255,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3606
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            188,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.3032
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            0,
+            236,
+            254
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.3728
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            1,
+            256,
+            253
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.4182
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            254
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.3923
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            1,
+            173,
+            253
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3364
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            18,
+            30,
+            173,
+            180
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2709
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            59,
+            236,
+            151
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2864
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            76,
+            255,
+            139
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2168
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            95,
+            241,
+            122
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2095
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_mobility_throw_4x4.png",
+      "output_sha256": "d166cc1bdd336c11749092c50cddc67170dea62ed6a70e05eb4052b0215b49fb",
+      "sheet_index": 6,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/019_create-image-request_20260721T153258Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "c0778275698eb30a38441fc70dfd2b69fd27408f6d6b7207af2afbc7041e9ed5"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "item_pickup_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "item_swing_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "item_throw_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "item_use_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 112,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            66,
+            256,
+            176
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2169
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2371
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2663
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            63,
+            256,
+            180
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2086
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            30,
+            256,
+            226
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2532
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3483
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.4011
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            31,
+            256,
+            225
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.3057
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.3786
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.4481
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.5087
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.4179
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            239
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.3402
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3689
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.5142
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            239
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.4005
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_item_interactions_4x4.png",
+      "output_sha256": "c4f4fbb2e3a62fd97d15cca77e9b33c0c715f3e340f21d85a69745b7696386b4",
+      "sheet_index": 7,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/020_create-image-request_20260721T153652Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "337378698e43c0e34c353e1641bce20c72f19cf7e562e86705403166221119f2"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "counter_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "guard_break_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "guard_hold_v2": {
+          "duration": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "loop"
+        },
+        "parry_v2": {
+          "duration": 2,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 128,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            58,
+            256,
+            184
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.22
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2409
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            3,
+            256,
+            253
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2332
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            61,
+            256,
+            181
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.1969
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            18,
+            256,
+            238
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2516
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.2642
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2399
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            30,
+            256,
+            226
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2237
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            241
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.385
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.4199
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.4035
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            250,
+            240
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3557
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            16,
+            256,
+            179
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.3006
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3033
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3488
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            16,
+            255,
+            178
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2839
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_advanced_guard_4x4.png",
+      "output_sha256": "d7ac948062b688717ae6d0cb3ade970cf4ce35acf43bb3ac6c159c7e663337be",
+      "sheet_index": 8,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/021_create-image-request_20260721T153859Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "7c6fc145f7ccdf6f4a9de07300f1267aa9d895c7baba26dfa75f6e11325435cb"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "get_up_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "hit_heavy_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "hit_light_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "knockdown_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 144,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            38,
+            54,
+            179,
+            202
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.3353
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            31,
+            52,
+            186,
+            204
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.3515
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            25,
+            61,
+            174,
+            195
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.3268
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            10,
+            58,
+            174,
+            198
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.3101
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            31,
+            0,
+            195,
+            255
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.35
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            29,
+            0,
+            209,
+            255
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3693
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            0,
+            210,
+            255
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3625
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            7,
+            0,
+            177,
+            255
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.3206
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            37,
+            32,
+            203,
+            202
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.3559
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            29,
+            35,
+            212,
+            199
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.345
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            34,
+            40,
+            178,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2908
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            47,
+            186,
+            188
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3136
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            33,
+            10,
+            184,
+            203
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.3255
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            29,
+            27,
+            227,
+            186
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3509
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            19,
+            244,
+            195
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3374
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            7,
+            13,
+            182,
+            201
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.3216
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_damage_recovery_4x4.png",
+      "output_sha256": "ae8dd4644c0bc69f5cc519c45e3f578ba193f7ddd2f7fa5e94210f1ab9fc4b39",
+      "sheet_index": 9,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/022_create-image-request_20260721T153930Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "ec417e41a4b9ed843d90ebfb51e90522251a01c158ab1f7eb8d4308d8442d1b1"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "special_1_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "special_2_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "special_3_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "special_4_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 160,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            37,
+            76,
+            219,
+            166
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.3174
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            90,
+            218,
+            151
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.275
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            14,
+            44,
+            168,
+            197
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.3214
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            10,
+            47,
+            171,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.3057
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            46,
+            33,
+            165,
+            202
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3165
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            23,
+            38,
+            233,
+            197
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.314
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            57,
+            224,
+            178
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3019
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            10,
+            46,
+            163,
+            189
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2822
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            32,
+            19,
+            177,
+            237
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.3213
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            18,
+            173,
+            238
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.3233
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            21,
+            7,
+            188,
+            249
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.3136
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            29,
+            162,
+            227
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2778
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            42,
+            0,
+            163,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2982
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            0,
+            232,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3481
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            19,
+            0,
+            166,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3007
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            10,
+            0,
+            167,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.3041
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_specials_4x4.png",
+      "output_sha256": "9b464da200f70ffcf72b3619d2e2c80e2a4e626fb5b139feb1fb5702af08d1f6",
+      "sheet_index": 10,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/023_create-image-request_20260721T154210Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "3577fc3da37951fee7055bd4663512afef3064fa8e446fcb1f79d4660497adad"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "special_fx_1_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "special_fx_2_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "special_fx_3_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "special_fx_4_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 176,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            67,
+            256,
+            160
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2196
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            18,
+            256,
+            238
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2318
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            21,
+            256,
+            235
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2391
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            68,
+            256,
+            159
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2036
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3422
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3796
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3923
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            13,
+            256,
+            243
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2712
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.3811
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.4293
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.4477
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3835
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            193
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2757
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2774
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2816
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            193
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2315
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_special_effects_4x4.png",
+      "output_sha256": "878fc00344fe06c2ce4ee5e78557017dd14cfd42cf72a3c1585828d259276dfc",
+      "sheet_index": 11,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/024_create-image-request_20260721T154622Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "c210bcd127da03a2e338c0d629ca482170ee1026312e1e6439e878a37ba8b139"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "defeat_v2": {
+          "duration": 5,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "intro_v2": {
+          "duration": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "taunt_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "victory_v2": {
+          "duration": 5,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 192,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            61,
+            256,
+            166
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2081
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2421
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2594
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            63,
+            256,
+            164
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.1995
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            2,
+            256,
+            254
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3655
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3032
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.4245
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            16,
+            255,
+            240
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2647
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            255
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.4341
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.4221
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.4409
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            242,
+            255
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3648
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            13,
+            32,
+            243,
+            150
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2695
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2836
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2801
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            32,
+            232,
+            149
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2283
+        }
+      ],
+      "output": "assets/sprites/roster/bakunin/source/animation-v2/bakunin_intro_taunt_victory_defeat_4x4.png",
+      "output_sha256": "fa588119ff6e80f7cab23c35e2af62990a8b8f13c8a565286e8b0b381b653c57",
+      "sheet_index": 12,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/bakunin/bakunin2/025_create-image-request_20260721T154821Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "b5c1b72f018d6502c84a75ea21fa270a51d741a3c66613074e4edd9d399c858d"
     }
   ],
   "version": 1

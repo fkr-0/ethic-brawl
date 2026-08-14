@@ -266,6 +266,82 @@ export function applySpriteBackgroundKey(
 }
 
 /**
+ * Remove narrow, nearly continuous separator lines left at the outside of a
+ * sprite cell. Several legacy 4x4 sheets contain opaque vertical cell borders;
+ * those lines survive chroma-keying, inflate opaque bounds, and render as a
+ * visible box around a half-resolution fighter.
+ *
+ * Only dense lines at the outermost few pixels are removed. Ordinary sprite
+ * limbs or effects touching an edge do not occupy enough of the full row or
+ * column to pass the threshold.
+ */
+export function removeSpriteFrameBorderLines(
+  imageData: ImageData,
+  alphaThreshold = 16,
+  lineCoverageThreshold = 0.82,
+  maxBorderWidth = 4
+): void {
+  const { data, width, height } = imageData;
+  if (width <= 0 || height <= 0) return;
+
+  const columnCoverage = (x: number): number => {
+    let opaque = 0;
+    for (let y = 0; y < height; y += 1) {
+      if ((data[(y * width + x) * 4 + 3] ?? 0) > alphaThreshold) opaque += 1;
+    }
+    return opaque / height;
+  };
+  const rowCoverage = (y: number): number => {
+    let opaque = 0;
+    for (let x = 0; x < width; x += 1) {
+      if ((data[(y * width + x) * 4 + 3] ?? 0) > alphaThreshold) opaque += 1;
+    }
+    return opaque / width;
+  };
+  const clearColumn = (x: number): void => {
+    for (let y = 0; y < height; y += 1) data[(y * width + x) * 4 + 3] = 0;
+  };
+  const clearRow = (y: number): void => {
+    for (let x = 0; x < width; x += 1) data[(y * width + x) * 4 + 3] = 0;
+  };
+
+  const horizontalLimit = Math.min(maxBorderWidth, Math.max(1, Math.floor(width / 8)));
+  const verticalLimit = Math.min(maxBorderWidth, Math.max(1, Math.floor(height / 8)));
+
+  for (let offset = 0; offset < horizontalLimit; offset += 1) {
+    if (columnCoverage(offset) < lineCoverageThreshold) break;
+    clearColumn(offset);
+  }
+  for (let offset = 0; offset < horizontalLimit; offset += 1) {
+    const x = width - 1 - offset;
+    if (columnCoverage(x) < lineCoverageThreshold) break;
+    clearColumn(x);
+  }
+  for (let offset = 0; offset < verticalLimit; offset += 1) {
+    if (rowCoverage(offset) < lineCoverageThreshold) break;
+    clearRow(offset);
+  }
+  for (let offset = 0; offset < verticalLimit; offset += 1) {
+    const y = height - 1 - offset;
+    if (rowCoverage(y) < lineCoverageThreshold) break;
+    clearRow(y);
+  }
+}
+
+function hasMeaningfulTransparency(imageData: ImageData): boolean {
+  const pixelCount = imageData.width * imageData.height;
+  const requiredTransparentPixels = Math.max(1, Math.floor(pixelCount * 0.01));
+  let transparentPixels = 0;
+  for (let offset = 3; offset < imageData.data.length; offset += 4) {
+    if ((imageData.data[offset] ?? 255) <= 16) {
+      transparentPixels += 1;
+      if (transparentPixels >= requiredTransparentPixels) return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Get or create an offscreen canvas for chroma key processing
  */
 const chromaKeyCanvasCache = new Map<string, HTMLCanvasElement>();
@@ -338,7 +414,10 @@ export function getProcessedSpriteFrameCanvas(
 
     if (chromaKeySettings.enabled) {
       const imageData = context.getImageData(0, 0, atlasFrame.frameWidth, atlasFrame.frameHeight);
-      applySpriteBackgroundKey(imageData, chromaKeySettings);
+      if (!hasMeaningfulTransparency(imageData)) {
+        applySpriteBackgroundKey(imageData, chromaKeySettings);
+      }
+      removeSpriteFrameBorderLines(imageData);
       context.putImageData(imageData, 0, 0);
     }
     processedChromaKeyFrames.add(cacheKey);
@@ -403,7 +482,7 @@ export function calculateNormalizedSpriteScale(
 ): number {
   const safeOpaqueHeight = Math.max(1, representativeOpaqueHeight);
   const normalizedScale = TARGET_FIGHTER_VISIBLE_HEIGHT / safeOpaqueHeight;
-  return Math.max(0.1, Math.min(2.1, normalizedScale * laneDepthScale * presentationScale));
+  return Math.max(0.65, Math.min(2.1, normalizedScale * laneDepthScale * presentationScale));
 }
 
 /**
@@ -414,7 +493,8 @@ export function calculateNormalizedSpriteScale(
 export function resolveFighterSpriteRenderScale(
   atlas: SpriteAtlas,
   laneDepthScale: number,
-  presentationScale = 1
+  presentationScale = 1,
+  atlasFrame?: AtlasFrame
 ): number {
   let normalization = fighterSpriteNormalizationCache.get(atlas.characterId);
   if (normalization === undefined) {
@@ -450,7 +530,13 @@ export function resolveFighterSpriteRenderScale(
     fighterSpriteNormalizationCache.set(atlas.characterId, normalization);
   }
 
-  return Math.max(0.1, Math.min(2.1, normalization * laneDepthScale * presentationScale));
+  const frameResolutionScale = atlasFrame
+    ? Math.max(1, atlas.frameHeight) / Math.max(1, atlasFrame.frameHeight)
+    : 1;
+  return Math.max(
+    0.65,
+    Math.min(2.1, normalization * frameResolutionScale * laneDepthScale * presentationScale)
+  );
 }
 
 /**

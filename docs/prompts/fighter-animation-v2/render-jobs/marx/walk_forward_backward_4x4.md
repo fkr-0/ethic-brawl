@@ -1,12 +1,19 @@
 ---
 generated: true
 generated_by: "docs/prompts/fighter-animation-v2/render-prompts.py"
-prompt_pack_version: 1
+prompt_pack_version: 3
 character_id: "marx"
 character_title: "Karl Marx"
 prompt_id: "walk_forward_backward_4x4"
-status: pending_render
+job_id: "marx__walk_forward_backward_4x4"
+status: rendered_unreviewed
 output_image: "assets/sprites/roster/marx/source/animation-v2/marx_walk_forward_backward_4x4.png"
+frames: 16
+grid:
+  columns: 4
+  rows: 4
+cell_size: [256, 256]
+output_size: [1024, 1024]
 reference_images:
   - "assets/sprites/roster/marx/source/marx_core_4x4.png"
   - "assets/sprites/roster/marx/source/marx_extended_4x4.png"
@@ -22,7 +29,8 @@ This file is one complete Animation v2 render job. Copy only the text in the **P
 
 - Output image: `assets/sprites/roster/marx/source/animation-v2/marx_walk_forward_backward_4x4.png`
 - Sheet geometry: 4×4 cells, 16 frames, row-major
-- Review state: `pending_render`
+- Output geometry: 1024×1024 RGBA, 256×256 per cell
+- Review state: `rendered_unreviewed`
 
 ## Suggested reference images
 
@@ -55,41 +63,43 @@ Animation identity: heavy lecturing idle with manuscript hand, trudging worker m
 
 Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
 Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
-True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
-Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
-Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
-Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
-overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
-Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+True alpha transparency only. One complete full-body fighter in every cell. Orthographic side-view arcade camera. Stable grounded baseline.
+Keep character identity, face, costume, permanent prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Every cell is one clean animation drawing, never a blurred in-between.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show motion through stride, compression, weight transfer,
+overlap, recoil, and counter-swing. Never bake progressive screen translation into a sheet; the game engine owns world movement.
+Keep feet, hair, cloth, props, weapons, particles, projectiles, and effect trails fully inside their cell. Never connect marks across boundaries.
+Temporary items or special props may appear only in the rows that explicitly require them. They must not alter the reusable idle silhouette.
+Only the named fighter may appear. Hit-reaction and throw frames must not include a second complete opponent body.
 
-SHEET: EIGHT-FRAME FORWARD WALK AND EIGHT-FRAME BACKWARD WALK. Character faces right in all 16 cells.
+SHEET: EIGHT-FRAME FORWARD WALK AND EIGHT-FRAME BACKWARD WALK. Character faces right in all cells.
 
 Frames 1-8, advancing walk loop:
-1 right heel contact / left toe push;
+1 right heel contact and left toe push;
 2 weight accepts onto right leg, body at lowest point;
 3 left leg passes under pelvis, arms counter-swing;
 4 right leg supports, body at highest point;
-5 left heel contact / right toe push;
+5 left heel contact and right toe push;
 6 weight accepts onto left leg, body at lowest point;
 7 right leg passes under pelvis, opposite arm counter-swing;
 8 left leg supports, body at highest point and loops cleanly to frame 1.
 
-Frames 9-16, guarded backward walk loop while still facing right:
-9 rear/left toe reaches back cautiously, guard tightens;
-10 weight shifts onto rear leg, torso stays oriented toward opponent;
-11 front/right foot passes back beneath pelvis, shoulders counter-rotate less than forward walk;
+Frames 9-16, guarded backward walk while still facing right:
+9 rear or left toe reaches back cautiously, guard tightens;
+10 weight shifts onto rear leg, torso remains toward the opponent;
+11 front foot passes back beneath pelvis, shoulders counter-rotate less than the forward walk;
 12 rear leg supports, body rises slightly;
-13 front/right toe reaches back;
-14 weight shifts onto front/right leg without turning away;
-15 rear/left foot passes beneath pelvis;
-16 front/right leg supports and loops cleanly to frame 9.
+13 front toe reaches back;
+14 weight shifts onto front leg without turning away;
+15 rear foot passes beneath pelvis;
+16 front leg supports and loops cleanly to frame 9.
 
-Forward and backward cycles must be visually distinct. Backward movement is defensive, shorter-stride, and never a mirrored forward walk.
-Root remains centered in every cell. Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters unless the character is explicitly a duo-as-one silhouette, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
-background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
-inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+Forward and backward cycles must be distinct. The retreat is shorter, guarded, and never a mirrored advance.
+Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters unless the character is explicitly a duo-as-one silhouette, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+background, scenery, checkerboard, text, letters, equations, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing permanent prop size,
 camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
-excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+excessive glow, effects hiding the body, giant projectiles, detached limbs, cast shadows extending into neighboring cells
 ```
 
 ## Acceptance

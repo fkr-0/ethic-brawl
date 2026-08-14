@@ -2,7 +2,7 @@
 
 A 2.5D cyberpunk philosophical arena-brawler with absurdist humor. Battle as neon-cyberpunk versions of historical philosophers in a futuristic dystopia where ideas are fought with fists.
 
-**Current release candidate: 1.5.1.** Local Versus and the complete three-encounter Babylon Story route are playable. Five later story routes are authored previews and remain locked.
+**Current release: 1.5.1. Next prepared patch: 1.5.2; next prepared minor: 1.6.0.** Local Versus and the complete three-encounter Babylon Story route are playable. Five later story routes are authored previews and remain locked.
 
 ## Quick Start
 
@@ -56,7 +56,7 @@ pnpm release:check
 
 ## Characters
 
-The release roster contains 13 fighters: Camus, Machiavelli, Diogenes, Leibniz, Foucault, Deleuze & Guattari, Marx, Bakunin, Schmitt, Socrates, Kant, Kierkegaard, and Stirner. Every release fighter has a three-hit normal chain, four command specials, a unique gimmick, and a 32-frame core-plus-extended animation set.
+The 1.1.0 release roster contains 13 fighters: Camus, Machiavelli, Diogenes, Leibniz, Foucault, Deleuze & Guattari, Marx, Bakunin, Schmitt, Socrates, Kant, Kierkegaard, and Stirner. Every release fighter has a three-hit normal chain, four command specials, a unique gimmick, and a 32-frame core-plus-extended animation set.
 
 ### Albert Camus - "The Absurdist"
 - **Style:** Balanced fighter with resilience under pressure
@@ -128,33 +128,41 @@ Stage presentation also reacts to the fight itself. Combos, hit-freeze, blockstu
 
 Normal and special attacks now use facing-relative anticipation, active-frame displacement, recovery overshoot, deterministic impact jitter, and additive directional trails. The visible movement remains presentation-only: hitboxes, timing, and authoritative fighter positions stay deterministic.
 
-The content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
+The 1.1.0 content gate additionally verifies the 13 active fighters' extended animation banks, all 12 story-enemy atlas rows, and all 31 item-icon assignments. Legacy fighters remain loadable for old saves and development checks but do not appear in the release selection grid.
 
 Combat sparks and landing dust use one fixed-capacity object pool instead of allocating a new particle-system object for every impact. The pool exposes runtime statistics through the E2E probe and safely recycles particles only when its capacity is exhausted.
 
 The browser E2E test mounts a production build at `/ethic-brawl/`, covering deployed bundle and sprite URLs, two-dimensional roster navigation, real keyboard combat, defeat/retry behavior, escalating AI, all three encounters, and the complete campaign route.
 
-Fine-grained replacement prompts for locomotion, defense, reactions, normal attacks, specials, and presentation cycles live in `docs/prompts/fighter-animation-v2/`. Deleuze & Guattari now use the first integrated authored Animation v2 normal-attack sheet; `pnpm assets:animation-v2` deterministically normalizes it to the runtime grid and validates every integrated v2 bank. They reuse each character's existing `characters/<id>/prompts.yml` identity bible and keep root movement outside the generated frames so the runtime remains authoritative. Run `pnpm prompts:v2:generate` to create one Markdown render job per character and sheet, or `pnpm prompts:v2:check` to verify the generated set.
+Fine-grained replacement prompt jobs are maintained outside the release checkout. Production sprite atlases and Animation v2 mappings remain verified locally with `pnpm assets:check`, while character identity bibles stay under `characters/<id>/prompts.yml`.
 
 The project uses Biome 2.5.4. `pnpm lint` and `pnpm lint:fix` run the normal release checks; `pnpm imports:fix` deliberately invokes Biome Assist for a separate import/export organization pass so routine formatting does not produce unrelated barrel-file churn.
 
+### Sprite production and review
+
+`assets/sprites` is the only authored sprite source. Production builds project only runtime-declared files and emit `assets/sprites/runtime-manifest.json` with hashes; the ignored `public/` tree is not a parallel sprite library. Normal and stage fights load only their two selected fighters rather than eagerly requesting the whole roster.
+
+`pnpm assets:audit` generates `generated/sprite-audit/report.json`, `report.md`, `contact-sheet.png`, and the searchable `index.html` **Sprite Signal Deck**. Hard structural errors fail `pnpm assets:check`; visual warnings remain visible for expert contact-sheet and in-engine review. Deterministic fighter and item jobs live below `docs/prompts/`. A prompt never counts as a rendered or approved sprite. See `docs/adr/0003-canonical-sprite-source-and-review-corpus.md`.
+
+### Configuration and sensory accessibility
+
+The in-game **Configuration Lab** uses a declarative settings model rather than separate navigation and rendering lists. Impact motion and combat flashes can be left at full strength, reduced, or disabled without changing combat timing. AI-vs-AI mode offers minimal, tactical, and laboratory spectator feeds. Settings are persisted through a versioned, runtime-validated localStorage schema; see `docs/adr/0001-declarative-settings-and-presentation-policy.md` for the architectural contract.
+
 ## Graphics Architecture and PixiJS
 
-PixiJS/WebGL is not yet the default backend, so Canvas2D remains authoritative. The shared `@arcade/pixi-runtime` v0.6 module is vendored with declarations and checksum metadata, and Ethic Brawl's ordered pass contract is executable rather than documentary.
+Canvas2D remains the authoritative production backend. The shared Arcade Runtime 1.10.0 module is vendored with declarations and checksum metadata, and Ethic Brawl's ordered pass contract is executable rather than documentary.
 
 `src/render/arcade-runtime-contract.ts` defines the exact backdrop, stage-depth, arena, fighter, projectile, VFX, foreground, HUD, and scene-UI pass order. Existing Canvas stage drawing is bridge-ready; fighters, projectiles, and combat VFX remain the first native-Pixi conversion targets. The renderer-neutral fight-presentation contract in `src/render/fight-presentation.ts` continues to carry stage themes and encounter profiles independently from either backend.
 
 `src/render/arcade-runtime-adapter.ts` can install explicitly supplied logical passes or composite the stage into one `stage-canvas` texture. The vendored module and declaration files are both hash-verified in the unit suite, preventing accidental drift between runtime code and metadata.
 
-PixiJS 8.19 is an explicit but dynamically loaded runtime dependency. Launch with `?renderer=bridge` to move the fight background and arena into one transparent Pixi-owned stage texture while fighters, projectiles, VFX, foreground, and HUD remain on the authoritative Canvas2D overlay. Failed bridge initialization falls back to Canvas2D. The default remains `?renderer=canvas` until native-pass parity and browser p95 profiling justify migration.
+PixiJS 8.19 is an explicit optional capability, not an entry-point dependency. `src/render/ethic-pixi-loader.ts` imports the bridge only after `?renderer=bridge` or `?pixiBridge=1` is requested. Normal Canvas sessions fetch no bridge, Pixi, WebGL, WebGPU, or Pixi text-renderer chunks. Failed bridge initialization reports a diagnostic state and continues with Canvas2D.
 
-See `docs/arcade-runtime-review.md` for the suitability review and migration criteria.
+The opt-in bridge owns native scenery, arena geometry, fighters, projectiles, combat screen feedback, and the fight HUD while the deterministic simulation remains renderer-neutral. It is used for migration validation, performance measurement, and native-pass development; it is not silently promoted to the default backend.
 
-The release Chromium comparison keeps Canvas as the production default. In the final release-gate run, direct Canvas measured a 1.1 ms p95 while the one-texture bridge measured 6.2 ms p95: comfortably inside a 60 FPS frame budget, but materially slower because the stage canvas must be uploaded each frame. Bridge mode remains available for migration validation and native-Pixi replacement work.
+`pnpm bundle:check` enforces three production budgets from Vite's generated manifest: a 90 KiB entry chunk, a 400 KiB initial import graph, and a 640 KiB optional-renderer graph. It also fails if any optional-renderer asset leaks into `index.html` or the initial dependency closure. Browser tests independently verify the network contract in Chromium and Firefox.
 
-PixiJS 8.19 is now an explicit runtime dependency. Launch with `?renderer=bridge` to move the fight background and arena into transparent Pixi-owned Canvas texture passes while fighters, VFX, foreground, and HUD remain on the authoritative Canvas2D overlay. The integration uses the v0.5 camera and bridge contract; this worktree's vendored runtime also contains a forward-compatible local 0.6 snapshot. The default remains `?renderer=canvas` until browser profiling establishes an acceptable p95 cost.
-
-The first Chromium comparison keeps Canvas as the production default: the bridge correctly isolates two passes, but full-frame Canvas texture uploads currently have a substantially higher p95 cost than direct Canvas rendering. Bridge mode remains available for migration validation and future native-Pixi replacement work.
+See `docs/arcade-runtime-review.md` for the suitability review and migration criteria, and `docs/adr/0002-lazy-native-renderer-capability.md` for the loading boundary.
 
 ## Project Structure
 

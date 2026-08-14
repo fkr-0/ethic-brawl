@@ -16,15 +16,14 @@ Each detailed pack contains:
 - `sprite-grid-manifest.json`: machine-readable grid IDs, output filenames, and expanded clip groupings.
 - `sprites/`: intended destination for generated sheets.
 
-Detailed packs:
+Detailed prompt bibles are now present for the complete 18-character roster:
 
-- `camus/`
-- `machiavelli/`
-- `aristotle/`
-- `aquinas/`
-- `anselm/`
-- `hegel/`
-- `nietzsche/`
+- `anselm/`, `aquinas/`, `aristotle/`, `bakunin/`, `camus/`
+- `deleuze_guattari/`, `diogenes/`, `foucault/`, `hegel/`, `kant/`
+- `kierkegaard/`, `leibniz/`, `machiavelli/`, `marx/`, `nietzsche/`
+- `schmitt/`, `socrates/`, `stirner/`
+
+Diogenes and Leibniz use the canonical IDs `diogenes` and `leibniz`; older `leibnitz` material is reference-only.
 
 ## Grid convention
 
@@ -44,15 +43,16 @@ The old basic 16-frame sheet remains useful as Grid 00 / legacy reference, but t
 - Nietzsche has runtime stats/specials now, but remains source-art-light; no source sheet was found.
 - Runtime stats and authored attacks for existing runtime characters are mirrored from `src/content/characters/character-data.ts` and `src/content/characters/character-loader.ts`.
 - Special move data is now runtime-backed in `src/content/specials/special-data.ts` for all detailed packs listed above.
-Additional spriteless/prompt-first packs:
+## Animation v2 full render-job coverage
 
-- `foucault/`
-- `deleuze_guattari/`
-- `marx/`
-- `bakunin/`
-- `schmitt/`
-- `socrates/`
-- `kant/`
-- `kierkegaard/`
-- `stirner/`
+`docs/prompts/fighter-animation-v2/` generates 13 independent 4×4 jobs per character: five locomotion/defense sheets plus normal attacks, combat mobility/throw, item interactions, detailed guard/parry/break, reactions/knockdown/get-up, four special caster rows, four isolated special-effect rows, and intro/taunt/victory/defeat.
+
+Current generated scope:
+
+- 18 character prompt bibles;
+- 13 jobs per character;
+- 234 render-job Markdown files;
+- 208 prompted frames per character, 3,744 prospective frames total.
+
+The first five sheets have runtime integration support. The eight full-action additions are ready for rendering and later atlas/runtime mapping.
 

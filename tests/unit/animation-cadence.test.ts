@@ -23,6 +23,12 @@ describe('sprite animation cadence', () => {
     expect(resolveClipTransitionFrames('run', 'attack_light_startup')).toBe(4);
   });
 
+  it('keeps Animation v2 locomotion inside the continuous motion family', () => {
+    expect(resolveClipTransitionFrames('idle_v2', 'walk_forward_v2')).toBe(7);
+    expect(resolveClipTransitionFrames('walk_backward_v2', 'run_start_v2')).toBe(7);
+    expect(resolveClipTransitionFrames('run_v2', 'run_stop_v2')).toBe(7);
+  });
+
   it('uses readable bounded locomotion rates instead of frame-chattering speeds', () => {
     expect(resolveAnimationPlaybackTarget('idle', 0)).toBe(0.82);
     expect(resolveAnimationPlaybackTarget('walking', 0)).toBe(0.72);

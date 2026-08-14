@@ -45,7 +45,9 @@ async function enterFoucaultMatch(page: Page): Promise<void> {
   await tap(page, 'Enter');
   await tap(page, 'Enter');
   await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', 'fight');
-  await expect.poll(async () => (await snapshot(page)).fight.player1Animation?.clipId).toBe('idle');
+  await expect
+    .poll(async () => (await snapshot(page)).fight.player1Animation?.clipId)
+    .toMatch(/^idle(?:_v2)?$/);
 }
 
 interface BrowserFrameCapture {
@@ -138,9 +140,7 @@ test('writes idle and active-attack sprite review captures', async ({
   const reviewDir = reviewDirectory(testInfo);
   await mkdir(reviewDir, { recursive: true });
   await page.goto('index.html');
-  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', 'start', {
-    timeout: 20_000,
-  });
+  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', 'start');
   await enterFoucaultMatch(page);
 
   const canvas = page.locator('canvas').first();
@@ -153,7 +153,7 @@ test('writes idle and active-attack sprite review captures', async ({
   if (!canvasBounds) throw new Error('fight canvas display bounds are unavailable');
   const idle = await snapshot(page);
   expect(idle.fight.player1Character).toBe('foucault');
-  expect(idle.fight.player1Animation?.clipId).toBe('idle');
+  expect(idle.fight.player1Animation?.clipId).toMatch(/^idle(?:_v2)?$/);
   await canvas.screenshot({ path: join(reviewDir, 'ethic-fight-idle.png') });
 
   const activeCapture = await captureReviewAttack(page);
@@ -167,7 +167,7 @@ test('writes idle and active-attack sprite review captures', async ({
 
   expect(active.fight.player1Animation?.attackPhase).toBe('active');
   expect(active.fight.player1Animation?.atlasFrameIndex).not.toBeNull();
-  expect(active.fight.player1Animation?.depthScale).toBeGreaterThan(0.1);
+  expect(active.fight.player1Animation?.depthScale).toBeGreaterThanOrEqual(0.65);
 
   const captures = await Promise.all([
     captureRecord(reviewDir, 'ethic-fight-idle.png'),

@@ -1,14 +1,37 @@
 {
-  "authored_frame_count": 80,
+  "action_curation": {
+    "path": "characters/hegel/animation-v2.actions.json",
+    "review": {
+      "available_kinds": [
+        "normal_attacks",
+        "mobility_throw",
+        "item_interactions",
+        "advanced_guard",
+        "damage_recovery"
+      ],
+      "mapping_basis": "Files are ordered chronologically and mapped to the expanded Animation v2 action-job order. Each generated sheet remains subject to gameplay-scale visual review.",
+      "missing_kinds": [
+        "specials",
+        "special_effects",
+        "intro_taunt_victory_defeat"
+      ],
+      "source_directory": "docs/prompts/fighter-animation-v2/render-jobs/hegel",
+      "status": "provisional_integrated"
+    },
+    "sha256": "f407b63d7e0adbcf2c584cb54b63814931e78d9758effcb4c114b4c5787eba3a"
+  },
+  "authored_frame_count": 160,
   "cell_size": [
     256,
     256
   ],
   "character": "hegel",
-  "layout": "five 4x4 RGBA sheets, row-major",
-  "runtime_note": "Legacy core and extended sheets are appended by the runtime for combat-only fallback frames.",
+  "layout": "10 normalized 4x4 RGBA sheets, row-major",
+  "runtime_note": "The legacy core sheet and optional extended sheet are appended by the runtime for missing authored states and combat fallback frames.",
   "sheets": [
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "idle_v2": {
           "duration": 7,
@@ -46,165 +69,327 @@
         }
       },
       "frame_offset": 0,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             62,
             36,
             164,
             219
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.2868
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             49,
             35,
             161,
             221
           ],
+          "scale": 1.0,
+          "source_frame": 1,
           "visible_coverage": 0.2867
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             29,
             34,
             172,
             222
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.2902
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             26,
             33,
             170,
             223
           ],
+          "scale": 1.0,
+          "source_frame": 3,
           "visible_coverage": 0.2968
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             63,
             35,
             166,
             220
           ],
+          "scale": 1.0,
+          "source_frame": 4,
           "visible_coverage": 0.2826
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             55,
             0,
             163,
             253
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.2831
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             42,
             0,
             162,
             255
           ],
+          "scale": 1.0,
+          "source_frame": 6,
           "visible_coverage": 0.2804
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             34,
             0,
             156,
             255
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.2757
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             80,
             30,
             117,
             226
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.2141
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             63,
             30,
             115,
             226
           ],
+          "scale": 1.0,
+          "source_frame": 9,
           "visible_coverage": 0.2113
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             47,
             29,
             120,
             227
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2157
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             40,
             29,
             115,
             227
           ],
+          "scale": 1.0,
+          "source_frame": 11,
           "visible_coverage": 0.2125
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             48,
             0,
             134,
             200
           ],
+          "scale": 1.0,
+          "source_frame": 12,
           "visible_coverage": 0.2225
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             73,
             0,
             109,
             200
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.2036
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             55,
             0,
             116,
             200
           ],
+          "scale": 1.0,
+          "source_frame": 14,
           "visible_coverage": 0.2126
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             36,
             0,
             113,
             200
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.2129
         }
       ],
@@ -212,9 +397,33 @@
       "output_sha256": "a1f60b1ec4d927cbe7d8a711311503a9f847d8ec407ab00435a487885f01bfd7",
       "sheet_index": 0,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/023_upload_file_00000000cbfc81f4aec952df29668fad.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "cb461fae92c61ee17ef129cbbf46f2c4db878fe9d7cb089d41f8f25b2a52957c"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "walk_backward_v2": {
           "duration": 5,
@@ -246,175 +455,361 @@
         }
       },
       "frame_offset": 16,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             64,
             36,
             163,
             219
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.2812
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             50,
-            37,
+            38,
             159,
-            219
+            218
           ],
-          "visible_coverage": 0.2806
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2795
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             29,
             37,
             172,
             219
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.2836
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             26,
-            36,
-            169,
-            220
+            37,
+            170,
+            219
           ],
-          "visible_coverage": 0.2908
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2899
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
-            65,
+            64,
             35,
             164,
             219
           ],
-          "visible_coverage": 0.2766
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2753
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             56,
             0,
             161,
             253
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.2766
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             42,
             0,
             162,
             255
           ],
-          "visible_coverage": 0.2746
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2731
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             35,
             0,
             153,
             254
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.2693
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             83,
             30,
             113,
             226
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.2079
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             64,
-            30,
+            31,
             114,
-            226
+            225
           ],
-          "visible_coverage": 0.2071
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2062
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             49,
             32,
             117,
             224
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2108
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             40,
-            31,
+            32,
             114,
-            225
+            224
           ],
-          "visible_coverage": 0.2068
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2059
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             50,
             0,
             132,
             199
           ],
-          "visible_coverage": 0.2174
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2168
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             73,
             0,
             107,
             198
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.1993
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             56,
             0,
-            116,
+            115,
             198
           ],
-          "visible_coverage": 0.2077
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2072
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             39,
             0,
             109,
             198
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.2075
         }
       ],
       "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_walk_forward_backward_4x4.png",
-      "output_sha256": "901ac1d362882e2a405c51b0abd792ef5c8434d170c649208cbc18eb90bcd140",
+      "output_sha256": "8029bf3b65f8a57f1d785cc18b00a1ad8040dc286b5befabedb9609869d8ad4a",
       "sheet_index": 1,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_walk.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "3e09e5486107b6a60889354d79cd83d80716fe3397714118c7b16ab580a7d761"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "run_start_v2": {
           "duration": 3,
@@ -452,175 +847,361 @@
         }
       },
       "frame_offset": 32,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             76,
             38,
             142,
             212
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.2726
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             29,
-            46,
+            47,
             175,
-            204
+            203
           ],
-          "visible_coverage": 0.2413
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2406
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             23,
             45,
             188,
             205
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.2679
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             21,
-            46,
+            47,
             184,
-            201
+            200
           ],
-          "visible_coverage": 0.2571
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2564
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             45,
             37,
-            200,
+            199,
             194
           ],
-          "visible_coverage": 0.2822
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2813
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             30,
             55,
             208,
             178
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.2607
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             12,
             39,
-            244,
+            243,
             194
           ],
-          "visible_coverage": 0.2639
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2628
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             30,
             208,
             188
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.2894
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             43,
             27,
             203,
             229
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.2811
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             30,
             47,
             196,
-            171
+            172
           ],
-          "visible_coverage": 0.2632
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2627
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             19,
             29,
             237,
             186
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2505
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
-            20,
+            21,
             205,
-            236
+            235
           ],
-          "visible_coverage": 0.2672
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2663
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             38,
             0,
-            208,
+            207,
             196
           ],
-          "visible_coverage": 0.2929
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2916
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             42,
             23,
             168,
             175
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.2505
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
-            52,
+            51,
             2,
             158,
             200
           ],
-          "visible_coverage": 0.2641
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2633
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             42,
             0,
             136,
             202
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.2504
         }
       ],
       "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_run_start_loop_stop_4x4.png",
-      "output_sha256": "cba898192f5f4ea5ac317c67c109010625952530e54aaa6132cf36b4832c48c0",
+      "output_sha256": "a134476c24e4864eb38643d55e16f6ecbe9c968975c6dcd0d6276aa6acfb3def",
       "sheet_index": 2,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_run.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "81d1faee89c08f31f916d2b181fe3a44bd8e987b2133f22fa2beb8714379c7c0"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "jump_air_v2": {
           "duration": 4,
@@ -664,175 +1245,361 @@
         }
       },
       "frame_offset": 48,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             69,
             46,
             131,
             210
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.2645
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             43,
-            98,
+            99,
             170,
-            158
+            157
           ],
-          "visible_coverage": 0.2269
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2261
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             17,
             38,
             239,
             218
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.284
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
-            12,
+            13,
             183,
-            224
+            223
           ],
-          "visible_coverage": 0.2818
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2806
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             31,
             0,
-            183,
+            182,
             230
           ],
-          "visible_coverage": 0.2672
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2657
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             14,
             0,
             242,
             232
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.2699
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             0,
-            256,
+            255,
             234
           ],
-          "visible_coverage": 0.2574
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2563
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             0,
             52,
             173,
             201
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.2706
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             23,
             31,
             163,
             202
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.2612
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             42,
             96,
             153,
             139
           ],
-          "visible_coverage": 0.1992
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.1983
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             27,
             81,
             159,
             152
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2127
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             8,
-            49,
+            50,
             157,
-            184
+            183
           ],
-          "visible_coverage": 0.2432
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2422
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
-            34,
+            33,
             5,
-            157,
+            158,
             219
           ],
-          "visible_coverage": 0.2799
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2792
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             44,
             2,
             127,
             222
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.2662
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             38,
             0,
             130,
             224
           ],
-          "visible_coverage": 0.2672
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2659
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             24,
             1,
             129,
             223
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.2619
         }
       ],
       "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_jump_land_recovery_4x4.png",
-      "output_sha256": "5ab8cf3d44b5d415f0b33da59276d1e180a0be6e6c9280c51ba8ad5588fd3de1",
+      "output_sha256": "ce7623e25af8f227282045cd9f701d324157d2022c4e37f0830dd9b9aff79e1d",
       "sheet_index": 3,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_jump.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "40d883fad1ae4f5d838c6fcd7b619746cf3fa4d4cbd845fc66a0ed26733ac1c6"
     },
     {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
       "clips": {
         "crouch_v2": {
           "duration": 4,
@@ -876,173 +1643,2347 @@
         }
       },
       "frame_offset": 64,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
       "frames": [
         {
           "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             52,
             19,
             158,
             224
           ],
+          "scale": 1.0,
+          "source_frame": 0,
           "visible_coverage": 0.3084
         },
         {
           "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             24,
-            20,
+            21,
             221,
-            222
+            221
           ],
-          "visible_coverage": 0.3562
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.3547
         },
         {
           "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             33,
             23,
             180,
             220
           ],
+          "scale": 1.0,
+          "source_frame": 2,
           "visible_coverage": 0.2871
         },
         {
           "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             34,
-            22,
+            23,
             151,
-            221
+            220
           ],
-          "visible_coverage": 0.2966
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2954
         },
         {
           "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             48,
             15,
-            160,
+            159,
             219
           ],
-          "visible_coverage": 0.2967
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2948
         },
         {
           "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             24,
             14,
             227,
             220
           ],
+          "scale": 1.0,
+          "source_frame": 5,
           "visible_coverage": 0.3505
         },
         {
           "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             57,
             16,
-            148,
+            147,
             218
           ],
-          "visible_coverage": 0.2698
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.2685
         },
         {
           "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             44,
             10,
             144,
             224
           ],
+          "scale": 1.0,
+          "source_frame": 7,
           "visible_coverage": 0.2834
         },
         {
           "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             56,
             0,
             135,
             256
           ],
+          "scale": 1.0,
+          "source_frame": 8,
           "visible_coverage": 0.2771
         },
         {
           "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             34,
-            38,
+            39,
             136,
-            218
+            217
           ],
-          "visible_coverage": 0.2629
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2615
         },
         {
           "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             25,
             67,
             149,
             189
           ],
+          "scale": 1.0,
+          "source_frame": 10,
           "visible_coverage": 0.2164
         },
         {
           "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             14,
-            27,
+            28,
             153,
-            229
+            228
           ],
-          "visible_coverage": 0.2757
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2742
         },
         {
           "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             53,
             0,
-            139,
+            138,
             207
           ],
-          "visible_coverage": 0.2706
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2699
         },
         {
           "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             33,
             0,
             150,
             207
           ],
+          "scale": 1.0,
+          "source_frame": 13,
           "visible_coverage": 0.309
         },
         {
           "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             13,
             0,
-            206,
+            205,
             207
           ],
-          "visible_coverage": 0.3457
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.3445
         },
         {
           "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
           "opaque_bounds": [
             24,
             0,
             145,
             207
           ],
+          "scale": 1.0,
+          "source_frame": 15,
           "visible_coverage": 0.275
         }
       ],
       "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_lane_guard_crouch_4x4.png",
-      "output_sha256": "8a48ee867020f32f4a4af1edf092a0298460eeb69913eb082481c7815cb8e712",
+      "output_sha256": "083677700fb3d1ebc2fb194360f89dd920ccc21443f54915c78b1792dfcb4daf",
       "sheet_index": 4,
       "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel_crouch.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
       "source_sha256": "012a95d037d6290f91d791d6e19c824e78c94d09c617d441f5b064de10b32fa9"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "air_attack_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "attack_heavy_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "attack_light_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "attack_medium_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 80,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            78,
+            256,
+            148
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.0932
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.1094
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.1681
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            56,
+            256,
+            200
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.1255
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            10,
+            256,
+            246
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.1745
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3461
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.4577
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.346
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            198
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.163
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2283
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2679
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.1798
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            34,
+            256,
+            115
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2285
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.253
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2761
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            34,
+            256,
+            115
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2078
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_normal_attacks_4x4.png",
+      "output_sha256": "7523f1e21d01cc14857f41314aef5e0b50aa33b46ca72502becc05d19cc9f5c5",
+      "sheet_index": 5,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel2/040_create-image-request_20260721T200252Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "2514e7cba0ba26c94550f7ea2223013102b216454e4f4d7b4937cb3e4bac4c8c"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "dash_backward_v2": {
+          "duration": 2,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "dash_forward_v2": {
+          "duration": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "evade_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "throw_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 96,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            28,
+            52,
+            221,
+            204
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.3255
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            61,
+            9,
+            154,
+            247
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2902
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            49,
+            52,
+            139,
+            204
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2637
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            14,
+            68,
+            183,
+            188
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2817
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            58,
+            0,
+            121,
+            250
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.2684
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            42,
+            0,
+            168,
+            250
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3114
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            0,
+            220,
+            250
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.3431
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            15,
+            0,
+            182,
+            250
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2948
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            65,
+            26,
+            111,
+            208
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2451
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            32,
+            23,
+            153,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.2588
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            54,
+            13,
+            98,
+            221
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2293
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            14,
+            32,
+            135,
+            201
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.2544
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            20,
+            7,
+            235,
+            186
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.296
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            36,
+            256,
+            156
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2856
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            120,
+            255,
+            90
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2061
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            126,
+            226,
+            84
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.1915
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_mobility_throw_4x4.png",
+      "output_sha256": "88229360b0263728012a712798b5fb2602a613a8ae9cc22b4fa353c8f5eb3f9c",
+      "sheet_index": 6,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel2/041_create-image-request_20260721T200531Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "84531f76da698dccb165626dce71a54f80458582cad9d7c6a3903fc86047c8e4"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "item_pickup_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "item_swing_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "item_throw_v2": {
+          "duration": 3,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "item_use_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 112,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            59,
+            256,
+            197
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2172
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2341
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2672
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            59,
+            253,
+            197
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2108
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            15,
+            0,
+            241,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3356
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.4627
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.5404
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            249,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.3425
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            2,
+            0,
+            254,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.2954
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.4175
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.4552
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            211
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3144
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            152
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2689
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.3747
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            248
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.4116
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            149
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2548
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_item_interactions_4x4.png",
+      "output_sha256": "287b34d15070c1eb924bf745c385d35933943537f54b556bf1391111151f7e93",
+      "sheet_index": 7,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel2/042_create-image-request_20260721T200839Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "4c3a540e56b110e2df6f0ddc74133c8203e60fb08b4f7f0f28f39063133fbd00"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "counter_v2": {
+          "duration": 3,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "guard_break_v2": {
+          "duration": 3,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        },
+        "guard_hold_v2": {
+          "duration": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "loop"
+        },
+        "parry_v2": {
+          "duration": 2,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 128,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            61,
+            256,
+            195
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2056
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2184
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            3,
+            256,
+            253
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2039
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            66,
+            256,
+            190
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.201
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3551
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.4336
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.313
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.243
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            242
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.27
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.3193
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.2381
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            242
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.1993
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            28,
+            5,
+            199,
+            132
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2088
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            3,
+            0,
+            253,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2211
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            254,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2314
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            8,
+            4,
+            201,
+            134
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.2021
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_advanced_guard_4x4.png",
+      "output_sha256": "274046acbfc775175402dae14edc1b8ac352201171920b7ae52c8206f221600d",
+      "sheet_index": 8,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel2/043_create-image-request_20260721T201047Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "5cc032ac456e6cc9320ac91ad5c4bdf11363e78ddbba891ffc6e70f5b79d6bdf"
+    },
+    {
+      "background_mode": "light-edge",
+      "background_threshold": 60.0,
+      "clips": {
+        "get_up_v2": {
+          "duration": 4,
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once"
+        },
+        "hit_heavy_v2": {
+          "duration": 4,
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once"
+        },
+        "hit_light_v2": {
+          "duration": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once"
+        },
+        "knockdown_v2": {
+          "duration": 4,
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once"
+        }
+      },
+      "frame_offset": 144,
+      "frame_offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            64,
+            256,
+            192
+          ],
+          "scale": 1.0,
+          "source_frame": 0,
+          "visible_coverage": 0.2166
+        },
+        {
+          "frame": 1,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 1,
+          "visible_coverage": 0.2293
+        },
+        {
+          "frame": 2,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 2,
+          "visible_coverage": 0.2362
+        },
+        {
+          "frame": 3,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            62,
+            256,
+            194
+          ],
+          "scale": 1.0,
+          "source_frame": 3,
+          "visible_coverage": 0.2176
+        },
+        {
+          "frame": 4,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 4,
+          "visible_coverage": 0.3713
+        },
+        {
+          "frame": 5,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 5,
+          "visible_coverage": 0.3777
+        },
+        {
+          "frame": 6,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 6,
+          "visible_coverage": 0.4292
+        },
+        {
+          "frame": 7,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            253,
+            162
+          ],
+          "scale": 1.0,
+          "source_frame": 7,
+          "visible_coverage": 0.2283
+        },
+        {
+          "frame": 8,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 8,
+          "visible_coverage": 0.3091
+        },
+        {
+          "frame": 9,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 9,
+          "visible_coverage": 0.3573
+        },
+        {
+          "frame": 10,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 10,
+          "visible_coverage": 0.3531
+        },
+        {
+          "frame": 11,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            16,
+            256,
+            240
+          ],
+          "scale": 1.0,
+          "source_frame": 11,
+          "visible_coverage": 0.3196
+        },
+        {
+          "frame": 12,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            16,
+            0,
+            240,
+            175
+          ],
+          "scale": 1.0,
+          "source_frame": 12,
+          "visible_coverage": 0.2
+        },
+        {
+          "frame": 13,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 13,
+          "visible_coverage": 0.2661
+        },
+        {
+          "frame": 14,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "scale": 1.0,
+          "source_frame": 14,
+          "visible_coverage": 0.2945
+        },
+        {
+          "frame": 15,
+          "offset": [
+            0,
+            0
+          ],
+          "opaque_bounds": [
+            0,
+            0,
+            253,
+            175
+          ],
+          "scale": 1.0,
+          "source_frame": 15,
+          "visible_coverage": 0.206
+        }
+      ],
+      "output": "assets/sprites/roster/hegel/source/animation-v2/hegel_damage_recovery_4x4.png",
+      "output_sha256": "6e57d9ef30d16ee36372b48b45d3ea545ac060cb9e01b7bdb9dc73fda05b8c53",
+      "sheet_index": 9,
+      "source": "docs/prompts/fighter-animation-v2/render-jobs/hegel/hegel2/044_create-image-request_20260721T201301Z.png",
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_sha256": "6830ac8e146fe68bdb9681be262ad8814dc2f8ad963363b866bee7b2ab7fb902"
     }
   ],
   "version": 1

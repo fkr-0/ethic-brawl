@@ -29,20 +29,16 @@ describe('v1.1 release content contract', () => {
         `${characterId} command slots`
       ).toBe(4);
       expect(specials.every(({ animation }) => animation.casterClipId.length > 0)).toBe(true);
-      const spriteDescriptor = CHARACTER_SPRITE_PATHS[characterId];
-      if (spriteDescriptor.animationV2Profile === 'full') {
-        expect(
-          [spriteDescriptor.corePath, ...(spriteDescriptor.additionalPaths ?? [])],
-          `${characterId} full Animation v2 banks`
-        ).toHaveLength(13);
-        expect(
-          spriteDescriptor.additionalPaths?.every((path) => path.includes('/animation-v2/'))
-        ).toBe(true);
-      } else {
-        expect(spriteDescriptor.extendedPath, `${characterId} extended animation bank`).toMatch(
-          /^assets\/sprites\/.+_extended_4x4\.png$/
-        );
-      }
+      const sprite = CHARACTER_SPRITE_PATHS[characterId];
+      const hasLegacyExtendedBank =
+        sprite.extendedPath !== undefined &&
+        /^assets\/sprites\/.+_extended_4x4\.png$/.test(sprite.extendedPath);
+      const hasCompleteAnimationV2Bank =
+        sprite.layout === 'animation-v2' && sprite.authoredActionSheets?.length === 8;
+      expect(
+        hasLegacyExtendedBank || hasCompleteAnimationV2Bank,
+        `${characterId} complete animation bank`
+      ).toBe(true);
     }
   });
 

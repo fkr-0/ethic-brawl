@@ -1,5 +1,9 @@
-import type { FightRuntime } from '@/app/fight-runtime';
-import { type CharacterId, getCharacter } from '@/content/characters/character-data';
+import { AI_SHOWCASE_FIGHT_RULES, type FightRuntime } from '@/app/fight-runtime';
+import {
+  type CharacterId,
+  getCharacter,
+  getCharacterIds,
+} from '@/content/characters/character-data';
 import { getReleaseRosterIds } from '@/content/characters/release-roster';
 import type { ItemId } from '@/content/items/item-data';
 import {
@@ -10,12 +14,7 @@ import {
   isFinalStageOneEncounter,
 } from '@/content/stages/stage-one-vertical-slice';
 import { type Scene, type SceneName, createScene } from '@/core';
-import {
-  GAME_ACTIONS,
-  type GameAction,
-  resetBindingForPlayer,
-  updateBindingForAction,
-} from '@/core/input/input-binding';
+import { resetBindingForPlayer, updateBindingForAction } from '@/core/input/input-binding';
 import type { InputState } from '@/core/input/input-manager';
 import type { FightPresentationOptions } from '@/render';
 import {
@@ -29,13 +28,15 @@ import {
   renderMainMenu,
   renderPauseScreen,
   renderResults,
-  renderSettings,
   renderStageIntro,
   renderStageProgress,
   renderTrial,
   renderUpgrade,
 } from '@/ui/screens/app-shell-renderers';
+import { renderAiShowcaseStatus } from '@/ui/hud/ai-showcase-overlay';
+import { renderSettings } from '@/ui/screens/settings-screen';
 import type { FightOutcomeSummary, GameMode, MatchSelection, SettingsState } from './types';
+import { activateSettingsSelection, cycleSettingsTab, getSettingsRowCount } from './settings-model';
 
 /**
  * Scene update handlers - extracted for better organization
@@ -68,7 +69,7 @@ function updateStartScene(ctx: SceneUpdateContext): void {
     appState.startMenuIndex = resolveGridFocusIndex(
       appState.startMenuIndex,
       direction as ArcadeGridDirection,
-      3,
+      4,
       { columns: 1, wrapY: true }
     );
   }
@@ -78,6 +79,9 @@ function updateStartScene(ctx: SceneUpdateContext): void {
       appState.gameMode = 'vs';
       void transitionTo('character-select');
     } else if (appState.startMenuIndex === 1) {
+      appState.gameMode = 'ai-vs-ai';
+      void transitionTo('character-select');
+    } else if (appState.startMenuIndex === 2) {
       appState.gameMode = 'stage';
       void transitionTo('character-select');
     } else {
@@ -89,8 +93,6 @@ function updateStartScene(ctx: SceneUpdateContext): void {
 /**
  * Update settings scene
  */
-const SETTINGS_GAMEPLAY_ROWS = 2;
-
 function commitSettingsChange(ctx: SceneUpdateContext): void {
   ctx.onSettingsChanged?.(ctx.appState.settings);
 }
@@ -120,8 +122,7 @@ export function captureKeybindingEdit(
  */
 function updateSettingsScene(ctx: SceneUpdateContext): void {
   const { appState, input, transitionTo } = ctx;
-  const rowCount =
-    appState.settings.menuTab === 'gameplay' ? SETTINGS_GAMEPLAY_ROWS : GAME_ACTIONS.length + 1;
+  const rowCount = getSettingsRowCount(appState.settings);
 
   if (appState.settings.keybindingEdit) {
     if (input.player1.cancel || input.player1.pause) {
@@ -148,39 +149,16 @@ function updateSettingsScene(ctx: SceneUpdateContext): void {
     left: input.player1.moveLeft,
     right: input.player1.moveRight,
   });
-  if (tabDirections.length > 0) {
-    appState.settings.menuTab =
-      appState.settings.menuTab === 'gameplay' ? 'keybindings' : 'gameplay';
-    appState.settings.selectedIndex = 0;
+  for (const direction of tabDirections) {
+    if (direction !== 'left' && direction !== 'right') continue;
+    appState.settings = cycleSettingsTab(appState.settings, direction);
     commitSettingsChange(ctx);
   }
 
   if (input.player1.confirm || input.player1.attack) {
-    if (appState.settings.menuTab === 'gameplay') {
-      if (appState.settings.selectedIndex === 0) {
-        appState.settings.skipStageIntro = !appState.settings.skipStageIntro;
-      } else {
-        appState.settings.menuTab = 'keybindings';
-        appState.settings.selectedIndex = 0;
-      }
-      commitSettingsChange(ctx);
-      return;
-    }
-
-    if (appState.settings.selectedIndex === GAME_ACTIONS.length) {
-      appState.settings.bindings = {
-        player1: resetBindingForPlayer(1),
-        player2: resetBindingForPlayer(2),
-      };
-      commitSettingsChange(ctx);
-      return;
-    }
-
-    const action = GAME_ACTIONS[appState.settings.selectedIndex] as GameAction | undefined;
-    if (action) {
-      appState.settings.keybindingEdit = { playerId: 1, action };
-      commitSettingsChange(ctx);
-    }
+    appState.settings = activateSettingsSelection(appState.settings);
+    commitSettingsChange(ctx);
+    return;
   }
 
   if (input.player1.cancel || input.player1.pause) {
@@ -296,7 +274,14 @@ function updateFightScene(ctx: SceneUpdateContext, deltaTime: number): void {
     void transitionTo('results');
   }
 
-  fightRuntime.update(deltaTime, input.player1, input.player2, appState.gameMode === 'stage');
+  const aiShowcase = appState.gameMode === 'ai-vs-ai';
+  fightRuntime.update(
+    deltaTime,
+    input.player1,
+    input.player2,
+    appState.gameMode === 'stage' || aiShowcase,
+    aiShowcase
+  );
 
   const result = fightRuntime.getResult();
   if (result && !appState.fightResolvedThisMatch) {
@@ -408,13 +393,18 @@ function updateResultsScene(ctx: SceneUpdateContext): void {
       void transitionTo(appState.settings.skipStageIntro ? 'fight' : 'stage-intro');
       return;
     }
+    if (appState.gameMode === 'ai-vs-ai') {
+      appState.latestResult = null;
+      void transitionTo('fight');
+      return;
+    }
     void transitionTo('start');
   }
 
   if (
     input.player1.cancel &&
-    appState.gameMode === 'stage' &&
-    appState.latestResult?.winner === 2
+    ((appState.gameMode === 'stage' && appState.latestResult?.winner === 2) ||
+      appState.gameMode === 'ai-vs-ai')
   ) {
     void transitionTo('start');
   }
@@ -497,6 +487,9 @@ export function createInitialAppShellState(): AppShellState {
     startMenuIndex: 0,
     settings: {
       skipStageIntro: false,
+      impactMotion: 'full',
+      combatFlashes: 'full',
+      spectatorDetail: 'tactical',
       menuTab: 'gameplay',
       selectedIndex: 0,
       keybindingEdit: null,
@@ -509,7 +502,10 @@ export function createInitialAppShellState(): AppShellState {
 }
 
 export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): Scene[] {
-  const characterIds = (deps.getCharacterIdsList ?? getReleaseRosterIds)();
+  const releaseCharacterIds = (deps.getCharacterIdsList ?? getReleaseRosterIds)();
+  const showcaseCharacterIds = (deps.getCharacterIdsList ?? getCharacterIds)();
+  const getActiveCharacterIds = (): CharacterId[] =>
+    appState.gameMode === 'ai-vs-ai' ? showcaseCharacterIds : releaseCharacterIds;
   const navigation = {
     start: createUiNavigationRepeater({
       directions: ['up', 'down'],
@@ -583,9 +579,10 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         navigation.character.reset();
       },
       update: () => {
-        updateCharacterSelectScene(createUpdateContext(), characterIds);
+        updateCharacterSelectScene(createUpdateContext(), getActiveCharacterIds());
       },
       render: (ctx) => {
+        const characterIds = getActiveCharacterIds();
         renderCharacterSelect(
           ctx,
           characterIds,
@@ -631,8 +628,13 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
         appState.roundEndTimerFrames = 0;
         const encounter = getStageOneEncounter(appState.stageEncounterIndex);
         deps.fightRuntime.reset(appState.pendingSelection, {
+          ...(appState.gameMode === 'ai-vs-ai' ? { player1AIDifficulty: 'medium' as const } : {}),
           player2AIDifficulty: appState.gameMode === 'stage' ? encounter.aiDifficulty : 'medium',
-          ...(appState.gameMode === 'stage' ? { fightRules: encounter.mode.fightRules } : {}),
+          ...(appState.gameMode === 'stage'
+            ? { fightRules: encounter.mode.fightRules }
+            : appState.gameMode === 'ai-vs-ai'
+              ? { fightRules: AI_SHOWCASE_FIGHT_RULES }
+              : {}),
         });
       },
       update: (deltaTime) => {
@@ -652,6 +654,21 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
             wave: encounter.wave,
             waveCount: STAGE_ONE_ENCOUNTERS.length,
             modeLabel: encounter.mode.label,
+          });
+        } else if (appState.gameMode === 'ai-vs-ai') {
+          const state = deps.fightRuntime.getState();
+          renderAiShowcaseStatus(ctx, {
+            player1Name: getCharacter(appState.pendingSelection.player1).name,
+            player2Name: getCharacter(appState.pendingSelection.player2).name,
+            detail: appState.settings.spectatorDetail,
+            player1Action: deps.fightRuntime.getPlayer1AIAction(),
+            player2Action: deps.fightRuntime.getPlayer2AIAction(),
+            player1AttackId: state?.player1.currentAttack?.id ?? null,
+            player2AttackId: state?.player2.currentAttack?.id ?? null,
+            player1ChainIndex: state?.player1.attackChainIndex ?? 0,
+            player2ChainIndex: state?.player2.attackChainIndex ?? 0,
+            player1Energy: state?.player1.specialState.currentEnergy ?? 0,
+            player2Energy: state?.player2.specialState.currentEnergy ?? 0,
           });
         }
       },

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "package": "ethic-brawl",
+  "packageFiles": ["package.json"],
+  "current": "1.7.2",
+  "patch": {
+    "version": "1.7.3",
+    "status": "planned",
+    "scope": [
+      "post-integration correctness and browser-isolation fixes",
+      "sprite-production completion and release-evidence consistency",
+      "no new game modes or renderer-default policy changes"
+    ]
+  },
+  "minor": {
+    "version": "1.8.0",
+    "status": "planned",
+    "includesPatch": true,
+    "scope": [
+      "all 1.7.3 maintenance fixes",
+      "physical-device calibration evidence",
+      "long-session renderer certification",
+      "renderer-default decision without changing game policy"
+    ]
+  },
+  "runtimeCompatibility": {
+    "current": "1.12.0",
+    "patch": "1.12.1",
+    "minor": "1.13.0"
+  }
+}

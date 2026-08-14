@@ -1,36 +1,53 @@
 /**
- * Shared arcade UI contract. The same primitive names and four-pixel rhythm
- * are used by Badger Sprawl Runner and Hyperblast, with title-specific colors.
+ * Ethic Brawl palette adapter over the canonical @arcade/runtime Canvas UI
+ * composition. Geometry, typography rhythm, meters, chips and focus treatment
+ * live in the shared runtime; this module only owns the title palette and
+ * backwards-compatible local function names.
  */
 
-export interface ArcadeUiTheme {
-  background: string;
-  backgroundRaised: string;
-  panel: string;
-  panelStrong: string;
-  text: string;
-  muted: string;
-  accent: string;
-  accentAlt: string;
-  warning: string;
-  danger: string;
-  line: string;
-}
+import {
+  ARCADE_UI_FONT,
+  ARCADE_UI_UNIT,
+  createArcadeUiTheme,
+  drawArcadeBackdropCanvas,
+  drawArcadeChipCanvas,
+  drawArcadeCommandBarCanvas,
+  drawArcadeFooterCanvas,
+  drawArcadeMenuRowCanvas,
+  drawArcadeMeterCanvas,
+  drawArcadePanelCanvas,
+  drawArcadeScreenTitleCanvas,
+  drawArcadeTextBlockCanvas,
+  fitArcadeTextCanvas,
+} from '../../vendor/arcade-runtime.mjs';
+import type {
+  ArcadeChipOptions,
+  ArcadeCommandAction,
+  ArcadeCommandDevice,
+  ArcadeMeterOptions,
+  ArcadePanelOptions,
+  ArcadeScreenTitleOptions,
+  ArcadeUiTheme,
+} from '../../vendor/arcade-runtime.mjs';
 
-export interface ArcadePanelOptions {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  accent?: string;
-  strong?: boolean;
-  label?: string;
-}
+export { ARCADE_UI_FONT, ARCADE_UI_UNIT };
+export type {
+  ArcadeChipOptions,
+  ArcadeCommandAction,
+  ArcadeCommandDevice,
+  ArcadeMeterOptions,
+  ArcadePanelOptions,
+  ArcadeScreenTitleOptions,
+  ArcadeUiTheme,
+};
 
-export const ARCADE_UI_UNIT = 4;
-export const ARCADE_UI_FONT = '"Cascadia Mono", "Courier New", ui-monospace, monospace';
+export type ArcadeCommandBarOptions = Omit<
+  Parameters<typeof drawArcadeCommandBarCanvas>[1],
+  'actions' | 'device'
+>;
+export type ArcadeTextBlockOptions = Parameters<typeof drawArcadeTextBlockCanvas>[1];
 
-export const ETHIC_UI: ArcadeUiTheme = {
+export const ETHIC_UI: ArcadeUiTheme = createArcadeUiTheme({
   background: '#080511',
   backgroundRaised: '#1a0a2e',
   panel: 'rgba(13, 5, 24, 0.82)',
@@ -42,25 +59,104 @@ export const ETHIC_UI: ArcadeUiTheme = {
   warning: '#ff9f1c',
   danger: '#ff4b6e',
   line: 'rgba(184, 169, 201, 0.32)',
-};
+});
 
 export function drawArcadeBackdrop(
   ctx: CanvasRenderingContext2D,
   theme: ArcadeUiTheme = ETHIC_UI
 ): void {
-  const { width, height } = ctx.canvas;
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, theme.backgroundRaised);
-  gradient.addColorStop(1, theme.background);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
+  drawArcadeBackdropCanvas(ctx, theme);
+}
 
+export function drawArcadeCommandBar(
+  ctx: CanvasRenderingContext2D,
+  actions: readonly ArcadeCommandAction[],
+  device: ArcadeCommandDevice = 'keyboard',
+  options: ArcadeCommandBarOptions = {},
+  theme: ArcadeUiTheme = ETHIC_UI
+) {
+  return drawArcadeCommandBarCanvas(ctx, { ...options, actions, device }, theme);
+}
+
+export function drawArcadeTextBlock(
+  ctx: CanvasRenderingContext2D,
+  options: ArcadeTextBlockOptions,
+  theme: ArcadeUiTheme = ETHIC_UI
+) {
+  return drawArcadeTextBlockCanvas(ctx, options, theme);
+}
+
+export function fitArcadeText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number
+): string {
+  return fitArcadeTextCanvas(ctx, text, maxWidth);
+}
+
+export function drawArcadeTabs(
+  ctx: CanvasRenderingContext2D,
+  tabs: readonly { id: string; label: string; glyph?: string }[],
+  activeId: string,
+  y: number,
+  theme: ArcadeUiTheme = ETHIC_UI
+): void {
+  const totalWidth = Math.min(ctx.canvas.width - ARCADE_UI_UNIT * 20, tabs.length * 190);
+  const tabWidth = totalWidth / Math.max(1, tabs.length);
+  const startX = (ctx.canvas.width - totalWidth) / 2;
   ctx.save();
-  ctx.globalAlpha = 0.16;
-  ctx.fillStyle = theme.line;
-  for (let y = 0; y < height; y += ARCADE_UI_UNIT * 3) ctx.fillRect(0, y, width, 1);
-  ctx.globalAlpha = 0.1;
-  for (let x = 0; x < width; x += ARCADE_UI_UNIT * 12) ctx.fillRect(x, 0, 1, height);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (const [index, tab] of tabs.entries()) {
+    const active = tab.id === activeId;
+    const x = startX + index * tabWidth;
+    ctx.fillStyle = active ? `${theme.accent}22` : theme.panel;
+    ctx.fillRect(x, y, tabWidth - 2, 34);
+    ctx.fillStyle = active ? theme.accent : theme.line;
+    ctx.fillRect(x, y + 32, tabWidth - 2, active ? 2 : 1);
+    ctx.font = `${active ? 800 : 650} 13px ${ARCADE_UI_FONT}`;
+    ctx.fillStyle = active ? theme.text : theme.muted;
+    ctx.fillText(`${tab.glyph ?? '·'} ${tab.label}`.toUpperCase(), x + tabWidth / 2, y + 17);
+  }
+  ctx.restore();
+}
+
+export function drawArcadeSettingRow(
+  ctx: CanvasRenderingContext2D,
+  options: {
+    x: number;
+    y: number;
+    width: number;
+    label: string;
+    value: string;
+    description: string;
+    selected: boolean;
+  },
+  theme: ArcadeUiTheme = ETHIC_UI
+): void {
+  const height = 68;
+  ctx.save();
+  ctx.fillStyle = options.selected ? `${theme.accent}18` : theme.panel;
+  ctx.fillRect(options.x, options.y, options.width, height);
+  ctx.strokeStyle = options.selected ? theme.accent : theme.line;
+  ctx.lineWidth = options.selected ? 2 : 1;
+  ctx.strokeRect(options.x, options.y, options.width, height);
+  ctx.fillStyle = options.selected ? theme.accent : theme.line;
+  ctx.fillRect(options.x, options.y, options.selected ? 6 : 2, height);
+
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `${options.selected ? 800 : 700} 17px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = options.selected ? theme.text : theme.muted;
+  ctx.fillText(options.label.toUpperCase(), options.x + 22, options.y + 27);
+  ctx.font = `600 11px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = theme.muted;
+  ctx.fillText(options.description.toUpperCase(), options.x + 22, options.y + 50);
+
+  ctx.textAlign = 'right';
+  ctx.font = `900 14px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = options.selected ? theme.warning : theme.accentAlt;
+  ctx.fillText(options.value, options.x + options.width - 22, options.y + 29);
   ctx.restore();
 }
 
@@ -69,36 +165,7 @@ export function drawArcadePanel(
   options: ArcadePanelOptions,
   theme: ArcadeUiTheme = ETHIC_UI
 ): void {
-  const { x, y, width, height, strong = false, label } = options;
-  const accent = options.accent ?? theme.accent;
-  const cut = ARCADE_UI_UNIT * 2;
-
-  ctx.save();
-  ctx.fillStyle = strong ? theme.panelStrong : theme.panel;
-  ctx.beginPath();
-  ctx.moveTo(x + cut, y);
-  ctx.lineTo(x + width, y);
-  ctx.lineTo(x + width, y + height - cut);
-  ctx.lineTo(x + width - cut, y + height);
-  ctx.lineTo(x, y + height);
-  ctx.lineTo(x, y + cut);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = theme.line;
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  ctx.fillStyle = accent;
-  ctx.fillRect(x, y + cut, ARCADE_UI_UNIT, Math.max(0, height - cut * 2));
-  ctx.fillRect(x + cut, y, Math.min(width * 0.28, 120), 2);
-
-  if (label) {
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
-    ctx.font = `700 10px ${ARCADE_UI_FONT}`;
-    ctx.fillStyle = accent;
-    ctx.fillText(label.toUpperCase(), x + ARCADE_UI_UNIT * 4, y + ARCADE_UI_UNIT * 5);
-  }
-  ctx.restore();
+  drawArcadePanelCanvas(ctx, options, theme);
 }
 
 export function drawArcadeMenuRow(
@@ -110,26 +177,7 @@ export function drawArcadeMenuRow(
   selected: boolean,
   theme: ArcadeUiTheme = ETHIC_UI
 ): void {
-  const height = ARCADE_UI_UNIT * 9;
-  ctx.save();
-  ctx.globalAlpha = selected ? 0.13 : 0.025;
-  ctx.fillStyle = selected ? theme.accent : theme.text;
-  ctx.fillRect(x, y, width, height);
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = selected ? theme.accent : theme.line;
-  ctx.fillRect(x, y, selected ? ARCADE_UI_UNIT : 1, height);
-  ctx.strokeStyle = selected ? theme.accent : theme.line;
-  ctx.lineWidth = 1;
-  ctx.strokeRect(x, y, width, height);
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.font = `${selected ? 800 : 650} 16px ${ARCADE_UI_FONT}`;
-  ctx.fillStyle = selected ? theme.text : theme.muted;
-  ctx.fillText(label.toUpperCase(), x + ARCADE_UI_UNIT * 5, y + height / 2);
-  ctx.textAlign = 'right';
-  ctx.fillStyle = selected ? theme.accent : theme.muted;
-  ctx.fillText(selected ? '◆' : '·', x + width - ARCADE_UI_UNIT * 4, y + height / 2);
-  ctx.restore();
+  drawArcadeMenuRowCanvas(ctx, label, x, y, width, selected, theme);
 }
 
 export function drawArcadeFooter(
@@ -137,16 +185,29 @@ export function drawArcadeFooter(
   text: string,
   theme: ArcadeUiTheme = ETHIC_UI
 ): void {
-  const { width, height } = ctx.canvas;
-  ctx.save();
-  ctx.fillStyle = theme.panelStrong;
-  ctx.fillRect(0, height - ARCADE_UI_UNIT * 9, width, ARCADE_UI_UNIT * 9);
-  ctx.fillStyle = theme.line;
-  ctx.fillRect(0, height - ARCADE_UI_UNIT * 9, width, 1);
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = `700 12px ${ARCADE_UI_FONT}`;
-  ctx.fillStyle = theme.muted;
-  ctx.fillText(text.toUpperCase(), width / 2, height - ARCADE_UI_UNIT * 4.5);
-  ctx.restore();
+  drawArcadeFooterCanvas(ctx, text, theme);
+}
+
+export function drawArcadeChip(
+  ctx: CanvasRenderingContext2D,
+  options: ArcadeChipOptions,
+  theme: ArcadeUiTheme = ETHIC_UI
+): void {
+  drawArcadeChipCanvas(ctx, options, theme);
+}
+
+export function drawArcadeMeter(
+  ctx: CanvasRenderingContext2D,
+  options: ArcadeMeterOptions,
+  theme: ArcadeUiTheme = ETHIC_UI
+): void {
+  drawArcadeMeterCanvas(ctx, options, theme);
+}
+
+export function drawArcadeScreenTitle(
+  ctx: CanvasRenderingContext2D,
+  options: ArcadeScreenTitleOptions,
+  theme: ArcadeUiTheme = ETHIC_UI
+): void {
+  drawArcadeScreenTitleCanvas(ctx, options, theme);
 }

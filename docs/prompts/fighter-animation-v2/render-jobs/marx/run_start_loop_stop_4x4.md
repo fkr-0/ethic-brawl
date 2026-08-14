@@ -1,12 +1,19 @@
 ---
 generated: true
 generated_by: "docs/prompts/fighter-animation-v2/render-prompts.py"
-prompt_pack_version: 1
+prompt_pack_version: 3
 character_id: "marx"
 character_title: "Karl Marx"
 prompt_id: "run_start_loop_stop_4x4"
-status: pending_render
+job_id: "marx__run_start_loop_stop_4x4"
+status: rendered_unreviewed
 output_image: "assets/sprites/roster/marx/source/animation-v2/marx_run_start_loop_stop_4x4.png"
+frames: 16
+grid:
+  columns: 4
+  rows: 4
+cell_size: [256, 256]
+output_size: [1024, 1024]
 reference_images:
   - "assets/sprites/roster/marx/source/marx_core_4x4.png"
   - "assets/sprites/roster/marx/source/marx_extended_4x4.png"
@@ -22,7 +29,8 @@ This file is one complete Animation v2 render job. Copy only the text in the **P
 
 - Output image: `assets/sprites/roster/marx/source/animation-v2/marx_run_start_loop_stop_4x4.png`
 - Sheet geometry: 4×4 cells, 16 frames, row-major
-- Review state: `pending_render`
+- Output geometry: 1024×1024 RGBA, 256×256 per cell
+- Review state: `rendered_unreviewed`
 
 ## Suggested reference images
 
@@ -56,12 +64,14 @@ Animation identity: heavy lecturing idle with manuscript hand, trudging worker m
 
 Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
 Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
-True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
-Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
-Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
-Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
-overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
-Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+True alpha transparency only. One complete full-body fighter in every cell. Orthographic side-view arcade camera. Stable grounded baseline.
+Keep character identity, face, costume, permanent prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Every cell is one clean animation drawing, never a blurred in-between.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show motion through stride, compression, weight transfer,
+overlap, recoil, and counter-swing. Never bake progressive screen translation into a sheet; the game engine owns world movement.
+Keep feet, hair, cloth, props, weapons, particles, projectiles, and effect trails fully inside their cell. Never connect marks across boundaries.
+Temporary items or special props may appear only in the rows that explicitly require them. They must not alter the reusable idle silhouette.
+Only the named fighter may appear. Hit-reaction and throw frames must not include a second complete opponent body.
 
 SHEET: RUN ACCELERATION, EIGHT-FRAME RUN LOOP, AND BRAKING. Character faces right throughout.
 
@@ -71,15 +81,15 @@ Frames 1-4, acceleration from idle:
 3 first long step, arms begin stronger counter-swing;
 4 reaches the same rhythm and body height as run-loop frame 5.
 
-Frames 5-12, seamless eight-frame run loop:
+Frames 5-12, seamless run loop:
 5 right foot contact, left leg extended behind;
-6 compression/weight acceptance, lowest body point;
+6 compression and weight acceptance, lowest body point;
 7 left leg passes quickly under pelvis;
 8 airborne or light-support phase, highest body point;
 9 left foot contact, right leg extended behind;
-10 compression/weight acceptance;
+10 compression and weight acceptance;
 11 right leg passes quickly under pelvis;
-12 airborne or light-support phase that loops cleanly to frame 5.
+12 airborne or light-support phase looping cleanly to frame 5.
 
 Frames 13-16, braking to idle:
 13 long braking contact ahead of the body;
@@ -87,12 +97,12 @@ Frames 13-16, braking to idle:
 15 rebound and short corrective step;
 16 restored combat idle matching the approved idle sheet.
 
-Preserve character-specific run personality, but keep the biomechanics legible. No root translation and no speed-line background.
+Preserve character-specific run personality while keeping biomechanics legible. No speed-line background.
 Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters unless the character is explicitly a duo-as-one silhouette, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
-background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
-inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+background, scenery, checkerboard, text, letters, equations, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing permanent prop size,
 camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
-excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+excessive glow, effects hiding the body, giant projectiles, detached limbs, cast shadows extending into neighboring cells
 ```
 
 ## Acceptance

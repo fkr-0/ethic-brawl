@@ -3,6 +3,7 @@ import type { AtlasFrame, SpriteAtlas } from '@/render/sprites/types';
 import {
   calculatePivotOffset,
   inspectSpriteFrame,
+  removeSpriteFrameBorderLines,
   resolveFighterSpriteRenderScale,
   setChromaKey,
 } from '@/render/sprites/sprite-renderer';
@@ -124,5 +125,58 @@ describe('Ethic sprite runtime adapters', () => {
     };
     expect(resolveFighterSpriteRenderScale(atlas, 1, 1)).toBeCloseTo(132 / 120, 6);
     expect(resolveFighterSpriteRenderScale(atlas, 0.9, 1.1)).toBeCloseTo((132 / 120) * 0.99, 6);
+  });
+
+  it('compensates for half-resolution legacy frames inside an animation-v2 atlas', () => {
+    setChromaKey(false);
+    const image = document.createElement('canvas');
+    image.width = 8;
+    image.height = 140;
+    const data = new Uint8ClampedArray(2 * 140 * 4);
+    for (let y = 8; y < 140; y += 1) data[y * 2 * 4 + 3] = 255;
+    const context = {
+      clearRect: vi.fn(),
+      drawImage: vi.fn(),
+      getImageData: vi.fn(() => ({ data, width: 2, height: 140 })),
+      putImageData: vi.fn(),
+    } as unknown as CanvasRenderingContext2D;
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(context as never);
+    const representativeFrames = [0, 1, 2, 3].map((index) => frame(index, index * 2, 2, 140));
+    const legacyFrame = frame(16, 0, 64, 70);
+    const atlas: SpriteAtlas = {
+      characterId: 'mixed-resolution-scale-test',
+      image,
+      frames: [...representativeFrames, legacyFrame],
+      frameWidth: 128,
+      frameHeight: 140,
+    };
+
+    expect(resolveFighterSpriteRenderScale(atlas, 1, 1, legacyFrame)).toBeCloseTo(2, 6);
+  });
+
+  it('removes dense outer cell borders without erasing the sprite body', () => {
+    const width = 8;
+    const height = 8;
+    const data = new Uint8ClampedArray(width * height * 4);
+    for (let y = 0; y < height; y += 1) {
+      data[y * width * 4 + 3] = 255;
+      data[(y * width + width - 1) * 4 + 3] = 255;
+    }
+    for (const [x, y] of [
+      [3, 3],
+      [4, 3],
+      [3, 4],
+      [4, 4],
+    ] as const) {
+      data[(y * width + x) * 4 + 3] = 255;
+    }
+    const imageData = { data, width, height } as ImageData;
+
+    removeSpriteFrameBorderLines(imageData);
+
+    expect(data[3]).toBe(0);
+    expect(data[((height - 1) * width + width - 1) * 4 + 3]).toBe(0);
+    expect(data[(3 * width + 3) * 4 + 3]).toBe(255);
+    expect(data[(4 * width + 4) * 4 + 3]).toBe(255);
   });
 });

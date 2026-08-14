@@ -7,23 +7,23 @@ import { captureKeybindingEdit } from '@/app/app-shell/scene-factory';
 import { installE2EProbe, updateE2EStatus } from '@/app/e2e-probe';
 import type { E2EProbeSnapshot } from '@/app/e2e-probe';
 import { loadAppSettings, saveAppSettings } from '@/app/settings-persistence';
-import { getCharacterIds } from '@/content/characters/character-data';
-import { createInputManager, createSceneManager } from '@/core';
+import { resolveFightPresentationPolicy } from '@/app/presentation-policy';
+import { createInputManager, createSceneManager, type SceneName } from '@/core';
 import {
-  createEthicPixiBridge,
   getFighterAnimationSnapshot,
   getGraphicsBackendStatus,
-  isEthicPixiBridgeRequested,
+  loadEthicPixiBridge,
   resolveFightGraphicsProfile,
   resolveFightStageEvent,
   resolveFightStageReaction,
+  type EthicPixiBridgeRuntimeStatus,
 } from '@/render';
 import {
-  getCharacterAnimationMap,
   getGridSpacing,
   getSpriteLoadReport,
   getSpriteScaleFactor,
   initializeAllCharacterSprites,
+  initializeCharacterSprites,
   setChromaKey,
   setDebugFrameBoundaries,
   setGridSpacing,
@@ -48,52 +48,31 @@ async function main() {
     throw new Error('Failed to get 2D context');
   }
 
-  showLoading('LOADING PHILOSOPHER SPRITES...');
-  console.info('📦 Loading sprite assets...');
-  await initializeAllCharacterSprites();
-
-  // Debug: Log sprite status after initialization
-  console.info('🔍 Debug: Checking sprite status...');
-  const characterIds = getCharacterIds();
-  for (const id of characterIds) {
-    const animMap = getCharacterAnimationMap(id);
-    if (animMap?.atlas) {
-      console.info(
-        `  ${id}: atlas exists, image=${animMap.atlas.image.width}x${animMap.atlas.image.height}, frames=${animMap.atlas.frames.length}`
-      );
-    } else {
-      console.warn(`  ${id}: no atlas (using procedural fallback)`);
-    }
-  }
-
-  const spriteValidationReport = validateAllCharacterSprites();
-  console.info(
-    `✓ Sprite assets loaded and validated: ${spriteValidationReport.totalFrames} frames across ${spriteValidationReport.characterCount} characters`
-  );
-  if (!spriteValidationReport.valid) {
-    console.warn('Sprite validation issues:', spriteValidationReport.invalidCharacters);
-  }
   showLoading('PREPARING BABYLON...');
+  let spriteValidationReport = validateAllCharacterSprites();
 
   const inputManager = createInputManager();
   const keyboard = inputManager.getKeyboard();
   const fightRuntime = createFightRuntime();
-  const bridgeRequested = isEthicPixiBridgeRequested();
   const renderProfiler = createArcadeFrameProfiler({ sampleSize: 240 });
   const gameContainer = document.getElementById('game-container');
-  const pixiBridge =
-    bridgeRequested && gameContainer
-      ? await createEthicPixiBridge({
-          mount: gameContainer,
-          sourceCanvas: canvas,
-          fightRuntime,
-          width: canvas.width,
-          height: canvas.height,
-        })
-      : null;
+  const bridgeLoad = await loadEthicPixiBridge({
+    mount: gameContainer,
+    sourceCanvas: canvas,
+    fightRuntime,
+    width: canvas.width,
+    height: canvas.height,
+  });
+  let pixiBridge = bridgeLoad.controller;
+  let pixiBridgeStatus: EthicPixiBridgeRuntimeStatus = bridgeLoad.status;
+  let pixiBridgeError = bridgeLoad.errorMessage;
+  if (pixiBridgeStatus === 'failed') {
+    console.warn(`Native renderer unavailable; continuing with Canvas2D: ${pixiBridgeError}`);
+  }
   const appState = createInitialAppShellState();
   appState.settings = loadAppSettings(appState.settings);
   inputManager.setBindings(appState.settings.bindings);
+  fightRuntime.setPresentationPolicy(resolveFightPresentationPolicy(appState.settings));
 
   let latestInput = inputManager.getState();
   let spriteRenderingEnabled = true; // Track local state for toggle
@@ -101,18 +80,56 @@ async function main() {
 
   let sceneManagerRef: ReturnType<typeof createSceneManager> | null = null;
 
+  const prepareSpritesForScene = async (target: SceneName): Promise<void> => {
+    if (target !== 'fight') return;
+    showLoading(
+      appState.gameMode === 'ai-vs-ai' ? 'TUNING SPECTATOR LAB...' : 'LOADING MATCHUP...'
+    );
+    const characterIds = [appState.pendingSelection.player1, appState.pendingSelection.player2];
+    try {
+      await Promise.all(characterIds.map((characterId) => initializeCharacterSprites(characterId)));
+      spriteValidationReport = validateAllCharacterSprites();
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const transitionToScene = async (target: SceneName): Promise<boolean> => {
+    await prepareSpritesForScene(target);
+    return sceneManagerRef?.transitionTo(target) ?? false;
+  };
+
+  const loadAllSpritesForReview = async (): Promise<void> => {
+    showLoading('ASSEMBLING SPRITE REVIEW LAB...');
+    try {
+      await initializeAllCharacterSprites();
+      spriteValidationReport = validateAllCharacterSprites();
+    } finally {
+      hideLoading();
+    }
+  };
+
   const sceneManager = createSceneManager({
     scenes: buildAppScenes(
       {
         fightRuntime,
         getLatestInput: () => latestInput,
-        transitionTo: (target) => sceneManagerRef?.transitionTo(target) ?? Promise.resolve(false),
+        transitionTo: transitionToScene,
         onSettingsChanged: (settings) => {
           inputManager.setBindings(settings.bindings);
+          fightRuntime.setPresentationPolicy(resolveFightPresentationPolicy(settings));
           saveAppSettings(settings);
         },
         getFightPresentationOverrides: () =>
-          pixiBridge ? { renderBackground: false, renderArena: false } : {},
+          pixiBridge
+            ? {
+                renderBackground: false,
+                renderArena: false,
+                renderActors: false,
+                renderScreenFeedback: false,
+                renderHud: false,
+              }
+            : {},
       },
       appState
     ),
@@ -223,6 +240,7 @@ async function main() {
       const profileOptions = {
         theme: appState.gameMode === 'stage' ? ('babylon' as const) : ('neon_arena' as const),
         encounterIndex: appState.stageEncounterIndex,
+        ...fightRuntime.getPresentationOptions(),
       };
       pixiBridge?.setPresentation(profileOptions);
       const startedAt = performance.now();
@@ -232,7 +250,7 @@ async function main() {
         renderInputPanels(ctx, latestInput.player1, latestInput.player2);
       }
       if (helpOpen) {
-        renderHelpOverlay(ctx);
+        renderHelpOverlay(ctx, appState.settings.bindings);
       }
       renderDebugInfo(ctx, gameLoop.getFPS(), gameLoop.getFrameCount());
       if (currentScene === 'fight') {
@@ -256,6 +274,7 @@ async function main() {
     const stageEvent = resolveFightStageEvent(fightState?.frameCount ?? 0, graphicsProfile);
     const stageReaction = resolveFightStageReaction(fightState, stageEvent);
     const particleStats = fightState?.particlePool.getStats();
+    const presentationOptions = fightRuntime.getPresentationOptions();
     return {
       ready: sceneManager.getCurrentScene() !== 'loading',
       currentScene: sceneManager.getCurrentScene(),
@@ -278,9 +297,13 @@ async function main() {
         stageEncounterWins: appState.stageEncounterWins,
         gameMode: appState.gameMode,
         skipStageIntro: appState.settings.skipStageIntro,
+        impactMotion: appState.settings.impactMotion,
+        combatFlashes: appState.settings.combatFlashes,
+        spectatorDetail: appState.settings.spectatorDetail,
         settingsTab: appState.settings.menuTab,
         settingsSelectedIndex: appState.settings.selectedIndex,
         editingKeybinding: appState.settings.keybindingEdit,
+        player1MoveLeftBinding: appState.settings.bindings.player1.keys.get('moveLeft') ?? [],
         player1AttackBinding: appState.settings.bindings.player1.keys.get('attack') ?? [],
         fightResolvedThisMatch: appState.fightResolvedThisMatch,
         hasLatestResult: appState.latestResult !== null,
@@ -294,6 +317,8 @@ async function main() {
       },
       renderer: {
         ...graphicsBackend,
+        bridgeLoadStatus: pixiBridgeStatus,
+        bridgeLoadError: pixiBridgeError,
         renderPerformance: renderProfiler.snapshot(pixiBridge ? 'bridge:fight' : 'canvas:fight'),
         bridgePerformance: pixiBridge?.snapshot().performance.frame ?? null,
         theme: graphicsProfile.theme,
@@ -304,6 +329,8 @@ async function main() {
         stageCrowdEnergy: stageReaction.crowdEnergy,
         stageLightPulse: stageReaction.lightPulse,
         stageImpactPulse: stageReaction.impactPulse,
+        screenFeedbackScale: presentationOptions.screenFeedbackScale ?? 1,
+        fighterFlashScale: presentationOptions.fighterFlashScale ?? 1,
       },
       fight: {
         player1Character: fightState?.player1.characterId ?? null,
@@ -322,11 +349,22 @@ async function main() {
         recycledParticles: particleStats?.recycledParticles ?? 0,
         rulesId: fightState?.rules.id ?? 'none',
         roundTimeSeconds: fightState?.rules.roundTimeSeconds ?? 0,
+        roundTimeRemaining: fightState?.round.time ?? 0,
+        roundWinner: fightState?.round.winner ?? null,
         player1Energy: fightState?.player1.specialState.currentEnergy ?? null,
         player2Energy: fightState?.player2.specialState.currentEnergy ?? null,
         player2MaxHealth: fightState?.player2.stats.maxHealth ?? null,
+        player1AttackId: fightState?.player1.currentAttack?.id ?? null,
+        player2AttackId: fightState?.player2.currentAttack?.id ?? null,
+        player1AttackChainIndex: fightState?.player1.attackChainIndex ?? null,
+        player2AttackChainIndex: fightState?.player2.attackChainIndex ?? null,
+        player1MaxCombo: fightState?.maxCombos[0] ?? 0,
+        player2MaxCombo: fightState?.maxCombos[1] ?? 0,
+        player1AIAction: fightRuntime.getPlayer1AIAction(),
+        player2AIAction: fightRuntime.getPlayer2AIAction(),
         round: fightState?.round.number ?? null,
         hasResult: fightState?.result !== null,
+        player1AIDifficulty: fightRuntime.getPlayer1AIDifficulty(),
         player2AIDifficulty: fightRuntime.getPlayer2AIDifficulty(),
         player1Animation: getFighterAnimationSnapshot('p1'),
         player2Animation: getFighterAnimationSnapshot('p2'),
@@ -336,8 +374,26 @@ async function main() {
 
   installE2EProbe({
     getSnapshot: getE2ESnapshot,
-    transitionTo: (scene) => sceneManager.transitionTo(scene),
+    transitionTo: transitionToScene,
     getSpriteValidation: () => spriteValidationReport,
+    loadAllSprites: loadAllSpritesForReview,
+    getBridgeLifecycle: () => pixiBridge?.snapshot() ?? null,
+    resizeBridge: (width, height) => pixiBridge?.runtime.resize(width, height),
+    startBridge: () => pixiBridge?.runtime.start('e2e-lifecycle'),
+    pauseBridge: () => pixiBridge?.runtime.pause('e2e-lifecycle'),
+    resumeBridge: () => pixiBridge?.runtime.resume('e2e-lifecycle'),
+    simulateBridgeContextLoss: () => {
+      pixiBridge?.runtime.canvas.dispatchEvent(new Event('webglcontextlost', { cancelable: true }));
+    },
+    simulateBridgeContextRestore: () => {
+      pixiBridge?.runtime.canvas.dispatchEvent(new Event('webglcontextrestored'));
+    },
+    destroyBridge: () => {
+      pixiBridge?.destroy();
+      pixiBridge = null;
+      pixiBridgeStatus = 'destroyed';
+      pixiBridgeError = null;
+    },
     resolveCurrentMatch: (winner) => {
       if (import.meta.env.DEV || import.meta.env.VITE_E2E === 'true') {
         fightRuntime.resolveMatchForTesting(winner);

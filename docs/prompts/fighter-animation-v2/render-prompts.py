@@ -7,7 +7,7 @@ The generator combines:
 - ``atlas-manifest.template.yml`` for clip metadata; and
 - every ``characters/<id>/prompts.yml`` identity bible.
 
-By default it writes 5 render jobs for each character to
+By default it writes the full shared render-job set for each character to
 ``docs/prompts/fighter-animation-v2/render-jobs/<character>/<prompt>.md``
 and creates an index plus a machine-readable manifest.
 
@@ -105,7 +105,9 @@ def substitute(template: str, context: Mapping[str, str], where: str) -> str:
         try:
             return context[key]
         except KeyError as error:
-            raise SystemExit(f"Unresolved placeholder {{{{{key}}}}} in {where}") from error
+            raise SystemExit(
+                f"Unresolved placeholder {{{{{key}}}}} in {where}"
+            ) from error
 
     rendered = TOKEN.sub(replace, template)
     remaining = sorted(set(TOKEN.findall(rendered)))
@@ -121,28 +123,80 @@ def require_text(mapping: Mapping[str, Any], key: str, source: Path) -> str:
     return value.strip()
 
 
+def require_move_list(
+    character: Mapping[str, Any], key: str, expected_count: int, source: Path
+) -> list[Mapping[str, Any]]:
+    descriptions = character.get("move_render_descriptions")
+    if not isinstance(descriptions, dict):
+        raise SystemExit(
+            f"Missing `move_render_descriptions` mapping in {source.relative_to(REPO)}"
+        )
+    moves = descriptions.get(key)
+    if not isinstance(moves, list) or len(moves) != expected_count:
+        raise SystemExit(
+            f"Expected exactly {expected_count} `{key}` entries in "
+            f"{source.relative_to(REPO)}"
+        )
+    if not all(isinstance(move, dict) for move in moves):
+        raise SystemExit(
+            f"Every `{key}` entry must be a mapping in {source.relative_to(REPO)}"
+        )
+    return moves
+
+
+def render_normal_moves(character: Mapping[str, Any], source: Path) -> str:
+    moves = require_move_list(character, "normal_moves", 3, source)
+    lines: list[str] = []
+    for index, move in enumerate(moves, start=1):
+        name = require_text(move, "name", source)
+        pose = require_text(move, "pose", source)
+        vfx = require_text(move, "vfx", source)
+        gameplay = require_text(move, "gameplay", source)
+        lines.append(
+            f"{index}. {name}: pose — {pose}; compact VFX — {vfx}; "
+            f"gameplay read — {gameplay}."
+        )
+    return "\n".join(lines)
+
+
+def render_special_moves(character: Mapping[str, Any], source: Path) -> str:
+    moves = require_move_list(character, "special_moves", 4, source)
+    lines: list[str] = []
+    for index, move in enumerate(moves, start=1):
+        command = require_text(move, "command", source)
+        name = require_text(move, "name", source)
+        startup = require_text(move, "startup", source)
+        active = require_text(move, "active", source)
+        impact = require_text(move, "impact", source)
+        recovery = require_text(move, "recovery", source)
+        lines.append(
+            f"{index}. {command} — {name}: startup — {startup}; active — {active}; "
+            f"impact or sustain — {impact}; recovery — {recovery}."
+        )
+    return "\n".join(lines)
+
+
 def relative_repo_path(path: Path) -> str:
     return path.resolve().relative_to(REPO).as_posix()
 
 
 def reference_images(character_id: str) -> tuple[str, ...]:
-    candidates = (
-        REPO
-        / "assets"
-        / "sprites"
-        / "roster"
-        / character_id
-        / "source"
-        / f"{character_id}_core_4x4.png",
-        REPO
-        / "assets"
-        / "sprites"
-        / "roster"
-        / character_id
-        / "source"
-        / f"{character_id}_extended_4x4.png",
+    filenames = (
+        f"{character_id}_core_4x4.png",
+        f"{character_id}_extended_4x4.png",
     )
-    return tuple(relative_repo_path(path) for path in candidates if path.is_file())
+    roots = (
+        REPO / "assets" / "sprites" / "roster",
+        REPO / "public" / "assets" / "sprites" / "roster",
+    )
+    references: list[str] = []
+    for filename in filenames:
+        for root in roots:
+            candidate = root / character_id / "source" / filename
+            if candidate.is_file():
+                references.append(relative_repo_path(candidate))
+                break
+    return tuple(references)
 
 
 def clip_key(prompt_id: str) -> str:
@@ -167,11 +221,18 @@ def build_jobs(
 
     sheets = atlas.get("sheets")
     if not isinstance(sheets, dict):
-        raise SystemExit("`atlas-manifest.template.yml` must contain a `sheets` mapping")
+        raise SystemExit(
+            "`atlas-manifest.template.yml` must contain a `sheets` mapping"
+        )
 
     shared_context = {
         "shared_contract": require_text(pack, "shared_contract", pack_path),
-        "shared_negative_prompt": require_text(pack, "shared_negative_prompt", pack_path),
+        "shared_effect_contract": require_text(
+            pack, "shared_effect_contract", pack_path
+        ),
+        "shared_negative_prompt": require_text(
+            pack, "shared_negative_prompt", pack_path
+        ),
     }
     source_hashes = {
         relative_repo_path(pack_path): source_digest(pack_path),
@@ -182,7 +243,9 @@ def build_jobs(
     seen_job_keys: set[tuple[str, str]] = set()
     character_sources = sorted(CHARACTERS.glob("*/prompts.yml"))
     if not character_sources:
-        raise SystemExit("No character prompt bibles found under characters/*/prompts.yml")
+        raise SystemExit(
+            "No character prompt bibles found under characters/*/prompts.yml"
+        )
 
     for character_path in character_sources:
         character = load_yaml(character_path)
@@ -190,6 +253,10 @@ def build_jobs(
             field: require_text(character, field, character_path)
             for field in CHARACTER_FIELDS
         }
+        context["normal_moves_prompt"] = render_normal_moves(character, character_path)
+        context["special_moves_prompt"] = render_special_moves(
+            character, character_path
+        )
         character_id = context["character_id"]
         if character_id != character_path.parent.name:
             raise SystemExit(
@@ -197,11 +264,15 @@ def build_jobs(
                 f"`{character_path.parent.name}` in {character_path.relative_to(REPO)}"
             )
         character_title = require_text(character, "title", character_path)
-        source_hashes[relative_repo_path(character_path)] = source_digest(character_path)
+        source_hashes[relative_repo_path(character_path)] = source_digest(
+            character_path
+        )
 
         for prompt_order, template in enumerate(prompt_templates):
             if not isinstance(template, dict):
-                raise SystemExit("Every entry in `prompt-pack.yml.prompts` must be a mapping")
+                raise SystemExit(
+                    "Every entry in `prompt-pack.yml.prompts` must be a mapping"
+                )
             prompt_id = require_text(template, "id", pack_path)
             output_template = require_text(template, "output", pack_path)
             prompt_template = require_text(template, "prompt", pack_path)
@@ -219,6 +290,9 @@ def build_jobs(
             output_image = substitute(
                 output_template, full_context, f"{prompt_id}.output"
             )
+            job_references = tuple(
+                path for path in reference_images(character_id) if path != output_image
+            )
             rendered_prompt = substitute(
                 prompt_template, full_context, f"{prompt_id}.prompt"
             ).strip()
@@ -231,7 +305,7 @@ def build_jobs(
                     prompt_order=prompt_order,
                     markdown_path=markdown_path,
                     output_image=output_image,
-                    reference_images=reference_images(character_id),
+                    reference_images=job_references,
                     clips=clips,
                     prompt=rendered_prompt,
                     source_character=relative_repo_path(character_path),
@@ -269,8 +343,15 @@ def render_frontmatter(job: RenderJob, pack_version: int) -> str:
         f"character_id: {json_scalar(job.character_id)}",
         f"character_title: {json_scalar(job.character_title)}",
         f"prompt_id: {json_scalar(job.prompt_id)}",
-        "status: pending_render",
+        f"job_id: {json_scalar(f'{job.character_id}__{job.prompt_id}')}",
+        f"status: {'rendered_unreviewed' if (REPO / job.output_image).is_file() else 'pending_render'}",
         f"output_image: {json_scalar(job.output_image)}",
+        "frames: 16",
+        "grid:",
+        "  columns: 4",
+        "  rows: 4",
+        "cell_size: [256, 256]",
+        "output_size: [1024, 1024]",
         "reference_images:",
     ]
     if job.reference_images:
@@ -301,7 +382,8 @@ def render_job(job: RenderJob, pack_version: int) -> str:
         "## Render target\n\n"
         f"- Output image: `{job.output_image}`\n"
         "- Sheet geometry: 4×4 cells, 16 frames, row-major\n"
-        "- Review state: `pending_render`\n\n"
+        "- Output geometry: 1024×1024 RGBA, 256×256 per cell\n"
+        f"- Review state: `{'rendered_unreviewed' if (REPO / job.output_image).is_file() else 'pending_render'}`\n\n"
         "## Suggested reference images\n\n"
         f"{references}\n\n"
         "## Runtime clip plan\n\n"
@@ -375,7 +457,11 @@ def render_manifest(
         "jobs": [
             {
                 "characterId": job.character_id,
+                "jobId": f"{job.character_id}__{job.prompt_id}",
                 "promptId": job.prompt_id,
+                "status": "rendered_unreviewed" if (REPO / job.output_image).is_file() else "pending_render",
+                "expectedOutputSize": [1024, 1024],
+                "grid": {"columns": 4, "rows": 4},
                 "promptOrder": job.prompt_order,
                 "markdown": path_from_output(output_root, job.markdown_path),
                 "outputImage": job.output_image,
@@ -393,7 +479,7 @@ def render_manifest(
     scalar_array = re.compile(
         r'(?m)^(?P<prefix>\s+"(?:clips|referenceImages)":) \[\n'
         r'(?P<values>(?:\s+"(?:[^"\\]|\\.)*",?\n)+)'
-        r'\s+\]'
+        r"\s+\]"
     )
 
     def compact_short_array(match: re.Match[str]) -> str:
@@ -401,7 +487,7 @@ def render_manifest(
             line.strip().removesuffix(",")
             for line in match.group("values").splitlines()
         ]
-        compact = f'{match.group("prefix")} [{", ".join(values)}]'
+        compact = f"{match.group('prefix')} [{', '.join(values)}]"
         return compact if len(compact) <= 100 else match.group(0)
 
     return scalar_array.sub(compact_short_array, rendered) + "\n"
@@ -432,7 +518,10 @@ def old_generated_paths(output_root: Path) -> set[Path]:
         markdown = job.get("markdown") if isinstance(job, dict) else None
         if isinstance(markdown, str):
             candidate = (output_root / markdown).resolve()
-            if candidate == output_root.resolve() or output_root.resolve() in candidate.parents:
+            if (
+                candidate == output_root.resolve()
+                or output_root.resolve() in candidate.parents
+            ):
                 paths.add(candidate)
     return paths
 

@@ -1,4 +1,4 @@
-import { isEthicPixiBridgeRequested } from '@/render/ethic-pixi-bridge';
+import { isEthicPixiBridgeRequested } from '@/render/ethic-pixi-loader';
 import { describe, expect, it } from 'vitest';
 
 describe('Ethic Pixi bridge opt-in', () => {

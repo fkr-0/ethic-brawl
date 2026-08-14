@@ -1,4 +1,4 @@
-version: 1
+version: 3
 character_id: '<id>'
 source_directory: assets/sprites/roster/<id>/source/animation-v2
 sheet_layout:
@@ -9,6 +9,9 @@ sheet_layout:
   root_motion: engine-owned
 
 sheets:
+  core: {file: <id>_core_4x4.png, clips: {}}
+  extended: {file: <id>_extended_4x4.png, clips: {}}
+
   idle_turn:
     file: <id>_idle_turn_4x4.png
     clips:
@@ -45,9 +48,76 @@ sheets:
       crouch_v2: {frames: [8, 9, 10, 11], mode: once, duration: 4}
       guard_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
 
-integration_status: prompt-only
+  normal_attacks:
+    file: <id>_normal_attacks_4x4.png
+    clips:
+      attack_light_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      attack_medium_v2: {frames: [4, 5, 6, 7], mode: once, duration: 3}
+      attack_heavy_v2: {frames: [8, 9, 10, 11], mode: once, duration: 4}
+      air_attack_v2: {frames: [12, 13, 14, 15], mode: once, duration: 3}
+
+  mobility_evasion_throw:
+    file: <id>_mobility_evasion_throw_4x4.png
+    clips:
+      dash_forward_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      dash_backward_v2: {frames: [4, 5, 6, 7], mode: once, duration: 3}
+      evade_v2: {frames: [8, 9, 10, 11], mode: once, duration: 3}
+      throw_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
+
+  item_interactions:
+    file: <id>_item_interactions_4x4.png
+    clips:
+      item_pickup_v2: {frames: [0, 1, 2, 3], mode: once, duration: 4}
+      item_throw_v2: {frames: [4, 5, 6, 7], mode: once, duration: 3}
+      item_use_v2: {frames: [8, 9, 10, 11], mode: once, duration: 4}
+      item_swing_v2: {frames: [12, 13, 14, 15], mode: once, duration: 3}
+
+  guard_parry_break:
+    file: <id>_guard_parry_break_4x4.png
+    clips:
+      guard_hold_v2: {frames: [0, 1, 2, 3], mode: loop, duration: 5}
+      parry_v2: {frames: [4, 5, 6, 7], mode: once, duration: 3}
+      guard_break_v2: {frames: [8, 9, 10, 11], mode: once, duration: 4}
+      counter_v2: {frames: [12, 13, 14, 15], mode: once, duration: 3}
+
+  reactions_knockdown:
+    file: <id>_reactions_knockdown_4x4.png
+    clips:
+      hitstun_light_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      hitstun_heavy_v2: {frames: [4, 5, 6, 7], mode: once, duration: 4}
+      knockdown_v2: {frames: [8, 9, 10, 11], mode: once, duration: 5}
+      getup_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
+
+  specials:
+    file: <id>_specials_4x4.png
+    clips:
+      special_slot_1_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      special_slot_2_v2: {frames: [4, 5, 6, 7], mode: once, duration: 3}
+      special_slot_3_v2: {frames: [8, 9, 10, 11], mode: once, duration: 3}
+      special_slot_4_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
+
+  special_effects:
+    file: <id>_special_effects_4x4.png
+    clips:
+      special_effect_slot_1_v2: {frames: [0, 1, 2, 3], mode: once, duration: 3}
+      special_effect_slot_2_v2: {frames: [4, 5, 6, 7], mode: once, duration: 3}
+      special_effect_slot_3_v2: {frames: [8, 9, 10, 11], mode: once, duration: 3}
+      special_effect_slot_4_v2: {frames: [12, 13, 14, 15], mode: once, duration: 4}
+
+  intro_taunt_victory_defeat:
+    file: <id>_intro_taunt_victory_defeat_4x4.png
+    clips:
+      intro_v2: {frames: [0, 1, 2, 3], mode: once, duration: 5}
+      taunt_v2: {frames: [4, 5, 6, 7], mode: once, duration: 6}
+      victory_v2: {frames: [8, 9, 10, 11], mode: loop, duration: 8}
+      defeat_v2: {frames: [12, 13, 14, 15], mode: once, duration: 6}
+
+integration_status: prompt-only-full-pack
 integration_notes:
-  - Keep existing core and extended sheets active until each v2 sheet passes visual review.
+  - The first five sheets are the currently integrated locomotion and defense profile.
+  - The eight combat, interaction, reaction, special, effect, and presentation sheets define the intended full Animation v2 bank but require runtime offset and mapping work after visual approval.
+  - Keep existing core and extended sheets active until each replacement sheet passes visual review.
   - Assign unique atlas offsets when importing multiple sheets into one CharacterAnimationMap.
+  - Map special_slot_1_v2 through special_slot_4_v2 to each character's listed command-special order in characters/<id>/prompts.yml.
   - Preserve locomotion phase when switching walk_forward_v2 to run_v2.
   - Select walk_backward_v2 from movement intent relative to facing, not from world-space direction alone.

@@ -37,11 +37,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Chromium
-        run: pnpm exec playwright install --with-deps chromium
+      - name: Install browsers
+        run: pnpm exec playwright install --with-deps chromium firefox
 
-      - name: Verify generated prompt jobs
-        run: pnpm prompts:v2:check
+      - name: Verify release assets
+        run: pnpm assets:check
+
+      - name: Verify release train
+        run: pnpm release:plan:check
 
       - name: Lint
         run: pnpm lint
@@ -54,6 +57,9 @@ jobs:
 
       - name: Production build
         run: pnpm build
+
+      - name: Verify bundle budgets
+        run: pnpm bundle:check
 
       - name: Browser E2E
         run: pnpm test:e2e

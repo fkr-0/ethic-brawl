@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { cameraFollowTargets, createCamera, shakeCamera, updateCamera } from '@/render/camera';
+import {
+  applyFightCameraEffects,
+  cameraFollowTargets,
+  createCamera,
+  shakeCamera,
+  updateCamera,
+} from '@/render/camera';
 
 describe('shared camera rig facade', () => {
   it('preserves Ethic target averaging, frame blending and legacy shake aliases', () => {
@@ -23,5 +29,19 @@ describe('shared camera rig facade', () => {
     expect(camera.shake).toBe(4);
     expect(camera.shakeOffsetX).toBe(camera.shakeX);
     expect(camera.shakeOffsetY).toBe(camera.shakeY);
+  });
+
+  it('scales or disables impact motion without touching combat timing', () => {
+    const full = createCamera();
+    const still = createCamera();
+    const effects = [{ shake: 10, zoomDelta: 0.2, ttl: 5, totalTtl: 10 }];
+
+    applyFightCameraEffects(full, effects, 1);
+    applyFightCameraEffects(still, effects, 0);
+
+    expect(full.shake).toBeGreaterThan(0);
+    expect(full.zoom).toBeGreaterThan(1);
+    expect(still.shake).toBe(0);
+    expect(still.zoom).toBe(1);
   });
 });

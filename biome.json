@@ -1,6 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
-  "assist": { "enabled": false },
+  "assist": {
+    "enabled": false
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -17,7 +19,12 @@
       "suspicious": {
         "noExplicitAny": "warn",
         "noVar": "error",
-        "noConsole": { "level": "warn", "options": { "allow": ["info", "warn", "error"] } }
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": ["info", "warn", "error"]
+          }
+        }
       },
       "performance": {
         "noDelete": "warn"
@@ -54,13 +61,18 @@
       "!**/playwright-report",
       "!**/test-results",
       "!**/.ws-bridge",
-      "!**/assets/sprites/roster/**/animation-v2/manifest.json",
-      "!**/public/assets/sprites/roster/**/animation-v2/manifest.json",
-      "!**/docs/prompts/**/provenance/*.json",
-      "!**/docs/prompts/fullset/manifest.json",
+      "!**/docs/prompts",
       "!**/vendor",
       "!**/test-sprites.html",
-      "!**/trunk"
+      "!**/trunk",
+      "!**/.tmp-preview",
+      "!docs/prompts/**/render-jobs",
+      "!generated/sprite-audit",
+      "!**/.tmp-animation-v2-review",
+      "!**/source/animation-v2",
+      "!characters/**/animation-v2.actions.json",
+      "!characters/**/animation-v2.atlas.json",
+      "!docs/prompts/fullset/manifest.json"
     ]
   }
 }

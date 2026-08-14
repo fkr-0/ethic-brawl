@@ -35,9 +35,44 @@ async function enterFightAndMeasure(
   expect(snapshot.renderer.backend).toBe(mode === 'bridge' ? 'pixi-canvas-bridge' : 'canvas2d');
   if (mode === 'bridge') {
     await expect(page.locator('#ethic-pixi-bridge')).toBeVisible();
-    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute(
+    await expect(page.locator('#ethic-pixi-bridge')).not.toHaveAttribute(
       'data-arcade-passes',
-      'background,arena'
+      /.+/
+    );
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute('data-native-scenery', 'true');
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute(
+      'data-native-screen-feedback',
+      'true'
+    );
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute('data-native-actors', 'true');
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute('data-actor-count', '2');
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute(
+      'data-native-projectiles',
+      'true'
+    );
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute('data-native-hud', 'true');
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute(
+      'data-hardware-tier',
+      /^(low|balanced|high)$/
+    );
+    const bridgeCanvas = page.locator('#ethic-pixi-bridge');
+    await expect(bridgeCanvas).not.toHaveAttribute('data-hardware-budget', 'warming', {
+      timeout: 15_000,
+    });
+    const hardware = await bridgeCanvas.evaluate((canvas) => ({
+      status: canvas.getAttribute('data-hardware-budget'),
+      tier: canvas.getAttribute('data-hardware-tier'),
+      samples: canvas.getAttribute('data-hardware-samples'),
+      mean: canvas.getAttribute('data-hardware-frame-mean-ms'),
+      p95: canvas.getAttribute('data-hardware-frame-p95-ms'),
+      max: canvas.getAttribute('data-hardware-frame-max-ms'),
+      violations: canvas.getAttribute('data-hardware-violations'),
+    }));
+    console.info('Ethic hardware budget', hardware);
+    expect(hardware).toMatchObject({ status: 'pass', violations: '' });
+    await expect(page.locator('#ethic-pixi-bridge')).toHaveAttribute(
+      'data-hud-timer',
+      /^\d+:\d{2}$/
     );
   }
   return snapshot.renderer.renderPerformance;

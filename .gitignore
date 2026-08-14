@@ -2,6 +2,7 @@
 .idea
 *.log
 tmp/
+.tmp-*/
 
 node_modules/*
 !node_modules/.bin
@@ -50,3 +51,10 @@ Thumbs.db
 # Ignore build output directories
 build/
 dist/
+public
+
+# python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/

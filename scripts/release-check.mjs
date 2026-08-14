@@ -7,6 +7,7 @@ const commands = [
   ['pnpm', ['typecheck']],
   ['pnpm', ['test:run']],
   ['pnpm', ['build']],
+  ['pnpm', ['bundle:check']],
   ['pnpm', ['test:e2e']],
 ];
 

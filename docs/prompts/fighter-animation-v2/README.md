@@ -1,10 +1,12 @@
-# Fine-grained Fighter Animation Prompt Pack
+# Full Fighter Animation v2 Prompt Pack
 
-This pack expands the current four-pose idle and locomotion vocabulary without changing combat simulation or root motion.
+This pack defines a complete, reviewable fighter sprite vocabulary for the current 18-character Ethic Brawl roster. It keeps each request to one independent 4×4 sheet while covering locomotion, defense, normal attacks, combat mobility, item handling, reactions, command specials, and match presentation.
 
-## Source material
+The first five sheets are already compatible with the current Animation v2 locomotion/defense integration. The remaining eight sheets are the asset contract for replacing legacy combat, character-specific VFX, and presentation fallbacks after their renders pass review.
 
-For a character named `<id>`, open `characters/<id>/prompts.yml` and copy these fields into the placeholders used by `prompt-pack.yml`:
+## Character sources
+
+The generator reads every `characters/<id>/prompts.yml` identity bible. Each file must provide:
 
 - `common_prompt_prefix`
 - `character_sprite_brief`
@@ -12,33 +14,50 @@ For a character named `<id>`, open `characters/<id>/prompts.yml` and copy these 
 - `palette_anchors`
 - `appearance_bible`
 - `animation_bible`
+- exactly three `move_render_descriptions.normal_moves`
+- exactly four `move_render_descriptions.special_moves`
 
-Provide the current approved core sprite sheet as an image reference whenever the rendering model accepts one. Identity continuity is more important than decorative detail.
+The structured move descriptions are converted automatically into the normal-attack and command-special render prompts.
+
+Canonical character IDs use `leibniz`, not the older `leibnitz` spelling. Historical filenames may retain aliases only where needed for provenance.
+
+Provide the currently approved core and extended sprite sheets as image references whenever the rendering model supports them. The generator searches both `assets/` and `public/assets/` for those references. Identity continuity is more important than decorative detail.
 
 ## Output contract
 
-Each request produces one independent 4×4 RGBA sheet with exactly 16 equal cells. Use a square image of at least 1024×1024 pixels, divisible by four in both dimensions.
+Each request produces one square RGBA sheet with exactly 16 equal cells in a 4×4 row-major grid. Use at least 1024×1024 pixels and dimensions divisible by four.
 
-- transparent background only;
-- no gutters, margins, frame lines, labels, or captions;
+- true alpha transparency only;
+- no gutters, margins, frame lines, labels, numbers, or captions;
 - orthographic side-view fighting-game camera;
-- one character at a fixed scale and fixed ground anchor;
-- full body inside every cell;
+- one character at a fixed scale and fixed root anchor;
+- complete body, props, items, and effects inside every cell;
 - identical costume, face, palette, lighting, outline weight, and pixel density;
-- right-facing unless a turn frame explicitly changes facing;
-- no baked screen translation: locomotion is shown through pose and weight transfer while the root stays centered;
-- no motion trail crossing a cell boundary;
-- frame 16 of a looping sheet must connect naturally back to frame 1 where specified.
+- right-facing unless a turn or fall explicitly changes orientation;
+- no baked world translation;
+- no motion or VFX crossing a cell boundary;
+- temporary items and special props appear only in their named rows;
+- no second complete opponent in hit, grab, or throw frames.
 
-## Sheets
+## Full sheet set
 
 | Sheet | Frames | Purpose |
 |---|---:|---|
-| `idle_turn_4x4` | 8 idle + 4 turn left + 4 turn right | Slow breathing, weight shifts, and readable facing changes |
-| `walk_forward_backward_4x4` | 8 forward + 8 backward | Separate advance and guarded retreat cycles |
-| `run_start_loop_stop_4x4` | 4 start + 8 loop + 4 brake | No instant jump from standing pose to maximum stride |
-| `jump_land_recovery_4x4` | 4 takeoff + 4 air + 4 landing + 4 recovery | Continuous vertical action instead of one-frame popping |
-| `lane_guard_crouch_4x4` | 4 lane-away + 4 lane-toward + 4 crouch + 4 guard | 2.5D sidesteps and basic defensive transitions |
+| `idle_turn_4x4` | 8 idle + 4 turn left + 4 turn right | Breathing, weight shifts, and facing changes |
+| `walk_forward_backward_4x4` | 8 forward + 8 backward | Distinct advance and guarded retreat cycles |
+| `run_start_loop_stop_4x4` | 4 start + 8 loop + 4 brake | Acceleration, sustained run, and braking |
+| `jump_land_recovery_4x4` | 4 takeoff + 4 air + 4 landing + 4 recovery | Continuous vertical motion |
+| `lane_guard_crouch_4x4` | 4 lane-away + 4 lane-toward + 4 crouch + 4 guard | 2.5D footwork and basic defense transitions |
+| `normal_attacks_4x4` | 4 light + 4 medium + 4 heavy + 4 air attack | Full current normal attack chain and aerial attack |
+| `mobility_evasion_throw_4x4` | 4 forward dash + 4 backdash + 4 evade + 4 throw | Combat movement and empty-hand throw motion |
+| `item_interactions_4x4` | 4 pickup + 4 throw + 4 use + 4 swing | Universal item handling |
+| `guard_parry_break_4x4` | 4 held guard + 4 parry + 4 guard break + 4 counter | Detailed defensive combat states |
+| `reactions_knockdown_4x4` | 4 light hit + 4 heavy hit + 4 knockdown + 4 get-up | Damage and recovery states |
+| `specials_4x4` | 4 frames × 4 current specials | One row per character-specific command-special caster animation |
+| `special_effects_4x4` | 4 effect phases × 4 current specials | Isolated telegraph, active, impact, and dissipation VFX |
+| `intro_taunt_victory_defeat_4x4` | 4 intro + 4 taunt + 4 victory + 4 defeat | Match presentation and end states |
+
+That is **208 authored prompt frames per character** and **3,744 frames across 18 characters** when every sheet is rendered.
 
 Suggested output directory:
 
@@ -46,37 +65,57 @@ Suggested output directory:
 assets/sprites/roster/<id>/source/animation-v2/
 ```
 
-Suggested file names are listed in `atlas-manifest.template.yml`.
+Suggested filenames and clip ranges are defined in `atlas-manifest.template.yml`.
 
 ## Generate individual render jobs
 
-Install the small Python dependency once, then create one ready-to-paste Markdown file for every character and sheet prompt:
+Install the Python dependency once and generate every ready-to-paste job:
 
 ```bash
 python3 -m pip install -r docs/prompts/fighter-animation-v2/requirements.txt
 pnpm prompts:v2:generate
 ```
 
-The generator reads `prompt-pack.yml`, `atlas-manifest.template.yml`, and all `characters/<id>/prompts.yml` files. It writes 80 individual jobs to `render-jobs/<character>/<prompt-id>.md`, plus `render-jobs/INDEX.md` and a machine-readable `render-jobs/manifest.json`.
+At the current roster size this writes:
 
-Verify that the generated files match their sources without rewriting them:
+```text
+18 characters × 13 sheets = 234 render-job Markdown files
+```
+
+Files are written under:
+
+```text
+docs/prompts/fighter-animation-v2/render-jobs/<character>/<prompt-id>.md
+```
+
+The generator also writes:
+
+- `render-jobs/INDEX.md`
+- `render-jobs/manifest.json`
+
+Verify generated files without rewriting them:
 
 ```bash
 pnpm prompts:v2:check
 ```
 
-Each generated Markdown file contains frontmatter, the target image path, suggested approved reference sheets, the runtime clip plan, and one complete prompt block for the rendering model. Generated files should not be edited directly; change the prompt pack or character bible and regenerate them.
+Generated render-job Markdown files should not be edited directly. Change `prompt-pack.yml`, `atlas-manifest.template.yml`, or a character prompt bible, then regenerate.
 
-## Rendering workflow
+## Recommended rendering order
 
-1. Run `pnpm prompts:v2:generate` and open `render-jobs/INDEX.md`.
-2. Generate `idle_turn_4x4` first for a character.
-3. Reject it if identity, baseline, scale, or cell geometry drifts.
-4. Use the approved idle sheet together with the current core sheet as references for every later sheet.
-5. Generate locomotion sheets individually. Do not request all 80 frames in one image.
-6. Compare frame 1 and frame 8 of each loop at 50% opacity; the silhouette should not jump.
-7. Run the checklist in `REVIEW_CHECKLIST.md` before slicing or integrating anything.
+For each character:
+
+1. Render and approve `idle_turn_4x4`.
+2. Render walk, run, jump, and lane/guard/crouch using the approved idle and legacy core sheet as references.
+3. Render `normal_attacks_4x4` and confirm the three rows match the structured normal-move list.
+4. Render mobility, item, detailed defense, and reaction sheets.
+5. Render `specials_4x4`; each row must match the exact listed command-special order.
+6. Render `special_effects_4x4` from the approved caster-special sheet so palette and timing agree.
+7. Render intro, taunt, victory, and defeat last so identity is already stable.
+8. Review every result with `REVIEW_CHECKLIST.md` before curation or runtime integration.
+
+Do not ask one image generation to produce all 208 frames. Each 4×4 job is intentionally independent so a failed sheet can be rerendered without destabilizing the rest.
 
 ## Runtime note
 
-Ethic Brawl v1.5.1 slows and cross-dissolves the existing four-frame cycles and preserves phase when walking changes to running. These prompts are the asset-side follow-up. The new sheets are deliberately separate from the current core and extended atlases so they can be reviewed and integrated without replacing combat frames prematurely.
+The current game runtime directly uses the first five Animation v2 sheets for integrated characters and appends legacy combat frames. The eight new action and effect sheets are prompt-complete but not yet runtime-mapped. Once approved assets exist, the runtime atlas should map their clip metadata instead of retaining legacy attack, reaction, item, special, VFX, and victory fallbacks.

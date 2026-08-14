@@ -21,8 +21,11 @@ export interface FightOutcomeSummary {
   perfect: boolean;
 }
 
-export type GameMode = 'vs' | 'stage';
-export type SettingsMenuTab = 'gameplay' | 'keybindings';
+export type GameMode = 'vs' | 'ai-vs-ai' | 'stage';
+export type SettingsMenuTab = 'gameplay' | 'accessibility' | 'keybindings';
+export type ImpactMotionLevel = 'full' | 'reduced' | 'none';
+export type CombatFlashLevel = 'full' | 'reduced' | 'none';
+export type SpectatorDetailLevel = 'minimal' | 'tactical' | 'lab';
 
 export interface KeybindingEditState {
   playerId: 1 | 2;
@@ -31,6 +34,9 @@ export interface KeybindingEditState {
 
 export interface SettingsState {
   skipStageIntro: boolean;
+  impactMotion: ImpactMotionLevel;
+  combatFlashes: CombatFlashLevel;
+  spectatorDetail: SpectatorDetailLevel;
   menuTab: SettingsMenuTab;
   selectedIndex: number;
   keybindingEdit: KeybindingEditState | null;
@@ -41,7 +47,11 @@ export interface SettingsState {
 }
 
 export interface SerializableSettingsState {
+  schemaVersion: 2;
   skipStageIntro: boolean;
+  impactMotion: ImpactMotionLevel;
+  combatFlashes: CombatFlashLevel;
+  spectatorDetail: SpectatorDetailLevel;
   bindings: {
     player1: SerializedInputBinding;
     player2: SerializedInputBinding;

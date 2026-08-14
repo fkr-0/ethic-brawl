@@ -1,0 +1,772 @@
+{
+  "version": 2,
+  "character": "marx",
+  "review": {
+    "strategy": "hand-curated source reassignment, frame selection, per-frame scaling, root alignment, and transparent-edge cleanup",
+    "notes": [
+      "Canonical sources are selected from prompt/image pairs in docs/prompts/fullset.",
+      "Existing frame selection, scale, and root offsets were retained only when the chosen image hash matched the previously curated source.",
+      "Existing reviewed sheets without a correctly paired fullset prompt are retained rather than silently dropped.",
+      "Sheets whose source changed use neutral frame order and offsets and require a gameplay-scale motion review."
+    ],
+    "source_hashes": {
+      "marx_idle.png": "0aa8446eb41bc7937d7b900a1e226880d05ae86c6bd43801fdeca474daf2767e",
+      "marx_walk.png": "3d51f28c8526b5e19d641e513b28c69811a69a81ca95d382753c5ae008dcac5d",
+      "marx_run.png": "085993b638a58eb2e0a736639006dc4cd9e1fe45641fbcd232b503c159fab482",
+      "marx_jump.png": "8fefdfd25544341d642221fffab5c4d774b3c8eb3bc53d488a532884b46e3416",
+      "marx_crouch.png": "72c30a424b00cd307542feb570f1d829c13be717c272e3a307f4080ed009c991"
+    },
+    "status": "source_curated",
+    "selection_manifest": "docs/prompts/fullset/manifest.json",
+    "preserved_hand_tuning": [
+      "idle_turn_4x4",
+      "walk_forward_backward_4x4",
+      "run_start_loop_stop_4x4",
+      "jump_land_recovery_4x4",
+      "lane_guard_crouch_4x4"
+    ],
+    "reset_to_source_defaults": [],
+    "missing_base_actions": [],
+    "retained_without_fullset_pair": []
+  },
+  "sheets": [
+    {
+      "source": "selected/idle_turn_4x4.png",
+      "output_suffix": "idle_turn_4x4.png",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        15,
+        13,
+        9,
+        8,
+        8,
+        9,
+        13,
+        15
+      ],
+      "frame_offsets": [
+        [
+          -9,
+          -8
+        ],
+        [
+          4,
+          -8
+        ],
+        [
+          8,
+          -8
+        ],
+        [
+          15,
+          -8
+        ],
+        [
+          -8,
+          -4
+        ],
+        [
+          6,
+          -5
+        ],
+        [
+          9,
+          -4
+        ],
+        [
+          16,
+          -4
+        ],
+        [
+          24,
+          7
+        ],
+        [
+          12,
+          7
+        ],
+        [
+          -6,
+          -8
+        ],
+        [
+          -16,
+          -1
+        ],
+        [
+          -16,
+          -1
+        ],
+        [
+          -6,
+          -8
+        ],
+        [
+          12,
+          7
+        ],
+        [
+          24,
+          7
+        ]
+      ],
+      "frame_scales": [
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88
+      ],
+      "clips": {
+        "idle_v2": {
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop",
+          "duration": 7
+        },
+        "turn_left_v2": {
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once",
+          "duration": 3
+        },
+        "turn_right_v2": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once",
+          "duration": 3
+        }
+      }
+    },
+    {
+      "source": "selected/walk_forward_backward_4x4.png",
+      "output_suffix": "walk_forward_backward_4x4.png",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "frame_offsets": [
+        [
+          -18,
+          -8
+        ],
+        [
+          -7,
+          -8
+        ],
+        [
+          6,
+          -8
+        ],
+        [
+          12,
+          -8
+        ],
+        [
+          -8,
+          -4
+        ],
+        [
+          -2,
+          -5
+        ],
+        [
+          5,
+          -4
+        ],
+        [
+          15,
+          -5
+        ],
+        [
+          -3,
+          -8
+        ],
+        [
+          10,
+          -8
+        ],
+        [
+          15,
+          -8
+        ],
+        [
+          26,
+          -8
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          12,
+          15
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          22,
+          14
+        ]
+      ],
+      "frame_scales": [
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.88,
+        0.95,
+        0.95,
+        0.95,
+        0.95
+      ],
+      "clips": {
+        "walk_forward_v2": {
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "loop",
+          "duration": 4
+        },
+        "walk_backward_v2": {
+          "frames": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "loop",
+          "duration": 5
+        }
+      }
+    },
+    {
+      "source": "selected/run_start_loop_stop_4x4.png",
+      "output_suffix": "run_start_loop_stop_4x4.png",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_frames": [
+        15,
+        12,
+        13,
+        14,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15
+      ],
+      "frame_offsets": [
+        [
+          17,
+          51
+        ],
+        [
+          5,
+          51
+        ],
+        [
+          16,
+          51
+        ],
+        [
+          26,
+          51
+        ],
+        [
+          8,
+          21
+        ],
+        [
+          -2,
+          -8
+        ],
+        [
+          -6,
+          -8
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          9,
+          31
+        ],
+        [
+          -9,
+          -8
+        ],
+        [
+          15,
+          32
+        ],
+        [
+          15,
+          31
+        ],
+        [
+          6,
+          34
+        ],
+        [
+          -2,
+          -4
+        ],
+        [
+          -5,
+          -4
+        ],
+        [
+          17,
+          51
+        ]
+      ],
+      "frame_scales": [
+        1.08,
+        1.08,
+        1.08,
+        1.08,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.08
+      ],
+      "cleanup_transparent_edges": true,
+      "clips": {
+        "run_start_v2": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once",
+          "duration": 3
+        },
+        "run_v2": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "loop",
+          "duration": 3
+        },
+        "run_stop_v2": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once",
+          "duration": 4
+        }
+      }
+    },
+    {
+      "source": "selected/jump_land_recovery_4x4.png",
+      "output_suffix": "jump_land_recovery_4x4.png",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "frame_offsets": [
+        [
+          -2,
+          -5
+        ],
+        [
+          15,
+          -5
+        ],
+        [
+          16,
+          -5
+        ],
+        [
+          38,
+          -2
+        ],
+        [
+          -8,
+          -19
+        ],
+        [
+          2,
+          -29
+        ],
+        [
+          0,
+          -39
+        ],
+        [
+          54,
+          -10
+        ],
+        [
+          6,
+          -1
+        ],
+        [
+          18,
+          14
+        ],
+        [
+          38,
+          24
+        ],
+        [
+          40,
+          24
+        ],
+        [
+          0,
+          37
+        ],
+        [
+          -6,
+          37
+        ],
+        [
+          1,
+          37
+        ],
+        [
+          49,
+          36
+        ]
+      ],
+      "frame_scales": [
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95,
+        0.95
+      ],
+      "clips": {
+        "jump_takeoff_v2": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once",
+          "duration": 3
+        },
+        "jump_air_v2": {
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once",
+          "duration": 4
+        },
+        "land_v2": {
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once",
+          "duration": 3
+        },
+        "land_recovery_v2": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once",
+          "duration": 4
+        }
+      }
+    },
+    {
+      "source": "selected/lane_guard_crouch_4x4.png",
+      "output_suffix": "lane_guard_crouch_4x4.png",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "frame_offsets": [
+        [
+          4,
+          19
+        ],
+        [
+          8,
+          19
+        ],
+        [
+          20,
+          19
+        ],
+        [
+          24,
+          19
+        ],
+        [
+          10,
+          36
+        ],
+        [
+          19,
+          36
+        ],
+        [
+          22,
+          36
+        ],
+        [
+          25,
+          37
+        ],
+        [
+          9,
+          41
+        ],
+        [
+          16,
+          42
+        ],
+        [
+          18,
+          41
+        ],
+        [
+          24,
+          41
+        ],
+        [
+          6,
+          77
+        ],
+        [
+          19,
+          78
+        ],
+        [
+          20,
+          78
+        ],
+        [
+          18,
+          77
+        ]
+      ],
+      "frame_scales": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.15,
+        1.15,
+        1.15,
+        1.15
+      ],
+      "cleanup_transparent_edges": true,
+      "clips": {
+        "lane_away_v2": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "mode": "once",
+          "duration": 3
+        },
+        "lane_toward_v2": {
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "mode": "once",
+          "duration": 3
+        },
+        "crouch_v2": {
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "mode": "once",
+          "duration": 4
+        },
+        "guard_v2": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "mode": "once",
+          "duration": 4
+        }
+      }
+    }
+  ]
+}

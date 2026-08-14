@@ -110,17 +110,19 @@ export function updateCamera(camera: Camera, config: Partial<CameraConfig> = {})
 
 export function applyFightCameraEffects(
   camera: Camera,
-  effects: Array<{ shake: number; zoomDelta: number; ttl: number; totalTtl: number }>
+  effects: Array<{ shake: number; zoomDelta: number; ttl: number; totalTtl: number }>,
+  effectScale = 1
 ): void {
+  const resolvedScale = Math.max(0, Math.min(1, effectScale));
   let maxZoom = 1;
 
   for (const effect of effects) {
     const intensity = effect.ttl / Math.max(1, effect.totalTtl);
     if (effect.shake > 0) {
-      shakeCamera(camera, effect.shake * intensity);
+      shakeCamera(camera, effect.shake * intensity * resolvedScale);
     }
     if (effect.zoomDelta > 0) {
-      maxZoom = Math.max(maxZoom, 1 + effect.zoomDelta * intensity);
+      maxZoom = Math.max(maxZoom, 1 + effect.zoomDelta * intensity * resolvedScale);
     }
   }
 

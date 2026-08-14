@@ -25,157 +25,29 @@ import type {
 /**
  * Character sprite asset paths
  */
+export type AnimationV2ActionKind =
+  | 'normal_attacks'
+  | 'mobility_throw'
+  | 'item_interactions'
+  | 'advanced_guard'
+  | 'damage_recovery'
+  | 'specials'
+  | 'special_effects'
+  | 'intro_taunt_victory_defeat';
+
+export interface AuthoredActionSheetDescriptor {
+  kind: AnimationV2ActionKind;
+  path: string;
+}
+
 export interface CharacterSpriteDescriptor {
   corePath: string;
   extendedPath?: string;
   additionalPaths?: readonly string[];
-  normalAttackPath?: string;
+  authoredActionSheets?: readonly AuthoredActionSheetDescriptor[];
+  legacyCombatBank?: boolean;
   layout: 'legacy' | 'roster' | 'animation-v2';
-  animationV2Profile?: 'complete' | 'movement-defense' | 'full';
-}
-
-function getFullAnimationV2FrameLabel(index: number): FrameLabel {
-  if (index < 8) return 'idle';
-  if (index < 16) return 'taunt_or_pose';
-  if (index < 48) {
-    return (['run_1', 'run_2', 'run_3', 'run_4'] as const)[index % 4] ?? 'run_1';
-  }
-  if (index < 56) return 'jump_rise';
-  if (index < 64) return 'land';
-  if (index < 72) return 'spare';
-  if (index < 76) return 'crouch';
-  if (index < 80) return 'guard';
-  if (index < 84) return 'attack_1';
-  if (index < 88) return 'attack_2';
-  if (index < 92) return 'attack_3';
-  if (index < 96) return 'air_attack_or_air_kick';
-  if (index >= 200 && index < 204) return 'victory_or_quote_pose';
-  return 'spare';
-}
-
-function createFullAnimationV2Manifest(characterId: CharacterId): SpriteManifest {
-  const clips: AnimationClip[] = [
-    ...createAuthoredAnimationV2Clips('complete'),
-    createClip('idle', 'Authored Idle', [0, 1, 2, 3, 4, 5, 6, 7], 'loop', 7),
-    createClip('run', 'Authored Run', [36, 37, 38, 39, 40, 41, 42, 43], 'loop', 3),
-    createClip('jump_rise', 'Authored Jump', [48, 49, 50, 51, 52, 53, 54, 55], 'once', 4),
-    createClip('land', 'Authored Landing', [56, 57, 58, 59, 60, 61, 62, 63], 'once', 4),
-    createClip('guard', 'Authored Guard', [76, 77, 78, 79], 'loop', 4),
-    createClip('attack_1', 'Authored Light Attack', [80, 81, 82, 83], 'once', 3),
-    createClip('attack_2', 'Authored Medium Attack', [84, 85, 86, 87], 'once', 3),
-    createClip('attack_3', 'Authored Heavy Attack', [88, 89, 90, 91], 'once', 4),
-    createClip('air_attack', 'Authored Air Attack', [92, 93, 94, 95], 'once', 3),
-    createClip('attack_light_startup', 'Light Wind-Up', [80], 'once', 3),
-    createClip('attack_light_active', 'Light Strike', [81, 82], 'once', 3),
-    createClip('attack_light_recovery', 'Light Recovery', [83], 'once', 3),
-    createClip('attack_medium_startup', 'Medium Wind-Up', [84], 'once', 3),
-    createClip('attack_medium_active', 'Medium Strike', [85, 86], 'once', 3),
-    createClip('attack_medium_recovery', 'Medium Recovery', [87], 'once', 3),
-    createClip('attack_heavy_startup', 'Heavy Wind-Up', [88], 'once', 4),
-    createClip('attack_heavy_active', 'Heavy Strike', [89, 90], 'once', 4),
-    createClip('attack_heavy_recovery', 'Heavy Recovery', [91], 'once', 4),
-    createClip('attack_special_startup', 'Special Invocation', [160], 'once', 4),
-    createClip('attack_special_active', 'Special Release', [161, 162], 'once', 3),
-    createClip('attack_special_recovery', 'Special Recovery', [163], 'once', 4),
-    createClip('special', 'Authored Special', [160, 161, 162, 163], 'once', 3),
-    createClip('dash_forward_v2', 'Forward Dash', [96, 97, 98, 99], 'once', 3),
-    createClip('dash_backward_v2', 'Backward Dash', [100, 101, 102, 103], 'once', 3),
-    createClip('evade_v2', 'Evade', [104, 105, 106, 107], 'once', 3),
-    createClip('throw_v2', 'Throw', [108, 109, 110, 111], 'once', 4),
-    createClip('guard_hold_v2', 'Guard Hold', [128, 129, 130, 131], 'loop', 4),
-    createClip('guard_break_v2', 'Guard Break', [132, 133, 134, 135], 'once', 4),
-    createClip('parry_v2', 'Parry', [136, 137, 138, 139], 'once', 3),
-    createClip('counter_v2', 'Counter', [140, 141, 142, 143], 'once', 3),
-    createClip('hitstun', 'Authored Hit Reaction', [144, 145, 146, 147], 'once', 3),
-    createClip('hit_heavy_v2', 'Heavy Hit Reaction', [148, 149, 150, 151], 'once', 3),
-    createClip('knockdown', 'Authored Knockdown', [152, 153, 154, 155], 'once', 5),
-    createClip('getup', 'Authored Get Up', [156, 157, 158, 159], 'once', 4),
-    createClip('intro_v2', 'Authored Intro', [192, 193, 194, 195], 'once', 5),
-    createClip('taunt_v2', 'Authored Taunt', [196, 197, 198, 199], 'once', 5),
-    createClip('victory', 'Authored Victory', [200, 201, 202, 203], 'loop', 7),
-    createClip('defeat_v2', 'Authored Defeat', [204, 205, 206, 207], 'once', 6),
-  ];
-  const attackPhaseMappings: SpriteManifest['attackPhaseMappings'] = [
-    { attackId: '@light', phase: 'startup', clipId: 'attack_light_startup' },
-    { attackId: '@light', phase: 'active', clipId: 'attack_light_active' },
-    { attackId: '@light', phase: 'recovery', clipId: 'attack_light_recovery' },
-    { attackId: '@medium', phase: 'startup', clipId: 'attack_medium_startup' },
-    { attackId: '@medium', phase: 'active', clipId: 'attack_medium_active' },
-    { attackId: '@medium', phase: 'recovery', clipId: 'attack_medium_recovery' },
-    { attackId: '@heavy', phase: 'startup', clipId: 'attack_heavy_startup' },
-    { attackId: '@heavy', phase: 'active', clipId: 'attack_heavy_active' },
-    { attackId: '@heavy', phase: 'recovery', clipId: 'attack_heavy_recovery' },
-    { attackId: '@special', phase: 'startup', clipId: 'attack_special_startup' },
-    { attackId: '@special', phase: 'active', clipId: 'attack_special_active' },
-    { attackId: '@special', phase: 'recovery', clipId: 'attack_special_recovery' },
-    { attackId: '*', phase: 'startup', clipId: 'attack_light_startup' },
-    { attackId: '*', phase: 'active', clipId: 'attack_light_active' },
-    { attackId: '*', phase: 'recovery', clipId: 'attack_light_recovery' },
-  ];
-  const commandSpecialMappings: NonNullable<SpriteManifest['commandSpecialMappings']> = [];
-  getSpecialsForCharacter(characterId)
-    .slice(0, 4)
-    .forEach((special, index) => {
-      const start = 160 + index * 4;
-      const baseClipId = special.animation.casterClipId;
-      const phases = {
-        startup: `${baseClipId}_startup`,
-        active: `${baseClipId}_active`,
-        recovery: `${baseClipId}_recovery`,
-      } as const;
-      clips.push(
-        createClip(
-          baseClipId,
-          special.displayName,
-          [start, start + 1, start + 2, start + 3],
-          'once',
-          3
-        ),
-        createClip(phases.startup, `${special.displayName} startup`, [start], 'once', 3),
-        createClip(
-          phases.active,
-          `${special.displayName} active`,
-          [start + 1, start + 2],
-          'once',
-          3
-        ),
-        createClip(phases.recovery, `${special.displayName} recovery`, [start + 3], 'once', 3)
-      );
-      for (const phase of ['startup', 'active', 'recovery'] as const) {
-        attackPhaseMappings.push({ attackId: special.id, phase, clipId: phases[phase] });
-      }
-      commandSpecialMappings.push({ command: special.commandSlot, clipId: baseClipId });
-    });
-  return {
-    characterId,
-    frames: Array.from({ length: 208 }, (_, index) => ({
-      index,
-      label: getFullAnimationV2FrameLabel(index),
-      pivot: { x: 0.5, y: 1 },
-      duration: 4,
-    })),
-    clips,
-    stateMappings: [
-      { state: 'idle', clipId: 'idle' },
-      { state: 'walking', clipId: 'run' },
-      { state: 'running', clipId: 'run' },
-      { state: 'jumping', clipId: 'jump_rise' },
-      { state: 'falling', clipId: 'jump_rise' },
-      { state: 'landing', clipId: 'land' },
-      { state: 'crouching', clipId: 'crouch_v2' },
-      { state: 'blocking', clipId: 'guard' },
-      { state: 'attacking', clipId: 'attack_1' },
-      { state: 'special', clipId: 'special' },
-      { state: 'hitstun', clipId: 'hitstun' },
-      { state: 'knockdown', clipId: 'knockdown' },
-      { state: 'gettingUp', clipId: 'getup' },
-      { state: 'victory', clipId: 'victory' },
-      { state: 'defeat', clipId: 'defeat_v2' },
-    ],
-    attackPhaseMappings,
-    commandSpecialMappings,
-    fallbackClip: 'idle',
-  };
+  animationV2Profile?: 'complete' | 'movement-defense';
 }
 
 export interface SpriteLoadReport {
@@ -185,7 +57,7 @@ export interface SpriteLoadReport {
 }
 
 export function getSpriteLoadReport(): SpriteLoadReport {
-  const characterIds = getCharacterIds();
+  const characterIds = [...spriteLoadRequests];
   return {
     requested: characterIds.length,
     loaded: characterIds.filter((id) => characterHasSpriteAssets(id)),
@@ -196,41 +68,183 @@ export function getSpriteLoadReport(): SpriteLoadReport {
   };
 }
 
+const ACTION_SHEET_SUFFIXES: Record<AnimationV2ActionKind, string> = {
+  normal_attacks: 'normal_attacks_4x4.png',
+  mobility_throw: 'mobility_throw_4x4.png',
+  item_interactions: 'item_interactions_4x4.png',
+  advanced_guard: 'advanced_guard_4x4.png',
+  damage_recovery: 'damage_recovery_4x4.png',
+  specials: 'specials_4x4.png',
+  special_effects: 'special_effects_4x4.png',
+  intro_taunt_victory_defeat: 'intro_taunt_victory_defeat_4x4.png',
+};
+
+function authoredActionSheets(
+  characterId: CharacterId,
+  kinds: readonly AnimationV2ActionKind[]
+): readonly AuthoredActionSheetDescriptor[] {
+  return kinds.map((kind) => ({
+    kind,
+    path: `assets/sprites/roster/${characterId}/source/animation-v2/${characterId}_${ACTION_SHEET_SUFFIXES[kind]}`,
+  }));
+}
+
 export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescriptor> = {
   camus: {
-    corePath: 'assets/sprites/roster/camus/source/camus_core_4x4.png',
+    corePath: 'assets/sprites/roster/camus/source/animation-v2/camus_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/camus/source/animation-v2/camus_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/camus/source/animation-v2/camus_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/camus/source/animation-v2/camus_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/camus/source/animation-v2/camus_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/camus/source/camus_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/camus/source/camus_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('camus', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   leibniz: {
-    corePath: 'assets/sprites/roster/leibniz/source/leibniz_core_4x4.png',
-    extendedPath: 'assets/sprites/roster/leibniz/source/leibniz_extended_4x4.png',
-    layout: 'roster',
+    corePath: 'assets/sprites/roster/leibniz/source/animation-v2/leibniz_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/leibniz/source/animation-v2/leibniz_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/leibniz/source/animation-v2/leibniz_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/leibniz/source/animation-v2/leibniz_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/leibniz/source/animation-v2/leibniz_lane_guard_crouch_4x4.png',
+    ],
+    legacyCombatBank: false,
+    authoredActionSheets: authoredActionSheets('leibniz', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   machiavelli: {
-    corePath: 'assets/sprites/roster/machiavelli/source/machiavelli_core_4x4.png',
+    corePath: 'assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/machiavelli/source/animation-v2/machiavelli_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/machiavelli/source/machiavelli_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/machiavelli/source/machiavelli_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('machiavelli', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   diogenes: {
-    corePath: 'assets/sprites/roster/diogenes/source/diogenes_core_4x4.png',
+    corePath: 'assets/sprites/roster/diogenes/source/animation-v2/diogenes_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/diogenes/source/animation-v2/diogenes_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/diogenes/source/animation-v2/diogenes_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/diogenes/source/animation-v2/diogenes_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/diogenes/source/animation-v2/diogenes_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/diogenes/source/diogenes_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/diogenes/source/diogenes_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('diogenes', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   aristotle: {
-    corePath: 'assets/sprites/roster/aristotle/source/aristotle_core_4x4.png',
+    corePath: 'assets/sprites/roster/aristotle/source/animation-v2/aristotle_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/aristotle/source/animation-v2/aristotle_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/aristotle/source/animation-v2/aristotle_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/aristotle/source/animation-v2/aristotle_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/aristotle/source/animation-v2/aristotle_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/aristotle/source/aristotle_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/aristotle/source/aristotle_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('aristotle', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   aquinas: {
-    corePath: 'assets/sprites/roster/aquinas/source/aquinas_core_4x4.png',
+    corePath: 'assets/sprites/roster/aquinas/source/animation-v2/aquinas_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/aquinas/source/animation-v2/aquinas_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/aquinas/source/animation-v2/aquinas_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/aquinas/source/animation-v2/aquinas_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/aquinas/source/animation-v2/aquinas_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/aquinas/source/aquinas_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/aquinas/source/aquinas_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('aquinas', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   anselm: {
-    corePath: 'assets/sprites/roster/anselm/source/anselm_core_4x4.png',
+    corePath: 'assets/sprites/roster/anselm/source/animation-v2/anselm_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/anselm/source/animation-v2/anselm_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/anselm/source/animation-v2/anselm_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/anselm/source/animation-v2/anselm_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/anselm/source/animation-v2/anselm_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/anselm/source/anselm_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/anselm/source/anselm_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('anselm', [
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   hegel: {
     corePath: 'assets/sprites/roster/hegel/source/animation-v2/hegel_idle_turn_4x4.png',
@@ -242,12 +256,40 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
       'assets/sprites/roster/hegel/source/hegel_core_4x4.png',
     ],
     extendedPath: 'assets/sprites/roster/hegel/source/hegel_extended_4x4.png',
+    authoredActionSheets: authoredActionSheets('hegel', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
     layout: 'animation-v2',
     animationV2Profile: 'complete',
   },
   nietzsche: {
-    corePath: 'assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png',
-    layout: 'roster',
+    corePath: 'assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png',
+    ],
+    authoredActionSheets: authoredActionSheets('nietzsche', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   foucault: {
     corePath: 'assets/sprites/roster/foucault/source/animation-v2/foucault_idle_turn_4x4.png',
@@ -256,29 +298,68 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
       'assets/sprites/roster/foucault/source/animation-v2/foucault_run_start_loop_stop_4x4.png',
       'assets/sprites/roster/foucault/source/animation-v2/foucault_jump_land_recovery_4x4.png',
       'assets/sprites/roster/foucault/source/animation-v2/foucault_lane_guard_crouch_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_normal_attacks_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_mobility_throw_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_item_interactions_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_advanced_guard_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_damage_recovery_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_specials_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_special_effects_4x4.png',
-      'assets/sprites/roster/foucault/source/animation-v2/foucault_intro_taunt_victory_defeat_4x4.png',
+      'assets/sprites/roster/foucault/source/foucault_core_4x4.png',
     ],
+    extendedPath: 'assets/sprites/roster/foucault/source/foucault_extended_4x4.png',
+    authoredActionSheets: authoredActionSheets('foucault', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
     layout: 'animation-v2',
-    animationV2Profile: 'full',
+    animationV2Profile: 'complete',
   },
   deleuze_guattari: {
-    corePath: 'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png',
+    corePath:
+      'assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/deleuze_guattari/source/deleuze_guattari_extended_4x4.png',
-    normalAttackPath:
-      'assets/sprites/roster/deleuze_guattari/source/animation-v2/deleuze_guattari_normal_attacks_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('deleuze_guattari', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   marx: {
-    corePath: 'assets/sprites/roster/marx/source/marx_core_4x4.png',
+    corePath: 'assets/sprites/roster/marx/source/animation-v2/marx_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/marx/source/animation-v2/marx_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/marx/source/animation-v2/marx_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/marx/source/animation-v2/marx_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/marx/source/animation-v2/marx_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/marx/source/marx_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/marx/source/marx_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('marx', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   bakunin: {
     corePath: 'assets/sprites/roster/bakunin/source/animation-v2/bakunin_idle_turn_4x4.png',
@@ -290,41 +371,133 @@ export const CHARACTER_SPRITE_PATHS: Record<CharacterId, CharacterSpriteDescript
       'assets/sprites/roster/bakunin/source/bakunin_core_4x4.png',
     ],
     extendedPath: 'assets/sprites/roster/bakunin/source/bakunin_extended_4x4.png',
+    authoredActionSheets: authoredActionSheets('bakunin', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
     layout: 'animation-v2',
     animationV2Profile: 'complete',
   },
   schmitt: {
-    corePath: 'assets/sprites/roster/schmitt/source/schmitt_core_4x4.png',
+    corePath: 'assets/sprites/roster/schmitt/source/animation-v2/schmitt_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/schmitt/source/animation-v2/schmitt_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/schmitt/source/animation-v2/schmitt_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/schmitt/source/animation-v2/schmitt_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/schmitt/source/animation-v2/schmitt_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/schmitt/source/schmitt_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/schmitt/source/schmitt_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('schmitt', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   socrates: {
-    corePath: 'assets/sprites/roster/socrates/source/socrates_core_4x4.png',
+    corePath: 'assets/sprites/roster/socrates/source/animation-v2/socrates_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/socrates/source/animation-v2/socrates_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/socrates/source/animation-v2/socrates_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/socrates/source/animation-v2/socrates_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/socrates/source/animation-v2/socrates_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/socrates/source/socrates_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/socrates/source/socrates_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('socrates', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   kant: {
-    corePath: 'assets/sprites/roster/kant/source/kant_core_4x4.png',
+    corePath: 'assets/sprites/roster/kant/source/animation-v2/kant_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/kant/source/animation-v2/kant_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/kant/source/animation-v2/kant_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/kant/source/animation-v2/kant_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/kant/source/animation-v2/kant_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/kant/source/kant_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/kant/source/kant_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('kant', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   kierkegaard: {
-    corePath: 'assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png',
+    corePath: 'assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_idle_turn_4x4.png',
+    additionalPaths: [
+      'assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_walk_forward_backward_4x4.png',
+      'assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_run_start_loop_stop_4x4.png',
+      'assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_jump_land_recovery_4x4.png',
+      'assets/sprites/roster/kierkegaard/source/animation-v2/kierkegaard_lane_guard_crouch_4x4.png',
+      'assets/sprites/roster/kierkegaard/source/kierkegaard_core_4x4.png',
+    ],
     extendedPath: 'assets/sprites/roster/kierkegaard/source/kierkegaard_extended_4x4.png',
-    layout: 'roster',
+    authoredActionSheets: authoredActionSheets('kierkegaard', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
+    layout: 'animation-v2',
+    animationV2Profile: 'complete',
   },
   stirner: {
-    corePath:
-      'assets/sprites/roster/stirner/source/animation-v2/stirner_walk_forward_backward_4x4.png',
+    corePath: 'assets/sprites/roster/stirner/source/animation-v2/stirner_idle_turn_4x4.png',
     additionalPaths: [
+      'assets/sprites/roster/stirner/source/animation-v2/stirner_walk_forward_backward_4x4.png',
       'assets/sprites/roster/stirner/source/animation-v2/stirner_run_start_loop_stop_4x4.png',
       'assets/sprites/roster/stirner/source/animation-v2/stirner_jump_land_recovery_4x4.png',
       'assets/sprites/roster/stirner/source/animation-v2/stirner_lane_guard_crouch_4x4.png',
       'assets/sprites/roster/stirner/source/stirner_core_4x4.png',
     ],
     extendedPath: 'assets/sprites/roster/stirner/source/stirner_extended_4x4.png',
+    authoredActionSheets: authoredActionSheets('stirner', [
+      'normal_attacks',
+      'mobility_throw',
+      'item_interactions',
+      'advanced_guard',
+      'damage_recovery',
+      'specials',
+      'special_effects',
+      'intro_taunt_victory_defeat',
+    ]),
     layout: 'animation-v2',
-    animationV2Profile: 'movement-defense',
+    animationV2Profile: 'complete',
   },
 };
 
@@ -361,6 +534,8 @@ export function getSpriteScaleFactor(): number {
  */
 const characterAnimationMapCache = new Map<CharacterId, CharacterAnimationMap>();
 const spriteLoadFailures = new Map<CharacterId, string>();
+const spriteLoadRequests = new Set<CharacterId>();
+const characterSpriteLoadPromises = new Map<CharacterId, Promise<CharacterAnimationMap>>();
 
 /**
  * Create Diogenes-specific manifest with command specials
@@ -491,9 +666,11 @@ function createAnimationV2StateMappings(
 
 function createAnimationV2Manifest(
   characterId: CharacterId,
-  profile: AnimationV2Profile
+  profile: AnimationV2Profile,
+  hasExtended: boolean,
+  hasLegacyCombatBank: boolean
 ): SpriteManifest {
-  const legacyManifest = createRosterManifest(characterId, true);
+  const legacyManifest = createRosterManifest(characterId, hasExtended);
   const legacyFrameOffset = getAnimationV2LegacyFrameOffset(profile);
   const legacyClipIds = new Set([
     'air_attack',
@@ -520,9 +697,11 @@ function createAnimationV2Manifest(
   ]);
   if (profile === 'movement-defense') legacyClipIds.add('idle');
   const authoredClips = createAuthoredAnimationV2Clips(profile);
-  const legacyCombatClips = legacyManifest.clips
-    .filter((clip) => legacyClipIds.has(clip.id))
-    .map((clip) => offsetAnimationClip(clip, legacyFrameOffset));
+  const legacyCombatClips = hasLegacyCombatBank
+    ? legacyManifest.clips
+        .filter((clip) => legacyClipIds.has(clip.id))
+        .map((clip) => offsetAnimationClip(clip, legacyFrameOffset))
+    : [];
 
   return {
     characterId,
@@ -533,14 +712,16 @@ function createAnimationV2Manifest(
         pivot: { x: 0.5, y: 1 },
         duration: 4,
       })),
-      ...legacyManifest.frames.map((frame) => ({
-        ...frame,
-        index: frame.index + legacyFrameOffset,
-      })),
+      ...(hasLegacyCombatBank
+        ? legacyManifest.frames.map((frame) => ({
+            ...frame,
+            index: frame.index + legacyFrameOffset,
+          }))
+        : []),
     ],
     clips: [...authoredClips, ...legacyCombatClips],
     stateMappings: createAnimationV2StateMappings(profile),
-    attackPhaseMappings: [...legacyManifest.attackPhaseMappings],
+    attackPhaseMappings: hasLegacyCombatBank ? [...legacyManifest.attackPhaseMappings] : [],
     fallbackClip: profile === 'complete' ? 'idle_v2' : 'idle',
   };
 }
@@ -654,44 +835,6 @@ function createRosterManifest(characterId: CharacterId, hasExtended: boolean): S
   return manifest;
 }
 
-function createNormalAttackV2Manifest(characterId: CharacterId): SpriteManifest {
-  const manifest = createRosterManifest(characterId, true);
-  const frameOffset = 32;
-  const labels: FrameLabel[] = [
-    ...Array<FrameLabel>(4).fill('attack_1'),
-    ...Array<FrameLabel>(4).fill('attack_2'),
-    ...Array<FrameLabel>(4).fill('attack_3'),
-    ...Array<FrameLabel>(4).fill('air_attack_or_air_kick'),
-  ];
-  manifest.frames.push(
-    ...labels.map((label, index) => ({
-      index: frameOffset + index,
-      label,
-      pivot: { x: 0.5, y: 1 },
-      duration: 3,
-    }))
-  );
-
-  const replaceClip = (id: string, name: string, frames: number[], duration: number) => {
-    manifest.clips = manifest.clips.filter((clip) => clip.id !== id);
-    manifest.clips.push(createClip(id, name, frames, 'once', duration));
-  };
-  const replaceAttack = (kind: 'light' | 'medium' | 'heavy', start: number, duration: number) => {
-    replaceClip(`attack_${kind}_startup`, `${kind} wind-up`, [start], duration);
-    replaceClip(`attack_${kind}_active`, `${kind} strike`, [start + 1, start + 2], duration);
-    replaceClip(`attack_${kind}_recovery`, `${kind} recovery`, [start + 3], duration);
-  };
-
-  replaceAttack('light', frameOffset, 3);
-  replaceAttack('medium', frameOffset + 4, 3);
-  replaceAttack('heavy', frameOffset + 8, 4);
-  replaceClip('attack_1', 'Authored Light Attack', [32, 33, 34, 35], 3);
-  replaceClip('attack_2', 'Authored Medium Attack', [36, 37, 38, 39], 3);
-  replaceClip('attack_3', 'Authored Heavy Attack', [40, 41, 42, 43], 4);
-  replaceClip('air_attack', 'Authored Air Attack', [44, 45, 46, 47], 3);
-  return manifest;
-}
-
 interface SpecialFramePhases {
   startup: number[];
   active: number[];
@@ -792,27 +935,269 @@ function addAuthoredSpecialClips(
   return manifest;
 }
 
+function replaceStateMapping(
+  manifest: SpriteManifest,
+  state: SpriteManifest['stateMappings'][number]['state'],
+  clipId: string
+): void {
+  manifest.stateMappings = [
+    ...manifest.stateMappings.filter((mapping) => mapping.state !== state),
+    { state, clipId },
+  ];
+}
+
+function upsertClip(manifest: SpriteManifest, clip: AnimationClip): void {
+  manifest.clips = [...manifest.clips.filter(({ id }) => id !== clip.id), clip];
+}
+
+function appendActionFrames(
+  manifest: SpriteManifest,
+  kind: AnimationV2ActionKind,
+  frameOffset: number
+): void {
+  const labels: FrameLabel[] = Array.from({ length: 16 }, (_, localIndex) => {
+    if (kind === 'normal_attacks') {
+      if (localIndex < 4) return 'attack_1';
+      if (localIndex < 8) return 'attack_2';
+      if (localIndex < 12) return 'attack_3';
+      return 'air_attack_or_air_kick';
+    }
+    if (kind === 'advanced_guard') return 'guard';
+    if (kind === 'damage_recovery') return localIndex >= 8 ? 'land' : 'spare';
+    if (kind === 'intro_taunt_victory_defeat') {
+      return localIndex >= 8 && localIndex < 12 ? 'victory_or_quote_pose' : 'taunt_or_pose';
+    }
+    return 'spare';
+  });
+  manifest.frames.push(
+    ...labels.map((label, localIndex) => ({
+      index: frameOffset + localIndex,
+      label,
+      pivot: { x: 0.5, y: 1 },
+      duration: 4,
+    }))
+  );
+}
+
+function addFourRowClips(
+  manifest: SpriteManifest,
+  frameOffset: number,
+  rows: readonly { id: string; name: string; mode?: 'once' | 'loop'; duration?: number }[]
+): void {
+  rows.forEach((row, rowIndex) => {
+    const frames = Array.from({ length: 4 }, (_, frame) => frameOffset + rowIndex * 4 + frame);
+    upsertClip(
+      manifest,
+      createClip(row.id, row.name, frames, row.mode ?? 'once', row.duration ?? 3)
+    );
+  });
+}
+
+function addAuthoredNormalAttackClips(manifest: SpriteManifest, frameOffset: number): void {
+  const attacks = [
+    { attackId: '@light', baseId: 'attack_light_v2', name: 'Authored Light Attack', row: 0 },
+    { attackId: '@medium', baseId: 'attack_medium_v2', name: 'Authored Medium Attack', row: 1 },
+    { attackId: '@heavy', baseId: 'attack_heavy_v2', name: 'Authored Heavy Attack', row: 2 },
+  ] as const;
+  for (const attack of attacks) {
+    const rowStart = frameOffset + attack.row * 4;
+    upsertClip(
+      manifest,
+      createClip(
+        attack.baseId,
+        attack.name,
+        [rowStart, rowStart + 1, rowStart + 2, rowStart + 3],
+        'once',
+        3
+      )
+    );
+    const phaseFrames = {
+      startup: [rowStart],
+      active: [rowStart + 1, rowStart + 2],
+      recovery: [rowStart + 3],
+    } as const;
+    for (const phase of ['startup', 'active', 'recovery'] as const) {
+      const clipId = `${attack.baseId}_${phase}`;
+      upsertClip(
+        manifest,
+        createClip(
+          clipId,
+          `${attack.name} ${phase}`,
+          [...phaseFrames[phase]],
+          'once',
+          phase === 'active' ? 2 : 3
+        )
+      );
+      manifest.attackPhaseMappings = manifest.attackPhaseMappings.filter(
+        (mapping) => !(mapping.attackId === attack.attackId && mapping.phase === phase)
+      );
+      manifest.attackPhaseMappings.push({ attackId: attack.attackId, phase, clipId });
+    }
+  }
+  upsertClip(
+    manifest,
+    createClip(
+      'air_attack_v2',
+      'Authored Air Attack',
+      [frameOffset + 12, frameOffset + 13, frameOffset + 14, frameOffset + 15],
+      'once',
+      3
+    )
+  );
+  replaceStateMapping(manifest, 'attacking', 'attack_light_v2');
+}
+
+function addAuthoredSpecialSheet(
+  manifest: SpriteManifest,
+  characterId: CharacterId,
+  frameOffset: number
+): void {
+  const specials = getSpecialsForCharacter(characterId).slice(0, 4);
+  const commandMappings = [...(manifest.commandSpecialMappings ?? [])];
+  specials.forEach((special, rowIndex) => {
+    const rowStart = frameOffset + rowIndex * 4;
+    const frames = [rowStart, rowStart + 1, rowStart + 2, rowStart + 3];
+    const baseClipId = special.animation.casterClipId;
+    upsertClip(manifest, createClip(baseClipId, special.displayName, frames, 'once', 3));
+    const phaseFrames = {
+      startup: [rowStart],
+      active: [rowStart + 1, rowStart + 2],
+      recovery: [rowStart + 3],
+    } as const;
+    for (const phase of ['startup', 'active', 'recovery'] as const) {
+      const clipId = `${baseClipId}_${phase}`;
+      upsertClip(
+        manifest,
+        createClip(
+          clipId,
+          `${special.displayName} ${phase}`,
+          [...phaseFrames[phase]],
+          'once',
+          phase === 'active' ? 2 : 3
+        )
+      );
+      manifest.attackPhaseMappings = manifest.attackPhaseMappings.filter(
+        (mapping) => !(mapping.attackId === special.id && mapping.phase === phase)
+      );
+      manifest.attackPhaseMappings.push({ attackId: special.id, phase, clipId });
+    }
+    const existingCommandIndex = commandMappings.findIndex(
+      ({ command }) => command === special.commandSlot
+    );
+    const commandMapping = { command: special.commandSlot, clipId: baseClipId };
+    if (existingCommandIndex >= 0) commandMappings[existingCommandIndex] = commandMapping;
+    else commandMappings.push(commandMapping);
+  });
+  manifest.commandSpecialMappings = commandMappings;
+  const firstSpecial = specials[0];
+  if (firstSpecial) {
+    replaceStateMapping(manifest, 'special', firstSpecial.animation.casterClipId);
+    for (const phase of ['startup', 'active', 'recovery'] as const) {
+      const clipId = `${firstSpecial.animation.casterClipId}_${phase}`;
+      manifest.attackPhaseMappings = manifest.attackPhaseMappings.filter(
+        (mapping) => !(mapping.attackId === '@special' && mapping.phase === phase)
+      );
+      manifest.attackPhaseMappings.push({ attackId: '@special', phase, clipId });
+    }
+  }
+}
+
+function addAuthoredActionSheets(
+  manifest: SpriteManifest,
+  characterId: CharacterId,
+  sheets: readonly AuthoredActionSheetDescriptor[]
+): SpriteManifest {
+  let frameOffset = manifest.frames.length;
+  for (const sheet of sheets) {
+    appendActionFrames(manifest, sheet.kind, frameOffset);
+    switch (sheet.kind) {
+      case 'normal_attacks':
+        addAuthoredNormalAttackClips(manifest, frameOffset);
+        break;
+      case 'mobility_throw':
+        addFourRowClips(manifest, frameOffset, [
+          { id: 'dash_forward_v2', name: 'Forward Dash', duration: 2 },
+          { id: 'dash_backward_v2', name: 'Backdash', duration: 2 },
+          { id: 'evade_v2', name: 'Evade' },
+          { id: 'throw_v2', name: 'Throw' },
+        ]);
+        break;
+      case 'item_interactions':
+        addFourRowClips(manifest, frameOffset, [
+          { id: 'item_pickup_v2', name: 'Item Pickup' },
+          { id: 'item_throw_v2', name: 'Item Throw' },
+          { id: 'item_use_v2', name: 'Item Use', duration: 4 },
+          { id: 'item_swing_v2', name: 'Item Swing' },
+        ]);
+        break;
+      case 'advanced_guard':
+        addFourRowClips(manifest, frameOffset, [
+          { id: 'guard_hold_v2', name: 'Held Guard', mode: 'loop', duration: 5 },
+          { id: 'parry_v2', name: 'Parry', duration: 2 },
+          { id: 'guard_break_v2', name: 'Guard Break' },
+          { id: 'counter_v2', name: 'Counter' },
+        ]);
+        replaceStateMapping(manifest, 'blocking', 'guard_hold_v2');
+        break;
+      case 'damage_recovery':
+        addFourRowClips(manifest, frameOffset, [
+          { id: 'hit_light_v2', name: 'Light Hitstun' },
+          { id: 'hit_heavy_v2', name: 'Heavy Hitstun', duration: 4 },
+          { id: 'knockdown_v2', name: 'Knockdown', duration: 4 },
+          { id: 'get_up_v2', name: 'Get Up', duration: 4 },
+        ]);
+        replaceStateMapping(manifest, 'hitstun', 'hit_light_v2');
+        replaceStateMapping(manifest, 'knockdown', 'knockdown_v2');
+        replaceStateMapping(manifest, 'gettingUp', 'get_up_v2');
+        replaceStateMapping(manifest, 'defeat', 'knockdown_v2');
+        break;
+      case 'specials':
+        addAuthoredSpecialSheet(manifest, characterId, frameOffset);
+        break;
+      case 'special_effects':
+        addFourRowClips(manifest, frameOffset, [
+          { id: 'special_fx_1_v2', name: 'Special Effect 1' },
+          { id: 'special_fx_2_v2', name: 'Special Effect 2' },
+          { id: 'special_fx_3_v2', name: 'Special Effect 3' },
+          { id: 'special_fx_4_v2', name: 'Special Effect 4' },
+        ]);
+        break;
+      case 'intro_taunt_victory_defeat':
+        addFourRowClips(manifest, frameOffset, [
+          { id: 'intro_v2', name: 'Intro', duration: 4 },
+          { id: 'taunt_v2', name: 'Taunt', duration: 4 },
+          { id: 'victory_v2', name: 'Victory', mode: 'loop', duration: 5 },
+          { id: 'defeat_v2', name: 'Defeat', duration: 5 },
+        ]);
+        replaceStateMapping(manifest, 'victory', 'victory_v2');
+        replaceStateMapping(manifest, 'defeat', 'defeat_v2');
+        break;
+    }
+    frameOffset += 16;
+  }
+  return manifest;
+}
+
 export function createCharacterSpriteManifest(
   characterId: CharacterId,
   hasExtended = Boolean(CHARACTER_SPRITE_PATHS[characterId].extendedPath)
 ): SpriteManifest {
   const descriptor = CHARACTER_SPRITE_PATHS[characterId];
+  const actionSheets = descriptor.authoredActionSheets ?? [];
+  const hasLegacyCombatBank = descriptor.legacyCombatBank !== false;
+  if (!hasLegacyCombatBank && actionSheets.length !== 8) {
+    throw new Error(
+      `${characterId} disables the legacy combat bank but does not provide all eight authored action sheets`
+    );
+  }
   let manifest: SpriteManifest;
+  let legacySpecialFrameOffset = 0;
 
   if (descriptor.layout === 'animation-v2') {
     const profile = descriptor.animationV2Profile ?? 'complete';
-    if (profile === 'full') return createFullAnimationV2Manifest(characterId);
-    const legacyFrameOffset = getAnimationV2LegacyFrameOffset(profile);
-    manifest = createAnimationV2Manifest(characterId, profile);
-    return addAuthoredSpecialClips(manifest, characterId, true, legacyFrameOffset);
-  }
-
-  if (descriptor.normalAttackPath) {
-    manifest = createNormalAttackV2Manifest(characterId);
-    return addAuthoredSpecialClips(manifest, characterId, true);
-  }
-
-  if (descriptor.layout === 'roster') {
+    legacySpecialFrameOffset = getAnimationV2LegacyFrameOffset(profile);
+    manifest = createAnimationV2Manifest(characterId, profile, hasExtended, hasLegacyCombatBank);
+  } else if (descriptor.layout === 'roster') {
     manifest = createRosterManifest(characterId, hasExtended);
     if (characterId === 'diogenes') {
       const diogenesManifest = createDiogenesManifest();
@@ -831,7 +1216,11 @@ export function createCharacterSpriteManifest(
     manifest = createDefaultManifest(characterId);
   }
 
-  return addAuthoredSpecialClips(manifest, characterId, hasExtended);
+  addAuthoredActionSheets(manifest, characterId, actionSheets);
+  const hasAuthoredSpecialSheet = actionSheets.some(({ kind }) => kind === 'specials');
+  return hasAuthoredSpecialSheet
+    ? manifest
+    : addAuthoredSpecialClips(manifest, characterId, hasExtended, legacySpecialFrameOffset);
 }
 
 async function buildCharacterAtlas(
@@ -842,7 +1231,7 @@ async function buildCharacterAtlas(
     descriptor.corePath,
     ...(descriptor.additionalPaths ?? []),
     ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
-    ...(descriptor.normalAttackPath ? [descriptor.normalAttackPath] : []),
+    ...(descriptor.authoredActionSheets ?? []).map(({ path }) => path),
   ];
   const sourceImages = await Promise.all(sheetPaths.map((path) => loadImage(path)));
   const normalizeRosterSheet = (
@@ -893,16 +1282,15 @@ async function buildCharacterAtlas(
       frameWidth: Math.floor(coreSheet.width / 4),
       frameHeight: Math.floor(coreSheet.height / 4),
     },
-    hasExtended: descriptor.layout === 'animation-v2' || Boolean(descriptor.extendedPath),
+    hasExtended: Boolean(descriptor.extendedPath),
   };
 }
 
 /**
- * Initialize sprite assets for a character
+ * Load sprite assets for a character. Public callers go through the request-aware
+ * wrapper below so concurrent requests share one in-flight atlas build.
  */
-export async function initializeCharacterSprites(
-  characterId: CharacterId
-): Promise<CharacterAnimationMap> {
+async function loadCharacterSprites(characterId: CharacterId): Promise<CharacterAnimationMap> {
   const cached = characterAnimationMapCache.get(characterId);
   if (cached) {
     return cached;
@@ -929,6 +1317,21 @@ export async function initializeCharacterSprites(
     characterAnimationMapCache.set(characterId, animMap);
     return animMap;
   }
+}
+
+export async function initializeCharacterSprites(
+  characterId: CharacterId
+): Promise<CharacterAnimationMap> {
+  spriteLoadRequests.add(characterId);
+  const cached = characterAnimationMapCache.get(characterId);
+  if (cached) return cached;
+  const pending = characterSpriteLoadPromises.get(characterId);
+  if (pending) return pending;
+  const load = loadCharacterSprites(characterId).finally(() => {
+    characterSpriteLoadPromises.delete(characterId);
+  });
+  characterSpriteLoadPromises.set(characterId, load);
+  return load;
 }
 
 /**

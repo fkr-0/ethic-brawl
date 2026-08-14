@@ -1,4 +1,4 @@
-import type { FightOutcomeSummary, GameMode, SettingsState } from '@/app/app-shell/types';
+import type { FightOutcomeSummary, GameMode } from '@/app/app-shell/types';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { CharacterId } from '@/content/characters/character-data';
 import { getCharacter, getCharacterNormalChain } from '@/content/characters/character-data';
@@ -6,14 +6,9 @@ import { getEnemyVisual } from '@/content/enemies/enemy-visual-data';
 import { type ItemId, getItem } from '@/content/items/item-data';
 import { getItemIcon } from '@/content/items/item-icon-data';
 import { getSpecialsForCharacter } from '@/content/specials/special-data';
-import {
-  GAME_ACTIONS,
-  GAME_ACTION_LABELS,
-  PLAYER1_BINDINGS,
-  PLAYER2_BINDINGS,
-  type PlayerInput,
-  formatBindingForDisplay,
-} from '@/core';
+
+import { PLAYER1_BINDINGS, PLAYER2_BINDINGS, type InputBinding, type PlayerInput } from '@/core';
+
 import { commandSlotToLabel } from '@/game/fight/command-input';
 import {
   getAtlasFrame,
@@ -25,10 +20,15 @@ import {
   ARCADE_UI_FONT,
   ETHIC_UI,
   drawArcadeBackdrop,
-  drawArcadeFooter,
+  drawArcadeChip,
+  drawArcadeCommandBar,
+  drawArcadeMeter,
   drawArcadeMenuRow,
   drawArcadePanel,
+  drawArcadeScreenTitle,
+  drawArcadeTextBlock,
 } from '@/ui/arcade-ui';
+import type { ArcadeCommandAction } from '@/ui/arcade-ui';
 
 function drawWrappedText(
   ctx: CanvasRenderingContext2D,
@@ -39,26 +39,22 @@ function drawWrappedText(
   lineHeight: number,
   maxLines = 3
 ): number {
-  const words = text.split(/\s+/);
-  const lines: string[] = [];
-  let line = '';
+  return drawArcadeTextBlock(ctx, {
+    x,
+    y,
+    width: maxWidth,
+    text,
+    lineHeight,
+    maxLines,
+    font: ctx.font,
+    align: ctx.textAlign,
+    baseline: ctx.textBaseline,
+    color: typeof ctx.fillStyle === 'string' ? ctx.fillStyle : ETHIC_UI.text,
+  }).height;
+}
 
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
-    if (ctx.measureText(candidate).width <= maxWidth || !line) {
-      line = candidate;
-      continue;
-    }
-    lines.push(line);
-    line = word;
-    if (lines.length === maxLines - 1) break;
-  }
-  if (line && lines.length < maxLines) lines.push(line);
-
-  lines.forEach((value, index) => {
-    ctx.fillText(value, x, y + index * lineHeight);
-  });
-  return lines.length * lineHeight;
+function command(id: string, label: string, keyboard: string, priority = 0): ArcadeCommandAction {
+  return { id, label, inputs: { keyboard }, priority };
 }
 
 const itemAtlasImages = new Map<string, HTMLImageElement>();
@@ -126,19 +122,17 @@ export function renderLoading(ctx: CanvasRenderingContext2D): void {
 
 export function renderStartScreen(ctx: CanvasRenderingContext2D): void {
   drawArcadeBackdrop(ctx);
-
-  ctx.font = `900 60px ${ARCADE_UI_FONT}`;
-  ctx.fillStyle = ETHIC_UI.accentAlt;
-  ctx.textAlign = 'center';
-  ctx.fillText('ETHIC BRAWL', CANVAS_WIDTH / 2, 150);
-
-  ctx.font = `700 16px ${ARCADE_UI_FONT}`;
-  ctx.fillStyle = ETHIC_UI.accent;
-  ctx.fillText('PHILOSOPHICAL ARENA // BABYLON FEED', CANVAS_WIDTH / 2, 184);
+  drawArcadeScreenTitle(ctx, {
+    eyebrow: 'Babylon public argument network // channel 01',
+    title: 'Ethic Brawl',
+    subtitle: 'Philosophical arena · authored fighters · unstable convictions',
+    y: 72,
+    titleSize: 58,
+  });
 
   drawArcadePanel(ctx, {
     x: CANVAS_WIDTH / 2 - 220,
-    y: 246,
+    y: 250,
     width: 440,
     height: 132,
     accent: ETHIC_UI.warning,
@@ -147,39 +141,67 @@ export function renderStartScreen(ctx: CanvasRenderingContext2D): void {
   });
   ctx.font = `800 24px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = ETHIC_UI.text;
+  ctx.textAlign = 'center';
   ctx.fillText('ENTER  //  START GAME', CANVAS_WIDTH / 2, 310);
 
   ctx.font = `12px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = ETHIC_UI.muted;
   ctx.fillText('ATTACK ALSO CONFIRMS', CANVAS_WIDTH / 2, 342);
-  drawArcadeFooter(ctx, 'Enter / Attack continue  //  Shift+/ controls');
+
+  drawArcadeChip(ctx, {
+    x: CANVAS_WIDTH / 2 - 154,
+    y: 406,
+    width: 92,
+    text: 'Local VS',
+    accent: ETHIC_UI.accent,
+    align: 'center',
+  });
+  drawArcadeChip(ctx, {
+    x: CANVAS_WIDTH / 2,
+    y: 406,
+    width: 116,
+    text: 'AI Review',
+    accent: ETHIC_UI.accentAlt,
+    align: 'center',
+  });
+  drawArcadeChip(ctx, {
+    x: CANVAS_WIDTH / 2 + 154,
+    y: 406,
+    width: 108,
+    text: 'Babylon',
+    accent: ETHIC_UI.warning,
+    align: 'center',
+  });
+  drawArcadeCommandBar(ctx, [
+    command('continue', 'continue', 'Enter / Attack', 10),
+    command('help', 'controls', 'Shift + /'),
+  ]);
 }
 
 export function renderMainMenu(ctx: CanvasRenderingContext2D, selectedIndex: number): void {
-  const options = ['VERSUS // LOCAL', 'STORY // BABYLON', 'SETTINGS'];
+  const options = ['VERSUS // LOCAL', 'AI VS AI // SHOWCASE', 'STORY // BABYLON', 'SETTINGS'];
   const descriptions = [
     'Two players · full release roster · authored command kits',
+    'Full coded roster · autonomous motion and animation review',
     'Three encounters · persistent wave pressure · one complete route',
     'Gameplay, accessibility, and remappable controls',
   ];
   drawArcadeBackdrop(ctx);
-
-  ctx.textAlign = 'center';
-  ctx.font = `900 50px ${ARCADE_UI_FONT}`;
-  ctx.fillStyle = ETHIC_UI.accentAlt;
-  ctx.fillText('ETHIC BRAWL', CANVAS_WIDTH / 2, 92);
-
-  ctx.font = `700 13px ${ARCADE_UI_FONT}`;
-  ctx.fillStyle = ETHIC_UI.accent;
-  ctx.fillText('SELECT DISPUTE PROTOCOL', CANVAS_WIDTH / 2, 122);
+  drawArcadeScreenTitle(ctx, {
+    eyebrow: 'Session routing // choose deployment mode',
+    title: 'Ethic Brawl',
+    subtitle: 'Select dispute protocol',
+    y: 18,
+    titleSize: 42,
+  });
 
   const panelX = CANVAS_WIDTH / 2 - 230;
-  const panelY = 154;
+  const panelY = 130;
   drawArcadePanel(ctx, {
     x: panelX,
     y: panelY,
     width: 460,
-    height: 238,
+    height: 300,
     strong: true,
     label: 'Mode routing',
   });
@@ -190,98 +212,12 @@ export function renderMainMenu(ctx: CanvasRenderingContext2D, selectedIndex: num
   }
   ctx.font = `12px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = ETHIC_UI.muted;
-  ctx.fillText(descriptions[selectedIndex] ?? '', CANVAS_WIDTH / 2, panelY + 216);
-  drawArcadeFooter(ctx, 'W/S navigate  //  Enter confirm  //  Shift+/ controls');
-}
-
-export function renderSettings(ctx: CanvasRenderingContext2D, settings: SettingsState): void {
-  drawArcadeBackdrop(ctx);
-  drawArcadePanel(ctx, {
-    x: 68,
-    y: 104,
-    width: CANVAS_WIDTH - 136,
-    height: 370,
-    accent: ETHIC_UI.accentAlt,
-    strong: true,
-    label: 'Configuration matrix',
-  });
-  ctx.textAlign = 'center';
-
-  ctx.font = 'bold 42px "Courier New", monospace';
-  ctx.fillStyle = '#39FF14';
-  ctx.fillText('SETTINGS', CANVAS_WIDTH / 2, 88);
-
-  ctx.font = '18px "Courier New", monospace';
-  ctx.fillStyle = settings.menuTab === 'gameplay' ? '#FFFFFF' : '#817597';
-  ctx.fillText('[ GAMEPLAY ]', CANVAS_WIDTH / 2 - 120, 130);
-  ctx.fillStyle = settings.menuTab === 'keybindings' ? '#FFFFFF' : '#817597';
-  ctx.fillText('[ KEYBINDINGS ]', CANVAS_WIDTH / 2 + 120, 130);
-
-  if (settings.menuTab === 'gameplay') {
-    const rows = [
-      `Skip Stage Intro: ${settings.skipStageIntro ? 'ON' : 'OFF'}`,
-      'Open Keybinding Menu',
-    ];
-    ctx.font = '24px "Courier New", monospace';
-    rows.forEach((label, index) => {
-      const active = settings.selectedIndex === index;
-      ctx.fillStyle = active ? '#FFFFFF' : '#B8A9C9';
-      ctx.fillText(active ? `> ${label} <` : label, CANVAS_WIDTH / 2, 220 + index * 52);
-    });
-  } else {
-    ctx.textAlign = 'left';
-    ctx.font = 'bold 15px "Courier New", monospace';
-    ctx.fillStyle = '#00F5FF';
-    ctx.fillText('ACTION', 96, 178);
-    ctx.fillStyle = '#39FF14';
-    ctx.fillText('PLAYER 1', 370, 178);
-    ctx.fillStyle = '#FF9F1C';
-    ctx.fillText('PLAYER 2', 560, 178);
-
-    ctx.font = '14px "Courier New", monospace';
-    GAME_ACTIONS.forEach((action, index) => {
-      const y = 210 + index * 27;
-      const active = settings.selectedIndex === index;
-      ctx.fillStyle = active ? '#FFFFFF' : '#B8A9C9';
-      ctx.fillText(active ? `> ${GAME_ACTION_LABELS[action]}` : GAME_ACTION_LABELS[action], 96, y);
-      ctx.fillStyle = active ? '#FFFFFF' : '#39FF14';
-      ctx.fillText(formatBindingForDisplay(settings.bindings.player1, action), 370, y);
-      ctx.fillStyle = '#FF9F1C';
-      ctx.fillText(formatBindingForDisplay(settings.bindings.player2, action), 560, y);
-    });
-
-    const resetY = 210 + GAME_ACTIONS.length * 27;
-    ctx.fillStyle = settings.selectedIndex === GAME_ACTIONS.length ? '#FFFFFF' : '#B8A9C9';
-    ctx.fillText(
-      settings.selectedIndex === GAME_ACTIONS.length
-        ? '> Reset All Bindings'
-        : 'Reset All Bindings',
-      96,
-      resetY
-    );
-
-    if (settings.keybindingEdit) {
-      ctx.fillStyle = 'rgba(8, 5, 16, 0.9)';
-      ctx.fillRect(120, 210, CANVAS_WIDTH - 240, 180);
-      ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(120, 210, CANVAS_WIDTH - 240, 180);
-      ctx.textAlign = 'center';
-      ctx.font = 'bold 24px "Courier New", monospace';
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillText('PRESS A NEW KEY', CANVAS_WIDTH / 2, 270);
-      ctx.font = '18px "Courier New", monospace';
-      ctx.fillStyle = '#B8A9C9';
-      ctx.fillText(
-        `P${settings.keybindingEdit.playerId} ${GAME_ACTION_LABELS[settings.keybindingEdit.action]}`,
-        CANVAS_WIDTH / 2,
-        312
-      );
-      ctx.fillText('CANCEL keeps the current binding', CANVAS_WIDTH / 2, 350);
-    }
-  }
-
-  drawArcadeFooter(ctx, 'W/S select  //  A/D tab  //  Enter edit  //  Esc back');
+  ctx.fillText(descriptions[selectedIndex] ?? '', CANVAS_WIDTH / 2, panelY + 278);
+  drawArcadeCommandBar(ctx, [
+    command('navigate', 'navigate', 'W / S', 10),
+    command('confirm', 'confirm', 'Enter', 9),
+    command('help', 'controls', 'Shift + /'),
+  ]);
 }
 
 export function renderCharacterSelect(
@@ -294,25 +230,37 @@ export function renderCharacterSelect(
 ): void {
   drawArcadeBackdrop(ctx);
 
-  ctx.font = '32px "Courier New", monospace';
-  ctx.fillStyle = '#FF00FF';
-  ctx.textAlign = 'center';
   const title =
     gameMode === 'stage'
       ? 'SELECT YOUR PHILOSOPHER — BABYLON'
-      : phase === 1
-        ? 'SELECT PLAYER 1'
-        : 'SELECT PLAYER 2';
-  ctx.fillText(title, CANVAS_WIDTH / 2, 54);
-  if (gameMode === 'stage') {
-    ctx.font = 'bold 10px "Courier New", monospace';
-    ctx.fillStyle = ETHIC_UI.warning;
-    ctx.fillText(
-      'ROUTE 01/06 ACTIVE · ROUTES 02–06 ARE AUTHORED PREVIEWS, NOT YET PLAYABLE',
-      CANVAS_WIDTH / 2,
-      73
-    );
-  }
+      : gameMode === 'ai-vs-ai'
+        ? phase === 1
+          ? 'SELECT AI FIGHTER 1'
+          : 'SELECT AI FIGHTER 2'
+        : phase === 1
+          ? 'SELECT PLAYER 1'
+          : 'SELECT PLAYER 2';
+  const subtitle =
+    gameMode === 'stage'
+      ? 'Route 01/06 active · Babylon deployment roster'
+      : gameMode === 'ai-vs-ai'
+        ? 'Animation lab · both sides computer controlled'
+        : phase === 1
+          ? 'Lock the first doctrine profile'
+          : 'Lock the opposing doctrine profile';
+  drawArcadeScreenTitle(ctx, {
+    eyebrow:
+      gameMode === 'stage'
+        ? 'Campaign uplink // route selection'
+        : gameMode === 'ai-vs-ai'
+          ? 'Autonomous review // roster lab'
+          : 'Local versus // fighter routing',
+    title,
+    subtitle,
+    y: 8,
+    titleSize: 27,
+    accent: gameMode === 'stage' ? ETHIC_UI.warning : ETHIC_UI.accentAlt,
+  });
 
   const columns = 6;
   const cardWidth = 96;
@@ -342,6 +290,14 @@ export function renderCharacterSelect(
       strong: isActive,
     });
 
+    if (isActive) {
+      ctx.save();
+      ctx.globalAlpha = 0.12;
+      ctx.fillStyle = character.colors.primary;
+      ctx.fillRect(x + 5, y + 5, cardWidth - 10, cardHeight - 10);
+      ctx.restore();
+    }
+
     const accentColor = character.colors.primary;
     ctx.strokeStyle = isActive ? '#FFFFFF' : accentColor;
     ctx.lineWidth = isActive ? 4 : 2;
@@ -361,18 +317,31 @@ export function renderCharacterSelect(
       ctx.fillRect(x + 32, y + 20, 32, 56);
     }
 
-    ctx.font = 'bold 10px "Courier New", monospace';
+    ctx.font = `800 10px ${ARCADE_UI_FONT}`;
     ctx.fillStyle = accentColor;
     ctx.textAlign = 'center';
     ctx.fillText(character.name.toUpperCase().slice(0, 14), x + cardWidth / 2, y + cardHeight - 9);
 
     if (isP1) {
-      ctx.fillStyle = '#00F5FF';
-      ctx.fillText('P1', x + 18, y + 16);
+      drawArcadeChip(ctx, {
+        x: x + 6,
+        y: y + 6,
+        width: 32,
+        text: 'P1',
+        accent: ETHIC_UI.accent,
+        active: phase === 1,
+      });
     }
     if (isP2 && gameMode === 'vs') {
-      ctx.fillStyle = '#FF9F1C';
-      ctx.fillText('P2', x + cardWidth - 18, y + 16);
+      drawArcadeChip(ctx, {
+        x: x + cardWidth - 6,
+        y: y + 6,
+        width: 32,
+        text: 'P2',
+        accent: ETHIC_UI.warning,
+        active: phase === 2,
+        align: 'right',
+      });
     }
   }
 
@@ -395,10 +364,10 @@ export function renderCharacterSelect(
 
     renderCharacterSpritePreview(ctx, selectedId, panelX + 58, panelY + 128, 102, 120);
     ctx.textAlign = 'left';
-    ctx.font = 'bold 13px "Courier New", monospace';
-    ctx.fillStyle = '#FFFFFF';
+    ctx.font = `900 13px ${ARCADE_UI_FONT}`;
+    ctx.fillStyle = ETHIC_UI.text;
     ctx.fillText(selected.name.toUpperCase(), panelX + 112, panelY + 34);
-    ctx.font = '11px "Courier New", monospace';
+    ctx.font = `750 10px ${ARCADE_UI_FONT}`;
     ctx.fillStyle = selected.colors.accent;
     ctx.fillText(selected.subtitle.toUpperCase(), panelX + 112, panelY + 56);
 
@@ -409,21 +378,25 @@ export function renderCharacterSelect(
       ['AGI', selected.baseStats.agility],
     ] as const;
     stats.forEach(([label, value], index) => {
-      const y = panelY + 82 + index * 22;
-      ctx.font = 'bold 11px "Courier New", monospace';
-      ctx.fillStyle = '#B8A9C9';
-      ctx.fillText(label, panelX + 112, y);
-      ctx.fillStyle = '#281A3E';
-      ctx.fillRect(panelX + 146, y - 9, 106, 10);
-      ctx.fillStyle = selected.colors.primary;
-      ctx.fillRect(panelX + 146, y - 9, Math.min(106, value * 10.6), 10);
+      const y = panelY + 84 + index * 24;
+      drawArcadeMeter(ctx, {
+        x: panelX + 112,
+        y,
+        width: 140,
+        height: 9,
+        value,
+        max: 10,
+        accent: selected.colors.primary,
+        label,
+        valueLabel: `${value}/10`,
+      });
     });
 
     const normalChain = getCharacterNormalChain(selected);
-    ctx.font = 'bold 11px "Courier New", monospace';
+    ctx.font = `800 11px ${ARCADE_UI_FONT}`;
     ctx.fillStyle = selected.colors.primary;
     ctx.fillText('NORMAL CHAIN', panelX + 18, panelY + 174);
-    ctx.font = '10px "Courier New", monospace';
+    ctx.font = `10px ${ARCADE_UI_FONT}`;
     ctx.fillStyle = '#D7CDE2';
     ctx.fillText(
       normalChain
@@ -434,24 +407,24 @@ export function renderCharacterSelect(
       panelY + 191
     );
 
-    ctx.font = 'bold 11px "Courier New", monospace';
+    ctx.font = `800 11px ${ARCADE_UI_FONT}`;
     ctx.fillStyle = selected.colors.primary;
     ctx.fillText('COMMAND MOVESET', panelX + 18, panelY + 216);
     const specials = getSpecialsForCharacter(selectedId).slice(0, 4);
     specials.forEach((move, index) => {
       const y = panelY + 236 + index * 20;
-      ctx.font = 'bold 10px "Courier New", monospace';
+      ctx.font = `800 10px ${ARCADE_UI_FONT}`;
       ctx.fillStyle = selected.colors.accent;
       ctx.fillText(commandSlotToLabel(move.commandSlot), panelX + 18, y);
-      ctx.font = '10px "Courier New", monospace';
+      ctx.font = `10px ${ARCADE_UI_FONT}`;
       ctx.fillStyle = '#FFFFFF';
       ctx.fillText(move.displayName.toUpperCase().slice(0, 25), panelX + 92, y);
     });
 
-    ctx.font = 'bold 12px "Courier New", monospace';
+    ctx.font = `900 12px ${ARCADE_UI_FONT}`;
     ctx.fillStyle = selected.colors.accent;
     ctx.fillText(selected.gimmick.name.toUpperCase(), panelX + 18, panelY + 326);
-    ctx.font = '10px "Courier New", monospace';
+    ctx.font = `10px ${ARCADE_UI_FONT}`;
     ctx.fillStyle = '#B8A9C9';
     drawWrappedText(
       ctx,
@@ -464,12 +437,12 @@ export function renderCharacterSelect(
     );
   }
 
-  drawArcadeFooter(
-    ctx,
-    gameMode === 'stage'
-      ? 'D-PAD choose | CONFIRM enter Babylon | CANCEL back | Shift+/ (?) help'
-      : 'D-PAD choose | CONFIRM lock | CANCEL back | Shift+/ (?) help'
-  );
+  drawArcadeCommandBar(ctx, [
+    command('choose', 'choose doctrine', 'D-Pad', 10),
+    command('confirm', gameMode === 'stage' ? 'enter Babylon' : 'lock fighter', 'Confirm', 9),
+    command('cancel', 'back', 'Cancel'),
+    command('help', 'controls', 'Shift + /'),
+  ]);
 }
 
 export interface StageIntroViewModel {
@@ -798,6 +771,7 @@ export function renderResults(
     !stageDefeat &&
     view.stageEncounterWins >= view.stageEncounterCount;
   const winnerName = result?.winner === 2 ? view.player2Name : view.player1Name;
+  const aiShowcase = view.gameMode === 'ai-vs-ai';
 
   ctx.font = 'bold 48px "Courier New", monospace';
   ctx.fillStyle = aborted
@@ -815,7 +789,9 @@ export function renderResults(
         ? 'DEFEAT'
         : stageCleared
           ? 'BABYLON CLEARED'
-          : 'VICTORY',
+          : aiShowcase
+            ? 'AI REVIEW COMPLETE'
+            : 'VICTORY',
     CANVAS_WIDTH / 2,
     140
   );
@@ -868,11 +844,19 @@ export function renderResults(
     ctx.fillText('CONFIRM: Retry this wave', CANVAS_WIDTH / 2, 442);
     ctx.fillStyle = '#B8A9C9';
     ctx.fillText('CANCEL: Return to menu', CANVAS_WIDTH / 2, 478);
+  } else if (aiShowcase) {
+    ctx.fillStyle = '#39FF14';
+    ctx.fillText('CONFIRM: Run another review', CANVAS_WIDTH / 2, 442);
+    ctx.fillStyle = '#B8A9C9';
+    ctx.fillText('CANCEL: Return to menu', CANVAS_WIDTH / 2, 478);
   } else {
     ctx.fillStyle = '#39FF14';
     ctx.fillText('Press CONFIRM to continue', CANVAS_WIDTH / 2, 458);
   }
-  drawArcadeFooter(ctx, 'Confirm continue  //  Cancel return');
+  drawArcadeCommandBar(ctx, [
+    command('confirm', 'continue', 'Confirm', 10),
+    command('cancel', 'return', 'Cancel'),
+  ]);
 }
 
 function formatBindingKeys(keys: string[]): string {
@@ -888,7 +872,13 @@ function formatBindingKeys(keys: string[]): string {
     .join(' / ');
 }
 
-export function renderHelpOverlay(ctx: CanvasRenderingContext2D): void {
+export function renderHelpOverlay(
+  ctx: CanvasRenderingContext2D,
+  bindings: { player1: InputBinding; player2: InputBinding } = {
+    player1: PLAYER1_BINDINGS,
+    player2: PLAYER2_BINDINGS,
+  }
+): void {
   ctx.save();
   ctx.fillStyle = 'rgba(8, 5, 16, 0.88)';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -902,59 +892,59 @@ export function renderHelpOverlay(ctx: CanvasRenderingContext2D): void {
     label: 'Input reference',
   });
 
-  ctx.fillStyle = '#FFFFFF';
+  ctx.fillStyle = ETHIC_UI.text;
   ctx.textAlign = 'center';
-  ctx.font = 'bold 32px "Courier New", monospace';
+  ctx.font = `900 32px ${ARCADE_UI_FONT}`;
   ctx.fillText('KEYBINDINGS', CANVAS_WIDTH / 2, 72);
-  ctx.font = '18px "Courier New", monospace';
-  ctx.fillStyle = '#B8A9C9';
-  ctx.fillText('Press Shift+/ (?) to close', CANVAS_WIDTH / 2, 102);
+  ctx.font = `12px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = ETHIC_UI.muted;
+  ctx.fillText('LIVE PROFILE // THIS PANEL REFLECTS YOUR CURRENT REMAPS', CANVAS_WIDTH / 2, 102);
 
   const rows: Array<{ label: string; p1: string; p2: string }> = [
     {
       label: 'Move Left',
-      p1: formatBindingKeys(PLAYER1_BINDINGS.keys.get('moveLeft') ?? []),
-      p2: formatBindingKeys(PLAYER2_BINDINGS.keys.get('moveLeft') ?? []),
+      p1: formatBindingKeys(bindings.player1.keys.get('moveLeft') ?? []),
+      p2: formatBindingKeys(bindings.player2.keys.get('moveLeft') ?? []),
     },
     {
       label: 'Move Right',
-      p1: formatBindingKeys(PLAYER1_BINDINGS.keys.get('moveRight') ?? []),
-      p2: formatBindingKeys(PLAYER2_BINDINGS.keys.get('moveRight') ?? []),
+      p1: formatBindingKeys(bindings.player1.keys.get('moveRight') ?? []),
+      p2: formatBindingKeys(bindings.player2.keys.get('moveRight') ?? []),
     },
     {
       label: 'Move Up/Down',
-      p1: `${formatBindingKeys(PLAYER1_BINDINGS.keys.get('moveUp') ?? [])} / ${formatBindingKeys(PLAYER1_BINDINGS.keys.get('moveDown') ?? [])}`,
-      p2: `${formatBindingKeys(PLAYER2_BINDINGS.keys.get('moveUp') ?? [])} / ${formatBindingKeys(PLAYER2_BINDINGS.keys.get('moveDown') ?? [])}`,
+      p1: `${formatBindingKeys(bindings.player1.keys.get('moveUp') ?? [])} / ${formatBindingKeys(bindings.player1.keys.get('moveDown') ?? [])}`,
+      p2: `${formatBindingKeys(bindings.player2.keys.get('moveUp') ?? [])} / ${formatBindingKeys(bindings.player2.keys.get('moveDown') ?? [])}`,
     },
     {
       label: 'Jump',
-      p1: formatBindingKeys(PLAYER1_BINDINGS.keys.get('jump') ?? []),
-      p2: formatBindingKeys(PLAYER2_BINDINGS.keys.get('jump') ?? []),
+      p1: formatBindingKeys(bindings.player1.keys.get('jump') ?? []),
+      p2: formatBindingKeys(bindings.player2.keys.get('jump') ?? []),
     },
     {
       label: 'Attack',
-      p1: formatBindingKeys(PLAYER1_BINDINGS.keys.get('attack') ?? []),
-      p2: formatBindingKeys(PLAYER2_BINDINGS.keys.get('attack') ?? []),
+      p1: formatBindingKeys(bindings.player1.keys.get('attack') ?? []),
+      p2: formatBindingKeys(bindings.player2.keys.get('attack') ?? []),
     },
     {
       label: 'Block',
-      p1: formatBindingKeys(PLAYER1_BINDINGS.keys.get('block') ?? []),
-      p2: formatBindingKeys(PLAYER2_BINDINGS.keys.get('block') ?? []),
+      p1: formatBindingKeys(bindings.player1.keys.get('block') ?? []),
+      p2: formatBindingKeys(bindings.player2.keys.get('block') ?? []),
     },
     {
       label: 'Special',
-      p1: formatBindingKeys(PLAYER1_BINDINGS.keys.get('special') ?? []),
-      p2: formatBindingKeys(PLAYER2_BINDINGS.keys.get('special') ?? []),
+      p1: formatBindingKeys(bindings.player1.keys.get('special') ?? []),
+      p2: formatBindingKeys(bindings.player2.keys.get('special') ?? []),
     },
     {
       label: 'Confirm / Cancel',
-      p1: `${formatBindingKeys(PLAYER1_BINDINGS.keys.get('confirm') ?? [])} / ${formatBindingKeys(PLAYER1_BINDINGS.keys.get('cancel') ?? [])}`,
-      p2: `${formatBindingKeys(PLAYER2_BINDINGS.keys.get('confirm') ?? [])} / ${formatBindingKeys(PLAYER2_BINDINGS.keys.get('cancel') ?? [])}`,
+      p1: `${formatBindingKeys(bindings.player1.keys.get('confirm') ?? [])} / ${formatBindingKeys(bindings.player1.keys.get('cancel') ?? [])}`,
+      p2: `${formatBindingKeys(bindings.player2.keys.get('confirm') ?? [])} / ${formatBindingKeys(bindings.player2.keys.get('cancel') ?? [])}`,
     },
     {
       label: 'Pause',
-      p1: formatBindingKeys(PLAYER1_BINDINGS.keys.get('pause') ?? []),
-      p2: formatBindingKeys(PLAYER2_BINDINGS.keys.get('pause') ?? []),
+      p1: formatBindingKeys(bindings.player1.keys.get('pause') ?? []),
+      p2: formatBindingKeys(bindings.player2.keys.get('pause') ?? []),
     },
   ];
 
@@ -962,7 +952,7 @@ export function renderHelpOverlay(ctx: CanvasRenderingContext2D): void {
   const topY = 150;
   const rowHeight = 34;
   ctx.textAlign = 'left';
-  ctx.font = 'bold 16px "Courier New", monospace';
+  ctx.font = `800 16px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = '#00F5FF';
   ctx.fillText('ACTION', leftX, topY);
   ctx.fillStyle = '#39FF14';
@@ -970,7 +960,7 @@ export function renderHelpOverlay(ctx: CanvasRenderingContext2D): void {
   ctx.fillStyle = '#FF9F1C';
   ctx.fillText('PLAYER 2', leftX + 490, topY);
 
-  ctx.font = '15px "Courier New", monospace';
+  ctx.font = `15px ${ARCADE_UI_FONT}`;
   rows.forEach((row, index) => {
     const y = topY + 28 + index * rowHeight;
     ctx.fillStyle = '#FFFFFF';
@@ -979,6 +969,10 @@ export function renderHelpOverlay(ctx: CanvasRenderingContext2D): void {
     ctx.fillText(row.p1, leftX + 260, y);
     ctx.fillStyle = '#FF9F1C';
     ctx.fillText(row.p2, leftX + 490, y);
+  });
+
+  drawArcadeCommandBar(ctx, [command('close', 'close controls', 'Shift + /', 10)], 'keyboard', {
+    y: CANVAS_HEIGHT - 50,
   });
 
   ctx.restore();

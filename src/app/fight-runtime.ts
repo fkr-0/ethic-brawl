@@ -22,6 +22,11 @@ import {
   renderFightScene,
   updateCamera,
 } from '@/render';
+import {
+  DEFAULT_FIGHT_PRESENTATION_POLICY,
+  presentationPolicyToRenderOptions,
+  type FightPresentationPolicy,
+} from './presentation-policy';
 
 function toFightInput(input: CorePlayerInput): PlayerInput {
   return {
@@ -41,6 +46,7 @@ function toFightInput(input: CorePlayerInput): PlayerInput {
 }
 
 export interface FightRuntimeOptions {
+  player1AIDifficulty?: AIDifficulty;
   player2AIDifficulty?: AIDifficulty;
   fightRules?: FightRuleSet;
 }
@@ -54,6 +60,23 @@ export interface FightRuntimeStatus {
   hasRoundWinner: boolean;
   hasFightResult: boolean;
 }
+
+/**
+ * AI showcase rounds are intentionally compact: enough health for authored
+ * chains, defense, and specials to appear, but short enough for rapid roster
+ * review and deterministic browser certification.
+ */
+export const AI_SHOWCASE_FIGHT_RULES: FightRuleSet = {
+  id: 'ai_showcase_sprint',
+  label: 'AI Showcase Sprint',
+  roundTimeSeconds: 15,
+  player1StartEnergyRatio: 1,
+  player2StartEnergyRatio: 1,
+  player1StartSpecialCooldownRatio: 0,
+  player2StartSpecialCooldownRatio: 0,
+  player1HealthMultiplier: 3,
+  player2HealthMultiplier: 3,
+};
 
 const DEFAULT_SELECTION: FightCharacterSelection = {
   player1: 'camus',
@@ -84,13 +107,21 @@ function createInitialFighters(selection: FightCharacterSelection) {
 export function createFightRuntime() {
   const controller = createFightController();
   const camera = createCamera();
+  let player1AIDifficulty: AIDifficulty = 'medium';
   let player2AIDifficulty: AIDifficulty = 'medium';
+  let player1AI = createAIController(AI_DIFFICULTY_CONFIG[player1AIDifficulty]);
   let player2AI = createAIController(AI_DIFFICULTY_CONFIG[player2AIDifficulty]);
+  let presentationPolicy = DEFAULT_FIGHT_PRESENTATION_POLICY;
 
   const initialize = (
     selection: FightCharacterSelection = DEFAULT_SELECTION,
     options: FightRuntimeOptions = {}
   ): FightState => {
+    const requestedPlayer1Difficulty = options.player1AIDifficulty ?? player1AIDifficulty;
+    if (requestedPlayer1Difficulty !== player1AIDifficulty) {
+      player1AIDifficulty = requestedPlayer1Difficulty;
+      player1AI = createAIController(AI_DIFFICULTY_CONFIG[player1AIDifficulty]);
+    }
     const requestedDifficulty = options.player2AIDifficulty ?? player2AIDifficulty;
     if (requestedDifficulty !== player2AIDifficulty) {
       player2AIDifficulty = requestedDifficulty;
@@ -98,6 +129,7 @@ export function createFightRuntime() {
     }
     const { player1, player2 } = createInitialFighters(selection);
     clearFighterAnimationCache();
+    player1AI.reset();
     player2AI.reset();
     controller.init(player1, player2, options.fightRules);
     const state = controller.getState();
@@ -113,14 +145,19 @@ export function createFightRuntime() {
     deltaTime: number,
     input1: CorePlayerInput,
     input2: CorePlayerInput,
-    computerControlledPlayer2 = false
+    computerControlledPlayer2 = false,
+    computerControlledPlayer1 = false
   ): void {
     const beforeUpdate = controller.getState();
+    const player1Input =
+      computerControlledPlayer1 && beforeUpdate
+        ? player1AI.update(beforeUpdate.player1, beforeUpdate.player2, beforeUpdate.frameCount + 1)
+        : toFightInput(input1);
     const player2Input =
       computerControlledPlayer2 && beforeUpdate
         ? player2AI.update(beforeUpdate.player2, beforeUpdate.player1, beforeUpdate.frameCount + 1)
         : toFightInput(input2);
-    controller.update(deltaTime, toFightInput(input1), player2Input);
+    controller.update(deltaTime, player1Input, player2Input);
     const state = controller.getState();
     if (!state) {
       return;
@@ -135,11 +172,31 @@ export function createFightRuntime() {
       maxX: 640,
       followSpeed: 0.08,
     });
-    applyFightCameraEffects(camera, state.cameraEffects);
+    applyFightCameraEffects(camera, state.cameraEffects, presentationPolicy.cameraEffectScale);
+  }
+
+  function getPlayer1AIDifficulty(): AIDifficulty {
+    return player1AIDifficulty;
   }
 
   function getPlayer2AIDifficulty(): AIDifficulty {
     return player2AIDifficulty;
+  }
+
+  function getPlayer1AIAction(): string {
+    return player1AI.getCurrentAction();
+  }
+
+  function getPlayer2AIAction(): string {
+    return player2AI.getCurrentAction();
+  }
+
+  function setPresentationPolicy(policy: FightPresentationPolicy): void {
+    presentationPolicy = { ...policy };
+  }
+
+  function getPresentationOptions() {
+    return presentationPolicyToRenderOptions(presentationPolicy);
   }
 
   function render(
@@ -151,7 +208,10 @@ export function createFightRuntime() {
       return;
     }
 
-    renderFightScene(ctx, state, camera, presentation);
+    renderFightScene(ctx, state, camera, {
+      ...getPresentationOptions(),
+      ...presentation,
+    });
   }
 
   function reset(selection?: FightCharacterSelection, options: FightRuntimeOptions = {}): void {
@@ -199,7 +259,12 @@ export function createFightRuntime() {
     getResult,
     getState,
     getCamera,
+    getPlayer1AIDifficulty,
     getPlayer2AIDifficulty,
+    getPlayer1AIAction,
+    getPlayer2AIAction,
+    setPresentationPolicy,
+    getPresentationOptions,
     resolveMatchForTesting,
   };
 }

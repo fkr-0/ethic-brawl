@@ -3,21 +3,17 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
-  ETHIC_ARCADE_PIXI_RUNTIME_VERSION,
   ETHIC_ARCADE_RUNTIME_VERSION,
   ETHIC_CANVAS_PASS_TO_PIXI_LAYER,
   ETHIC_PIXI_BRIDGE_PASSES,
   ETHIC_PIXI_LAYERS,
   ETHIC_PIXI_RENDER_PLAN,
 } from '../../src/render/arcade-runtime-contract';
-import { ARCADE_CORE_VERSION as COMPAT_CORE_VERSION } from '../../vendor/arcade-core.mjs';
-import { ARCADE_PIXI_RUNTIME_VERSION as COMPAT_PIXI_VERSION } from '../../vendor/arcade-pixi-runtime.mjs';
 import { ARCADE_RUNTIME_VERSION as SHARED_RUNTIME_VERSION } from '../../vendor/arcade-runtime.mjs';
 
 describe('shared Pixi runtime contract', () => {
   it('pins the common runtime and preserves deterministic pass order', () => {
     expect(ETHIC_ARCADE_RUNTIME_VERSION).toBe(SHARED_RUNTIME_VERSION);
-    expect(ETHIC_ARCADE_PIXI_RUNTIME_VERSION).toBe(ETHIC_ARCADE_RUNTIME_VERSION);
     expect(ETHIC_PIXI_LAYERS).toEqual([
       'backdrop',
       'world-back',
@@ -41,14 +37,15 @@ describe('shared Pixi runtime contract', () => {
       ['fight-hud', 'hud'],
       ['scene-ui', 'overlay'],
     ]);
-    expect(ETHIC_PIXI_BRIDGE_PASSES.map((pass) => pass.name)).toEqual([
-      'background',
-      'stage-depth',
-      'arena',
-      'foreground',
-      'fight-hud',
-      'scene-ui',
-    ]);
+    expect(ETHIC_PIXI_BRIDGE_PASSES.map((pass) => pass.name)).toEqual([]);
+    expect(ETHIC_PIXI_RENDER_PLAN.find((pass) => pass.name === 'background')).toMatchObject({
+      migration: 'native',
+      activation: 'ready',
+    });
+    expect(ETHIC_PIXI_RENDER_PLAN.find((pass) => pass.name === 'arena')).toMatchObject({
+      migration: 'native',
+      activation: 'ready',
+    });
 
     const runtimeModule = readFileSync(resolve(process.cwd(), 'vendor/arcade-runtime.mjs'));
     const metadata = JSON.parse(
@@ -66,8 +63,6 @@ describe('shared Pixi runtime contract', () => {
     const runtimeTypes = readFileSync(resolve(process.cwd(), 'vendor/arcade-runtime.d.mts'));
     expect(createHash('sha256').update(runtimeTypes).digest('hex')).toBe(metadata.typesSha256);
 
-    expect(COMPAT_CORE_VERSION).toBe(ETHIC_ARCADE_RUNTIME_VERSION);
-    expect(COMPAT_PIXI_VERSION).toBe(ETHIC_ARCADE_RUNTIME_VERSION);
     expect(readFileSync(resolve(process.cwd(), 'vendor/arcade-core.mjs'), 'utf8')).toContain(
       "export * from './arcade-runtime.mjs'"
     );

@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT DIRECTLY.
 // Edit source/runtime/*.js.inc and run `npm run source:build`.
 
-export const ARCADE_RUNTIME_VERSION = '1.7.0';
+export const ARCADE_RUNTIME_VERSION = '1.12.0';
 export const ARCADE_PIXI_RUNTIME_VERSION = ARCADE_RUNTIME_VERSION;
 
 export const DEFAULT_ARCADE_LAYERS = Object.freeze([
@@ -2091,10 +2091,23 @@ export function createGridFocusNavigator(options = {}) {
       focusedIndex = items.findIndex((item, index) => item.id === previousId && isAvailable(index));
       if (focusedIndex < 0) focusedIndex = items.findIndex((_item, index) => isAvailable(index));
       preferredColumn = focusedIndex >= 0 ? focusedIndex % columns : 0;
-      return navigator.current();
+      const item = navigator.current();
+      const nextId = item?.id ?? null;
+      if (nextId !== previousId) {
+        events.emit('focus:change', Object.freeze({
+          previousId,
+          id: nextId,
+          reason: 'items-updated',
+          item,
+        }));
+      }
+      return item;
     },
     current() {
       return focusedIndex >= 0 ? items[focusedIndex] ?? null : null;
+    },
+    index() {
+      return focusedIndex;
     },
     focus(id, reason = 'programmatic') {
       const nextIndex = items.findIndex((item, index) => item.id === id && isAvailable(index));
@@ -2105,6 +2118,11 @@ export function createGridFocusNavigator(options = {}) {
       const item = navigator.current();
       events.emit('focus:change', Object.freeze({ previousId, id: item.id, reason, item }));
       return true;
+    },
+    focusIndex(index, reason = 'programmatic') {
+      const nextIndex = Math.floor(arcadeInteractionFinite(index, -1));
+      if (nextIndex < 0 || nextIndex >= items.length || !isAvailable(nextIndex)) return false;
+      return navigator.focus(items[nextIndex].id, reason);
     },
     move(direction) {
       if (focusedIndex < 0) return null;
@@ -2121,6 +2139,11 @@ export function createGridFocusNavigator(options = {}) {
       const previousPreferredColumn = preferredColumn;
       navigator.focus(items[nextIndex]?.id, direction);
       if (vertical) preferredColumn = previousPreferredColumn;
+      return navigator.current();
+    },
+    moveBy(direction, amount = 1) {
+      const count = Math.max(0, Math.floor(arcadeInteractionFinite(amount, 0)));
+      for (let step = 0; step < count; step += 1) navigator.move(direction);
       return navigator.current();
     },
     activate() {
@@ -3623,6 +3646,678 @@ export function resolveHudGauge(input = {}) {
   });
 }
 
+function arcadeResolutionEvidenceId(value, label = 'resolution evidence id') {
+  const id = String(value ?? '').trim();
+  arcadeGameplayInvariant(id.length > 0, `${label} is required`);
+  return id;
+}
+
+function arcadeResolutionEvidenceRecord(values, normalizeValue) {
+  return Object.freeze(Object.fromEntries(
+    [...values.entries()]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([id, value]) => [id, normalizeValue(value)]),
+  ));
+}
+
+/**
+ * Collect policy-neutral evidence describing how a situation was resolved.
+ * Consumers decide which actions constitute an approach and derive their own
+ * constraints, such as non-lethal or undetected, from the frozen snapshot.
+ */
+export function createResolutionEvidenceTracker(options = {}) {
+  const events = options.events ?? createEventBus();
+  const knownApproaches = options.knownApproaches
+    ? new Set(options.knownApproaches.map((value) => arcadeResolutionEvidenceId(value)))
+    : null;
+  const approaches = new Set(
+    (options.approaches ?? []).map((value) => arcadeResolutionEvidenceId(value)),
+  );
+  const counters = new Map(
+    Object.entries(options.counters ?? {}).map(([id, value]) => [
+      arcadeResolutionEvidenceId(id, 'counter id'),
+      arcadeGameplayNonNegative(value, `counter "${id}" value`),
+    ]),
+  );
+  const flags = new Map(
+    Object.entries(options.flags ?? {}).map(([id, value]) => [
+      arcadeResolutionEvidenceId(id, 'flag id'),
+      Boolean(value),
+    ]),
+  );
+  const durations = new Map(
+    Object.entries(options.durations ?? {}).map(([id, value]) => [
+      arcadeResolutionEvidenceId(id, 'duration id'),
+      arcadeGameplayNonNegative(value, `duration "${id}" value`),
+    ]),
+  );
+  const constraints = Object.entries(options.constraints ?? {})
+    .map(([id, resolve]) => {
+      arcadeGameplayInvariant(typeof resolve === 'function', `constraint "${id}" must be a function`);
+      return [arcadeResolutionEvidenceId(id, 'constraint id'), resolve];
+    })
+    .sort(([left], [right]) => left.localeCompare(right));
+  let revision = Math.max(0, Math.floor(arcadeGameplayFinite(options.revision, 0)));
+
+  for (const approach of approaches) {
+    arcadeGameplayInvariant(
+      knownApproaches === null || knownApproaches.has(approach),
+      `unknown resolution approach "${approach}"`,
+    );
+  }
+
+  const baseSnapshot = () => Object.freeze({
+    approaches: Object.freeze([...approaches].sort()),
+    counters: arcadeResolutionEvidenceRecord(counters, (value) => value),
+    flags: arcadeResolutionEvidenceRecord(flags, Boolean),
+    durations: arcadeResolutionEvidenceRecord(durations, (value) => value),
+    revision,
+  });
+
+  const emitChange = (kind, id, before, after, metadata) => {
+    revision += 1;
+    const event = Object.freeze({ kind, id, before, after, revision, metadata });
+    events.emit('resolution-evidence:change', event);
+    return event;
+  };
+
+  const tracker = {
+    events,
+    recordApproach(value, metadata) {
+      const id = arcadeResolutionEvidenceId(value, 'resolution approach');
+      arcadeGameplayInvariant(
+        knownApproaches === null || knownApproaches.has(id),
+        `unknown resolution approach "${id}"`,
+      );
+      if (approaches.has(id)) return false;
+      approaches.add(id);
+      emitChange('approach', id, false, true, metadata);
+      return true;
+    },
+    hasApproach(value) {
+      return approaches.has(arcadeResolutionEvidenceId(value, 'resolution approach'));
+    },
+    incrementCounter(value, amount = 1, metadata) {
+      const id = arcadeResolutionEvidenceId(value, 'counter id');
+      const increment = arcadeGameplayNonNegative(amount, `counter "${id}" increment`);
+      const before = counters.get(id) ?? 0;
+      const after = arcadeGameplayRound(before + increment, 6);
+      if (after === before) return after;
+      counters.set(id, after);
+      emitChange('counter', id, before, after, metadata);
+      return after;
+    },
+    setFlag(value, enabled = true, metadata) {
+      const id = arcadeResolutionEvidenceId(value, 'flag id');
+      const before = flags.get(id) ?? false;
+      const after = Boolean(enabled);
+      if (after === before && flags.has(id)) return false;
+      flags.set(id, after);
+      emitChange('flag', id, before, after, metadata);
+      return true;
+    },
+    addDuration(value, delta, metadata) {
+      const id = arcadeResolutionEvidenceId(value, 'duration id');
+      const elapsed = arcadeGameplayNonNegative(delta, `duration "${id}" delta`);
+      const before = durations.get(id) ?? 0;
+      const after = arcadeGameplayRound(before + elapsed, 6);
+      if (after === before) return after;
+      durations.set(id, after);
+      emitChange('duration', id, before, after, metadata);
+      return after;
+    },
+    snapshot() {
+      const base = baseSnapshot();
+      return Object.freeze({
+        ...base,
+        constraints: Object.freeze(Object.fromEntries(
+          constraints.map(([id, resolve]) => [id, Boolean(resolve(base))]),
+        )),
+      });
+    },
+    decorate(value, decorateOptions = {}) {
+      arcadeGameplayInvariant(value && typeof value === 'object', 'decorated result must be an object');
+      const snapshot = tracker.snapshot();
+      const approachesKey = decorateOptions.approachesKey ?? 'resolutionApproaches';
+      const constraintsKey = decorateOptions.constraintsKey ?? 'resolutionConstraints';
+      return {
+        ...value,
+        [approachesKey]: snapshot.approaches,
+        [constraintsKey]: snapshot.constraints,
+        ...(decorateOptions.evidenceKey
+          ? { [decorateOptions.evidenceKey]: snapshot }
+          : {}),
+      };
+    },
+  };
+  return tracker;
+}
+
+function arcadeStageFinite(value, fallback = 0) {
+  return Number.isFinite(value) ? Number(value) : fallback;
+}
+
+function arcadeStageId(value, label = 'id') {
+  const id = String(value ?? '').trim();
+  if (!id) throw new Error(`${label} is required`);
+  return id;
+}
+
+function arcadeStageIds(values) {
+  const input = Array.isArray(values) ? values : values === undefined || values === null ? [] : [values];
+  return Object.freeze([...new Set(input.map((value) => String(value ?? '').trim()).filter(Boolean))]);
+}
+
+function arcadeStageIssue(code, path, message, extra = {}) {
+  return Object.freeze({ code, path, message, ...extra });
+}
+
+function arcadeStageCatalogIds(catalog) {
+  if (catalog === undefined || catalog === null) return null;
+  if (catalog instanceof Set) return new Set([...catalog].map((value) => String(value)));
+  if (catalog instanceof Map) return new Set([...catalog.keys()].map((value) => String(value)));
+  if (Array.isArray(catalog)) {
+    return new Set(catalog.map((value) => String(value?.id ?? value)).filter(Boolean));
+  }
+  if (typeof catalog === 'object') return new Set(Object.keys(catalog));
+  throw new Error('stage reference catalog must be an array, object, Map or Set');
+}
+
+const ARCADE_STAGE_REFERENCE_FIELDS = Object.freeze([
+  Object.freeze({ field: 'actorIds', aliases: ['actorIds', 'actors'], catalog: 'actors' }),
+  Object.freeze({ field: 'assetIds', aliases: ['assetIds', 'assets'], catalog: 'assets' }),
+  Object.freeze({ field: 'spawnTableIds', aliases: ['spawnTableIds', 'spawnTables'], catalog: 'spawnTables' }),
+  Object.freeze({ field: 'objectiveIds', aliases: ['objectiveIds', 'objectives'], catalog: 'objectives' }),
+  Object.freeze({ field: 'serviceIds', aliases: ['serviceIds', 'services'], catalog: 'services' }),
+  Object.freeze({ field: 'encounterPlanIds', aliases: ['encounterPlanIds', 'encounterPlans'], catalog: 'encounterPlans' }),
+]);
+
+function arcadeStageReferences(raw = {}) {
+  const result = {};
+  for (const definition of ARCADE_STAGE_REFERENCE_FIELDS) {
+    const value = definition.aliases.find((alias) => raw[alias] !== undefined);
+    result[definition.field] = arcadeStageIds(value === undefined ? [] : raw[value]);
+  }
+  return result;
+}
+
+function arcadeStageValidateReferences(owner, path, catalogs, issues) {
+  for (const definition of ARCADE_STAGE_REFERENCE_FIELDS) {
+    const available = arcadeStageCatalogIds(catalogs?.[definition.catalog]);
+    if (available === null) continue;
+    for (const referenceId of owner[definition.field]) {
+      if (!available.has(referenceId)) {
+        issues.push(arcadeStageIssue(
+          'unknown-reference',
+          `${path}.${definition.field}`,
+          `unknown ${definition.catalog} reference "${referenceId}"`,
+          { referenceType: definition.catalog, referenceId },
+        ));
+      }
+    }
+  }
+}
+
+function normalizeArcadeStageTransition(raw, nodeId, index, issues) {
+  const transition = typeof raw === 'string' ? { to: raw } : raw;
+  if (!transition || typeof transition !== 'object') {
+    issues.push(arcadeStageIssue('invalid-transition', `nodes.${nodeId}.transitions[${index}]`, 'stage transition must be a string or object'));
+    return null;
+  }
+  const to = String(transition.to ?? transition.nodeId ?? '').trim();
+  if (!to) {
+    issues.push(arcadeStageIssue('missing-transition-target', `nodes.${nodeId}.transitions[${index}].to`, 'stage transition target is required'));
+    return null;
+  }
+  const signal = String(transition.signal ?? transition.on ?? 'complete').trim() || 'complete';
+  const priority = Math.floor(arcadeStageFinite(transition.priority, 0));
+  const id = String(transition.id ?? `${nodeId}:${signal}:${to}:${index}`).trim();
+  return Object.freeze({
+    id,
+    to,
+    signal,
+    priority,
+    order: index,
+    completeCurrent: transition.completeCurrent !== false,
+    ...(transition.metadata === undefined ? {} : { metadata: transition.metadata }),
+  });
+}
+
+function normalizeArcadeStageNode(raw, index, issues) {
+  if (!raw || typeof raw !== 'object') {
+    issues.push(arcadeStageIssue('invalid-node', `nodes[${index}]`, 'stage node must be an object'));
+    return null;
+  }
+  const id = String(raw.id ?? '').trim();
+  if (!id) {
+    issues.push(arcadeStageIssue('missing-node-id', `nodes[${index}].id`, 'stage node id is required'));
+    return null;
+  }
+  const rawTransitions = raw.transitions ?? raw.next ?? [];
+  const transitionList = Array.isArray(rawTransitions)
+    ? rawTransitions
+    : rawTransitions === undefined || rawTransitions === null
+      ? []
+      : [rawTransitions];
+  const transitions = transitionList
+    .map((transition, transitionIndex) => normalizeArcadeStageTransition(transition, id, transitionIndex, issues))
+    .filter(Boolean)
+    .sort((left, right) => right.priority - left.priority || left.order - right.order || left.id.localeCompare(right.id));
+  const references = arcadeStageReferences(raw);
+  return Object.freeze({
+    id,
+    kind: String(raw.kind ?? 'stage'),
+    terminal: raw.terminal === true || transitions.length === 0,
+    transitions: Object.freeze(transitions),
+    ...references,
+    ...(raw.metadata === undefined ? {} : { metadata: raw.metadata }),
+  });
+}
+
+function normalizeArcadeStageGraph(definition, catalogs = {}) {
+  const issues = [];
+  if (!definition || typeof definition !== 'object') {
+    return Object.freeze({
+      graph: null,
+      errors: Object.freeze([arcadeStageIssue('invalid-graph', '', 'stage graph definition must be an object')]),
+      warnings: Object.freeze([]),
+    });
+  }
+  const id = String(definition.id ?? '').trim();
+  if (!id) issues.push(arcadeStageIssue('missing-graph-id', 'id', 'stage graph id is required'));
+  const rawNodes = Array.isArray(definition.nodes) ? definition.nodes : [];
+  if (rawNodes.length === 0) issues.push(arcadeStageIssue('missing-nodes', 'nodes', 'stage graph requires at least one node'));
+  const nodes = rawNodes.map((node, index) => normalizeArcadeStageNode(node, index, issues)).filter(Boolean);
+  const byId = new Map();
+  for (const node of nodes) {
+    if (byId.has(node.id)) issues.push(arcadeStageIssue('duplicate-node-id', `nodes.${node.id}`, `duplicate stage node "${node.id}"`));
+    else byId.set(node.id, node);
+  }
+  const startNodeId = String(definition.startNodeId ?? definition.start ?? nodes[0]?.id ?? '').trim();
+  if (startNodeId && !byId.has(startNodeId)) {
+    issues.push(arcadeStageIssue('unknown-start-node', 'startNodeId', `unknown start node "${startNodeId}"`));
+  }
+  for (const node of nodes) {
+    arcadeStageValidateReferences(node, `nodes.${node.id}`, catalogs, issues);
+    for (const transition of node.transitions) {
+      if (!byId.has(transition.to)) {
+        issues.push(arcadeStageIssue(
+          'unknown-transition-target',
+          `nodes.${node.id}.transitions.${transition.id}`,
+          `transition "${transition.id}" targets unknown node "${transition.to}"`,
+          { nodeId: node.id, transitionId: transition.id, targetNodeId: transition.to },
+        ));
+      }
+    }
+  }
+  const warnings = [];
+  if (startNodeId && byId.has(startNodeId)) {
+    const reachable = new Set();
+    const visit = (nodeId) => {
+      if (reachable.has(nodeId)) return;
+      reachable.add(nodeId);
+      for (const transition of byId.get(nodeId)?.transitions ?? []) {
+        if (byId.has(transition.to)) visit(transition.to);
+      }
+    };
+    visit(startNodeId);
+    for (const node of nodes) {
+      if (!reachable.has(node.id)) {
+        warnings.push(arcadeStageIssue('unreachable-node', `nodes.${node.id}`, `stage node "${node.id}" is unreachable from "${startNodeId}"`));
+      }
+    }
+  }
+  const graph = Object.freeze({
+    id,
+    startNodeId,
+    nodes: Object.freeze(nodes),
+    ...(definition.metadata === undefined ? {} : { metadata: definition.metadata }),
+  });
+  return Object.freeze({ graph, errors: Object.freeze(issues), warnings: Object.freeze(warnings) });
+}
+
+export function validateStageGraph(definition, catalogs = {}) {
+  const result = normalizeArcadeStageGraph(definition, catalogs);
+  return Object.freeze({
+    ok: result.errors.length === 0,
+    graph: result.graph,
+    errors: result.errors,
+    warnings: result.warnings,
+  });
+}
+
+export function createStageGraph(definition, catalogs = {}) {
+  const result = validateStageGraph(definition, catalogs);
+  if (!result.ok) {
+    const error = new Error(`invalid stage graph: ${result.errors.map((issue) => issue.message).join('; ')}`);
+    error.issues = result.errors;
+    throw error;
+  }
+  return result.graph;
+}
+
+export function getStageNode(graph, nodeId) {
+  const id = arcadeStageId(nodeId, 'stage node id');
+  return graph?.nodes?.find((node) => node.id === id) ?? null;
+}
+
+function freezeArcadeStageGraphState(graph, raw = {}) {
+  if (raw.graphId !== undefined && raw.graphId !== null && String(raw.graphId) !== graph.id) {
+    throw new Error(`stage graph state belongs to "${raw.graphId}", expected "${graph.id}"`);
+  }
+  const validIds = new Set(graph.nodes.map((node) => node.id));
+  const currentNodeId = validIds.has(String(raw.currentNodeId ?? ''))
+    ? String(raw.currentNodeId)
+    : graph.startNodeId;
+  const completedNodeIds = arcadeStageIds(raw.completedNodeIds).filter((id) => validIds.has(id));
+  const visitedNodeIds = arcadeStageIds([...(raw.visitedNodeIds ?? []), currentNodeId]).filter((id) => validIds.has(id));
+  return Object.freeze({
+    graphId: graph.id,
+    currentNodeId,
+    completedNodeIds: Object.freeze(completedNodeIds),
+    visitedNodeIds: Object.freeze(visitedNodeIds),
+    status: raw.status === 'complete' ? 'complete' : 'active',
+    sequence: Math.max(0, Math.floor(arcadeStageFinite(raw.sequence, 0))),
+    revision: Math.max(0, Math.floor(arcadeStageFinite(raw.revision, 0))),
+  });
+}
+
+export function createStageGraphState(graph, raw = {}) {
+  if (!graph?.id || !Array.isArray(graph.nodes) || !graph.startNodeId) throw new Error('validated stage graph is required');
+  return freezeArcadeStageGraphState(graph, raw);
+}
+
+export function getCurrentStageNode(graph, state) {
+  const normalized = freezeArcadeStageGraphState(graph, state);
+  return getStageNode(graph, normalized.currentNodeId);
+}
+
+export function advanceStageGraph(graph, state, signal = 'complete', options = {}) {
+  const normalized = freezeArcadeStageGraphState(graph, state);
+  const current = getStageNode(graph, normalized.currentNodeId);
+  if (!current) throw new Error(`unknown current stage node "${normalized.currentNodeId}"`);
+  const resolvedSignal = arcadeStageId(signal, 'stage transition signal');
+  if (normalized.status === 'complete') {
+    return Object.freeze({
+      state: normalized,
+      changed: false,
+      transition: null,
+      events: Object.freeze([Object.freeze({ kind: 'graph-already-complete', graphId: graph.id, nodeId: current.id, signal: resolvedSignal })]),
+    });
+  }
+  const candidates = current.transitions.filter((transition) => transition.signal === resolvedSignal);
+  const transition = candidates.find((candidate) => options.canTransition?.(candidate, current, normalized, graph) !== false) ?? null;
+  if (!transition) {
+    if (resolvedSignal === 'complete' && current.terminal) {
+      const completedNodeIds = arcadeStageIds([...normalized.completedNodeIds, current.id]);
+      const next = freezeArcadeStageGraphState(graph, {
+        ...normalized,
+        completedNodeIds,
+        status: 'complete',
+        sequence: normalized.sequence + 1,
+        revision: normalized.revision + 1,
+      });
+      return Object.freeze({
+        state: next,
+        changed: true,
+        transition: null,
+        events: Object.freeze([
+          Object.freeze({ kind: 'node-completed', graphId: graph.id, nodeId: current.id, sequence: next.sequence }),
+          Object.freeze({ kind: 'graph-completed', graphId: graph.id, nodeId: current.id, sequence: next.sequence }),
+        ]),
+      });
+    }
+    return Object.freeze({
+      state: normalized,
+      changed: false,
+      transition: null,
+      events: Object.freeze([Object.freeze({ kind: 'transition-blocked', graphId: graph.id, nodeId: current.id, signal: resolvedSignal })]),
+    });
+  }
+  const target = getStageNode(graph, transition.to);
+  if (!target) throw new Error(`unknown transition target "${transition.to}"`);
+  const completedNodeIds = transition.completeCurrent
+    ? arcadeStageIds([...normalized.completedNodeIds, current.id])
+    : normalized.completedNodeIds;
+  const next = freezeArcadeStageGraphState(graph, {
+    ...normalized,
+    currentNodeId: target.id,
+    completedNodeIds,
+    visitedNodeIds: [...normalized.visitedNodeIds, target.id],
+    sequence: normalized.sequence + 1,
+    revision: normalized.revision + 1,
+  });
+  return Object.freeze({
+    state: next,
+    changed: true,
+    transition,
+    events: Object.freeze([
+      ...(transition.completeCurrent
+        ? [Object.freeze({ kind: 'node-completed', graphId: graph.id, nodeId: current.id, sequence: next.sequence })]
+        : []),
+      Object.freeze({
+        kind: 'stage-transitioned',
+        graphId: graph.id,
+        fromNodeId: current.id,
+        toNodeId: target.id,
+        transitionId: transition.id,
+        signal: resolvedSignal,
+        sequence: next.sequence,
+      }),
+    ]),
+  });
+}
+
+export function inspectStageGraphState(graph, state) {
+  const normalized = freezeArcadeStageGraphState(graph, state);
+  const current = getStageNode(graph, normalized.currentNodeId);
+  return Object.freeze({
+    graphId: graph.id,
+    currentNodeId: normalized.currentNodeId,
+    currentKind: current?.kind ?? null,
+    status: normalized.status,
+    completed: normalized.completedNodeIds.length,
+    total: graph.nodes.length,
+    ratio: graph.nodes.length === 0 ? 1 : normalized.completedNodeIds.length / graph.nodes.length,
+    availableSignals: Object.freeze([...new Set((current?.transitions ?? []).map((transition) => transition.signal))]),
+    sequence: normalized.sequence,
+    revision: normalized.revision,
+  });
+}
+
+function normalizeArcadeEncounter(raw, index, issues) {
+  if (!raw || typeof raw !== 'object') {
+    issues.push(arcadeStageIssue('invalid-encounter', `encounters[${index}]`, 'encounter must be an object'));
+    return null;
+  }
+  const id = String(raw.id ?? '').trim();
+  if (!id) {
+    issues.push(arcadeStageIssue('missing-encounter-id', `encounters[${index}].id`, 'encounter id is required'));
+    return null;
+  }
+  return Object.freeze({
+    id,
+    kind: String(raw.kind ?? 'encounter'),
+    delay: Math.max(0, arcadeStageFinite(raw.delay, 0)),
+    ...arcadeStageReferences(raw),
+    ...(raw.metadata === undefined ? {} : { metadata: raw.metadata }),
+  });
+}
+
+function normalizeArcadeEncounterPlan(definition, catalogs = {}) {
+  const issues = [];
+  if (!definition || typeof definition !== 'object') {
+    return Object.freeze({
+      plan: null,
+      errors: Object.freeze([arcadeStageIssue('invalid-encounter-plan', '', 'encounter plan definition must be an object')]),
+    });
+  }
+  const id = String(definition.id ?? '').trim();
+  if (!id) issues.push(arcadeStageIssue('missing-encounter-plan-id', 'id', 'encounter plan id is required'));
+  const rawEncounters = definition.encounters ?? definition.steps ?? [];
+  if (!Array.isArray(rawEncounters)) issues.push(arcadeStageIssue('invalid-encounters', 'encounters', 'encounters must be an array'));
+  const encounters = (Array.isArray(rawEncounters) ? rawEncounters : [])
+    .map((encounter, index) => normalizeArcadeEncounter(encounter, index, issues))
+    .filter(Boolean);
+  const seen = new Set();
+  for (const encounter of encounters) {
+    if (seen.has(encounter.id)) issues.push(arcadeStageIssue('duplicate-encounter-id', `encounters.${encounter.id}`, `duplicate encounter "${encounter.id}"`));
+    seen.add(encounter.id);
+    arcadeStageValidateReferences(encounter, `encounters.${encounter.id}`, catalogs, issues);
+  }
+  return Object.freeze({
+    plan: Object.freeze({
+      id,
+      encounters: Object.freeze(encounters),
+      ...(definition.metadata === undefined ? {} : { metadata: definition.metadata }),
+    }),
+    errors: Object.freeze(issues),
+  });
+}
+
+export function validateEncounterPlan(definition, catalogs = {}) {
+  const result = normalizeArcadeEncounterPlan(definition, catalogs);
+  return Object.freeze({ ok: result.errors.length === 0, plan: result.plan, errors: result.errors });
+}
+
+export function createEncounterPlan(definition, catalogs = {}) {
+  const result = validateEncounterPlan(definition, catalogs);
+  if (!result.ok) {
+    const error = new Error(`invalid encounter plan: ${result.errors.map((issue) => issue.message).join('; ')}`);
+    error.issues = result.errors;
+    throw error;
+  }
+  return result.plan;
+}
+
+function freezeArcadeEncounterState(plan, raw = {}) {
+  if (raw.planId !== undefined && raw.planId !== null && String(raw.planId) !== plan.id) {
+    throw new Error(`encounter state belongs to "${raw.planId}", expected "${plan.id}"`);
+  }
+  const completed = arcadeStageIds(raw.completedEncounterIds).filter((id) => plan.encounters.some((encounter) => encounter.id === id));
+  const requestedIndex = Math.floor(arcadeStageFinite(raw.index, completed.length));
+  const index = Math.max(0, Math.min(plan.encounters.length, requestedIndex));
+  const complete = raw.status === 'complete' || index >= plan.encounters.length;
+  return Object.freeze({
+    planId: plan.id,
+    index: complete ? plan.encounters.length : index,
+    currentEncounterId: complete ? null : plan.encounters[index]?.id ?? null,
+    completedEncounterIds: Object.freeze(completed),
+    status: complete ? 'complete' : 'active',
+    sequence: Math.max(0, Math.floor(arcadeStageFinite(raw.sequence, 0))),
+    revision: Math.max(0, Math.floor(arcadeStageFinite(raw.revision, 0))),
+  });
+}
+
+export function createEncounterState(plan, raw = {}) {
+  if (!plan?.id || !Array.isArray(plan.encounters)) throw new Error('validated encounter plan is required');
+  return freezeArcadeEncounterState(plan, raw);
+}
+
+export function getCurrentEncounter(plan, state) {
+  const normalized = freezeArcadeEncounterState(plan, state);
+  return normalized.status === 'complete' ? null : plan.encounters[normalized.index] ?? null;
+}
+
+export function advanceEncounter(plan, state, options = {}) {
+  const normalized = freezeArcadeEncounterState(plan, state);
+  const current = getCurrentEncounter(plan, normalized);
+  if (!current) {
+    return Object.freeze({
+      state: normalized,
+      changed: false,
+      encounter: null,
+      events: Object.freeze([Object.freeze({ kind: 'encounter-plan-already-complete', planId: plan.id })]),
+    });
+  }
+  if (options.canAdvance?.(current, normalized, plan) === false) {
+    return Object.freeze({
+      state: normalized,
+      changed: false,
+      encounter: current,
+      events: Object.freeze([Object.freeze({ kind: 'encounter-advance-blocked', planId: plan.id, encounterId: current.id })]),
+    });
+  }
+  const index = normalized.index + 1;
+  const complete = index >= plan.encounters.length;
+  const next = freezeArcadeEncounterState(plan, {
+    ...normalized,
+    index,
+    completedEncounterIds: [...normalized.completedEncounterIds, current.id],
+    status: complete ? 'complete' : 'active',
+    sequence: normalized.sequence + 1,
+    revision: normalized.revision + 1,
+  });
+  return Object.freeze({
+    state: next,
+    changed: true,
+    encounter: current,
+    events: Object.freeze([
+      Object.freeze({ kind: 'encounter-completed', planId: plan.id, encounterId: current.id, sequence: next.sequence }),
+      ...(complete
+        ? [Object.freeze({ kind: 'encounter-plan-completed', planId: plan.id, sequence: next.sequence })]
+        : [Object.freeze({ kind: 'encounter-activated', planId: plan.id, encounterId: next.currentEncounterId, sequence: next.sequence })]),
+    ]),
+  });
+}
+
+export function inspectEncounterState(plan, state) {
+  const normalized = freezeArcadeEncounterState(plan, state);
+  return Object.freeze({
+    planId: plan.id,
+    currentEncounterId: normalized.currentEncounterId,
+    status: normalized.status,
+    completed: normalized.completedEncounterIds.length,
+    total: plan.encounters.length,
+    ratio: plan.encounters.length === 0 ? 1 : normalized.completedEncounterIds.length / plan.encounters.length,
+    sequence: normalized.sequence,
+    revision: normalized.revision,
+  });
+}
+
+export async function installStageServices(graph, stateOrNodeId, installers, options = {}) {
+  const node = typeof stateOrNodeId === 'string'
+    ? getStageNode(graph, stateOrNodeId)
+    : getCurrentStageNode(graph, stateOrNodeId);
+  if (!node) throw new Error('stage node is required for service installation');
+  if (!installers || (typeof installers !== 'object' && !(installers instanceof Map))) {
+    throw new Error('stage service installers must be an object or Map');
+  }
+  const scope = options.scope ?? createResourceScope({ name: options.scopeName ?? `stage:${graph.id}:${node.id}` });
+  const services = {};
+  try {
+    for (const serviceId of node.serviceIds) {
+      const installer = installers instanceof Map ? installers.get(serviceId) : installers[serviceId];
+      if (typeof installer !== 'function') throw new Error(`missing stage service installer "${serviceId}"`);
+      const installed = await installer(Object.freeze({ graph, node, scope, serviceId, options }));
+      const wrapped = installed && typeof installed === 'object' && Object.prototype.hasOwnProperty.call(installed, 'resource')
+        ? installed
+        : { resource: installed };
+      services[serviceId] = scope.track(wrapped.resource, wrapped.dispose);
+    }
+  } catch (error) {
+    try {
+      await scope.release();
+    } catch (releaseError) {
+      throw new AggregateError([error, releaseError], `stage service installation failed for "${node.id}"`);
+    }
+    throw error;
+  }
+  const frozenServices = Object.freeze({ ...services });
+  return Object.freeze({
+    graphId: graph.id,
+    nodeId: node.id,
+    scope,
+    services: frozenServices,
+    get(serviceId) {
+      return frozenServices[String(serviceId)] ?? null;
+    },
+    release() {
+      return scope.release();
+    },
+  });
+}
+
 function normalizeHitContactRecord(record = {}) {
   return {
     hits: Math.max(0, Math.floor(finiteNumber(record.hits, 0))),
@@ -4748,6 +5443,10 @@ export function createCanvasTexturePassOptions(options = {}) {
         dirty: true,
         redraws: 0,
         skippedFrames: 0,
+        textureBytes: resolvedWidth * resolvedHeight * 4,
+        uploads: 0,
+        lastUploadBytes: 0,
+        totalUploadBytes: 0,
         invalidate() {
           state.dirty = true;
         },
@@ -4767,9 +5466,16 @@ export function createCanvasTexturePassOptions(options = {}) {
       else state.texture.update?.();
       state.dirty = false;
       state.redraws += 1;
+      state.lastUploadBytes = state.width * state.height * 4;
+      state.textureBytes = state.lastUploadBytes;
+      state.totalUploadBytes += state.lastUploadBytes;
+      state.uploads += 1;
     },
     resize(payload, pass) {
-      if (resizeWithRuntime) resizeState(pass.state, payload.width, payload.height);
+      if (resizeWithRuntime) {
+        resizeState(pass.state, payload.width, payload.height);
+        pass.state.textureBytes = pass.state.width * pass.state.height * 4;
+      }
       onResize?.(payload, pass);
     },
     destroy(pass) {
@@ -6143,6 +6849,326 @@ export function createAudioMixer(options = {}) {
   return mixer;
 }
 
+export const ARCADE_UI_UNIT = 4;
+export const ARCADE_UI_FONT = 'ui-monospace, "Cascadia Mono", "Courier New", monospace';
+
+const ARCADE_UI_THEME_KEYS = Object.freeze([
+  'background',
+  'backgroundRaised',
+  'panel',
+  'panelStrong',
+  'text',
+  'muted',
+  'accent',
+  'accentAlt',
+  'warning',
+  'danger',
+  'line',
+]);
+
+export const DEFAULT_ARCADE_UI_THEME = Object.freeze({
+  background: '#080b12',
+  backgroundRaised: '#111827',
+  panel: 'rgba(8, 11, 18, 0.82)',
+  panelStrong: 'rgba(8, 11, 18, 0.94)',
+  text: '#f5f7ff',
+  muted: '#9ca8bd',
+  accent: '#67f3c4',
+  accentAlt: '#8aa8ff',
+  warning: '#ffb35e',
+  danger: '#ff5e7a',
+  line: 'rgba(156, 168, 189, 0.32)',
+});
+
+export function createArcadeUiTheme(theme = {}) {
+  const resolved = {};
+  for (const key of ARCADE_UI_THEME_KEYS) {
+    const value = theme[key] ?? DEFAULT_ARCADE_UI_THEME[key];
+    coreInvariant(
+      typeof value === 'string' && value.length > 0,
+      `arcade UI theme "${key}" must be a non-empty string`,
+    );
+    resolved[key] = value;
+  }
+  return Object.freeze(resolved);
+}
+
+function resolveArcadeUiTheme(theme) {
+  if (!theme) return DEFAULT_ARCADE_UI_THEME;
+  return ARCADE_UI_THEME_KEYS.every((key) => typeof theme[key] === 'string')
+    ? theme
+    : createArcadeUiTheme(theme);
+}
+
+export function drawArcadeBackdropCanvas(context, theme = DEFAULT_ARCADE_UI_THEME) {
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const { width, height } = context.canvas;
+  const gradient = context.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, resolvedTheme.backgroundRaised);
+  gradient.addColorStop(1, resolvedTheme.background);
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, width, height);
+
+  context.save();
+  context.globalAlpha = 0.16;
+  context.fillStyle = resolvedTheme.line;
+  for (let y = 0; y < height; y += ARCADE_UI_UNIT * 3) context.fillRect(0, y, width, 1);
+  context.globalAlpha = 0.1;
+  for (let x = 0; x < width; x += ARCADE_UI_UNIT * 12) context.fillRect(x, 0, 1, height);
+  context.restore();
+}
+
+export function drawArcadePanelCanvas(context, options, theme = DEFAULT_ARCADE_UI_THEME) {
+  coreInvariant(options && typeof options === 'object', 'arcade panel options are required');
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const { x, y, width, height, strong = false, label } = options;
+  const accent = options.accent ?? resolvedTheme.accent;
+  const cut = ARCADE_UI_UNIT * 2;
+
+  context.save();
+  context.fillStyle = strong ? resolvedTheme.panelStrong : resolvedTheme.panel;
+  context.beginPath();
+  context.moveTo(x + cut, y);
+  context.lineTo(x + width, y);
+  context.lineTo(x + width, y + height - cut);
+  context.lineTo(x + width - cut, y + height);
+  context.lineTo(x, y + height);
+  context.lineTo(x, y + cut);
+  context.closePath();
+  context.fill();
+  context.strokeStyle = resolvedTheme.line;
+  context.lineWidth = 1;
+  context.stroke();
+  context.fillStyle = accent;
+  context.fillRect(x, y + cut, ARCADE_UI_UNIT, Math.max(0, height - cut * 2));
+  context.fillRect(x + cut, y, Math.min(width * 0.28, 120), 2);
+
+  if (label) {
+    context.textAlign = 'left';
+    context.textBaseline = 'alphabetic';
+    context.font = `700 10px ${ARCADE_UI_FONT}`;
+    context.fillStyle = accent;
+    context.fillText(String(label).toUpperCase(), x + ARCADE_UI_UNIT * 4, y + ARCADE_UI_UNIT * 5);
+  }
+  context.restore();
+}
+
+export function drawArcadeMenuRowCanvas(
+  context,
+  label,
+  x,
+  y,
+  width,
+  selected,
+  theme = DEFAULT_ARCADE_UI_THEME,
+) {
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const height = ARCADE_UI_UNIT * 9;
+  context.save();
+  context.globalAlpha = selected ? 0.13 : 0.025;
+  context.fillStyle = selected ? resolvedTheme.accent : resolvedTheme.text;
+  context.fillRect(x, y, width, height);
+  context.globalAlpha = 1;
+  context.fillStyle = selected ? resolvedTheme.accent : resolvedTheme.line;
+  context.fillRect(x, y, selected ? ARCADE_UI_UNIT : 1, height);
+  context.strokeStyle = selected ? resolvedTheme.accent : resolvedTheme.line;
+  context.lineWidth = 1;
+  context.strokeRect(x, y, width, height);
+  context.textAlign = 'left';
+  context.textBaseline = 'middle';
+  context.font = `${selected ? 800 : 650} 16px ${ARCADE_UI_FONT}`;
+  context.fillStyle = selected ? resolvedTheme.text : resolvedTheme.muted;
+  context.fillText(String(label).toUpperCase(), x + ARCADE_UI_UNIT * 5, y + height / 2);
+  context.textAlign = 'right';
+  context.fillStyle = selected ? resolvedTheme.accent : resolvedTheme.muted;
+  context.fillText(selected ? '◆' : '·', x + width - ARCADE_UI_UNIT * 4, y + height / 2);
+  context.restore();
+}
+
+export function drawArcadeFooterCanvas(context, text, theme = DEFAULT_ARCADE_UI_THEME) {
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const { width, height } = context.canvas;
+  context.save();
+  context.fillStyle = resolvedTheme.panelStrong;
+  context.fillRect(0, height - ARCADE_UI_UNIT * 9, width, ARCADE_UI_UNIT * 9);
+  context.fillStyle = resolvedTheme.line;
+  context.fillRect(0, height - ARCADE_UI_UNIT * 9, width, 1);
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.font = `700 12px ${ARCADE_UI_FONT}`;
+  context.fillStyle = resolvedTheme.muted;
+  context.fillText(String(text).toUpperCase(), width / 2, height - ARCADE_UI_UNIT * 4.5);
+  context.restore();
+}
+
+export function drawArcadeChipCanvas(context, options, theme = DEFAULT_ARCADE_UI_THEME) {
+  coreInvariant(options && typeof options === 'object', 'arcade chip options are required');
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const accent = options.accent ?? resolvedTheme.accent;
+  const active = options.active ?? false;
+  const align = options.align ?? 'left';
+  const text = String(options.text ?? '').toUpperCase();
+  context.save();
+  context.font = `800 10px ${ARCADE_UI_FONT}`;
+  const measuredWidth = Math.ceil(context.measureText(text).width);
+  const width = options.width ?? Math.max(44, measuredWidth + ARCADE_UI_UNIT * 6);
+  const height = ARCADE_UI_UNIT * 6;
+  const x = align === 'center'
+    ? options.x - width / 2
+    : align === 'right'
+      ? options.x - width
+      : options.x;
+
+  context.fillStyle = active ? accent : resolvedTheme.panelStrong;
+  context.globalAlpha = active ? 0.2 : 0.92;
+  context.fillRect(x, options.y, width, height);
+  context.globalAlpha = 1;
+  context.strokeStyle = active ? accent : resolvedTheme.line;
+  context.lineWidth = active ? 2 : 1;
+  context.strokeRect(x + 0.5, options.y + 0.5, width - 1, height - 1);
+  context.fillStyle = accent;
+  context.fillRect(x, options.y, active ? ARCADE_UI_UNIT : 2, height);
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillStyle = active ? resolvedTheme.text : resolvedTheme.muted;
+  context.fillText(text, x + width / 2, options.y + height / 2 + 0.5);
+  context.restore();
+}
+
+export function drawArcadeMeterCanvas(context, options, theme = DEFAULT_ARCADE_UI_THEME) {
+  coreInvariant(options && typeof options === 'object', 'arcade meter options are required');
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const accent = options.accent ?? resolvedTheme.accent;
+  const height = options.height ?? ARCADE_UI_UNIT * 3;
+  const gauge = resolveHudGauge({
+    value: options.value,
+    min: options.min ?? options.minimum,
+    max: options.max ?? options.maximum,
+    direction: options.reverse ? 'reverse' : 'forward',
+  });
+  const fillWidth = Math.round(options.width * gauge.ratio);
+
+  context.save();
+  if (options.label) {
+    context.font = `750 9px ${ARCADE_UI_FONT}`;
+    context.textBaseline = 'alphabetic';
+    context.textAlign = options.reverse ? 'right' : 'left';
+    context.fillStyle = resolvedTheme.muted;
+    context.fillText(
+      String(options.label).toUpperCase(),
+      options.reverse ? options.x + options.width : options.x,
+      options.y - ARCADE_UI_UNIT,
+    );
+  }
+  if (options.valueLabel) {
+    context.font = `800 9px ${ARCADE_UI_FONT}`;
+    context.textAlign = options.reverse ? 'left' : 'right';
+    context.fillStyle = accent;
+    context.fillText(
+      String(options.valueLabel).toUpperCase(),
+      options.reverse ? options.x : options.x + options.width,
+      options.y - ARCADE_UI_UNIT,
+    );
+  }
+  context.fillStyle = resolvedTheme.backgroundRaised;
+  context.fillRect(options.x, options.y, options.width, height);
+  context.fillStyle = resolvedTheme.line;
+  context.fillRect(options.x, options.y, options.width, 1);
+  context.fillStyle = accent;
+  context.fillRect(
+    options.reverse ? options.x + options.width - fillWidth : options.x,
+    options.y,
+    fillWidth,
+    height,
+  );
+  context.strokeStyle = resolvedTheme.line;
+  context.lineWidth = 1;
+  context.strokeRect(options.x + 0.5, options.y + 0.5, options.width - 1, height - 1);
+  context.restore();
+  return gauge;
+}
+
+export function drawArcadeScreenTitleCanvas(context, options, theme = DEFAULT_ARCADE_UI_THEME) {
+  coreInvariant(options && typeof options === 'object', 'arcade screen-title options are required');
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const y = options.y ?? 48;
+  const accent = options.accent ?? resolvedTheme.accentAlt;
+  context.save();
+  context.textAlign = 'center';
+  context.textBaseline = 'alphabetic';
+  context.font = `800 10px ${ARCADE_UI_FONT}`;
+  context.fillStyle = resolvedTheme.muted;
+  context.fillText(String(options.eyebrow ?? '').toUpperCase(), context.canvas.width / 2, y);
+  context.font = `900 ${options.titleSize ?? 38}px ${ARCADE_UI_FONT}`;
+  context.fillStyle = accent;
+  context.fillText(String(options.title ?? '').toUpperCase(), context.canvas.width / 2, y + 38);
+  context.globalAlpha = 0.85;
+  context.fillRect(context.canvas.width / 2 - 92, y + 49, 184, 2);
+  context.globalAlpha = 1;
+  if (options.subtitle) {
+    context.font = `700 11px ${ARCADE_UI_FONT}`;
+    context.fillStyle = resolvedTheme.muted;
+    context.fillText(String(options.subtitle).toUpperCase(), context.canvas.width / 2, y + 68);
+  }
+  context.restore();
+}
+
+/**
+ * Creates a small persistence notification channel that can feed both the
+ * runtime event bus and an optional browser CustomEvent without owning save
+ * serialization or storage policy.
+ */
+export function createPersistenceFeedback(options = {}) {
+  const labels = Object.freeze({ ...(options.labels ?? {}) });
+  const events = options.events ?? createEventBus();
+  const now = options.now ?? (() => Date.now());
+  const target = options.target ?? globalThis;
+  const eventName = options.eventName ?? 'arcade:persistence-feedback';
+  let count = 0;
+  let last = null;
+
+  const create = (reason, detail = {}) => {
+    const resolvedReason = String(reason ?? '').trim();
+    coreInvariant(resolvedReason.length > 0, 'persistence feedback reason is required');
+    const label = detail.label ?? labels[resolvedReason] ?? resolvedReason;
+    return Object.freeze({
+      ...detail,
+      reason: resolvedReason,
+      label: String(label),
+      timestamp: finiteNumber(detail.timestamp, finiteNumber(now(), Date.now())),
+    });
+  };
+
+  const channel = {
+    events,
+    create,
+    dispatch(feedback) {
+      const normalized = create(feedback?.reason, feedback ?? {});
+      last = normalized;
+      count += 1;
+      events.emit('persistence:feedback', normalized);
+      options.onFeedback?.(normalized);
+      if (eventName && typeof target?.dispatchEvent === 'function') {
+        const EventCtor = options.CustomEvent ?? target?.CustomEvent ?? globalThis.CustomEvent;
+        const event = typeof options.createEvent === 'function'
+          ? options.createEvent(eventName, normalized)
+          : typeof EventCtor === 'function'
+            ? new EventCtor(eventName, { detail: normalized })
+            : null;
+        if (event) target.dispatchEvent(event);
+      }
+      return normalized;
+    },
+    emit(reason, detail = {}) {
+      return channel.dispatch(create(reason, detail));
+    },
+    snapshot() {
+      return Object.freeze({ count, last });
+    },
+  };
+  return channel;
+}
+
 export function resolveSafeAreaLayout(input = {}) {
   const viewportWidth = positiveNumber(input.viewportWidth, 1);
   const viewportHeight = positiveNumber(input.viewportHeight, 1);
@@ -6636,6 +7662,628 @@ export function verifyRunSummary(summary) {
 
 // END ARCADE SERVICES 0.13-0.16
 
+const ARCADE_NOTICE_KIND_PRIORITY = Object.freeze({
+  info: 0,
+  success: 100,
+  warning: 200,
+  danger: 300,
+});
+
+function arcadeUiExperienceFinite(value, fallback = 0) {
+  return Number.isFinite(value) ? Number(value) : fallback;
+}
+
+function arcadeUiExperiencePositive(value, fallback, label) {
+  const resolved = arcadeUiExperienceFinite(value, fallback);
+  coreInvariant(resolved > 0, `${label} must be positive`);
+  return resolved;
+}
+
+function arcadeUiExperienceInputLabel(value) {
+  if (Array.isArray(value)) return value.map((entry) => String(entry)).join(' + ');
+  return value == null ? '' : String(value);
+}
+
+export function fitArcadeTextCanvas(context, text, maxWidth, options = {}) {
+  coreInvariant(context && typeof context.measureText === 'function', 'arcade text fitting requires a canvas context');
+  const width = Math.max(0, arcadeUiExperienceFinite(maxWidth, 0));
+  const value = String(text ?? '');
+  if (context.measureText(value).width <= width) return value;
+  const ellipsis = String(options.ellipsis ?? '…');
+  if (width <= 0 || context.measureText(ellipsis).width > width) return '';
+  const glyphs = Array.from(value);
+  let low = 0;
+  let high = glyphs.length;
+  while (low < high) {
+    const middle = Math.ceil((low + high) / 2);
+    const candidate = `${glyphs.slice(0, middle).join('').trimEnd()}${ellipsis}`;
+    if (context.measureText(candidate).width <= width) low = middle;
+    else high = middle - 1;
+  }
+  return `${glyphs.slice(0, low).join('').trimEnd()}${ellipsis}`;
+}
+
+export function wrapArcadeTextCanvas(context, text, maxWidth, options = {}) {
+  coreInvariant(context && typeof context.measureText === 'function', 'arcade text wrapping requires a canvas context');
+  const width = Math.max(0, arcadeUiExperienceFinite(maxWidth, 0));
+  const maxLines = options.maxLines == null
+    ? Number.POSITIVE_INFINITY
+    : Math.max(1, Math.floor(arcadeUiExperienceFinite(options.maxLines, 1)));
+  const lineHeight = arcadeUiExperiencePositive(options.lineHeight ?? 16, 16, 'arcade text line height');
+  const lines = [];
+
+  for (const paragraph of String(text ?? '').split(/\r?\n/)) {
+    const words = paragraph.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) {
+      lines.push('');
+      continue;
+    }
+    let line = '';
+    for (const word of words) {
+      const candidate = line ? `${line} ${word}` : word;
+      if (context.measureText(candidate).width <= width) {
+        line = candidate;
+        continue;
+      }
+      if (line) lines.push(line);
+      line = context.measureText(word).width <= width
+        ? word
+        : fitArcadeTextCanvas(context, word, width, options);
+    }
+    if (line) lines.push(line);
+  }
+
+  const truncated = lines.length > maxLines;
+  const visibleLines = lines.slice(0, maxLines);
+  if (truncated && visibleLines.length > 0) {
+    const lastIndex = visibleLines.length - 1;
+    const ellipsis = String(options.ellipsis ?? '…');
+    const line = visibleLines[lastIndex];
+    visibleLines[lastIndex] = context.measureText(`${line}${ellipsis}`).width <= width
+      ? `${line}${ellipsis}`
+      : `${fitArcadeTextCanvas(
+          context,
+          line,
+          Math.max(0, width - context.measureText(ellipsis).width),
+          { ...options, ellipsis: '' },
+        )}${ellipsis}`;
+  }
+  return Object.freeze({
+    lines: Object.freeze(visibleLines),
+    truncated,
+    width,
+    lineHeight,
+    height: visibleLines.length * lineHeight,
+  });
+}
+
+export function drawArcadeTextBlockCanvas(context, options, theme = DEFAULT_ARCADE_UI_THEME) {
+  coreInvariant(options && typeof options === 'object', 'arcade text block options are required');
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const font = options.font ?? `12px ${ARCADE_UI_FONT}`;
+  const lineHeight = arcadeUiExperiencePositive(options.lineHeight ?? 16, 16, 'arcade text block line height');
+  context.save();
+  context.font = font;
+  context.textAlign = options.align ?? 'left';
+  context.textBaseline = options.baseline ?? 'top';
+  context.fillStyle = options.color ?? resolvedTheme.text;
+  const layout = wrapArcadeTextCanvas(context, options.text, options.width, {
+    lineHeight,
+    maxLines: options.maxLines,
+    ellipsis: options.ellipsis,
+  });
+  for (const [index, line] of layout.lines.entries()) {
+    context.fillText(line, options.x, options.y + index * lineHeight);
+  }
+  context.restore();
+  return layout;
+}
+
+export function resolveArcadeCommandHints(actions = [], options = {}) {
+  const device = options.device ?? 'keyboard';
+  coreInvariant(['keyboard', 'gamepad', 'pointer', 'touch'].includes(device), `unknown arcade command device: ${device}`);
+  const fallbackOrder = [device, 'keyboard', 'gamepad', 'pointer', 'touch'];
+  const hints = actions
+    .map((action, index) => ({ action, index }))
+    .filter(({ action }) => action && action.hidden !== true)
+    .map(({ action, index }) => {
+      let input = '';
+      for (const source of fallbackOrder) {
+        input = arcadeUiExperienceInputLabel(action.inputs?.[source]);
+        if (input) break;
+      }
+      const label = String(action.label ?? action.id ?? '').trim();
+      return Object.freeze({
+        id: String(action.id ?? (label || `command-${index}`)),
+        label,
+        input,
+        text: input ? `${input} ${label}`.trim() : label,
+        disabled: action.disabled === true,
+        priority: arcadeUiExperienceFinite(action.priority, 0),
+        index,
+      });
+    })
+    .filter((hint) => hint.label)
+    .sort((left, right) => right.priority - left.priority || left.index - right.index);
+  return Object.freeze({ device, hints: Object.freeze(hints) });
+}
+
+export function drawArcadeCommandBarCanvas(context, options, theme = DEFAULT_ARCADE_UI_THEME) {
+  coreInvariant(options && typeof options === 'object', 'arcade command bar options are required');
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const x = arcadeUiExperienceFinite(options.x, ARCADE_UI_UNIT * 3);
+  const width = Math.max(1, arcadeUiExperienceFinite(
+    options.width,
+    context.canvas.width - ARCADE_UI_UNIT * 6,
+  ));
+  const lineHeight = arcadeUiExperiencePositive(options.lineHeight ?? 14, 14, 'arcade command line height');
+  const font = options.font ?? `800 10px ${ARCADE_UI_FONT}`;
+  const model = resolveArcadeCommandHints(options.actions, { device: options.device });
+  const separator = options.separator ?? '  //  ';
+  const text = model.hints
+    .map((hint) => hint.disabled ? `${hint.text} [LOCKED]` : hint.text)
+    .join(separator)
+    .toUpperCase();
+
+  context.save();
+  context.font = font;
+  const wrapped = wrapArcadeTextCanvas(context, text, width - ARCADE_UI_UNIT * 8, {
+    lineHeight,
+    maxLines: options.maxLines ?? 2,
+  });
+  const paddingY = ARCADE_UI_UNIT * 2;
+  const height = Math.max(ARCADE_UI_UNIT * 7, wrapped.height + paddingY * 2);
+  const y = arcadeUiExperienceFinite(options.y, context.canvas.height - height - ARCADE_UI_UNIT * 2);
+  context.globalAlpha = options.backgroundAlpha ?? 0.94;
+  context.fillStyle = options.strong ? resolvedTheme.panelStrong : resolvedTheme.panel;
+  context.fillRect(x, y, width, height);
+  context.globalAlpha = 1;
+  context.fillStyle = options.accent ?? resolvedTheme.accent;
+  context.fillRect(x, y, ARCADE_UI_UNIT, height);
+  context.strokeStyle = resolvedTheme.line;
+  context.lineWidth = 1;
+  context.strokeRect(x + 0.5, y + 0.5, width - 1, height - 1);
+  context.fillStyle = resolvedTheme.muted;
+  context.textAlign = options.align ?? 'center';
+  context.textBaseline = 'top';
+  const textX = context.textAlign === 'left'
+    ? x + ARCADE_UI_UNIT * 5
+    : context.textAlign === 'right'
+      ? x + width - ARCADE_UI_UNIT * 4
+      : x + width / 2;
+  const textY = y + (height - wrapped.height) / 2;
+  for (const [index, line] of wrapped.lines.entries()) {
+    context.fillText(line, textX, textY + index * lineHeight);
+  }
+  context.restore();
+  return Object.freeze({ ...model, text, x, y, width, height, lines: wrapped.lines, truncated: wrapped.truncated });
+}
+
+function arcadeNoticeFreeze(notice) {
+  return Object.freeze({ ...notice, detail: Object.freeze({ ...(notice.detail ?? {}) }) });
+}
+
+export function createArcadeNoticeQueue(options = {}) {
+  const capacity = Math.max(1, Math.floor(arcadeUiExperienceFinite(options.capacity, 8)));
+  const defaultDuration = arcadeUiExperiencePositive(options.defaultDuration ?? 180, 180, 'arcade notice duration');
+  const events = options.events ?? createEventBus();
+  let nextSequence = 0;
+  let notices = [];
+  let currentId = null;
+
+  const sortNotices = () => {
+    notices.sort((left, right) => right.priority - left.priority || left.sequence - right.sequence);
+  };
+  const emitCurrentChange = (reason) => {
+    const nextId = notices[0]?.id ?? null;
+    if (nextId === currentId) return;
+    const previousId = currentId;
+    currentId = nextId;
+    events.emit('notice:change', Object.freeze({ previousId, id: nextId, reason, notice: notices[0] ?? null }));
+  };
+
+  const queue = {
+    events,
+    push(input, detail = {}) {
+      const raw = typeof input === 'string' ? { message: input, detail } : { ...(input ?? {}) };
+      const message = String(raw.message ?? '').trim();
+      coreInvariant(message, 'arcade notice message is required');
+      const kind = raw.kind ?? 'info';
+      coreInvariant(Object.hasOwn(ARCADE_NOTICE_KIND_PRIORITY, kind), `unknown arcade notice kind: ${kind}`);
+      const duration = arcadeUiExperiencePositive(raw.duration ?? defaultDuration, defaultDuration, 'arcade notice duration');
+      const key = String(raw.key ?? raw.id ?? `${kind}:${message}`);
+      const existingIndex = raw.dedupe === false ? -1 : notices.findIndex((notice) => notice.key === key);
+      if (existingIndex >= 0) {
+        const previous = notices[existingIndex];
+        const updated = arcadeNoticeFreeze({
+          ...previous,
+          message,
+          title: raw.title == null ? previous.title : String(raw.title),
+          kind,
+          priority: arcadeUiExperienceFinite(raw.priority, ARCADE_NOTICE_KIND_PRIORITY[kind]),
+          duration,
+          remaining: duration,
+          detail: raw.detail ?? previous.detail,
+        });
+        notices[existingIndex] = updated;
+        sortNotices();
+        events.emit('notice:update', Object.freeze({ previous, notice: updated }));
+        emitCurrentChange('update');
+        return updated;
+      }
+      const sequence = nextSequence++;
+      const notice = arcadeNoticeFreeze({
+        id: String(raw.id ?? `notice-${sequence}`),
+        key,
+        message,
+        title: raw.title == null ? '' : String(raw.title),
+        kind,
+        priority: arcadeUiExperienceFinite(raw.priority, ARCADE_NOTICE_KIND_PRIORITY[kind]),
+        duration,
+        remaining: duration,
+        sequence,
+        detail: raw.detail,
+      });
+      notices.push(notice);
+      sortNotices();
+      if (notices.length > capacity) notices = notices.slice(0, capacity);
+      events.emit('notice:push', notice);
+      emitCurrentChange('push');
+      return notice;
+    },
+    current() {
+      return notices[0] ?? null;
+    },
+    step(delta = 1) {
+      let elapsed = Math.max(0, arcadeUiExperienceFinite(delta, 0));
+      while (elapsed > 0 && notices.length > 0) {
+        const current = notices[0];
+        if (elapsed < current.remaining) {
+          notices[0] = arcadeNoticeFreeze({ ...current, remaining: current.remaining - elapsed });
+          elapsed = 0;
+          break;
+        }
+        elapsed -= current.remaining;
+        notices.shift();
+        events.emit('notice:expire', current);
+        emitCurrentChange('expire');
+      }
+      return queue.current();
+    },
+    dismiss(id, reason = 'dismiss') {
+      const index = notices.findIndex((notice) => notice.id === id);
+      if (index < 0) return false;
+      const [notice] = notices.splice(index, 1);
+      events.emit('notice:dismiss', Object.freeze({ notice, reason }));
+      emitCurrentChange(reason);
+      return true;
+    },
+    clear(reason = 'clear') {
+      const count = notices.length;
+      const removed = notices;
+      notices = [];
+      for (const notice of removed) events.emit('notice:dismiss', Object.freeze({ notice, reason }));
+      emitCurrentChange(reason);
+      return count;
+    },
+    snapshot() {
+      return Object.freeze({
+        capacity,
+        defaultDuration,
+        currentId: notices[0]?.id ?? null,
+        notices: Object.freeze(notices.map((notice) => arcadeNoticeFreeze(notice))),
+      });
+    },
+  };
+  return queue;
+}
+
+export function drawArcadeNoticeCanvas(context, notice, options = {}, theme = DEFAULT_ARCADE_UI_THEME) {
+  if (!notice) return null;
+  const resolvedTheme = resolveArcadeUiTheme(theme);
+  const accentByKind = {
+    info: resolvedTheme.accentAlt,
+    success: resolvedTheme.accent,
+    warning: resolvedTheme.warning,
+    danger: resolvedTheme.danger,
+  };
+  const width = Math.max(120, arcadeUiExperienceFinite(options.width, Math.min(480, context.canvas.width - 48)));
+  const x = arcadeUiExperienceFinite(options.x, (context.canvas.width - width) / 2);
+  const y = arcadeUiExperienceFinite(options.y, ARCADE_UI_UNIT * 5);
+  const height = Math.max(54, arcadeUiExperienceFinite(options.height, 64));
+  const accent = options.accent ?? accentByKind[notice.kind] ?? resolvedTheme.accent;
+  drawArcadePanelCanvas(context, {
+    x,
+    y,
+    width,
+    height,
+    accent,
+    strong: true,
+    label: notice.title || notice.kind,
+  }, resolvedTheme);
+  const textLayout = drawArcadeTextBlockCanvas(context, {
+    x: x + ARCADE_UI_UNIT * 5,
+    y: y + ARCADE_UI_UNIT * 7,
+    width: width - ARCADE_UI_UNIT * 10,
+    text: notice.message,
+    font: options.font ?? `800 11px ${ARCADE_UI_FONT}`,
+    lineHeight: options.lineHeight ?? 14,
+    maxLines: options.maxLines ?? 2,
+    color: resolvedTheme.text,
+  }, resolvedTheme);
+  const ratio = notice.duration > 0 ? clampNumber(notice.remaining / notice.duration, 0, 1) : 0;
+  context.save();
+  context.fillStyle = resolvedTheme.line;
+  context.fillRect(x + ARCADE_UI_UNIT * 4, y + height - ARCADE_UI_UNIT * 2, width - ARCADE_UI_UNIT * 8, 2);
+  context.fillStyle = accent;
+  context.fillRect(x + ARCADE_UI_UNIT * 4, y + height - ARCADE_UI_UNIT * 2, (width - ARCADE_UI_UNIT * 8) * ratio, 2);
+  context.restore();
+  return Object.freeze({ x, y, width, height, accent, ratio, textLayout });
+}
+
+function arcadePixiFrameCapacity(value, fallback) {
+  const resolved = Math.floor(finiteNumber(value, fallback));
+  coreInvariant(resolved > 0, 'Pixi frame-pool capacity must be a positive integer');
+  return resolved;
+}
+
+/**
+ * Lazy, frame-scoped ownership for transient Pixi display objects.
+ *
+ * Unlike the fixed recycling pool, objects are created only when a frame first
+ * needs them. A frame never aliases one display object to multiple entities:
+ * entries above maxCapacity are reported as dropped rather than recycled while
+ * still visible.
+ */
+export function createPixiFramePool(options = {}) {
+  coreInvariant(options.container?.addChild, 'Pixi frame pool requires a container');
+  coreInvariant(typeof options.createSprite === 'function', 'Pixi frame pool requires createSprite');
+  coreInvariant(options.activate === undefined || typeof options.activate === 'function', 'Pixi frame-pool activate must be a function');
+  coreInvariant(options.deactivate === undefined || typeof options.deactivate === 'function', 'Pixi frame-pool deactivate must be a function');
+
+  const maxCapacity = arcadePixiFrameCapacity(options.maxCapacity ?? options.capacity, 256);
+  const initialCapacity = Math.min(
+    maxCapacity,
+    Math.max(0, Math.floor(finiteNumber(options.initialCapacity, 0))),
+  );
+  const sprites = [];
+  let active = 0;
+  let cursor = 0;
+  let frame = 0;
+  let frameDropped = 0;
+  let totalDropped = 0;
+  let peakActive = 0;
+  let created = 0;
+  let destroyed = false;
+  let frameOpen = false;
+
+  const deactivate = (sprite, index, reason) => {
+    sprite.visible = false;
+    sprite.renderable = false;
+    options.deactivate?.(sprite, Object.freeze({ index, frame, reason }));
+  };
+
+  const createSprite = (index) => {
+    const sprite = options.createSprite(index);
+    coreInvariant(sprite && typeof sprite === 'object', 'Pixi frame-pool createSprite must return an object');
+    deactivate(sprite, index, 'create');
+    options.container.addChild(sprite);
+    sprites.push(sprite);
+    created += 1;
+    return sprite;
+  };
+
+  for (let index = 0; index < initialCapacity; index += 1) createSprite(index);
+
+  const snapshot = () => Object.freeze({
+    frame,
+    frameOpen,
+    active,
+    capacity: sprites.length,
+    maxCapacity,
+    created,
+    dropped: totalDropped,
+    frameDropped,
+    peakActive,
+    destroyed,
+  });
+
+  return {
+    beginFrame() {
+      coreInvariant(!destroyed, 'Pixi frame pool is destroyed');
+      coreInvariant(!frameOpen, 'Pixi frame pool frame is already open');
+      frame += 1;
+      cursor = 0;
+      frameDropped = 0;
+      frameOpen = true;
+      return snapshot();
+    },
+    acquire(payload) {
+      coreInvariant(!destroyed, 'Pixi frame pool is destroyed');
+      coreInvariant(frameOpen, 'Pixi frame pool acquire requires beginFrame');
+      if (cursor >= maxCapacity) {
+        frameDropped += 1;
+        totalDropped += 1;
+        return null;
+      }
+      const index = cursor;
+      const reused = index < sprites.length;
+      const sprite = reused ? sprites[index] : createSprite(index);
+      cursor += 1;
+      sprite.visible = true;
+      sprite.renderable = true;
+      options.activate?.(sprite, payload, Object.freeze({ index, frame, reused }));
+      return sprite;
+    },
+    endFrame() {
+      coreInvariant(!destroyed, 'Pixi frame pool is destroyed');
+      coreInvariant(frameOpen, 'Pixi frame pool endFrame requires beginFrame');
+      for (let index = cursor; index < active; index += 1) {
+        deactivate(sprites[index], index, 'frame-end');
+      }
+      active = cursor;
+      peakActive = Math.max(peakActive, active);
+      frameOpen = false;
+      return snapshot();
+    },
+    clear() {
+      if (destroyed) return 0;
+      const cleared = active;
+      for (let index = 0; index < active; index += 1) deactivate(sprites[index], index, 'clear');
+      active = 0;
+      cursor = 0;
+      frameOpen = false;
+      return cleared;
+    },
+    values: () => [...sprites],
+    activeValues: () => sprites.slice(0, active),
+    snapshot,
+    destroy() {
+      if (destroyed) return false;
+      this.clear();
+      destroyed = true;
+      for (const [index, sprite] of sprites.entries()) {
+        options.destroySprite?.(sprite, Object.freeze({ index, frame }));
+        if (!options.destroySprite) {
+          sprite.removeFromParent?.();
+          sprite.destroy?.();
+        }
+      }
+      sprites.length = 0;
+      return true;
+    },
+  };
+}
+
+function arcadePixiGaugeLayout(raw = {}, fallback = {}) {
+  return Object.freeze({
+    x: finiteNumber(raw.x, fallback.x ?? 0),
+    y: finiteNumber(raw.y, fallback.y ?? 0),
+    width: positiveNumber(raw.width, fallback.width ?? 100),
+    height: positiveNumber(raw.height, fallback.height ?? 12),
+    gap: Math.max(0, finiteNumber(raw.gap, fallback.gap ?? 2)),
+  });
+}
+
+function arcadePixiGaugeStyle(raw = {}, fallback = {}) {
+  return Object.freeze({
+    background: raw.background ?? fallback.background ?? 0x1a0a2e,
+    fill: raw.fill ?? fallback.fill ?? 0xffffff,
+    warning: raw.warning ?? fallback.warning ?? 0xff073a,
+    border: raw.border ?? fallback.border ?? raw.fill ?? fallback.fill ?? 0xffffff,
+    borderWidth: Math.max(0, finiteNumber(raw.borderWidth, fallback.borderWidth ?? 1)),
+    warningAlpha: clampNumber(finiteNumber(raw.warningAlpha, fallback.warningAlpha ?? 0.72), 0, 1),
+    backgroundAlpha: clampNumber(finiteNumber(raw.backgroundAlpha, fallback.backgroundAlpha ?? 1), 0, 1),
+    fillAlpha: clampNumber(finiteNumber(raw.fillAlpha, fallback.fillAlpha ?? 1), 0, 1),
+  });
+}
+
+/** Renderer-owned native gauge with no game-specific typography or policy. */
+export function createPixiHudGauge(options = {}) {
+  const PIXI = options.PIXI;
+  coreInvariant(PIXI?.Container, 'Pixi HUD gauge requires PIXI.Container');
+  coreInvariant(PIXI?.Graphics, 'Pixi HUD gauge requires PIXI.Graphics');
+  coreInvariant(options.container?.addChild, 'Pixi HUD gauge requires a container');
+
+  const root = new PIXI.Container();
+  const graphics = new PIXI.Graphics();
+  root.label = options.label ?? 'arcade-hud-gauge';
+  root.addChild(graphics);
+  options.container.addChild(root);
+
+  let layout = arcadePixiGaugeLayout(options.layout ?? options);
+  let style = arcadePixiGaugeStyle(options.style);
+  let gauge = resolveHudGauge(options.value === undefined ? {} : options);
+  let updates = 0;
+  let destroyed = false;
+
+  const drawFill = (x, y, width, height, color, alpha) => {
+    if (width <= 0 || height <= 0) return;
+    graphics.rect(x, y, width, height).fill({ color, alpha });
+  };
+
+  const render = (input = {}, updateOptions = {}) => {
+    coreInvariant(!destroyed, 'Pixi HUD gauge is destroyed');
+    if (updateOptions.layout) layout = arcadePixiGaugeLayout(updateOptions.layout, layout);
+    if (updateOptions.style) style = arcadePixiGaugeStyle(updateOptions.style, style);
+    gauge = resolveHudGauge(input);
+    root.position?.set?.(layout.x, layout.y);
+    root.visible = updateOptions.visible !== false;
+    graphics.clear();
+    graphics.rect(0, 0, layout.width, layout.height).fill({
+      color: style.background,
+      alpha: style.backgroundAlpha,
+    });
+
+    if (gauge.segments.length > 0) {
+      const gapTotal = layout.gap * Math.max(0, gauge.segments.length - 1);
+      const segmentWidth = Math.max(0, (layout.width - gapTotal) / gauge.segments.length);
+      for (const segment of gauge.segments) {
+        const physicalIndex = gauge.direction === 'reverse'
+          ? gauge.segments.length - 1 - segment.index
+          : segment.index;
+        const segmentX = physicalIndex * (segmentWidth + layout.gap);
+        const fillWidth = segmentWidth * segment.fill;
+        const fillX = gauge.direction === 'reverse' ? segmentX + segmentWidth - fillWidth : segmentX;
+        drawFill(fillX, 0, fillWidth, layout.height, style.fill, style.fillAlpha);
+      }
+    } else {
+      const fillWidth = layout.width * gauge.ratio;
+      const fillX = gauge.direction === 'reverse' ? layout.width - fillWidth : 0;
+      drawFill(fillX, 0, fillWidth, layout.height, style.fill, style.fillAlpha);
+      if (gauge.warning) {
+        drawFill(
+          fillX,
+          0,
+          fillWidth,
+          layout.height,
+          style.warning,
+          style.warningAlpha * gauge.pulse,
+        );
+      }
+    }
+
+    if (style.borderWidth > 0) {
+      graphics.rect(0, 0, layout.width, layout.height).stroke({
+        color: style.border,
+        width: style.borderWidth,
+      });
+    }
+    updates += 1;
+    return gauge;
+  };
+
+  render(options.value === undefined ? {} : options);
+
+  return Object.freeze({
+    root,
+    graphics,
+    update: render,
+    setLayout(next) {
+      layout = arcadePixiGaugeLayout(next, layout);
+      return render(gauge, { layout });
+    },
+    snapshot() {
+      return Object.freeze({
+        label: root.label,
+        layout,
+        style,
+        gauge,
+        updates,
+        visible: root.visible !== false,
+        destroyed,
+      });
+    },
+    destroy() {
+      if (destroyed) return false;
+      destroyed = true;
+      root.removeFromParent?.();
+      root.destroy?.({ children: true });
+      return true;
+    },
+  });
+}
+
 // BEGIN ARCADE SERVICES 0.17-1.0
 
 export const ARCADE_RUNTIME_API_LEVEL = 1;
@@ -6644,12 +8292,14 @@ export const ARCADE_RUNTIME_CAPABILITIES = Object.freeze([
   'action-phases',
   'assets',
   'audio',
+  'browser-performance-sampling',
   'collision',
   'deterministic-replay',
   'entity-world',
   'gameplay-modules',
   'input',
   'localization',
+  'native-pixi-ownership',
   'netcode-adapters',
   'performance-budgets',
   'persistence',
@@ -6668,6 +8318,184 @@ export function getArcadeRuntimeCapabilities() {
     apiLevel: ARCADE_RUNTIME_API_LEVEL,
     capabilities: ARCADE_RUNTIME_CAPABILITIES,
   });
+}
+
+export const ARCADE_HARDWARE_TIERS = Object.freeze(['low', 'balanced', 'high']);
+
+export const DEFAULT_ARCADE_HARDWARE_BUDGETS = Object.freeze({
+  low: Object.freeze({
+    frameMeanMs: 24,
+    frameP95Ms: 40,
+    frameMaxMs: 100,
+    allocationBytesPerFrame: 64 * 1024,
+    uploadBytesPerFrame: 4 * 1024 * 1024,
+    bundleBytes: 2 * 1024 * 1024,
+    heapBytes: 256 * 1024 * 1024,
+    minimumSamples: 60,
+  }),
+  balanced: Object.freeze({
+    frameMeanMs: 18,
+    frameP95Ms: 30,
+    frameMaxMs: 75,
+    allocationBytesPerFrame: 128 * 1024,
+    uploadBytesPerFrame: 6 * 1024 * 1024,
+    bundleBytes: 3 * 1024 * 1024,
+    heapBytes: 512 * 1024 * 1024,
+    minimumSamples: 90,
+  }),
+  high: Object.freeze({
+    frameMeanMs: 14,
+    frameP95Ms: 24,
+    frameMaxMs: 60,
+    allocationBytesPerFrame: 256 * 1024,
+    uploadBytesPerFrame: 10 * 1024 * 1024,
+    bundleBytes: 4 * 1024 * 1024,
+    heapBytes: 1024 * 1024 * 1024,
+    minimumSamples: 120,
+  }),
+});
+
+export function detectArcadeHardwareTier(input = {}) {
+  const memoryGb = finiteNumber(input.deviceMemoryGb ?? input.deviceMemory, 4);
+  const cores = Math.max(1, Math.floor(finiteNumber(input.hardwareConcurrency, 4)));
+  const dpr = Math.max(1, finiteNumber(input.devicePixelRatio, 1));
+  const software = input.softwareRenderer === true || /swiftshader|llvmpipe|software/i.test(String(input.renderer ?? ''));
+  if (software || memoryGb <= 2 || cores <= 2 || (cores <= 4 && dpr >= 2.5)) return 'low';
+  if (memoryGb >= 8 && cores >= 8 && dpr <= 2.5) return 'high';
+  return 'balanced';
+}
+
+function arcadeResourceSummary(samples, key) {
+  const values = samples.map((sample) => Math.max(0, finiteNumber(sample[key], 0)));
+  if (!values.length) return Object.freeze({ mean: 0, p95: 0, max: 0, last: 0 });
+  const sorted = [...values].sort((a, b) => a - b);
+  const total = values.reduce((sum, value) => sum + value, 0);
+  const p95Index = Math.min(sorted.length - 1, Math.max(0, Math.ceil(sorted.length * 0.95) - 1));
+  return Object.freeze({
+    mean: total / values.length,
+    p95: sorted[p95Index],
+    max: sorted[sorted.length - 1],
+    last: values[values.length - 1],
+  });
+}
+
+export function createHardwareBudgetMonitor(options = {}) {
+  const tier = options.tier ?? detectArcadeHardwareTier(options.device ?? {});
+  coreInvariant(ARCADE_HARDWARE_TIERS.includes(tier), `unknown arcade hardware tier: ${tier}`);
+  const profiles = options.profiles ?? DEFAULT_ARCADE_HARDWARE_BUDGETS;
+  const budget = Object.freeze({ ...(profiles[tier] ?? {}) });
+  const capacity = Math.max(1, Math.floor(finiteNumber(options.sampleSize, 240)));
+  const samples = [];
+  let bundleBytes = Math.max(0, finiteNumber(options.bundleBytes, 0));
+
+  const monitor = {
+    tier,
+    budget,
+    record(sample = {}) {
+      const normalized = Object.freeze({
+        frameMs: Math.max(0, finiteNumber(sample.frameMs, 0)),
+        allocationBytes: Math.max(0, finiteNumber(sample.allocationBytes, 0)),
+        uploadBytes: Math.max(0, finiteNumber(sample.uploadBytes, 0)),
+        heapBytes: Math.max(0, finiteNumber(sample.heapBytes, 0)),
+      });
+      samples.push(normalized);
+      if (samples.length > capacity) samples.splice(0, samples.length - capacity);
+      return normalized;
+    },
+    setBundleBytes(value) {
+      bundleBytes = Math.max(0, finiteNumber(value, 0));
+      return bundleBytes;
+    },
+    evaluate() {
+      const frame = arcadeResourceSummary(samples, 'frameMs');
+      const allocation = arcadeResourceSummary(samples, 'allocationBytes');
+      const upload = arcadeResourceSummary(samples, 'uploadBytes');
+      const heap = arcadeResourceSummary(samples, 'heapBytes');
+      const violations = [];
+      const check = (metric, actual, limit) => {
+        if (Number.isFinite(limit) && actual > limit) violations.push(Object.freeze({ metric, budget: limit, actual }));
+      };
+      check('frameMeanMs', frame.mean, budget.frameMeanMs);
+      check('frameP95Ms', frame.p95, budget.frameP95Ms);
+      check('frameMaxMs', frame.max, budget.frameMaxMs);
+      check('allocationBytesPerFrame', allocation.p95, budget.allocationBytesPerFrame);
+      check('uploadBytesPerFrame', upload.p95, budget.uploadBytesPerFrame);
+      check('bundleBytes', bundleBytes, budget.bundleBytes);
+      check('heapBytes', heap.max, budget.heapBytes);
+      if (Number.isFinite(budget.minimumSamples) && samples.length < budget.minimumSamples) {
+        violations.push(Object.freeze({ metric: 'count', budget: budget.minimumSamples, actual: samples.length }));
+      }
+      return Object.freeze({
+        tier,
+        pass: violations.length === 0,
+        budget,
+        samples: samples.length,
+        bundleBytes,
+        summary: Object.freeze({ frame, allocation, upload, heap }),
+        violations: Object.freeze(violations),
+      });
+    },
+    snapshot() {
+      return monitor.evaluate();
+    },
+    reset() {
+      const count = samples.length;
+      samples.length = 0;
+      return count;
+    },
+  };
+  return monitor;
+}
+
+export function createBrowserPerformanceSampler(options = {}) {
+  const refreshEverySamples = Math.max(1, Math.floor(finiteNumber(options.refreshEverySamples, 120)));
+  const performanceRef = options.performance ?? globalThis.performance;
+  const resourcePattern = options.resourcePattern ?? /\.(?:js|mjs)(?:\?|$)/;
+  coreInvariant(resourcePattern instanceof RegExp, 'browser performance resourcePattern must be a RegExp');
+  let samples = 0;
+  let refreshes = 0;
+  let bundleBytes = 0;
+  let heapBytes = 0;
+  let invalidated = true;
+
+  const refreshBundleBytes = () => {
+    const entries = performanceRef?.getEntriesByType?.('resource') ?? [];
+    bundleBytes = entries
+      .filter((entry) => {
+        resourcePattern.lastIndex = 0;
+        return resourcePattern.test(String(entry?.name ?? ''));
+      })
+      .reduce((total, entry) => total + Math.max(0, finiteNumber(entry?.encodedBodySize, 0)), 0);
+    refreshes += 1;
+    invalidated = false;
+  };
+
+  const sampler = {
+    sample(sampleOptions = {}) {
+      samples += 1;
+      const due = samples === 1 || (samples - 1) % refreshEverySamples === 0;
+      if (sampleOptions.force === true || invalidated || due) refreshBundleBytes();
+      heapBytes = Math.max(0, finiteNumber(performanceRef?.memory?.usedJSHeapSize, 0));
+      return Object.freeze({ bundleBytes, heapBytes, samples, refreshes });
+    },
+    invalidate() {
+      invalidated = true;
+      return true;
+    },
+    snapshot() {
+      return Object.freeze({ bundleBytes, heapBytes, samples, refreshes, refreshEverySamples, invalidated });
+    },
+    reset() {
+      const previous = samples;
+      samples = 0;
+      refreshes = 0;
+      bundleBytes = 0;
+      heapBytes = 0;
+      invalidated = true;
+      return previous;
+    },
+  };
+  return sampler;
 }
 
 export function assertArcadeRuntimeCompatibility(requirements = {}) {
@@ -7232,3 +9060,324 @@ export async function runHeadlessScenario(options = {}) {
 }
 
 // END ARCADE SERVICES 0.17-1.0
+export const ARCADE_CERTIFICATION_SCHEMA_VERSION = 1;
+export const ARCADE_CERTIFICATION_EVIDENCE_KINDS = Object.freeze(['lifecycle', 'visual']);
+export const ARCADE_CERTIFICATION_SOURCES = Object.freeze([
+  'local-browser',
+  'physical-device',
+  'driver-lab',
+  'imported',
+]);
+export const ARCADE_CERTIFICATION_CONTEXT_LOSS_MODES = Object.freeze([
+  'synthetic-event',
+  'webgl-lose-context',
+  'driver-reset',
+  'not-applicable',
+]);
+
+const DEFAULT_CERTIFICATION_POLICY = Object.freeze({
+  requiredConsumers: Object.freeze([
+    'hyperblast-shooter',
+    'ethic-brawl',
+    'badger-sprawl-runner',
+  ]),
+  requiredBrowsers: Object.freeze(['chromium', 'firefox']),
+  requiredPhysicalTiers: Object.freeze(['low', 'balanced', 'high']),
+  minimumLongSessionSeconds: 7200,
+  maximumUploadP95Bytes: 0,
+  requireVisualEvidence: true,
+  requireDriverResetPerConsumer: true,
+});
+
+function certificationString(value, fallback = '') {
+  return typeof value === 'string' && value.trim() ? value.trim() : fallback;
+}
+
+function certificationNumber(value, fallback = null) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function certificationBoolean(value, fallback = false) {
+  return typeof value === 'boolean' ? value : fallback;
+}
+
+function certificationArray(value) {
+  return Object.freeze(Array.isArray(value) ? [...value] : []);
+}
+
+function freezeCertificationRecord(record) {
+  return Object.freeze({
+    ...record,
+    browser: Object.freeze({ ...record.browser }),
+    device: Object.freeze({ ...record.device }),
+    checks: Object.freeze({ ...record.checks }),
+    session: record.session ? Object.freeze({ ...record.session }) : null,
+    visual: record.visual ? Object.freeze({ ...record.visual }) : null,
+    budget: record.budget ? Object.freeze({ ...record.budget }) : null,
+    artifacts: certificationArray(record.artifacts),
+    notes: certificationArray(record.notes),
+  });
+}
+
+export function createCertificationPolicy(overrides = {}) {
+  return Object.freeze({
+    requiredConsumers: certificationArray(
+      overrides.requiredConsumers ?? DEFAULT_CERTIFICATION_POLICY.requiredConsumers,
+    ),
+    requiredBrowsers: certificationArray(
+      overrides.requiredBrowsers ?? DEFAULT_CERTIFICATION_POLICY.requiredBrowsers,
+    ),
+    requiredPhysicalTiers: certificationArray(
+      overrides.requiredPhysicalTiers ?? DEFAULT_CERTIFICATION_POLICY.requiredPhysicalTiers,
+    ),
+    minimumLongSessionSeconds: Math.max(
+      0,
+      certificationNumber(
+        overrides.minimumLongSessionSeconds,
+        DEFAULT_CERTIFICATION_POLICY.minimumLongSessionSeconds,
+      ),
+    ),
+    maximumUploadP95Bytes: Math.max(
+      0,
+      certificationNumber(
+        overrides.maximumUploadP95Bytes,
+        DEFAULT_CERTIFICATION_POLICY.maximumUploadP95Bytes,
+      ),
+    ),
+    requireVisualEvidence: certificationBoolean(
+      overrides.requireVisualEvidence,
+      DEFAULT_CERTIFICATION_POLICY.requireVisualEvidence,
+    ),
+    requireDriverResetPerConsumer: certificationBoolean(
+      overrides.requireDriverResetPerConsumer,
+      DEFAULT_CERTIFICATION_POLICY.requireDriverResetPerConsumer,
+    ),
+  });
+}
+
+export function createCertificationEvidence(input = {}) {
+  const kind = certificationString(input.kind, 'lifecycle');
+  const project = certificationString(input.project, 'unknown-project');
+  const browserName = certificationString(input.browser?.name, 'unknown');
+  const recordedAt = certificationString(input.recordedAt, new Date(0).toISOString());
+  const session = input.session ?? null;
+  const visual = input.visual ?? null;
+  const id = certificationString(
+    input.id,
+    `${project}:${kind}:${browserName}:${recordedAt}`,
+  );
+  return freezeCertificationRecord({
+    schemaVersion: ARCADE_CERTIFICATION_SCHEMA_VERSION,
+    id,
+    kind,
+    project,
+    projectVersion: certificationString(input.projectVersion, 'unknown'),
+    runtimeVersion: certificationString(input.runtimeVersion, 'unknown'),
+    recordedAt,
+    source: certificationString(input.source, 'local-browser'),
+    browser: {
+      name: browserName,
+      version: certificationString(input.browser?.version, 'unknown'),
+      userAgent: certificationString(input.browser?.userAgent, 'unknown'),
+    },
+    device: {
+      tier: certificationString(input.device?.tier, 'unknown'),
+      os: certificationString(input.device?.os, 'unknown'),
+      cpu: certificationString(input.device?.cpu, 'unknown'),
+      gpu: certificationString(input.device?.gpu, 'unknown'),
+      memoryGiB: certificationNumber(input.device?.memoryGiB),
+      logicalCores: certificationNumber(input.device?.logicalCores),
+      devicePixelRatio: certificationNumber(input.device?.devicePixelRatio),
+      powerMode: certificationString(input.device?.powerMode, 'unknown'),
+      thermalState: certificationString(input.device?.thermalState, 'unknown'),
+    },
+    checks: {
+      resize: certificationBoolean(input.checks?.resize),
+      pauseResume: certificationBoolean(input.checks?.pauseResume),
+      contextLossRestore: certificationBoolean(input.checks?.contextLossRestore),
+      teardown: certificationBoolean(input.checks?.teardown),
+      visual: input.checks?.visual == null ? null : certificationBoolean(input.checks.visual),
+      errors: certificationArray(input.checks?.errors),
+    },
+    session: session
+      ? {
+          durationSeconds: Math.max(0, certificationNumber(session.durationSeconds, 0)),
+          framesBefore: Math.max(0, certificationNumber(session.framesBefore, 0)),
+          framesAfter: Math.max(0, certificationNumber(session.framesAfter, 0)),
+          heapBeforeBytes: certificationNumber(session.heapBeforeBytes),
+          heapAfterBytes: certificationNumber(session.heapAfterBytes),
+          uploadP95Bytes: Math.max(0, certificationNumber(session.uploadP95Bytes, 0)),
+          contextLossMode: certificationString(session.contextLossMode, 'synthetic-event'),
+          contextLosses: Math.max(0, certificationNumber(session.contextLosses, 0)),
+          contextRestores: Math.max(0, certificationNumber(session.contextRestores, 0)),
+        }
+      : null,
+    visual: visual
+      ? {
+          semanticPassed: certificationBoolean(visual.semanticPassed),
+          imageStatisticsPassed: certificationBoolean(visual.imageStatisticsPassed),
+          metrics: visual.metrics ?? null,
+        }
+      : null,
+    budget: input.budget ?? null,
+    artifacts: input.artifacts,
+    notes: input.notes,
+  });
+}
+
+export function validateCertificationEvidence(input, options = {}) {
+  const evidence = createCertificationEvidence(input);
+  const errors = [];
+  const allowed = (values, value, field) => {
+    if (!values.includes(value)) errors.push(`${field} must be one of ${values.join(', ')}`);
+  };
+  allowed(ARCADE_CERTIFICATION_EVIDENCE_KINDS, evidence.kind, 'kind');
+  allowed(ARCADE_CERTIFICATION_SOURCES, evidence.source, 'source');
+  if (evidence.project === 'unknown-project') errors.push('project is required');
+  if (evidence.projectVersion === 'unknown') errors.push('projectVersion is required');
+  if (evidence.runtimeVersion === 'unknown') errors.push('runtimeVersion is required');
+  if (evidence.browser.name === 'unknown') errors.push('browser.name is required');
+  if (Number.isNaN(Date.parse(evidence.recordedAt))) errors.push('recordedAt must be ISO-compatible');
+  if (evidence.checks.errors.length > 0) errors.push('checks.errors must be empty');
+
+  if (evidence.kind === 'lifecycle') {
+    if (!evidence.session) errors.push('lifecycle evidence requires session');
+    if (!evidence.checks.resize) errors.push('resize check did not pass');
+    if (!evidence.checks.pauseResume) errors.push('pauseResume check did not pass');
+    if (!evidence.checks.contextLossRestore) errors.push('contextLossRestore check did not pass');
+    if (!evidence.checks.teardown) errors.push('teardown check did not pass');
+    if (evidence.session) {
+      allowed(
+        ARCADE_CERTIFICATION_CONTEXT_LOSS_MODES,
+        evidence.session.contextLossMode,
+        'session.contextLossMode',
+      );
+      if (evidence.session.framesAfter <= evidence.session.framesBefore) {
+        errors.push('session.framesAfter must be greater than framesBefore');
+      }
+      if (evidence.session.contextLosses < 1 || evidence.session.contextRestores < 1) {
+        errors.push('lifecycle evidence requires at least one context loss and restore');
+      }
+    }
+  }
+
+  if (evidence.kind === 'visual') {
+    if (!evidence.visual) errors.push('visual evidence requires visual metrics');
+    if (!evidence.checks.visual) errors.push('visual check did not pass');
+    if (!evidence.visual?.semanticPassed) errors.push('visual semantic check did not pass');
+    if (!evidence.visual?.imageStatisticsPassed) errors.push('visual image-statistics check did not pass');
+  }
+
+  const requirePhysicalMetadata = options.requirePhysicalMetadata
+    ?? (evidence.source === 'physical-device' || evidence.source === 'driver-lab');
+  if (requirePhysicalMetadata) {
+    for (const field of ['tier', 'os', 'cpu', 'gpu', 'powerMode', 'thermalState']) {
+      if (evidence.device[field] === 'unknown') errors.push(`device.${field} is required`);
+    }
+    if (!(evidence.device.memoryGiB > 0)) errors.push('device.memoryGiB is required');
+    if (!(evidence.device.logicalCores > 0)) errors.push('device.logicalCores is required');
+  }
+
+  return Object.freeze({ valid: errors.length === 0, evidence, errors: Object.freeze(errors) });
+}
+
+export function assertCertificationEvidence(input, options = {}) {
+  const result = validateCertificationEvidence(input, options);
+  if (!result.valid) throw new Error(`invalid certification evidence: ${result.errors.join('; ')}`);
+  return result.evidence;
+}
+
+function certificationRecordPasses(record, policy) {
+  const validation = validateCertificationEvidence(record);
+  if (!validation.valid) return false;
+  if (record.kind === 'lifecycle') {
+    return record.session.uploadP95Bytes <= policy.maximumUploadP95Bytes;
+  }
+  return true;
+}
+
+export function summarizeCertificationEvidence(inputs = [], policyInput = {}) {
+  const policy = createCertificationPolicy(policyInput);
+  const records = certificationArray(inputs).map((input) => createCertificationEvidence(input));
+  const invalid = records
+    .map((record) => validateCertificationEvidence(record))
+    .filter((result) => !result.valid);
+  const lifecycle = records.filter((record) => record.kind === 'lifecycle');
+  const visual = records.filter((record) => record.kind === 'visual');
+  const localLifecycleMissing = [];
+  for (const project of policy.requiredConsumers) {
+    for (const browser of policy.requiredBrowsers) {
+      const match = lifecycle.find((record) =>
+        record.project === project
+        && record.browser.name === browser
+        && record.source === 'local-browser'
+        && certificationRecordPasses(record, policy));
+      if (!match) localLifecycleMissing.push(`${project}:${browser}`);
+    }
+  }
+  const visualMissing = policy.requireVisualEvidence
+    ? policy.requiredConsumers.filter((project) => !visual.some((record) =>
+        record.project === project && certificationRecordPasses(record, policy)))
+    : [];
+  const physicalTierMissing = policy.requiredPhysicalTiers.filter((tier) => !lifecycle.some((record) =>
+    record.source === 'physical-device'
+    && record.device.tier === tier
+    && record.session.durationSeconds >= policy.minimumLongSessionSeconds
+    && certificationRecordPasses(record, policy)));
+  const longSessionMissing = policy.requiredConsumers.filter((project) => !lifecycle.some((record) =>
+    record.project === project
+    && record.source === 'physical-device'
+    && record.session.durationSeconds >= policy.minimumLongSessionSeconds
+    && certificationRecordPasses(record, policy)));
+  const driverResetMissing = policy.requireDriverResetPerConsumer
+    ? policy.requiredConsumers.filter((project) => !lifecycle.some((record) =>
+        record.project === project
+        && record.session.contextLossMode === 'driver-reset'
+        && certificationRecordPasses(record, policy)))
+    : [];
+  const blockers = [];
+  if (invalid.length) blockers.push(`${invalid.length} invalid evidence record(s)`);
+  if (localLifecycleMissing.length) blockers.push(`missing local lifecycle: ${localLifecycleMissing.join(', ')}`);
+  if (visualMissing.length) blockers.push(`missing visual evidence: ${visualMissing.join(', ')}`);
+  if (physicalTierMissing.length) blockers.push(`missing physical tiers: ${physicalTierMissing.join(', ')}`);
+  if (longSessionMissing.length) blockers.push(`missing long sessions: ${longSessionMissing.join(', ')}`);
+  if (driverResetMissing.length) blockers.push(`missing driver resets: ${driverResetMissing.join(', ')}`);
+  return Object.freeze({
+    schemaVersion: ARCADE_CERTIFICATION_SCHEMA_VERSION,
+    evidenceCount: records.length,
+    validEvidenceCount: records.length - invalid.length,
+    localMatrixPassed: localLifecycleMissing.length === 0 && visualMissing.length === 0 && invalid.length === 0,
+    rendererDefaultEligible: blockers.length === 0,
+    blockers: Object.freeze(blockers),
+    coverage: Object.freeze({
+      localLifecycleMissing: Object.freeze(localLifecycleMissing),
+      visualMissing: Object.freeze(visualMissing),
+      physicalTierMissing: Object.freeze(physicalTierMissing),
+      longSessionMissing: Object.freeze(longSessionMissing),
+      driverResetMissing: Object.freeze(driverResetMissing),
+      contextLossModes: Object.freeze([...new Set(lifecycle.map((record) => record.session?.contextLossMode).filter(Boolean))].sort()),
+    }),
+    policy,
+  });
+}
+
+export function createCertificationEvidenceIndex(inputs = [], policyInput = {}, options = {}) {
+  const evidence = certificationArray(inputs)
+    .map((input) => assertCertificationEvidence(input))
+    .sort((left, right) => left.id.localeCompare(right.id));
+  const duplicateIds = evidence
+    .filter((record, index) => index > 0 && record.id === evidence[index - 1]?.id)
+    .map((record) => record.id);
+  if (duplicateIds.length > 0) {
+    throw new Error(`duplicate certification evidence id(s): ${[...new Set(duplicateIds)].join(', ')}`);
+  }
+  return Object.freeze({
+    schemaVersion: ARCADE_CERTIFICATION_SCHEMA_VERSION,
+    generatedAt: certificationString(options.generatedAt, new Date().toISOString()),
+    evidence: Object.freeze(evidence),
+    summary: summarizeCertificationEvidence(evidence, policyInput),
+  });
+}
+
+// END ARCADE CERTIFICATION 1.11

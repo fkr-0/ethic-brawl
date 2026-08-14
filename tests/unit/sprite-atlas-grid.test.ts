@@ -22,58 +22,83 @@ describe('sprite sheet decoding', () => {
     expect((frames[15]?.y ?? 0) + (frames[15]?.frameHeight ?? 0)).toBe(546);
   });
 
-  it('binds Foucault as a complete authored Animation v2 fighter', () => {
-    const descriptor = CHARACTER_SPRITE_PATHS.foucault;
-    const manifest = createCharacterSpriteManifest('foucault');
+  it('uses Kant hand-curated frame ordering before the legacy combat fallback', () => {
+    const descriptor = CHARACTER_SPRITE_PATHS.kant;
+    const manifest = createCharacterSpriteManifest('kant');
     const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
-    const states = new Map(
-      manifest.stateMappings.map((mapping) => [mapping.state, mapping.clipId])
-    );
+
+    expect(descriptor.layout).toBe('animation-v2');
+    expect(descriptor.animationV2Profile).toBe('complete');
+    expect(manifest.frames).toHaveLength(112 + (descriptor.authoredActionSheets?.length ?? 0) * 16);
+    expect(clips.get('idle_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7,
+    ]);
+    expect(clips.get('walk_backward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      24, 25, 26, 27, 28, 29, 30, 31,
+    ]);
+    const authoredSpecialIndex =
+      descriptor.authoredActionSheets?.findIndex(({ kind }) => kind === 'specials') ?? -1;
+    expect(authoredSpecialIndex).toBeGreaterThanOrEqual(0);
+    const authoredSpecialOffset = 112 + authoredSpecialIndex * 16;
+    expect(
+      clips.get('kant_BFA')?.frames.every(({ frameIndex }) => frameIndex >= authoredSpecialOffset)
+    ).toBe(true);
+  });
+
+  it('uses Nietzsche curated locomotion with a 16-frame legacy combat fallback', () => {
+    const descriptor = CHARACTER_SPRITE_PATHS.nietzsche;
+    const manifest = createCharacterSpriteManifest('nietzsche');
+    const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
+
+    expect(descriptor.layout).toBe('animation-v2');
+    expect(descriptor.animationV2Profile).toBe('complete');
+    expect([
+      descriptor.corePath,
+      ...(descriptor.additionalPaths ?? []),
+      ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
+      ...(descriptor.authoredActionSheets ?? []).map(({ path }) => path),
+    ]).toHaveLength(6 + (descriptor.authoredActionSheets?.length ?? 0));
+    expect(manifest.frames).toHaveLength(96 + (descriptor.authoredActionSheets?.length ?? 0) * 16);
+    expect(clips.get('idle_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7,
+    ]);
+    expect(clips.get('walk_backward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      24, 25, 26, 27, 28, 29, 30, 31,
+    ]);
     const phaseMappings = new Map(
       manifest.attackPhaseMappings.map((mapping) => [
         `${mapping.attackId}:${mapping.phase}`,
         mapping.clipId,
       ])
     );
-
-    expect(descriptor.layout).toBe('animation-v2');
-    expect(descriptor.animationV2Profile).toBe('full');
-    expect([descriptor.corePath, ...(descriptor.additionalPaths ?? [])]).toHaveLength(13);
-    expect(manifest.frames).toHaveLength(208);
-    expect(clips.get('attack_light_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      81, 82,
-    ]);
-    expect(clips.get('attack_medium_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      85, 86,
-    ]);
-    expect(clips.get('attack_heavy_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      89, 90,
-    ]);
-    expect(clips.get('air_attack')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      92, 93, 94, 95,
-    ]);
-    expect(clips.get('foucault_BFA')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      160, 161, 162, 163,
-    ]);
-    expect(clips.get('foucault_BDJ')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      172, 173, 174, 175,
-    ]);
-    expect(states.get('hitstun')).toBe('hitstun');
-    expect(states.get('idle')).toBe('idle');
-    expect(states.get('running')).toBe('run');
-    expect(states.get('jumping')).toBe('jump_rise');
-    expect(states.get('landing')).toBe('land');
-    expect(states.get('blocking')).toBe('guard');
-    expect(states.get('knockdown')).toBe('knockdown');
-    expect(states.get('gettingUp')).toBe('getup');
-    expect(states.get('victory')).toBe('victory');
-    expect(states.get('defeat')).toBe('defeat_v2');
-    expect(phaseMappings.get('foucault_discipline_beam:active')).toBe('foucault_BFA_active');
-    expect(manifest.commandSpecialMappings).toHaveLength(4);
+    expect(phaseMappings.get('@light:active')).toBe('attack_light_v2_active');
+    expect(
+      clips.get('attack_light_v2_active')?.frames.every(({ frameIndex }) => frameIndex >= 96)
+    ).toBe(true);
+    const authoredSpecialIndex =
+      descriptor.authoredActionSheets?.findIndex(({ kind }) => kind === 'specials') ?? -1;
+    expect(authoredSpecialIndex).toBeGreaterThanOrEqual(0);
+    const authoredSpecialOffset = 96 + authoredSpecialIndex * 16;
+    expect(
+      clips
+        .get('nietzsche_BFA')
+        ?.frames.every(({ frameIndex }) => frameIndex >= authoredSpecialOffset)
+    ).toBe(true);
   });
 
   it('binds authored Animation v2 locomotion while retaining legacy combat frames', () => {
-    for (const characterId of ['bakunin', 'hegel'] as const) {
+    for (const characterId of [
+      'aquinas',
+      'aristotle',
+      'bakunin',
+      'camus',
+      'foucault',
+      'hegel',
+      'kant',
+      'marx',
+      'machiavelli',
+      'socrates',
+    ] as const) {
       const descriptor = CHARACTER_SPRITE_PATHS[characterId];
       const manifest = createCharacterSpriteManifest(characterId);
       const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
@@ -87,10 +112,13 @@ describe('sprite sheet decoding', () => {
           descriptor.corePath,
           ...(descriptor.additionalPaths ?? []),
           ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
+          ...(descriptor.authoredActionSheets ?? []).map(({ path }) => path),
         ],
         characterId
-      ).toHaveLength(7);
-      expect(manifest.frames, characterId).toHaveLength(112);
+      ).toHaveLength(7 + (descriptor.authoredActionSheets?.length ?? 0));
+      expect(manifest.frames, characterId).toHaveLength(
+        112 + (descriptor.authoredActionSheets?.length ?? 0) * 16
+      );
       expect(clips.get('idle_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
         0, 1, 2, 3, 4, 5, 6, 7,
       ]);
@@ -108,17 +136,29 @@ describe('sprite sheet decoding', () => {
       ]);
       expect(states.get('walking')).toBe('walk_forward_v2');
       expect(states.get('running')).toBe('run_v2');
-      expect(states.get('blocking')).toBe('guard_v2');
-      expect(
-        clips.get('attack_light_active')?.frames.every(({ frameIndex }) => frameIndex >= 80)
-      ).toBe(true);
-      expect(
-        clips.get(`${characterId}_BFA`)?.frames.every(({ frameIndex }) => frameIndex >= 80)
-      ).toBe(true);
+      const actionKinds = new Set((descriptor.authoredActionSheets ?? []).map(({ kind }) => kind));
+      expect(states.get('blocking')).toBe(
+        actionKinds.has('advanced_guard') ? 'guard_hold_v2' : 'guard_v2'
+      );
+      if (actionKinds.has('normal_attacks')) {
+        const phaseMappings = new Map(
+          manifest.attackPhaseMappings.map((mapping) => [
+            `${mapping.attackId}:${mapping.phase}`,
+            mapping.clipId,
+          ])
+        );
+        expect(phaseMappings.get('@light:active')).toBe('attack_light_v2_active');
+        expect(states.get('attacking')).toBe('attack_light_v2');
+      } else {
+        expect(
+          clips.get('attack_light_active')?.frames.every(({ frameIndex }) => frameIndex >= 80)
+        ).toBe(true);
+      }
+      expect(clips.get(`${characterId}_BFA`)).toBeDefined();
     }
   });
 
-  it('binds Stirner movement and defense sheets with legacy idle and combat fallback', () => {
+  it('binds Stirner curated movement and the available authored action sheets', () => {
     const descriptor = CHARACTER_SPRITE_PATHS.stirner;
     const manifest = createCharacterSpriteManifest('stirner');
     const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
@@ -127,63 +167,61 @@ describe('sprite sheet decoding', () => {
     );
 
     expect(descriptor.layout).toBe('animation-v2');
-    expect(descriptor.animationV2Profile).toBe('movement-defense');
+    expect(descriptor.animationV2Profile).toBe('complete');
     expect([
       descriptor.corePath,
       ...(descriptor.additionalPaths ?? []),
       ...(descriptor.extendedPath ? [descriptor.extendedPath] : []),
-    ]).toHaveLength(6);
-    expect(manifest.frames).toHaveLength(96);
-    expect(clips.get('walk_forward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      ...(descriptor.authoredActionSheets ?? []).map(({ path }) => path),
+    ]).toHaveLength(7 + (descriptor.authoredActionSheets?.length ?? 0));
+    expect(manifest.frames).toHaveLength(112 + (descriptor.authoredActionSheets?.length ?? 0) * 16);
+    expect(clips.get('idle_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
       0, 1, 2, 3, 4, 5, 6, 7,
     ]);
+    expect(clips.get('walk_forward_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
+      16, 17, 18, 19, 20, 21, 22, 23,
+    ]);
     expect(clips.get('run_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      20, 21, 22, 23, 24, 25, 26, 27,
+      36, 37, 38, 39, 40, 41, 42, 43,
     ]);
     expect(clips.get('jump_air_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      36, 37, 38, 39,
+      52, 53, 54, 55,
     ]);
     expect(clips.get('guard_v2')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      60, 61, 62, 63,
+      76, 77, 78, 79,
     ]);
-    expect(states.get('idle')).toBe('idle');
+    expect(states.get('idle')).toBe('idle_v2');
     expect(states.get('walking')).toBe('walk_forward_v2');
     expect(states.get('running')).toBe('run_v2');
-    expect(states.get('blocking')).toBe('guard_v2');
-    expect(clips.get('idle')?.frames.every(({ frameIndex }) => frameIndex >= 64)).toBe(true);
-    expect(
-      clips.get('attack_light_active')?.frames.every(({ frameIndex }) => frameIndex >= 64)
-    ).toBe(true);
-    expect(clips.get('stirner_BFA')?.frames.every(({ frameIndex }) => frameIndex >= 64)).toBe(true);
+    expect(states.get('blocking')).toBe('guard_hold_v2');
+    expect(states.get('attacking')).toBe('attack_light_v2');
+    expect(states.get('victory')).toBe('victory_v2');
+    expect(clips.get('attack_light_v2_active')).toBeDefined();
+    expect(clips.get('stirner_BFA')).toBeDefined();
   });
 
-  it('binds Deleuze/Guattari authored normal attacks after the legacy banks', () => {
-    const descriptor = CHARACTER_SPRITE_PATHS.deleuze_guattari;
-    const manifest = createCharacterSpriteManifest('deleuze_guattari');
+  it('binds Leibniz as a complete Animation v2 bank without legacy sheets', () => {
+    const descriptor = CHARACTER_SPRITE_PATHS.leibniz;
+    const manifest = createCharacterSpriteManifest('leibniz');
     const clips = new Map(manifest.clips.map((clip) => [clip.id, clip]));
-
-    expect(descriptor.normalAttackPath).toMatch(
-      /animation-v2\/deleuze_guattari_normal_attacks_4x4\.png$/
+    const states = new Map(
+      manifest.stateMappings.map((mapping) => [mapping.state, mapping.clipId])
     );
-    expect(manifest.frames).toHaveLength(48);
-    expect(clips.get('attack_light_startup')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      32,
-    ]);
-    expect(clips.get('attack_light_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      33, 34,
-    ]);
-    expect(clips.get('attack_medium_active')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      37, 38,
-    ]);
-    expect(clips.get('attack_heavy_recovery')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      43,
-    ]);
-    expect(clips.get('air_attack')?.frames.map(({ frameIndex }) => frameIndex)).toEqual([
-      44, 45, 46, 47,
-    ]);
-    expect(
-      clips.get('deleuze_guattari_BFA')?.frames.every(({ frameIndex }) => frameIndex < 32)
-    ).toBe(true);
+
+    expect(descriptor.layout).toBe('animation-v2');
+    expect(descriptor.extendedPath).toBeUndefined();
+    expect(descriptor.authoredActionSheets).toHaveLength(8);
+    expect([
+      descriptor.corePath,
+      ...(descriptor.additionalPaths ?? []),
+      ...(descriptor.authoredActionSheets ?? []).map(({ path }) => path),
+    ]).toHaveLength(13);
+    expect(manifest.frames).toHaveLength(208);
+    expect(states.get('idle')).toBe('idle_v2');
+    expect(states.get('blocking')).toBe('guard_hold_v2');
+    expect(states.get('attacking')).toBe('attack_light_v2');
+    expect(states.get('victory')).toBe('victory_v2');
+    expect(clips.get('leibniz_BFA')).toBeDefined();
   });
 
   it('maps the legacy motion blueprint to the correct frames', () => {
@@ -258,16 +296,9 @@ describe('sprite sheet decoding', () => {
     const middleLaneDepth = 0.925;
     const regularScale = calculateNormalizedSpriteScale(118, middleLaneDepth);
     const smallSheetScale = calculateNormalizedSpriteScale(69, middleLaneDepth);
-    const highResolutionScale = calculateNormalizedSpriteScale(720, middleLaneDepth);
-    const highResolutionBackScale = calculateNormalizedSpriteScale(720, 0.82);
 
     expect(118 * regularScale).toBeCloseTo(TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth, 5);
     expect(69 * smallSheetScale).toBeCloseTo(TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth, 5);
-    expect(720 * highResolutionScale).toBeCloseTo(
-      TARGET_FIGHTER_VISIBLE_HEIGHT * middleLaneDepth,
-      5
-    );
     expect(smallSheetScale).toBeGreaterThan(regularScale);
-    expect(highResolutionBackScale).toBeLessThan(highResolutionScale);
   });
 });

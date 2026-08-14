@@ -8,6 +8,7 @@ import { getComboDisplayText } from '@/game/fight/combo';
 import { type FightState, getLaneGroundY } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
 import { FRAME_DATA } from '@/game/fight/fighter-state';
+import { ARCADE_UI_FONT } from '@/ui/arcade-ui';
 import { createArcadeCameraTransform } from '../../vendor/arcade-runtime.mjs';
 import type { Camera } from './camera';
 import {
@@ -81,18 +82,18 @@ export function renderSpecialMeter(
   const ready = fighter.specialCooldown <= 0;
 
   ctx.fillStyle = 'rgba(13, 5, 24, 0.88)';
-  ctx.fillRect(x, y, width, 10);
+  ctx.fillRect(x, y, width, 8);
   ctx.fillStyle = color;
   const energyWidth = width * energyGauge.ratio;
-  ctx.fillRect(isPlayer2 ? x + width - energyWidth : x, y, energyWidth, 10);
+  ctx.fillRect(isPlayer2 ? x + width - energyWidth : x, y, energyWidth, 8);
 
   ctx.fillStyle = '#241533';
-  ctx.fillRect(x, y + 13, width, 4);
+  ctx.fillRect(x, y + 12, width, 3);
   ctx.fillStyle = ready ? '#39FF14' : '#FF9F1C';
   const cooldownWidth = width * cooldownGauge.ratio;
-  ctx.fillRect(isPlayer2 ? x + width - cooldownWidth : x, y + 13, cooldownWidth, 4);
+  ctx.fillRect(isPlayer2 ? x + width - cooldownWidth : x, y + 12, cooldownWidth, 3);
 
-  ctx.font = 'bold 9px "Courier New", monospace';
+  ctx.font = `800 8px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = ready ? '#39FF14' : '#B8A9C9';
   ctx.textAlign = isPlayer2 ? 'right' : 'left';
   ctx.fillText(
@@ -100,7 +101,7 @@ export function renderSpecialMeter(
       ? `SPECIAL READY · ${Math.round(fighter.specialState.currentEnergy)} CONVICTION`
       : `SPECIAL ${Math.ceil(fighter.specialCooldown / 60)}s · ${Math.round(fighter.specialState.currentEnergy)} CONVICTION`,
     isPlayer2 ? x + width : x,
-    y + 28
+    y + 27
   );
 }
 
@@ -366,7 +367,8 @@ export function renderFighter(
   ctx: CanvasRenderingContext2D,
   fighter: Fighter,
   camera: Camera,
-  frame = 0
+  frame = 0,
+  flashScale = 1
 ): void {
   const animMap = getCharacterAnimationMap(fighter.characterId as CharacterId);
 
@@ -374,10 +376,10 @@ export function renderFighter(
     SPRITE_RENDERING_ENABLED && animMap && canRenderSprites(animMap, fighter.characterId);
 
   if (useSprites) {
-    renderFighterWithSprite(ctx, fighter, animMap, frame);
+    renderFighterWithSprite(ctx, fighter, animMap, frame, flashScale);
   } else {
     fighterAnimationSnapshotCache.delete(fighter.id);
-    renderFighterProcedural(ctx, fighter, camera, frame);
+    renderFighterProcedural(ctx, fighter, camera, frame, flashScale);
   }
 }
 
@@ -438,7 +440,8 @@ function renderFighterWithSprite(
   ctx: CanvasRenderingContext2D,
   fighter: Fighter,
   animMap: CharacterAnimationMap,
-  frame: number
+  frame: number,
+  flashScale: number
 ): void {
   const animState = getFighterAnimationState(fighter.id);
   let targetClip: ReturnType<typeof getStateClip> | ReturnType<typeof getAttackPhaseClip> | null =
@@ -474,8 +477,28 @@ function renderFighterWithSprite(
 
   if (fighter.landingFrames > 0 && fighter.isGrounded && !fighter.currentAttack) {
     effectiveState = 'landing';
-    targetClip = getStateClip(animMap, 'landing');
-    poseProgress = 1 - Math.min(1, fighter.landingFrames / FRAME_DATA.LANDING_IMPACT_DURATION);
+    const landingProgress =
+      1 - Math.min(1, fighter.landingFrames / FRAME_DATA.LANDING_IMPACT_DURATION);
+    const landingClip = getNamedAnimationClip(animMap, 'land_v2');
+    const recoveryClip = getNamedAnimationClip(animMap, 'land_recovery_v2');
+    if (landingClip && recoveryClip) {
+      const isRecovery = landingProgress >= 0.5;
+      targetClip = isRecovery ? recoveryClip : landingClip;
+      poseProgress = isRecovery ? (landingProgress - 0.5) * 2 : landingProgress * 2;
+    } else {
+      targetClip = getStateClip(animMap, 'landing');
+      poseProgress = landingProgress;
+    }
+  } else if (!targetClip && fighter.turnaroundFrames > 0) {
+    const turnClip = getNamedAnimationClip(
+      animMap,
+      fighter.facing === 'right' ? 'turn_right_v2' : 'turn_left_v2'
+    );
+    if (turnClip) {
+      effectiveState = 'idle';
+      targetClip = turnClip;
+      poseProgress = 1 - Math.min(1, fighter.turnaroundFrames / FRAME_DATA.TURNAROUND_DURATION);
+    }
   } else if (!targetClip) {
     targetClip = resolveAuthoredAnimationV2Clip(
       fighter,
@@ -554,15 +577,22 @@ function renderFighterWithSprite(
       ctx,
       fighter,
       { x: 0, y: 0, zoom: 1, shakeOffsetX: 0, shakeOffsetY: 0 } as Camera,
-      frame
+      frame,
+      flashScale
     );
     return;
   }
 
+  const spriteAtlas = animMap.atlas;
   const activeClipFrame = animState.currentClip.frames[animState.currentFrame];
   const activeAtlasFrame = activeClipFrame ? getAtlasFrame(animMap, activeClipFrame) : null;
   const depthScale = activeAtlasFrame
-    ? resolveFighterSpriteRenderScale(animMap.atlas, animation.depthScale, getSpriteScaleFactor())
+    ? resolveFighterSpriteRenderScale(
+        spriteAtlas,
+        animation.depthScale,
+        getSpriteScaleFactor(),
+        activeAtlasFrame
+      )
     : animation.depthScale;
 
   const stretchX = Math.max(0.86, Math.min(1.16, 1 + (animation.bodyWidthScale - 1) * 0.28));
@@ -615,9 +645,20 @@ function renderFighterWithSprite(
     }
     if (blur > 0) {
       ctx.filter = `blur(${blur}px) saturate(1.35)`;
-    } else if (animation.flashIntensity > 0) {
-      ctx.filter = `brightness(${1 + animation.flashIntensity * 0.85}) saturate(${1 + animation.flashIntensity * 0.45})`;
+    } else if (animation.flashIntensity * flashScale > 0) {
+      const flashIntensity = animation.flashIntensity * flashScale;
+      ctx.filter = `brightness(${1 + flashIntensity * 0.85}) saturate(${1 + flashIntensity * 0.45})`;
     }
+    const poseClipFrame = clip.frames[clipFrame];
+    const poseAtlasFrame = poseClipFrame ? getAtlasFrame(animMap, poseClipFrame) : null;
+    const poseDepthScale = poseAtlasFrame
+      ? resolveFighterSpriteRenderScale(
+          spriteAtlas,
+          animation.depthScale,
+          getSpriteScaleFactor(),
+          poseAtlasFrame
+        )
+      : depthScale;
     const result = renderFighterSprite(
       ctx,
       animMap,
@@ -626,7 +667,7 @@ function renderFighterWithSprite(
       0,
       0,
       poseFacingRight,
-      depthScale,
+      poseDepthScale,
       opacity,
       fighter.characterId
     );
@@ -723,7 +764,8 @@ function renderFighterWithSprite(
       ctx,
       fighter,
       { x: 0, y: 0, zoom: 1, shakeOffsetX: 0, shakeOffsetY: 0 } as Camera,
-      frame
+      frame,
+      flashScale
     );
   }
 }
@@ -735,7 +777,8 @@ function renderFighterProcedural(
   ctx: CanvasRenderingContext2D,
   fighter: Fighter,
   _camera: Camera,
-  frame = 0
+  frame = 0,
+  flashScale = 1
 ): void {
   const character = CHARACTERS[fighter.characterId as keyof typeof CHARACTERS];
   const colors = character?.colors ?? {
@@ -881,9 +924,10 @@ function renderFighterProcedural(
       ctx.restore();
     }
 
-    if (animation.flashColor && animation.flashIntensity > 0) {
+    const flashIntensity = animation.flashIntensity * flashScale;
+    if (animation.flashColor && flashIntensity > 0) {
       ctx.save();
-      ctx.globalAlpha *= animation.flashIntensity;
+      ctx.globalAlpha *= flashIntensity;
       ctx.fillStyle = animation.flashColor;
       ctx.beginPath();
       ctx.ellipse(0, bodyTop + bodyHeight * 0.42, 30, 60, 0, 0, Math.PI * 2);
@@ -920,7 +964,7 @@ function renderFighterProcedural(
   ctx.restore();
 
   // Name label
-  ctx.font = 'bold 12px "Courier New", monospace';
+  ctx.font = `900 12px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.fillText(character?.name ?? 'Fighter', screenX, screenY - 130 * animation.depthScale);
@@ -989,7 +1033,7 @@ export function renderHealthBar(
   ctx.fillText(label, isPlayer2 ? x + width : x, y - 5);
 
   // Health text
-  ctx.font = '10px "Courier New", monospace';
+  ctx.font = `800 9px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.fillText(`${Math.ceil(currentHealth)}`, x + width / 2, y + height - 5);
@@ -1033,20 +1077,53 @@ export function renderComboDisplay(
 /**
  * Render timer
  */
-export function renderTimer(ctx: CanvasRenderingContext2D, time: number): void {
+function renderHudChrome(ctx: CanvasRenderingContext2D): void {
+  ctx.save();
+  ctx.fillStyle = 'rgba(8, 5, 17, 0.84)';
+  ctx.fillRect(34, 8, 332, 84);
+  ctx.fillRect(CANVAS_WIDTH - 366, 8, 332, 84);
+  ctx.fillStyle = 'rgba(8, 5, 17, 0.94)';
+  ctx.fillRect(CANVAS_WIDTH / 2 - 72, 8, 144, 88);
+  ctx.strokeStyle = 'rgba(184, 169, 201, 0.32)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(34.5, 8.5, 331, 83);
+  ctx.strokeRect(CANVAS_WIDTH - 365.5, 8.5, 331, 83);
+  ctx.strokeRect(CANVAS_WIDTH / 2 - 71.5, 8.5, 143, 87);
+  ctx.fillStyle = '#00F5FF';
+  ctx.fillRect(34, 8, 4, 84);
+  ctx.fillStyle = '#FF00FF';
+  ctx.fillRect(CANVAS_WIDTH - 38, 8, 4, 84);
+  ctx.fillStyle = '#FF9F1C';
+  ctx.fillRect(CANVAS_WIDTH / 2 - 48, 93, 96, 2);
+  ctx.font = `800 8px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = '#B8A9C9';
+  ctx.textAlign = 'left';
+  ctx.fillText('P1 // DOCTRINE', 50, 24);
+  ctx.textAlign = 'right';
+  ctx.fillText('P2 // DOCTRINE', CANVAS_WIDTH - 50, 24);
+  ctx.restore();
+}
+
+export function renderTimer(ctx: CanvasRenderingContext2D, time: number, roundNumber = 1): void {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
   const text = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
-  ctx.font = 'bold 36px "Courier New", monospace';
-  ctx.fillStyle = time < 10 ? '#FF073A' : '#FFFFFF';
+  ctx.font = `800 9px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = '#FF9F1C';
   ctx.textAlign = 'center';
-  ctx.fillText(text, CANVAS_WIDTH / 2, 45);
+  ctx.fillText(`ROUND ${roundNumber}`, CANVAS_WIDTH / 2, 27);
+  ctx.font = `900 30px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = time < 10 ? '#FF073A' : '#FFFFFF';
+  ctx.fillText(text, CANVAS_WIDTH / 2, 59);
+  ctx.font = `800 8px ${ARCADE_UI_FONT}`;
+  ctx.fillStyle = time < 10 ? '#FF4B6E' : '#B8A9C9';
+  ctx.fillText(time < 10 ? 'FINAL ARGUMENT' : 'MATCH CLOCK', CANVAS_WIDTH / 2, 81);
 
   // Flashing warning
   if (time < 10 && Math.floor(Date.now() / 500) % 2 === 0) {
     ctx.fillStyle = '#FF073A44';
-    ctx.fillRect(0, 0, CANVAS_WIDTH, 60);
+    ctx.fillRect(0, 0, CANVAS_WIDTH, 96);
   }
 }
 
@@ -1062,7 +1139,7 @@ export function renderRoundIndicator(
   const dotRadius = 8;
   const spacing = 25;
   const centerX = CANVAS_WIDTH / 2;
-  const y = 75;
+  const y = 84;
 
   // Player 1 dots (left side)
   for (let i = 0; i < roundsToWin; i++) {
@@ -1089,7 +1166,7 @@ export function renderRoundIndicator(
   }
 
   // VS text
-  ctx.font = 'bold 16px "Courier New", monospace';
+  ctx.font = `900 11px ${ARCADE_UI_FONT}`;
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.fillText('VS', centerX, y + 5);
@@ -1140,6 +1217,8 @@ export function renderFightScene(
   camera: Camera,
   presentation: FightPresentationOptions = {}
 ): void {
+  const screenFeedbackScale = Math.max(0, Math.min(1, presentation.screenFeedbackScale ?? 1));
+  const fighterFlashScale = Math.max(0, Math.min(1, presentation.fighterFlashScale ?? 1));
   const graphicsProfile = resolveFightGraphicsProfile(presentation);
   const cameraTransform = createArcadeCameraTransform({
     x: CANVAS_WIDTH / 2,
@@ -1180,7 +1259,9 @@ export function renderFightScene(
         renderAmbientEffect(ctx, effect);
       }
     }
-    renderFighter(ctx, fighter, camera, fightState.frameCount);
+    if (presentation.renderActors !== false) {
+      renderFighter(ctx, fighter, camera, fightState.frameCount, fighterFlashScale);
+    }
     for (const effect of collectAmbientEffectsForFighter(fighter, fightState.frameCount)) {
       if (effect.layer === 'front') {
         renderAmbientEffect(ctx, effect);
@@ -1197,7 +1278,7 @@ export function renderFightScene(
 
   if (fightState.hitFreezeFrames > 0) {
     ctx.save();
-    ctx.globalAlpha = Math.min(0.14, fightState.hitFreezeFrames * 0.04);
+    ctx.globalAlpha = Math.min(0.14, fightState.hitFreezeFrames * 0.04) * screenFeedbackScale;
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.restore();
@@ -1207,72 +1288,84 @@ export function renderFightScene(
 
   // Render screen effects on top of everything
   for (const screenEffect of fightState.screenEffects) {
+    ctx.save();
+    ctx.globalAlpha = screenFeedbackScale;
     screenEffect.render(ctx);
+    ctx.restore();
   }
 
-  renderCombatScreenFeedback(ctx, fightState);
+  if (presentation.renderScreenFeedback !== false) {
+    ctx.save();
+    ctx.globalAlpha = screenFeedbackScale;
+    renderCombatScreenFeedback(ctx, fightState);
+    ctx.restore();
+  }
   renderFightStageCue(ctx, fightState.frameCount, graphicsProfile, fightState);
 
-  // HUD
-  const p1Char = CHARACTERS[fightState.player1.characterId as keyof typeof CHARACTERS];
-  const p2Char = CHARACTERS[fightState.player2.characterId as keyof typeof CHARACTERS];
+  if (presentation.renderHud !== false) {
+    // HUD
+    const p1Char = CHARACTERS[fightState.player1.characterId as keyof typeof CHARACTERS];
+    const p2Char = CHARACTERS[fightState.player2.characterId as keyof typeof CHARACTERS];
 
-  renderHealthBar(
-    ctx,
-    50,
-    30,
-    300,
-    20,
-    fightState.player1.health,
-    fightState.player1.stats.maxHealth,
-    p1Char?.colors.primary ?? '#00F5FF',
-    p1Char?.name ?? 'P1',
-    false
-  );
+    renderHudChrome(ctx);
 
-  renderHealthBar(
-    ctx,
-    CANVAS_WIDTH - 350,
-    30,
-    300,
-    20,
-    fightState.player2.health,
-    fightState.player2.stats.maxHealth,
-    p2Char?.colors.primary ?? '#FF00FF',
-    p2Char?.name ?? 'P2',
-    true
-  );
+    renderHealthBar(
+      ctx,
+      50,
+      36,
+      300,
+      18,
+      fightState.player1.health,
+      fightState.player1.stats.maxHealth,
+      p1Char?.colors.primary ?? '#00F5FF',
+      p1Char?.name ?? 'P1',
+      false
+    );
 
-  renderSpecialMeter(
-    ctx,
-    fightState.player1,
-    50,
-    55,
-    300,
-    p1Char?.colors.accent ?? '#39FF14',
-    false
-  );
-  renderSpecialMeter(
-    ctx,
-    fightState.player2,
-    CANVAS_WIDTH - 350,
-    55,
-    300,
-    p2Char?.colors.accent ?? '#FF9F1C',
-    true
-  );
+    renderHealthBar(
+      ctx,
+      CANVAS_WIDTH - 350,
+      36,
+      300,
+      18,
+      fightState.player2.health,
+      fightState.player2.stats.maxHealth,
+      p2Char?.colors.primary ?? '#FF00FF',
+      p2Char?.name ?? 'P2',
+      true
+    );
 
-  // Timer
-  renderTimer(ctx, fightState.round.time);
+    renderSpecialMeter(
+      ctx,
+      fightState.player1,
+      50,
+      61,
+      300,
+      p1Char?.colors.accent ?? '#39FF14',
+      false
+    );
+    renderSpecialMeter(
+      ctx,
+      fightState.player2,
+      CANVAS_WIDTH - 350,
+      61,
+      300,
+      p2Char?.colors.accent ?? '#FF9F1C',
+      true
+    );
 
-  // Round indicator
-  renderRoundIndicator(ctx, fightState.scores[0] ?? 0, fightState.scores[1] ?? 0, 2);
+    // Timer
+    renderTimer(ctx, fightState.round.time, fightState.round.number);
 
-  // Combo displays
-  if (fightState.combos[0]?.count > 1) {
-    renderComboDisplay(ctx, 150, 150, fightState.combos[0].count, '#00F5FF');
-  }
-  if (fightState.combos[1]?.count > 1) {
-    renderComboDisplay(ctx, CANVAS_WIDTH - 150, 150, fightState.combos[1].count, '#FF00FF');
+    // Round indicator
+    renderRoundIndicator(ctx, fightState.scores[0] ?? 0, fightState.scores[1] ?? 0, 2);
+
+    // Combo displays
+    if (fightState.combos[0]?.count > 1) {
+      renderComboDisplay(ctx, 150, 150, fightState.combos[0].count, '#00F5FF');
+    }
+    if (fightState.combos[1]?.count > 1) {
+      renderComboDisplay(ctx, CANVAS_WIDTH - 150, 150, fightState.combos[1].count, '#FF00FF');
+    }
   }
 }

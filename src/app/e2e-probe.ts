@@ -1,5 +1,6 @@
 import type { SceneName } from '@/core';
 import type { FighterAnimationSnapshot } from '@/render';
+import type { EthicPixiBridgeRuntimeStatus } from '@/render';
 import type { SpriteValidationReport } from '@/render/sprites';
 import type { ArcadePerformanceSummary } from '../../vendor/arcade-runtime.mjs';
 import type { AppShellState } from './app-shell/scene-factory';
@@ -28,9 +29,13 @@ export interface E2EProbeSnapshot {
     | 'gameMode'
   > & {
     skipStageIntro: boolean;
+    impactMotion: AppShellState['settings']['impactMotion'];
+    combatFlashes: AppShellState['settings']['combatFlashes'];
+    spectatorDetail: AppShellState['settings']['spectatorDetail'];
     settingsTab: AppShellState['settings']['menuTab'];
     settingsSelectedIndex: number;
     editingKeybinding: AppShellState['settings']['keybindingEdit'];
+    player1MoveLeftBinding: string[];
     player1AttackBinding: string[];
     fightResolvedThisMatch: boolean;
     hasLatestResult: boolean;
@@ -47,6 +52,8 @@ export interface E2EProbeSnapshot {
     pixiInstalled: true;
     rendererNeutralPresentation: true;
     bridgeEnabled: boolean;
+    bridgeLoadStatus: EthicPixiBridgeRuntimeStatus;
+    bridgeLoadError: string | null;
     renderPerformance: ArcadePerformanceSummary;
     bridgePerformance: ArcadePerformanceSummary | null;
     theme: 'neon_arena' | 'babylon';
@@ -57,6 +64,8 @@ export interface E2EProbeSnapshot {
     stageCrowdEnergy: number;
     stageLightPulse: number;
     stageImpactPulse: number;
+    screenFeedbackScale: number;
+    fighterFlashScale: number;
   };
   fight: {
     player1Character: string | null;
@@ -75,11 +84,22 @@ export interface E2EProbeSnapshot {
     recycledParticles: number;
     rulesId: string;
     roundTimeSeconds: number;
+    roundTimeRemaining: number;
+    roundWinner: 1 | 2 | null;
     player1Energy: number | null;
     player2Energy: number | null;
     player2MaxHealth: number | null;
+    player1AttackId: string | null;
+    player2AttackId: string | null;
+    player1AttackChainIndex: number | null;
+    player2AttackChainIndex: number | null;
+    player1MaxCombo: number;
+    player2MaxCombo: number;
+    player1AIAction: string;
+    player2AIAction: string;
     round: number | null;
     hasResult: boolean;
+    player1AIDifficulty: 'easy' | 'medium' | 'hard';
     player2AIDifficulty: 'easy' | 'medium' | 'hard';
     player1Animation: FighterAnimationSnapshot | null;
     player2Animation: FighterAnimationSnapshot | null;
@@ -91,6 +111,15 @@ export interface E2EProbeApi {
   transitionTo: (scene: SceneName) => Promise<boolean>;
   resolveCurrentMatch: (winner: 1 | 2) => void;
   getSpriteValidation: () => SpriteValidationReport;
+  loadAllSprites: () => Promise<void>;
+  getBridgeLifecycle: () => Readonly<Record<string, unknown>> | null;
+  resizeBridge: (width: number, height: number) => void;
+  startBridge: () => void;
+  pauseBridge: () => void;
+  resumeBridge: () => void;
+  simulateBridgeContextLoss: () => void;
+  simulateBridgeContextRestore: () => void;
+  destroyBridge: () => void;
 }
 
 declare global {
@@ -133,12 +162,16 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
   element.dataset.characterSelectPhase = String(snapshot.app.characterSelectPhase);
   element.dataset.gameMode = snapshot.app.gameMode;
   element.dataset.skipStageIntro = String(snapshot.app.skipStageIntro);
+  element.dataset.impactMotion = snapshot.app.impactMotion;
+  element.dataset.combatFlashes = snapshot.app.combatFlashes;
+  element.dataset.spectatorDetail = snapshot.app.spectatorDetail;
   element.dataset.settingsTab = snapshot.app.settingsTab;
   element.dataset.settingsSelectedIndex = String(snapshot.app.settingsSelectedIndex);
   element.dataset.editingKeybinding = snapshot.app.editingKeybinding
     ? `${snapshot.app.editingKeybinding.playerId}:${snapshot.app.editingKeybinding.action}`
     : 'none';
   element.dataset.player1AttackBinding = snapshot.app.player1AttackBinding.join(',');
+  element.dataset.player1MoveLeftBinding = snapshot.app.player1MoveLeftBinding.join(',');
   element.dataset.stageNumber = String(snapshot.app.stageNumber);
   element.dataset.stageEncounterIndex = String(snapshot.app.stageEncounterIndex);
   element.dataset.stageEncounterWins = String(snapshot.app.stageEncounterWins);
@@ -146,6 +179,8 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
   element.dataset.failedCharacters = snapshot.sprites.failedCharacters.join(',');
   element.dataset.rendererBackend = snapshot.renderer.backend;
   element.dataset.rendererBridge = String(snapshot.renderer.bridgeEnabled);
+  element.dataset.rendererBridgeLoadStatus = snapshot.renderer.bridgeLoadStatus;
+  element.dataset.rendererBridgeLoadError = snapshot.renderer.bridgeLoadError ?? '';
   element.dataset.rendererMeanMs = String(snapshot.renderer.renderPerformance.meanMs);
   element.dataset.rendererP95Ms = String(snapshot.renderer.renderPerformance.p95Ms);
   element.dataset.graphicsTheme = snapshot.renderer.theme;
@@ -153,6 +188,8 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
   element.dataset.stageEvent = snapshot.renderer.stageEventId;
   element.dataset.stageEventPhase = snapshot.renderer.stageEventPhase;
   element.dataset.stageCrowdEnergy = String(snapshot.renderer.stageCrowdEnergy);
+  element.dataset.screenFeedbackScale = String(snapshot.renderer.screenFeedbackScale);
+  element.dataset.fighterFlashScale = String(snapshot.renderer.fighterFlashScale);
   element.dataset.activeParticles = String(snapshot.fight.activeParticles);
   element.dataset.emittedParticleBursts = String(snapshot.fight.emittedParticleBursts);
   element.dataset.recycledParticles = String(snapshot.fight.recycledParticles);

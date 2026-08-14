@@ -1,0 +1,333 @@
+# G.W.F. Hegel — Animation v2 Prompts
+
+Rendered from `docs/prompts/fighter-animation-v2/prompt-pack.yml` (v1)
+by substituting `characters/hegel/prompts.yml`.
+Output directory: `assets/sprites/roster/hegel/source/animation-v2`
+Sheets: 5 · Frames per sheet: 16 (4×4) · Integration status: prompt-only
+Generated: 2026-07-19 · Review with `REVIEW_CHECKLIST.md` before slicing.
+
+---
+
+## idle_turn_4x4
+
+Output: `assets/sprites/roster/hegel/source/animation-v2/hegel_idle_turn_4x4.png`
+Clips: `idle_v2` (loop), `turn_left_v2` (once), `turn_right_v2` (once)
+
+```text
+Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: G.W.F. Hegel.
+Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16 cells.
+Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.
+
+G.W.F. Hegel — The Dialectician; role: evolving combo engine.
+Biography: German idealist of dialectic, history, contradiction, and Geist recast as a three-beat combo professor. One motion asserts, the next negates, the third resolves into synthesis.
+Appearance: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes.
+Palette: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D.
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block.
+Normals: Thesis Tap: short cane assertion, blue thesis spark, starter; Antithesis Break: cross-body cane/book strike, blue-gold crossing slash, advancing pressure; Synthesis Crown: cane rises book opens, small crown flash, launcher ender
+Specials: B>A Thesis Bolt: startup book opens to blue point, active cane releases compact bolt, impact simple moving node, recovery book half-closes; B<A Antithesis Reversal: startup book raised cane back, active blue counter pulse crosses body, impact gold flash snaps outward, recovery twist resolves; B>J Synthesis Dash: startup three motes align at feet, active dash in three beats, impact third beat gold hit, recovery cane planted; BvJ World-Spirit Domain: startup book opens both hands, active blue-gold spiral field, impact three linked nodes orbit, recovery crown glint fades
+Appearance continuity: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes
+Palette anchors: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block
+
+Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
+Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
+True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
+Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
+overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
+Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+
+
+SHEET: FINE IDLE AND TURN CYCLE.
+Frames 1-8 are one seamless right-facing idle loop:
+1 neutral contact pose and inhale start;
+2 chest/shoulders expand subtly, cloth and hair lag by one beat;
+3 weight moves toward the front foot, hands remain combat-ready;
+4 lowest settling pose, knees compress slightly;
+5 exhale and smallest upward recovery;
+6 weight moves toward the rear foot, head counterbalances;
+7 micro-adjustment of guard, prop, coat, robe, or hair according to character identity;
+8 loop bridge, almost frame 1 but with enough follow-through that 8-to-1 is fluid.
+
+Frames 9-12 are a controlled right-to-left turn in place:
+9 anticipate by loading the near foot;
+10 narrow mid-turn silhouette, shoulders and hips crossing at different times;
+11 plant facing left, trailing cloth/hair/prop catches up;
+12 settle into the same idle guard while facing left.
+
+Frames 13-16 return left-to-right:
+13 load the opposite foot;
+14 narrow mid-turn silhouette;
+15 plant facing right;
+16 settle into the frame-1 stance.
+
+Motion must be subtle and readable, never comedic bouncing. The character must not translate across the cells.
+Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
+excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+```
+
+---
+
+## walk_forward_backward_4x4
+
+Output: `assets/sprites/roster/hegel/source/animation-v2/hegel_walk_forward_backward_4x4.png`
+Clips: `walk_forward_v2` (loop), `walk_backward_v2` (loop)
+
+```text
+Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: G.W.F. Hegel.
+Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16 cells.
+Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.
+
+G.W.F. Hegel — The Dialectician; role: evolving combo engine.
+Biography: German idealist of dialectic, history, contradiction, and Geist recast as a three-beat combo professor. One motion asserts, the next negates, the third resolves into synthesis.
+Appearance: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes.
+Palette: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D.
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block.
+Normals: Thesis Tap: short cane assertion, blue thesis spark, starter; Antithesis Break: cross-body cane/book strike, blue-gold crossing slash, advancing pressure; Synthesis Crown: cane rises book opens, small crown flash, launcher ender
+Specials: B>A Thesis Bolt: startup book opens to blue point, active cane releases compact bolt, impact simple moving node, recovery book half-closes; B<A Antithesis Reversal: startup book raised cane back, active blue counter pulse crosses body, impact gold flash snaps outward, recovery twist resolves; B>J Synthesis Dash: startup three motes align at feet, active dash in three beats, impact third beat gold hit, recovery cane planted; BvJ World-Spirit Domain: startup book opens both hands, active blue-gold spiral field, impact three linked nodes orbit, recovery crown glint fades
+Appearance continuity: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes
+Palette anchors: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block
+
+Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
+Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
+True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
+Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
+overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
+Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+
+
+SHEET: EIGHT-FRAME FORWARD WALK AND EIGHT-FRAME BACKWARD WALK. Character faces right in all 16 cells.
+
+Frames 1-8, advancing walk loop:
+1 right heel contact / left toe push;
+2 weight accepts onto right leg, body at lowest point;
+3 left leg passes under pelvis, arms counter-swing;
+4 right leg supports, body at highest point;
+5 left heel contact / right toe push;
+6 weight accepts onto left leg, body at lowest point;
+7 right leg passes under pelvis, opposite arm counter-swing;
+8 left leg supports, body at highest point and loops cleanly to frame 1.
+
+Frames 9-16, guarded backward walk loop while still facing right:
+9 rear/left toe reaches back cautiously, guard tightens;
+10 weight shifts onto rear leg, torso stays oriented toward opponent;
+11 front/right foot passes back beneath pelvis, shoulders counter-rotate less than forward walk;
+12 rear leg supports, body rises slightly;
+13 front/right toe reaches back;
+14 weight shifts onto front/right leg without turning away;
+15 rear/left foot passes beneath pelvis;
+16 front/right leg supports and loops cleanly to frame 9.
+
+Forward and backward cycles must be visually distinct. Backward movement is defensive, shorter-stride, and never a mirrored forward walk.
+Root remains centered in every cell. Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
+excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+```
+
+---
+
+## run_start_loop_stop_4x4
+
+Output: `assets/sprites/roster/hegel/source/animation-v2/hegel_run_start_loop_stop_4x4.png`
+Clips: `run_start_v2` (once), `run_v2` (loop), `run_stop_v2` (once)
+
+```text
+Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: G.W.F. Hegel.
+Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16 cells.
+Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.
+
+G.W.F. Hegel — The Dialectician; role: evolving combo engine.
+Biography: German idealist of dialectic, history, contradiction, and Geist recast as a three-beat combo professor. One motion asserts, the next negates, the third resolves into synthesis.
+Appearance: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes.
+Palette: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D.
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block.
+Normals: Thesis Tap: short cane assertion, blue thesis spark, starter; Antithesis Break: cross-body cane/book strike, blue-gold crossing slash, advancing pressure; Synthesis Crown: cane rises book opens, small crown flash, launcher ender
+Specials: B>A Thesis Bolt: startup book opens to blue point, active cane releases compact bolt, impact simple moving node, recovery book half-closes; B<A Antithesis Reversal: startup book raised cane back, active blue counter pulse crosses body, impact gold flash snaps outward, recovery twist resolves; B>J Synthesis Dash: startup three motes align at feet, active dash in three beats, impact third beat gold hit, recovery cane planted; BvJ World-Spirit Domain: startup book opens both hands, active blue-gold spiral field, impact three linked nodes orbit, recovery crown glint fades
+Appearance continuity: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes
+Palette anchors: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block
+
+Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
+Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
+True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
+Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
+overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
+Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+
+
+SHEET: RUN ACCELERATION, EIGHT-FRAME RUN LOOP, AND BRAKING. Character faces right throughout.
+
+Frames 1-4, acceleration from idle:
+1 anticipation, hips lower and torso loads slightly forward;
+2 rear foot drives, first committed push-off;
+3 first long step, arms begin stronger counter-swing;
+4 reaches the same rhythm and body height as run-loop frame 5.
+
+Frames 5-12, seamless eight-frame run loop:
+5 right foot contact, left leg extended behind;
+6 compression/weight acceptance, lowest body point;
+7 left leg passes quickly under pelvis;
+8 airborne or light-support phase, highest body point;
+9 left foot contact, right leg extended behind;
+10 compression/weight acceptance;
+11 right leg passes quickly under pelvis;
+12 airborne or light-support phase that loops cleanly to frame 5.
+
+Frames 13-16, braking to idle:
+13 long braking contact ahead of the body;
+14 deep compression, torso counter-leans without losing balance;
+15 rebound and short corrective step;
+16 restored combat idle matching the approved idle sheet.
+
+Preserve character-specific run personality, but keep the biomechanics legible. No root translation and no speed-line background.
+Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
+excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+```
+
+---
+
+## jump_land_recovery_4x4
+
+Output: `assets/sprites/roster/hegel/source/animation-v2/hegel_jump_land_recovery_4x4.png`
+Clips: `jump_takeoff_v2` (once), `jump_air_v2` (once), `land_v2` (once), `land_recovery_v2` (once)
+
+```text
+Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: G.W.F. Hegel.
+Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16 cells.
+Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.
+
+G.W.F. Hegel — The Dialectician; role: evolving combo engine.
+Biography: German idealist of dialectic, history, contradiction, and Geist recast as a three-beat combo professor. One motion asserts, the next negates, the third resolves into synthesis.
+Appearance: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes.
+Palette: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D.
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block.
+Normals: Thesis Tap: short cane assertion, blue thesis spark, starter; Antithesis Break: cross-body cane/book strike, blue-gold crossing slash, advancing pressure; Synthesis Crown: cane rises book opens, small crown flash, launcher ender
+Specials: B>A Thesis Bolt: startup book opens to blue point, active cane releases compact bolt, impact simple moving node, recovery book half-closes; B<A Antithesis Reversal: startup book raised cane back, active blue counter pulse crosses body, impact gold flash snaps outward, recovery twist resolves; B>J Synthesis Dash: startup three motes align at feet, active dash in three beats, impact third beat gold hit, recovery cane planted; BvJ World-Spirit Domain: startup book opens both hands, active blue-gold spiral field, impact three linked nodes orbit, recovery crown glint fades
+Appearance continuity: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes
+Palette anchors: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block
+
+Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
+Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
+True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
+Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
+overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
+Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+
+
+SHEET: TAKEOFF, AIR ARC, LANDING, AND RECOVERY. Keep one consistent side-view camera and horizontal root anchor.
+
+Frames 1-4, takeoff:
+1 standing anticipation, knees and hips begin to load;
+2 deepest crouch/compression, arms prepare;
+3 explosive extension, toes still near baseline;
+4 clean takeoff, feet visibly leave the baseline.
+
+Frames 5-8, airborne arc:
+5 rising pose with limbs trailing;
+6 near apex, body longest and lightest;
+7 apex transition, vertical velocity visually near zero;
+8 beginning descent, limbs prepare for contact.
+
+Frames 9-12, landing:
+9 pre-contact with feet reaching for baseline;
+10 first contact, clear squash and impact absorption;
+11 deepest landing compression, torso and secondary cloth/hair continue downward;
+12 first recovery upward, balance returning.
+
+Frames 13-16, settle:
+13 small corrective step or character-specific stabilizing gesture;
+14 guard and head return to neutral height;
+15 secondary motion settles;
+16 exact reusable idle-ready pose.
+
+Do not add a floor, dust cloud, or scenery. A tiny contact accent inside frame 10 is allowed but must not obscure the feet.
+Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
+excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+```
+
+---
+
+## lane_guard_crouch_4x4
+
+Output: `assets/sprites/roster/hegel/source/animation-v2/hegel_lane_guard_crouch_4x4.png`
+Clips: `lane_away_v2` (once), `lane_toward_v2` (once), `crouch_v2` (once), `guard_v2` (once)
+
+```text
+Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: G.W.F. Hegel.
+Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+Every cell must be the same size, perfectly aligned, with no gutters, no margins, no border, no labels, no text.
+Use true alpha transparency. Keep the same character identity, costume, palette, scale, camera angle, lighting, and pixel density in all 16 cells.
+Right-facing side-view fighter poses unless a frame explicitly says left-facing recovery. Keep the full body inside every cell.
+Crisp readable 2D arcade pixel art, limited palette, strong silhouette. Prioritize body pose clarity over large magical effects.
+
+G.W.F. Hegel — The Dialectician; role: evolving combo engine.
+Biography: German idealist of dialectic, history, contradiction, and Geist recast as a three-beat combo professor. One motion asserts, the next negates, the third resolves into synthesis.
+Appearance: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes.
+Palette: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D.
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block.
+Normals: Thesis Tap: short cane assertion, blue thesis spark, starter; Antithesis Break: cross-body cane/book strike, blue-gold crossing slash, advancing pressure; Synthesis Crown: cane rises book opens, small crown flash, launcher ender
+Specials: B>A Thesis Bolt: startup book opens to blue point, active cane releases compact bolt, impact simple moving node, recovery book half-closes; B<A Antithesis Reversal: startup book raised cane back, active blue counter pulse crosses body, impact gold flash snaps outward, recovery twist resolves; B>J Synthesis Dash: startup three motes align at feet, active dash in three beats, impact third beat gold hit, recovery cane planted; BvJ World-Spirit Domain: startup book opens both hands, active blue-gold spiral field, impact three linked nodes orbit, recovery crown glint fades
+Appearance continuity: stern professor face, heavy brow, dark academic coat, warm waistcoat, cravat, book-and-cane hybrid weapon, formal shoes
+Palette anchors: academic coat #2A2625, shadow #141212, waistcoat #6B4A35, book ivory #D8C7A1, dialectic blue #4F7DB5, synthesis gold #E0B84D
+Animation identity: three-beat torso sway, deliberate lecturing walk, accelerating argumentative march, heavy professor leap, book-and-cane contradiction block
+
+Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
+Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
+True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
+Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
+overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
+Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+
+
+SHEET: 2.5D LANE SHIFTS, CROUCH TRANSITION, AND GUARD TRANSITION.
+
+Frames 1-4, sidestep away from camera into the rear lane: load, diagonal push, crossing/passing step, planted recovery.
+Frames 5-8, sidestep toward camera into the front lane: load, diagonal push, crossing/passing step, planted recovery.
+Keep the side-view fighting silhouette; suggest depth through foreshortened feet, shoulder overlap, and small scale cues, not a camera turn.
+
+Frames 9-12, crouch transition: standing guard, descent, stable crouch, rise toward standing. Keep the head protected and feet planted.
+Frames 13-16, guard transition: neutral guard, guard raise, firm held block, controlled guard release toward neutral.
+
+Defensive poses must remain character-specific. No shield unless the character owns one. No perspective background or floor grid.
+Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
+background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
+excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+```
+
+---

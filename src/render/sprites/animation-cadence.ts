@@ -1,4 +1,13 @@
-const LOCOMOTION_CLIPS = new Set(['idle', 'run']);
+const LOCOMOTION_CLIPS = new Set([
+  'idle',
+  'run',
+  'idle_v2',
+  'walk_forward_v2',
+  'walk_backward_v2',
+  'run_start_v2',
+  'run_v2',
+  'run_stop_v2',
+]);
 
 export function resolveAnimationPlaybackTarget(state: string, locomotionSpeed: number): number {
   const speed = Number.isFinite(locomotionSpeed) ? Math.max(0, locomotionSpeed) : 0;

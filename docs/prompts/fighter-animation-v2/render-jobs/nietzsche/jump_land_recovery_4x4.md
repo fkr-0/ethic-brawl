@@ -1,12 +1,19 @@
 ---
 generated: true
 generated_by: "docs/prompts/fighter-animation-v2/render-prompts.py"
-prompt_pack_version: 1
+prompt_pack_version: 3
 character_id: "nietzsche"
 character_title: "Friedrich Nietzsche"
 prompt_id: "jump_land_recovery_4x4"
-status: pending_render
+job_id: "nietzsche__jump_land_recovery_4x4"
+status: rendered_unreviewed
 output_image: "assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_jump_land_recovery_4x4.png"
+frames: 16
+grid:
+  columns: 4
+  rows: 4
+cell_size: [256, 256]
+output_size: [1024, 1024]
 reference_images:
   - "assets/sprites/roster/nietzsche/source/nietzsche_core_4x4.png"
 source_character: "characters/nietzsche/prompts.yml"
@@ -21,7 +28,8 @@ This file is one complete Animation v2 render job. Copy only the text in the **P
 
 - Output image: `assets/sprites/roster/nietzsche/source/animation-v2/nietzsche_jump_land_recovery_4x4.png`
 - Sheet geometry: 4×4 cells, 16 frames, row-major
-- Review state: `pending_render`
+- Output geometry: 1024×1024 RGBA, 256×256 per cell
+- Review state: `rendered_unreviewed`
 
 ## Suggested reference images
 
@@ -59,45 +67,28 @@ Animation identity: coiled hammer idle, swaggering walk, reckless forward run, a
 
 Create EXACTLY one square RGBA sprite sheet arranged as a perfect 4x4 grid: 16 equal cells, read left-to-right and top-to-bottom.
 Use at least 1024x1024 pixels and dimensions divisible by four. No gutters, margins, borders, labels, captions, numbers, UI, or scenery.
-True alpha transparency only. One full-body fighter in every cell. Orthographic side-view arcade camera. Stable ground baseline.
-Keep character identity, face, costume, prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
-Crisp deliberate pixel art with a limited palette and readable silhouette. Do not paint intermediate blur; each cell is a clean animation drawing.
-Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show movement through stride, compression, weight transfer,
-overlap, and counter-swing. Do not move the character progressively across the sheet. The game engine supplies screen translation.
-Keep feet inside the cell, keep effects compact, and never connect marks across cell boundaries.
+True alpha transparency only. One complete full-body fighter in every cell. Orthographic side-view arcade camera. Stable grounded baseline.
+Keep character identity, face, costume, permanent prop, palette, scale, lighting, outline weight, and pixel density identical in all cells.
+Crisp deliberate pixel art with a limited palette and readable silhouette. Every cell is one clean animation drawing, never a blurred in-between.
+Root-lock every grounded frame: keep the pelvis/root near the same cell coordinate. Show motion through stride, compression, weight transfer,
+overlap, recoil, and counter-swing. Never bake progressive screen translation into a sheet; the game engine owns world movement.
+Keep feet, hair, cloth, props, weapons, particles, projectiles, and effect trails fully inside their cell. Never connect marks across boundaries.
+Temporary items or special props may appear only in the rows that explicitly require them. They must not alter the reusable idle silhouette.
+Only the named fighter may appear. Hit-reaction and throw frames must not include a second complete opponent body.
 
-SHEET: TAKEOFF, AIR ARC, LANDING, AND RECOVERY. Keep one consistent side-view camera and horizontal root anchor.
+SHEET: TAKEOFF, AIR ARC, LANDING, AND RECOVERY. Keep one camera and one horizontal root anchor.
 
-Frames 1-4, takeoff:
-1 standing anticipation, knees and hips begin to load;
-2 deepest crouch/compression, arms prepare;
-3 explosive extension, toes still near baseline;
-4 clean takeoff, feet visibly leave the baseline.
+Frames 1-4, takeoff: standing anticipation; deepest crouch; explosive extension with toes near baseline; clean takeoff.
+Frames 5-8, airborne arc: rising pose; near apex; apex transition; beginning descent and contact preparation.
+Frames 9-12, landing: pre-contact; first contact and squash; deepest compression; first recovery upward.
+Frames 13-16, settle: corrective step; guard returns; secondary motion settles; exact idle-ready pose.
 
-Frames 5-8, airborne arc:
-5 rising pose with limbs trailing;
-6 near apex, body longest and lightest;
-7 apex transition, vertical velocity visually near zero;
-8 beginning descent, limbs prepare for contact.
-
-Frames 9-12, landing:
-9 pre-contact with feet reaching for baseline;
-10 first contact, clear squash and impact absorption;
-11 deepest landing compression, torso and secondary cloth/hair continue downward;
-12 first recovery upward, balance returning.
-
-Frames 13-16, settle:
-13 small corrective step or character-specific stabilizing gesture;
-14 guard and head return to neutral height;
-15 secondary motion settles;
-16 exact reusable idle-ready pose.
-
-Do not add a floor, dust cloud, or scenery. A tiny contact accent inside frame 10 is allowed but must not obscure the feet.
+Do not add a floor or scenery. One tiny contact accent inside frame 10 is allowed but must not obscure the feet.
 Negative prompt: blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background, non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet, motion trails crossing cell boundaries, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, costume changes, face changes, weapon changes, prop disappears, unreadable silhouette, blurry, painterly, 3d render, realistic photo, vector art, smooth gradient rendering, anti-aliased fringe, multiple characters,
-background, scenery, checkerboard, text, letters, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
-inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing prop size,
+background, scenery, checkerboard, text, letters, equations, labels, captions, watermark, logo, frame numbers, uneven grid, gutters,
+inconsistent cell sizes, cropped body, cut-off feet, changing face, changing costume, changing palette, changing permanent prop size,
 camera rotation, zoom changes, root drifting across cells, duplicate poses, skipped motion phases, motion smear, cross-cell trails,
-excessive glow, effects hiding the body, cast shadows extending into neighboring cells
+excessive glow, effects hiding the body, giant projectiles, detached limbs, cast shadows extending into neighboring cells
 ```
 
 ## Acceptance

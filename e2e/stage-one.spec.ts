@@ -10,7 +10,9 @@ async function getSnapshot(page: Page): Promise<E2EProbeSnapshot> {
 }
 
 async function waitForScene(page: Page, scene: E2EProbeSnapshot['currentScene']): Promise<void> {
-  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', scene ?? 'none');
+  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', scene ?? 'none', {
+    timeout: 20_000,
+  });
 }
 
 async function resolveCurrentMatch(page: Page, winner: 1 | 2): Promise<void> {
@@ -63,7 +65,7 @@ async function damageEnemyWithPlayerOne(page: Page, startingHealth: number): Pro
   return (await getSnapshot(page)).fight.player2Health ?? startingHealth;
 }
 
-test('loads every coded sprite and completes the Babylon Stage 1 vertical slice', async ({
+test('loads only the selected matchup and completes the Babylon Stage 1 vertical slice', async ({
   page,
 }) => {
   const runtimeErrors: string[] = [];
@@ -81,8 +83,8 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   await waitForScene(page, 'start');
 
   const bootSnapshot = await getSnapshot(page);
-  expect(bootSnapshot.sprites.requestedCharacters).toBe(18);
-  expect(bootSnapshot.sprites.loadedCharacters).toBe(18);
+  expect(bootSnapshot.sprites.requestedCharacters).toBe(0);
+  expect(bootSnapshot.sprites.loadedCharacters).toBe(0);
   expect(bootSnapshot.sprites.failedCharacters).toEqual([]);
   expect(bootSnapshot.canvas.width).toBe(960);
   expect(bootSnapshot.canvas.height).toBe(540);
@@ -94,7 +96,8 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   expect(bootSnapshot.renderer.rendererNeutralPresentation).toBe(true);
 
   await tapKey(page, 's');
-  await expect(page.locator('#e2e-status')).toHaveAttribute('data-start-menu-index', '1');
+  await tapKey(page, 's');
+  await expect(page.locator('#e2e-status')).toHaveAttribute('data-start-menu-index', '2');
   await tapKey(page, 'Enter');
   await waitForScene(page, 'character-select');
 
@@ -115,6 +118,9 @@ test('loads every coded sprite and completes the Babylon Stage 1 vertical slice'
   await tapKey(page, 'Enter');
   await waitForScene(page, 'fight');
   snapshot = await getSnapshot(page);
+  expect(snapshot.sprites.requestedCharacters).toBe(2);
+  expect(snapshot.sprites.loadedCharacters).toBe(2);
+  expect(snapshot.sprites.failedCharacters).toEqual([]);
   expect(snapshot.fight.player1Character).toBe('camus');
   expect(snapshot.fight.player2Character).toBe('socrates');
   expect(snapshot.fight.player2AIDifficulty).toBe('easy');

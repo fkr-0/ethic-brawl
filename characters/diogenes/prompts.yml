@@ -1,0 +1,226 @@
+version: 2
+character_id: diogenes
+title: Diogenes of Sinope
+purpose: Highly distinctive feasible 4x4 sprite-grid prompts for image-rendering LLMs.
+common_prompt_prefix: |
+  Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: Diogenes of Sinope.
+
+  Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+  Every cell must be the same size and perfectly aligned, with no gutters, margins, border, labels, captions, or text.
+  Use true alpha transparency. Keep character identity, costume, palette, scale, camera angle, lighting, and pixel density identical in all 16 cells.
+  Use a right-facing orthographic side-view fighter camera unless a frame explicitly turns or falls. Keep the complete body and every prop inside its cell.
+  Crisp readable 2D arcade pixel art, limited palette, hard-edged clusters, and a strong silhouette. Prioritize body mechanics over decorative effects.
+character_sprite_brief: |
+  Diogenes of Sinope — The Cynic; role: scrappy defensive disruptor.
+
+  Biography: an old ascetic philosopher who rejects status, comfort, and polite hypocrisy. He fights from a low feral stance, exposes pretension with a lantern, and uses a battered storage tub or barrel only during named special moves.
+
+  Appearance: elderly lean wiry body, weathered face, long rough gray beard and gray hair, bare lower legs, simple light Greek tunic, sun-bleached cream himation or tattered cloak, rope belt, worn leather sandals or bare feet. A small bronze lantern is the permanent readable prop. Keep the clothes traditional, pale, practical, and visibly patched rather than modern or armored.
+
+  Palette: linen cream #D8C9A5, weathered ochre #9A6B35, olive brown #5E5038, beard gray #9A9488, bronze #A86F32, lantern gold #F4C95D, tiny truth-cyan accent #59DDE8.
+
+  Animation identity: hunched low center of gravity, abrupt dog-like cadence, long forward lean, asymmetric cloak drag, suspicious head turns, scrappy hooking swats, shoulder checks, and short rising kicks. The lantern follows the wrist with delayed secondary motion but never changes size.
+
+  Normals: Barrel Flick, Lantern Swipe, and Dog's Kick. Specials: Lantern Truth Flash, Barrel Roll Quake, Beggar's Scramble, and Tub Retreat.
+negative_prompt: >-
+  blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background,
+  non-transparent background, checkerboard background, text, letters, labels, captions, speech bubbles, UI elements,
+  watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes, cropped limbs, cut-off feet,
+  cross-cell motion trails, duplicate frames, heavy glow, bloom, soft shadow halos, anti-aliased fringe, young face,
+  black modern clothing, red superhero costume, polished armor, giant lantern, permanent barrel, costume changes,
+  beard changes, prop disappears, unreadable silhouette
+palette_anchors: 'linen cream #D8C9A5, weathered ochre #9A6B35, olive brown #5E5038, beard gray #9A9488, bronze #A86F32, lantern gold #F4C95D, truth cyan #59DDE8'
+appearance_bible: elderly lean ascetic with weathered face, long rough gray beard and hair, pale traditional Greek tunic and patched himation, rope belt, worn sandals or bare feet, one small bronze lantern; tub or barrel appears only in named specials
+animation_bible: hunched low center, abrupt feral cadence, asymmetric cloak drag, scrappy hooking swats, shoulder checks, short rising kicks, lantern wrist-lag and suspicious head movement
+move_render_descriptions:
+  normal_moves:
+    - name: Barrel Flick
+      pose: short low knuckle or palm flick from a guarded hunch, as if dismissing an opponent
+      vfx: tiny ochre dust snap, no actual barrel required
+      gameplay: fast interrupting poke
+    - name: Lantern Swipe
+      pose: compact hooking swipe led by the lantern hand while the rear shoulder protects the chin
+      vfx: narrow lantern-gold crescent with a tiny cyan truth spark
+      gameplay: medium-range pressure strike
+    - name: Dog's Kick
+      pose: scrappy rising knee into a short shin or heel kick, torso still hunched
+      vfx: dusty contact burst and one bronze edge flash
+      gameplay: heavy launcher-flavored ender
+  special_moves:
+    - command: B>A
+      commandSlot: BFA
+      name: Lantern Truth Flash
+      startup: shelters the lantern near the chest while harsh light gathers behind the shutter
+      active: lunges and thrusts the lantern forward, opening a compact white-gold truth beam
+      impact: cyan-edged flare exposes the target without hiding Diogenes' silhouette
+      recovery: arm recoils, lantern swings once, and the hunched guard returns
+    - command: BvA
+      commandSlot: BDA
+      name: Barrel Roll Quake
+      startup: braces low and shoves a battered tub or small barrel from beside the body
+      active: rolling barrel leaves the hands while Diogenes follows with a grounded push
+      impact: compact ochre shock ring and barrel bounce remain inside the cell
+      recovery: straightens only slightly, dust settles, barrel is no longer part of the idle silhouette
+    - command: B>J
+      commandSlot: BFJ
+      name: Beggar's Scramble
+      startup: drops onto the front foot with cloak and free hand close to the ground
+      active: armored low scramble-dash with elbows tucked and lantern protected
+      impact: shoulder or hip check with a brief gold contact flash
+      recovery: short skid, suspicious look back, and return to low guard
+    - command: B<J
+      commandSlot: BBJ
+      name: Tub Retreat
+      startup: twists backward and pulls the battered tub between himself and the opponent
+      active: retreats in a low sliding defensive motion behind the tub rim
+      impact: bronze counter flash at the rim while the body remains readable
+      recovery: emerges from cover, tub vanishes from the reusable neutral silhouette, lantern settles
+
+grids:
+  - id: diogenes_grid01_movement
+    output: characters/diogenes/sprites/diogenes_grid01_movement.png
+    role: Basic Movement Prompt
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 01 MOVEMENT. Frames 1-2 idle variants, 3-4 light/heavy hurt, 5-8 walk cycle, 9-12 low abrupt run cycle, 13 takeoff, 14 airborne tuck, 15 running jump, 16 full-body KO. Keep the gray beard, pale Greek clothes, lantern size, and low center consistent.
+  - id: diogenes_grid02_fighting
+    output: characters/diogenes/sprites/diogenes_grid02_fighting.png
+    role: Basic Fighting Prompt
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 02 FIGHTING. Frames 1-3 Barrel Flick startup/impact/recovery. Frames 4-6 Lantern Swipe startup/impact/recovery. Frames 7-9 Dog's Kick startup/impact/landing recovery. Frames 10-12 low evasion, guarded frame, punish-ready exit. Frames 13-14 basic and fortified guard. Frames 15-16 cynical victory poses, one raising the lantern.
+  - id: diogenes_grid03_throws_consumes_swings
+    output: characters/diogenes/sprites/diogenes_grid03_throws_consumes_swings.png
+    role: Throwing / Consuming / Swinging Motions + Character Combos
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 03 INTERACTIONS. Frames 1-4 pickup and throw a small neutral item. Frames 5-8 use or consume an item and return to guard. Frames 9-12 swing a generic handheld item with startup, impact, follow-through, reset. Frames 13-16 are one compact key pose for Lantern Truth Flash, Barrel Roll Quake, Beggar's Scramble, and Tub Retreat in that order.
+  - id: diogenes_grid04_specials
+    output: characters/diogenes/sprites/diogenes_grid04_specials.png
+    role: Specials Prompt
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 04 SPECIALS. One row per move, four phases each: startup, active, impact or sustain, recovery. Row 1 Lantern Truth Flash. Row 2 Barrel Roll Quake. Row 3 Beggar's Scramble. Row 4 Tub Retreat. Effects remain compact and the old gray-bearded fighter stays fully visible.
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent grounded baseline
+    pixel_density: crisp pixel-art edges with hard clusters; no painterly gradients or anti-aliased glow fringe
+    silhouette_rule: full body and lantern remain inside every cell; barrel or tub exists only during its named special
+  texture_materials:
+    base_costume: pale patched Greek linen, rope belt, worn sandals, old gray beard, small bronze lantern
+    cloth: coarse linen with two or three tone clusters and visibly repaired hems
+    skin_hair: weathered skin, gray beard clumps, and a stable elderly facial silhouette
+    metal_or_prop: bronze lantern with one gold edge and dark underside; fixed size throughout
+    vfx: lantern gold, dusty ochre, and tiny truth-cyan accents; effects stay behind or around the fighter
+  palette_budget:
+    primary: '#D8C9A5'
+    secondary: '#9A6B35'
+    accent: '#5E5038'
+    vfx_1: '#F4C95D'
+    vfx_2: '#59DDE8'
+    shadow: '#302A22'
+    rule: no more than two bright VFX colors beyond the anchors
+  edge_and_shadow_rules:
+    - Use a stable one-pixel dark outline around the readable silhouette.
+    - Keep grounded feet aligned except authored squash or knockdown.
+    - Use only a tiny in-cell contact shadow when absolutely necessary.
+    - Never allow cloak, light beam, dust, barrel, or lantern trail to cross a cell boundary.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay and runtime validation only
+    replacement_ready: final generated sheets should preserve this identity bible and canonical output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Diogenes as an old ascetic low-moving disruptor
+    beats:
+      1-2: two lantern-breathing idle variants
+      3-4: light and heavy recoil without losing beard or cloak identity
+      5-8: guarded walk cycle
+      9-12: abrupt low run cycle
+      13-15: takeoff, air, running jump
+      '16': full-body KO
+  grid02_fighting_storyboard:
+    intent: show the scrappy three-hit normal vocabulary and defensive identity
+    beats:
+      1-3: Barrel Flick
+      4-6: Lantern Swipe
+      7-9: Dog's Kick
+      10-12: evasion into guard and punish-ready exit
+      13-14: guard variants
+      15-16: lantern-centered victory poses
+  grid03_interaction_storyboard:
+    intent: cover generic item actions and four special key poses
+    beats:
+      1-4: pickup and throw
+      5-8: use or consume
+      9-12: swing item
+      '13': Lantern Truth Flash
+      '14': Barrel Roll Quake
+      '15': Beggar's Scramble
+      '16': Tub Retreat
+  grid04_specials_storyboard:
+    intent: one row per current command special
+    rows:
+      row1_frames_1_4: 'B>A Lantern Truth Flash: startup, active, impact, recovery'
+      row2_frames_5_8: 'BvA Barrel Roll Quake: startup, active, impact, recovery'
+      row3_frames_9_12: 'B>J Beggar''s Scramble: startup, active, impact, recovery'
+      row4_frames_13_16: 'B<J Tub Retreat: startup, active, impact, recovery'
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, weathered side-facing portrait, no background clutter
+    must_show:
+      - old gray beard and eyes
+      - pale Greek cloak and rope-belt identity
+      - small bronze lantern or lantern glow
+    avoid:
+      - youthful face
+      - modern black clothing
+      - permanent barrel
+      - excessive glow
+  roster_card:
+    display_name: Diogenes of Sinope
+    role_line: scrappy defensive disruptor
+    mechanic_line: lantern truth, barrel physics, armored scrambles, cynical counters
+    color_strip:
+      primary: '#D8C9A5'
+      secondary: '#9A6B35'
+      accent: '#F4C95D'
+  ability_icons:
+    - slot: B>A
+      label: Lantern Truth Flash
+      icon_read: small open lantern emitting a narrow truth ray
+    - slot: BvA
+      label: Barrel Roll Quake
+      icon_read: battered barrel over a compact ground ring
+    - slot: B>J
+      label: Beggar's Scramble
+      icon_read: low hunched dash silhouette
+    - slot: B<J
+      label: Tub Retreat
+      icon_read: defensive tub rim with a counter spark
+  hud_meter:
+    name: Cynic's Disregard
+    fill_color: '#F4C95D'
+    empty_color: '#302A22'
+    readability: use shape and value contrast, not hue alone
+  hit_spark_family:
+    normal: '#D8C9A5'
+    special: '#F4C95D'
+    counter_or_field: '#59DDE8'
+    rule: effects should remain dusty and compact rather than magical spectacle

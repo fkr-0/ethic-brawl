@@ -6,8 +6,6 @@
 import { ARCADE_RUNTIME_VERSION, defineArcadeRenderPlan } from '../../vendor/arcade-runtime.mjs';
 
 export const ETHIC_ARCADE_RUNTIME_VERSION = ARCADE_RUNTIME_VERSION;
-/** @deprecated Use ETHIC_ARCADE_RUNTIME_VERSION. */
-export const ETHIC_ARCADE_PIXI_RUNTIME_VERSION = ETHIC_ARCADE_RUNTIME_VERSION;
 
 export const ETHIC_PIXI_LAYERS = [
   'backdrop',
@@ -39,21 +37,21 @@ export const ETHIC_PIXI_RENDER_PLAN = defineArcadeRenderPlan(
       name: 'background',
       layer: 'backdrop',
       legacyPass: 'background',
-      migration: 'canvas-bridge',
+      migration: 'native',
       activation: 'ready',
     },
     {
       name: 'stage-depth',
       layer: 'world-back',
       legacyPass: 'stageDepth',
-      migration: 'canvas-bridge',
+      migration: 'native',
       activation: 'ready',
     },
     {
       name: 'arena',
       layer: 'world',
       legacyPass: 'arena',
-      migration: 'canvas-bridge',
+      migration: 'native',
       activation: 'ready',
     },
     {
@@ -61,7 +59,7 @@ export const ETHIC_PIXI_RENDER_PLAN = defineArcadeRenderPlan(
       layer: 'actors',
       legacyPass: 'fighters',
       migration: 'native',
-      activation: 'planned',
+      activation: 'ready',
       required: true,
     },
     {
@@ -69,7 +67,7 @@ export const ETHIC_PIXI_RENDER_PLAN = defineArcadeRenderPlan(
       layer: 'projectiles',
       legacyPass: 'projectiles',
       migration: 'native',
-      activation: 'planned',
+      activation: 'ready',
     },
     {
       name: 'combat-vfx',
@@ -83,13 +81,13 @@ export const ETHIC_PIXI_RENDER_PLAN = defineArcadeRenderPlan(
       layer: 'world-front',
       legacyPass: 'foreground',
       migration: 'canvas-bridge',
-      activation: 'ready',
+      activation: 'planned',
     },
     {
       name: 'fight-hud',
       layer: 'hud',
       legacyPass: 'fightHud',
-      migration: 'canvas-bridge',
+      migration: 'native',
       activation: 'ready',
     },
     {
@@ -97,12 +95,10 @@ export const ETHIC_PIXI_RENDER_PLAN = defineArcadeRenderPlan(
       layer: 'overlay',
       legacyPass: 'sceneUi',
       migration: 'canvas-bridge',
-      activation: 'ready',
+      activation: 'planned',
     },
   ] as const,
   { layers: ETHIC_PIXI_LAYERS }
 );
 
-export const ETHIC_PIXI_BRIDGE_PASSES = ETHIC_PIXI_RENDER_PLAN.filter(
-  (pass) => pass.migration === 'canvas-bridge' && pass.activation === 'ready'
-);
+export const ETHIC_PIXI_BRIDGE_PASSES = [] as readonly (typeof ETHIC_PIXI_RENDER_PLAN)[number][];

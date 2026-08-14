@@ -27,6 +27,27 @@
 - [ ] Jump takeoff, apex, descent, contact, compression, and recovery are all distinct.
 - [ ] No adjacent poses are duplicates.
 
+## Combat and interaction continuity
+
+- [ ] Every normal-attack row has distinct startup, active, follow-through, and recovery poses.
+- [ ] Light, medium, and heavy normals differ clearly in commitment, reach, and recovery.
+- [ ] The air attack remains airborne through its active phase and ends in a landing-ready pose.
+- [ ] Forward dash, backdash, evade, and throw remain distinct from walk/run and from hit reactions.
+- [ ] Throw frames contain only the caster motion, not an inconsistent second opponent body.
+- [ ] Pickup, throw, use, and swing preserve item size, grip, and attachment between adjacent phases.
+- [ ] Held guard, parry, guard break, and counter cannot be mistaken for one another.
+- [ ] Light hit, heavy hit, knockdown, and get-up form continuous trajectories without teleporting limbs or props.
+- [ ] Each special row follows the exact character-bible move order and reads as startup, active, impact/sustain, recovery.
+- [ ] Intro, taunt, victory, and defeat return to reusable or stable endpoint poses where specified.
+
+## Effect-sheet continuity
+
+- [ ] Effect sheets contain no fighter body, opponent, scenery, labels, or readable symbols.
+- [ ] Each special-effect row matches the palette and mechanic of the corresponding caster-special row.
+- [ ] Telegraph/spawn, active/travel or sustain, impact peak, and dissipation are visibly distinct.
+- [ ] Physical specials use appropriate dust, trail, shock, counter, or field effects instead of invented generic projectiles.
+- [ ] Effect origin and scale remain stable, with no fragment or glow touching a cell boundary.
+
 ## Gameplay readability
 
 - [ ] Forward and backward intent is readable at 128-pixel character height.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T13:27:59.526Z",
+  "generatedAt": "2026-07-23T23:05:31.979Z",
   "renderer": "@arcade/runtime drawArcadeSpriteCanvasFrame + Ethic presentation policy",
   "canvas": {
     "internal": {
@@ -14,28 +14,28 @@
   "captures": [
     {
       "file": "ethic-fight-idle.png",
-      "bytes": 194037,
-      "sha256": "fb4fdef957eb06a78e0fab067ff4ae11f2d4c9cf8851ff5141dbefe1a26b6c95",
+      "bytes": 209220,
+      "sha256": "726d3994049bfca0353fd97e3e5339fb46c63b585c4b145d26d17304235d02df",
       "captureSpace": "display",
       "width": 1280,
       "height": 720,
       "characterId": "foucault",
-      "clipId": "idle",
+      "clipId": "idle_v2",
       "atlasFrameIndex": 1,
-      "depthScale": 0.9614173228346456
+      "depthScale": 0.65
     },
     {
       "file": "ethic-light-attack-active.png",
-      "bytes": 288179,
-      "sha256": "32e0d2e128856ec234f56038e96d0ead718e66e2013e76ebc4abec360e35721f",
+      "bytes": 287948,
+      "sha256": "6414e746865229c675e6d8b9895e14661d8d77fe55a0156ba4f0d93786a48b77",
       "captureSpace": "internal-canvas",
       "width": 960,
       "height": 540,
       "characterId": "foucault",
       "clipId": "attack_light_active",
       "attackPhase": "active",
-      "atlasFrameIndex": 16,
-      "depthScale": 0.9614173228346456
+      "atlasFrameIndex": 96,
+      "depthScale": 0.65
     }
   ]
 }

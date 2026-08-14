@@ -37,7 +37,7 @@ describe('major release readiness assets', () => {
       'validation.totalFrames',
       "observeAttackClipSequence(page, 'j', 'attack_light')",
       "observeAttackClipSequence(page, 'i', 'attack_special')",
-      "clipId === 'hitstun'",
+      "['hitstun', 'hit_light_v2'].includes",
       'transitionFromClipId',
       'depthScale',
     ]) {

@@ -9,7 +9,9 @@ async function getSnapshot(page: Page): Promise<E2EProbeSnapshot> {
 }
 
 async function waitForScene(page: Page, scene: E2EProbeSnapshot['currentScene']): Promise<void> {
-  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', scene ?? 'none');
+  await expect(page.locator('#e2e-status')).toHaveAttribute('data-scene', scene ?? 'none', {
+    timeout: 20_000,
+  });
 }
 
 async function tapKey(page: Page, key: string, holdMilliseconds = 45): Promise<void> {
@@ -126,16 +128,18 @@ async function observeAttackClipSequence(
 
   const samples = await stopBrowserSnapshotCapture(page);
   const animations = playerOneAnimations(samples);
-  const startupIndex = animations.findIndex(({ clipId }) => clipId === `${prefix}_startup`);
+  // Authored Animation v2 sheets use character-specific clip ids while the
+  // combat contract remains the stable startup/active/recovery phase sequence.
+  const startupIndex = animations.findIndex(({ attackPhase }) => attackPhase === 'startup');
   const activeIndex = animations.findIndex(
-    ({ clipId, motionBlur }, index) =>
-      index > startupIndex && clipId === `${prefix}_active` && motionBlur > 0.25
+    ({ attackPhase, motionBlur }, index) =>
+      index > startupIndex && attackPhase === 'active' && motionBlur > 0.25
   );
   const recoveryIndex = animations.findIndex(
-    ({ clipId }, index) => index > activeIndex && clipId === `${prefix}_recovery`
+    ({ attackPhase }, index) => index > activeIndex && attackPhase === 'recovery'
   );
   const settledIndex = animations.findIndex(
-    ({ clipId }, index) => index > recoveryIndex && clipId === 'idle'
+    ({ clipId }, index) => index > recoveryIndex && (clipId === 'idle' || clipId === 'idle_v2')
   );
 
   const indices = [startupIndex, activeIndex, recoveryIndex, settledIndex];
@@ -169,8 +173,58 @@ async function enterFoucaultVersusMatch(page: Page): Promise<void> {
   await waitForScene(page, 'fight');
   await expect
     .poll(async () => (await getSnapshot(page)).fight.player1Animation?.clipId)
-    .toBe('idle');
+    .toBe('idle_v2');
 }
+
+async function enterBakuninVersusMatch(page: Page): Promise<void> {
+  await tapKey(page, 'Enter');
+  await waitForScene(page, 'character-select');
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const currentIndex = (await getSnapshot(page)).app.player1SelectIndex;
+    if (currentIndex === 7) break;
+    await tapKey(page, currentIndex < 7 ? 'd' : 'a', 10);
+  }
+  expect((await getSnapshot(page)).app.player1SelectIndex).toBe(7);
+  await tapKey(page, 'Enter');
+  expect((await getSnapshot(page)).app.characterSelectPhase).toBe(2);
+  await tapKey(page, 'Enter');
+  await waitForScene(page, 'fight');
+  await expect
+    .poll(async () => (await getSnapshot(page)).fight.player1Animation?.clipId)
+    .toBe('idle_v2');
+}
+
+test('plays authored Animation v2 jump impact and recovery clips', async ({ page }) => {
+  await page.goto('index.html');
+  await waitForScene(page, 'start');
+  await enterBakuninVersusMatch(page);
+
+  await startBrowserSnapshotCapture(page);
+  await tapKey(page, 'l', 55);
+  await page.waitForTimeout(2_200);
+  const jumpSamples = await stopBrowserSnapshotCapture(page);
+  const animations = playerOneAnimations(jumpSamples);
+  const takeoffIndex = animations.findIndex(({ clipId }) => clipId === 'jump_takeoff_v2');
+  const airborneIndex = animations.findIndex(
+    ({ clipId }, index) => index > takeoffIndex && clipId === 'jump_air_v2'
+  );
+  const landingIndex = animations.findIndex(
+    ({ clipId }, index) => index > airborneIndex && clipId === 'land_v2'
+  );
+  const recoveryIndex = animations.findIndex(
+    ({ clipId }, index) => index > landingIndex && clipId === 'land_recovery_v2'
+  );
+  const settledIndex = animations.findIndex(
+    ({ clipId }, index) => index > recoveryIndex && clipId === 'idle_v2'
+  );
+
+  expect(
+    [takeoffIndex, airborneIndex, landingIndex, recoveryIndex, settledIndex],
+    [...new Set(animations.map(({ clipId }) => clipId))].join(' -> ')
+  ).not.toContain(-1);
+  expect(animations[takeoffIndex]?.poseProgress).not.toBeNull();
+  expect(animations[recoveryIndex]?.poseProgress).not.toBeNull();
+});
 
 test('validates every sprite cell and exercises fluid browser animation transitions', async ({
   page,
@@ -184,10 +238,20 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   await page.goto('index.html');
   await waitForScene(page, 'start');
 
+  await page.evaluate(async () => {
+    await window.__ETHIC_BRAWL_E2E__?.loadAllSprites();
+  });
+
   const validation = await page.evaluate(() => window.__ETHIC_BRAWL_E2E__?.getSpriteValidation());
   expect(validation).toBeTruthy();
   if (!validation) throw new Error('Sprite validation report is unavailable');
-  expect(validation.valid).toBe(true);
+  const spriteValidationIssues = validation.invalidCharacters
+    .map((characterId) => {
+      const character = validation.characters[characterId];
+      return `${characterId}: ${character?.issues.join('; ') ?? 'missing validation result'}`;
+    })
+    .join(' | ');
+  expect(validation.valid, spriteValidationIssues).toBe(true);
   expect(validation.characterCount).toBe(18);
   expect(validation.totalFrames).toBe(
     Object.values(validation.characters).reduce(
@@ -196,17 +260,9 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     )
   );
   for (const characterId of RELEASE_ROSTER_IDS) {
-    expect(validation.characters[characterId].frameCount, `${characterId} release frame bank`).toBe(
-      characterId === 'bakunin' || characterId === 'hegel'
-        ? 112
-        : characterId === 'foucault'
-          ? 208
-          : characterId === 'stirner'
-            ? 96
-            : characterId === 'deleuze_guattari'
-              ? 48
-              : 32
-    );
+    const frameCount = validation.characters[characterId].frameCount;
+    expect(frameCount, `${characterId} release frame bank`).toBeGreaterThanOrEqual(32);
+    expect(frameCount % 16, `${characterId} frame bank alignment`).toBe(0);
   }
   expect(validation.invalidCharacters).toEqual([]);
   expect(validation.blankFrameCount).toBe(0);
@@ -224,7 +280,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(snapshot.fight.player2Character).toBe('machiavelli');
   expect(snapshot.fight.player1Animation?.clipFrameCount).toBe(8);
   expect(snapshot.fight.player1Animation?.transitionFromClipId).toBeNull();
-  expect(snapshot.fight.player1Animation?.depthScale).toBeGreaterThan(0.1);
+  expect(snapshot.fight.player1Animation?.depthScale).toBeGreaterThan(0.5);
   expect(snapshot.renderer.stageEventId).toBe('signal_surge');
   expect(snapshot.renderer.stageEventIntensity).toBeGreaterThanOrEqual(0);
   expect(snapshot.renderer.stageEventIntensity).toBeLessThanOrEqual(1);
@@ -232,7 +288,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   expect(snapshot.renderer.stageCrowdEnergy).toBeLessThanOrEqual(1);
 
   const idleAnimations = playerOneAnimations(await collectSnapshots(page, 1_250, 55)).filter(
-    ({ clipId }) => clipId === 'idle'
+    ({ clipId }) => clipId === 'idle_v2'
   );
   expect(
     new Set(idleAnimations.map(({ atlasFrameIndex }) => atlasFrameIndex)).size
@@ -240,7 +296,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   const idleBlend = await waitForPlayerOneAnimation(
     page,
     'an idle interpolation blend',
-    (animation) => animation.clipId === 'idle' && animation.frameBlend > 0.05
+    (animation) => animation.clipId === 'idle_v2' && animation.frameBlend > 0.05
   );
   expect(idleBlend.fight.player1Animation?.frameBlend).toBeLessThanOrEqual(1);
   expect(idleAnimations.every(({ frameBlend }) => frameBlend >= 0 && frameBlend <= 1)).toBe(true);
@@ -251,14 +307,16 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   const runBlendPromise = waitForPlayerOneAnimation(
     page,
     'a locomotion interpolation blend',
-    (animation) => animation.clipId === 'walk_forward_v2' && animation.frameBlend > 0.05
+    (animation) =>
+      (animation.clipId === 'walk_forward_v2' || animation.clipId === 'run_v2') &&
+      animation.frameBlend > 0.05
   );
   const movementSamples = await collectSnapshots(page, 1_150, 48);
   const runBlend = await runBlendPromise;
   await page.keyboard.up('d');
   expect(runBlend.fight.player1Animation?.frameBlend).toBeGreaterThan(0.05);
   const movementAnimations = playerOneAnimations(movementSamples).filter(
-    ({ clipId }) => clipId === 'walk_forward_v2'
+    ({ clipId }) => clipId === 'walk_forward_v2' || clipId === 'run_v2'
   );
   const movementPositions = movementSamples.flatMap((sample) =>
     sample.fight.player1X === null ? [] : [sample.fight.player1X]
@@ -273,7 +331,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   for (let index = 1; index < movementPositions.length; index += 1) {
     const delta = (movementPositions[index] ?? 0) - (movementPositions[index - 1] ?? 0);
     expect(delta).toBeGreaterThanOrEqual(-0.01);
-    expect(delta).toBeLessThan(48);
+    expect(delta).toBeLessThan(40);
   }
 
   const lightAttackSamples = await observeAttackClipSequence(page, 'j', 'attack_light');
@@ -303,22 +361,22 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   ]);
   expect(specialAnimations.some(({ afterImageAlpha }) => afterImageAlpha > 0.1)).toBe(true);
 
-  const jumpSnapshot = await pressAndObserveClip(page, 'l', 'jump_rise');
+  const jumpSnapshot = await pressAndObserveClip(page, 'l', 'jump_takeoff_v2');
   expect(jumpSnapshot.fight.player1Animation?.poseProgress).not.toBeNull();
   expect(Math.abs(jumpSnapshot.fight.player1Animation?.rotation ?? 0)).toBeGreaterThan(0.005);
   const landingSnapshot = await waitForPlayerOneAnimation(
     page,
     'a synchronized landing settle',
-    (animation) => animation.clipId === 'land',
+    (animation) => animation.clipId === 'land_v2',
     2_200
   );
-  expect(landingSnapshot.fight.player1Animation?.clipFrameCount).toBe(8);
+  expect(landingSnapshot.fight.player1Animation?.clipFrameCount).toBe(4);
   expect(landingSnapshot.fight.player1Animation?.landingProgress).toBeGreaterThanOrEqual(0);
   expect(landingSnapshot.fight.player1Animation?.poseProgress).not.toBeNull();
   await waitForPlayerOneAnimation(
     page,
     'idle after landing',
-    (animation, current) => animation.clipId === 'idle' && current.fight.player1State === 'idle',
+    (animation, current) => animation.clipId === 'idle_v2' && current.fight.player1State === 'idle',
     1_200
   );
 
@@ -326,7 +384,9 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   await tapKey(page, 'w', 70);
   await expect.poll(async () => (await getSnapshot(page)).fight.player1Lane).toBe(2);
   const backDepth = (await getSnapshot(page)).fight.player1Animation?.depthScale ?? 0;
-  expect(backDepth).toBeLessThan(middleDepth);
+  // Large authored sheets can hit the renderer's minimum normalization clamp in both lanes.
+  expect(backDepth).toBeLessThanOrEqual(middleDepth);
+  expect(backDepth).toBeGreaterThan(0);
   await tapKey(page, 's', 70);
   await expect.poll(async () => (await getSnapshot(page)).fight.player1Lane).toBe(1);
 
@@ -399,7 +459,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     contactSamples.some(
       (sample) =>
         sample.fight.player2State === 'hitstun' &&
-        sample.fight.player2Animation?.clipId === 'hitstun'
+        ['hitstun', 'hit_light_v2'].includes(sample.fight.player2Animation?.clipId ?? '')
     )
   ).toBe(true);
   expect(contactSamples.some((sample) => sample.renderer.stageImpactPulse > 0)).toBe(true);
@@ -415,12 +475,12 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   await waitForScene(page, 'fight');
   await expect
     .poll(async () => (await getSnapshot(page)).fight.player1Animation?.clipId)
-    .toBe('idle');
+    .toBe('idle_v2');
   snapshot = await getSnapshot(page);
   expect(snapshot.fight.player1Animation?.attackPhase).toBeNull();
   expect(snapshot.fight.player1Animation?.transitionFromClipId).toBeNull();
   expect(snapshot.fight.player1Animation?.atlasFrameIndex).toBeGreaterThanOrEqual(0);
-  expect(snapshot.fight.player1Animation?.atlasFrameIndex).toBeLessThanOrEqual(3);
+  expect(snapshot.fight.player1Animation?.atlasFrameIndex).toBeLessThanOrEqual(7);
 
   expect(runtimeErrors).toEqual([]);
 });

@@ -1,0 +1,226 @@
+version: 2
+character_id: leibniz
+title: Gottfried Wilhelm Leibniz
+purpose: Highly distinctive feasible 4x4 sprite-grid prompts for image-rendering LLMs.
+common_prompt_prefix: |
+  Create a production-ready pixel-art sprite sheet for ETHIC BRAWL: Gottfried Wilhelm Leibniz.
+
+  Output EXACTLY one image arranged as a perfect 4x4 grid, 16 frames total, read left-to-right and top-to-bottom.
+  Every cell must be the same size and perfectly aligned, with no gutters, margins, border, labels, captions, or text.
+  Use true alpha transparency. Keep character identity, costume, palette, scale, camera angle, lighting, and pixel density identical in all 16 cells.
+  Use a right-facing orthographic side-view fighter camera unless a frame explicitly turns or falls. Keep the complete body and every effect inside its cell.
+  Crisp readable 2D arcade pixel art, limited palette, hard-edged clusters, and a strong silhouette. Prioritize exact body mechanics over decorative equations.
+character_sprite_brief: |
+  Gottfried Wilhelm Leibniz — The Optimist; role: methodical orb and logic projectile mage.
+
+  Biography: baroque polymath, diplomat, logician, and co-inventor of calculus recast as a precise technical duelist. His combat language treats motion as a proof: measured setup, exact contact, and elegant return. Monads appear as small luminous geometric orbs rather than floating text or equations.
+
+  Appearance: mature composed face, prominent dark eyebrows, large powdered white-gray curled wig, deep burgundy long coat with gold trim and layered cuffs, parchment-cream waistcoat and cravat, dark breeches, white stockings, buckle shoes, small brass calculation instrument or compass motif integrated at belt or hand.
+
+  Palette: burgundy #67243A, dark wine #321923, parchment #E8DDBF, powdered wig #D8D2C5, gold trim #C9A23A, brass #9A6A2E, monad cyan #59DDE8, possible-world violet #8665C5.
+
+  Animation identity: upright refined posture, rhythmic geometric cadence, symmetrical foot timing, restrained coat tails, compass-arc hand paths, exact straight jabs, centered technical kicks, and small monad orbs that orbit on controlled curves without obscuring the body.
+
+  Normals: Monad Jab, Calculus Palm, and Possible Worlds Arc. Specials: Monad Bolt, Possible World Mirror, Monad Orbit, and Best-World Engine.
+negative_prompt: >-
+  blurry, painterly, 3d render, realistic photo, watercolor, vector smooth shading, multiple characters, busy background,
+  non-transparent background, checkerboard background, text, letters, equations, readable formulas, labels, captions,
+  speech bubbles, UI elements, watermark, logo, uneven grid, broken grid, offset cells, inconsistent cell sizes,
+  cropped limbs, cut-off feet, cross-cell motion trails, duplicate frames, heavy glow, bloom, soft shadow halos,
+  anti-aliased fringe, changing wig, changing coat length, modern suit, wizard robe, giant orbit effects,
+  floating readable mathematics, prop disappears, unreadable silhouette
+palette_anchors: 'burgundy #67243A, dark wine #321923, parchment #E8DDBF, powdered wig #D8D2C5, gold trim #C9A23A, brass #9A6A2E, monad cyan #59DDE8, possible-world violet #8665C5'
+appearance_bible: mature baroque polymath with large powdered curled wig, burgundy gold-trim coat, parchment waistcoat and cravat, dark breeches, white stockings, buckle shoes, compact brass compass or calculation motif
+animation_bible: upright methodical duelist with rhythmic symmetrical timing, compass-arc hand paths, exact straight jabs, centered technical kicks, restrained coat-tail follow-through, and compact geometric monad orbs
+move_render_descriptions:
+  normal_moves:
+    - name: Monad Jab
+      pose: exact straight lead-hand thrust from a compact aristocratic guard
+      vfx: one tiny cyan monad point at the knuckles
+      gameplay: fast precise interrupting poke
+    - name: Calculus Palm
+      pose: measured open-palm step tracing a short rising curve with the rear hand balancing
+      vfx: thin gold tangent arc and two small sequential contact points
+      gameplay: double-tap medium pressure strike
+    - name: Possible Worlds Arc
+      pose: broad but controlled compass-like forearm or coat-assisted sweep ending in a planted stance
+      vfx: compact violet-gold arc with two faint alternate-position echoes
+      gameplay: heavy knockback finisher
+  special_moves:
+    - command: B>A
+      commandSlot: BFA
+      name: Monad Bolt
+      startup: gathers one small cyan-gold orb between precise fingertips
+      active: extends the arm and releases the orb along a straight measured line
+      impact: compact monad pulse with one concentric geometric ring
+      recovery: fingers close, coat cuff settles, and the guard returns without flourish
+    - command: B<A
+      commandSlot: BBA
+      name: Possible World Mirror
+      startup: turns one palm inward while a thin violet-gold plane forms near the forearm
+      active: presents a compact reflective geometric shield at chest height
+      impact: mirrored pulse folds back toward the opponent in one sharp angle
+      recovery: plane collapses into two points and the torso unwinds to neutral
+    - command: B^J
+      commandSlot: BUJ
+      name: Monad Orbit
+      startup: raises both hands as two or three tiny monads appear close to the shoulders
+      active: controlled orbs circle the torso on small non-overlapping paths
+      impact: orbit tightens into a protective cyan-gold ring while the body remains visible
+      recovery: orbs return to the leading hand and wink out one by one
+    - command: BvJ
+      commandSlot: BDJ
+      name: Best-World Engine
+      startup: plants both feet and opens a compact brass geometric mechanism near the ground
+      active: a small field of interlocking gold and violet rings turns around the lower body
+      impact: the rings align into one optimal bright configuration without readable equations
+      recovery: mechanism folds shut, light drains inward, and Leibniz resumes exact guard
+
+grids:
+  - id: leibniz_grid01_movement
+    output: characters/leibniz/sprites/leibniz_grid01_movement.png
+    role: Basic Movement Prompt
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 01 MOVEMENT. Frames 1-2 measured idle variants, 3-4 light/heavy hurt, 5-8 refined walk cycle, 9-12 springy symmetrical run cycle, 13 takeoff, 14 airborne tuck, 15 running jump, 16 full-body KO. Preserve wig volume, coat length, and buckle-shoe baseline.
+  - id: leibniz_grid02_fighting
+    output: characters/leibniz/sprites/leibniz_grid02_fighting.png
+    role: Basic Fighting Prompt
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 02 FIGHTING. Frames 1-3 Monad Jab startup/impact/recovery. Frames 4-6 Calculus Palm startup/impact/recovery. Frames 7-9 Possible Worlds Arc startup/impact/recovery. Frames 10-12 measured evasion, geometric guard, punish-ready exit. Frames 13-14 basic and fortified guard. Frames 15-16 elegant victory poses.
+  - id: leibniz_grid03_throws_consumes_swings
+    output: characters/leibniz/sprites/leibniz_grid03_throws_consumes_swings.png
+    role: Throwing / Consuming / Swinging Motions + Character Combos
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 03 INTERACTIONS. Frames 1-4 pickup and throw a small neutral item. Frames 5-8 use or consume an item and return to guard. Frames 9-12 swing a generic handheld item with exact compass-arc mechanics. Frames 13-16 are one compact key pose for Monad Bolt, Possible World Mirror, Monad Orbit, and Best-World Engine in that order.
+  - id: leibniz_grid04_specials
+    output: characters/leibniz/sprites/leibniz_grid04_specials.png
+    role: Specials Prompt
+    prompt: |
+      {{common_prompt_prefix}}
+
+      {{character_sprite_brief}}
+
+      GRID 04 SPECIALS. One row per move, four phases each: startup, active, impact or sustain, recovery. Row 1 Monad Bolt. Row 2 Possible World Mirror. Row 3 Monad Orbit. Row 4 Best-World Engine. Effects remain compact, geometric, non-textual, and never obscure the full fighter.
+asset_detail_audit_version: 1
+sprite_texture_bible:
+  sheet_contract:
+    format: single 4x4 RGBA sprite sheet per grid
+    cell_count: 16
+    background: true alpha transparency only; no checkerboard; no scenery
+    camera: orthographic side-view fighting-game camera, consistent grounded baseline
+    pixel_density: crisp pixel-art edges with hard clusters; no painterly gradients or anti-aliased glow fringe
+    silhouette_rule: full body and wig stay inside every cell; monads remain compact and separated from cell edges
+  texture_materials:
+    base_costume: burgundy baroque coat, gold trim, parchment waistcoat and cravat, dark breeches, white stockings, buckle shoes, powdered curled wig
+    cloth: structured brocade suggested with two or three tone clusters, never noisy micro-patterns
+    skin_hair: stable mature face and large powdered wig silhouette readable at gameplay scale
+    metal_or_prop: compact brass compass or calculation tool with one gold edge and dark underside
+    vfx: small cyan monads, violet possible-world planes, gold geometric rings; no readable equations
+  palette_budget:
+    primary: '#67243A'
+    secondary: '#E8DDBF'
+    accent: '#C9A23A'
+    vfx_1: '#59DDE8'
+    vfx_2: '#8665C5'
+    shadow: '#321923'
+    rule: no more than two bright VFX colors beyond the anchors
+  edge_and_shadow_rules:
+    - Use a stable one-pixel dark outline around the readable silhouette.
+    - Keep grounded feet aligned except authored squash or knockdown.
+    - Use only a tiny in-cell contact shadow when necessary.
+    - Never allow coat tails, monad paths, mirror planes, or field rings to cross a cell boundary.
+  placeholder_policy:
+    accepted_for_runtime: true
+    placeholder_use: placeholder sheets are allowed for gameplay and runtime validation only
+    replacement_ready: final generated sheets should preserve this identity bible and canonical output names
+storyboards:
+  grid01_movement_storyboard:
+    intent: establish Leibniz as a methodical geometric projectile duelist
+    beats:
+      1-2: two restrained breathing and weight-shift idles
+      3-4: light and heavy recoil while preserving wig and coat silhouette
+      5-8: exact walking cycle
+      9-12: springy symmetrical run cycle
+      13-15: takeoff, air, running jump
+      '16': full-body KO
+  grid02_fighting_storyboard:
+    intent: show the precise three-hit normal vocabulary and technical guard
+    beats:
+      1-3: Monad Jab
+      4-6: Calculus Palm
+      7-9: Possible Worlds Arc
+      10-12: measured evasion into guard and punish-ready exit
+      13-14: guard variants
+      15-16: elegant victory poses
+  grid03_interaction_storyboard:
+    intent: cover generic item actions and four special key poses
+    beats:
+      1-4: pickup and throw
+      5-8: use or consume
+      9-12: swing item
+      '13': Monad Bolt
+      '14': Possible World Mirror
+      '15': Monad Orbit
+      '16': Best-World Engine
+  grid04_specials_storyboard:
+    intent: one row per current command special
+    rows:
+      row1_frames_1_4: 'B>A Monad Bolt: startup, active, impact, recovery'
+      row2_frames_5_8: 'B<A Possible World Mirror: startup, active, impact, recovery'
+      row3_frames_9_12: 'B^J Monad Orbit: startup, active, impact, recovery'
+      row4_frames_13_16: 'BvJ Best-World Engine: startup, active, impact, recovery'
+ui_sprite_details:
+  portrait_requirements:
+    crop: head-and-shoulders, composed side-facing portrait, no background clutter
+    must_show:
+      - powdered curled wig
+      - burgundy and gold coat collar
+      - one compact monad or brass geometry accent
+    avoid:
+      - modern suit
+      - wizard robes
+      - readable equations
+      - excessive orbit glow
+  roster_card:
+    display_name: Gottfried Wilhelm Leibniz
+    role_line: methodical orb and logic projectile mage
+    mechanic_line: monad projectiles, possible-world reflection, orbit armor, optimal field control
+    color_strip:
+      primary: '#67243A'
+      secondary: '#E8DDBF'
+      accent: '#C9A23A'
+  ability_icons:
+    - slot: B>A
+      label: Monad Bolt
+      icon_read: small cyan-gold orb leaving precise fingertips
+    - slot: B<A
+      label: Possible World Mirror
+      icon_read: compact violet-gold reflective plane
+    - slot: B^J
+      label: Monad Orbit
+      icon_read: three small orbs on a tight circular path
+    - slot: BvJ
+      label: Best-World Engine
+      icon_read: interlocking gold and violet rings aligned around one point
+  hud_meter:
+    name: Best of All Worlds
+    fill_color: '#59DDE8'
+    empty_color: '#321923'
+    readability: use ring count and value contrast, not hue alone
+  hit_spark_family:
+    normal: '#E8DDBF'
+    special: '#59DDE8'
+    counter_or_field: '#8665C5'
+    rule: effects should read as precise geometry rather than text or generic magic

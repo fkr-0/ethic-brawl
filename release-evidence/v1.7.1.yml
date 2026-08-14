@@ -1,0 +1,123 @@
+schema_version: 1
+release:
+  unit: ethic-brawl repository
+  candidate_version: 1.7.1
+  base_revision: e87c5a66fe9598ddf5fff61a18149adcb4c026d3
+  target_revision: refs/heads/release/v1.7.1
+  members:
+    - ethic-brawl
+  revision_vector:
+    ethic-brawl: refs/heads/release/v1.7.1
+metadata:
+  version_sources:
+    - package.json
+    - package-lock.json
+    - release-train.json
+  changelog: CHANGELOG.md#171---2026-07-23
+  tag:
+    proposed: v1.7.1
+    created: false
+    target: null
+preflight:
+  branch: release/v1.7.1
+  dirty_paths:
+    - release candidate edits listed by git diff
+    - original checkout isolated because it contains 108 modified and 87 untracked sprite paths
+  tool_versions:
+    git: 2.54.0
+    node: 24.18.0
+    pnpm: 10.33.0
+    python: 3.14.5
+    playwright: 1.60.0
+checks:
+  - command: pnpm install --frozen-lockfile
+    result: pass
+    exit_code: 0
+    duration_ms: not_captured
+  - command: pnpm assets:check
+    result: pass
+    exit_code: 0
+    duration_ms: 462
+    details: 31 production atlases passed the release asset gate
+  - command: pnpm lint
+    result: pass
+    exit_code: 0
+    duration_ms: not_captured
+    details: 233 files checked with Biome; generated Animation v2 metadata is owned by assets:check
+  - command: pnpm typecheck
+    result: pass
+    exit_code: 0
+    duration_ms: not_captured
+  - command: pnpm release:plan:check
+    result: pass
+    exit_code: 0
+    duration_ms: not_captured
+    details: next patch 1.7.2; next minor 1.8.0
+  - command: pnpm test:run tests/unit/ai-controller-tactics.test.ts tests/unit/ai-showcase-rounds.test.ts tests/unit/stage-ai-runtime.test.ts
+    result: pass
+    exit_code: 0
+    duration_ms: 5524
+    details: 3 files and 9 tests passed
+  - command: pnpm test:run
+    result: pass
+    exit_code: 0
+    duration_ms: 4870
+    details: 44 files and 133 tests passed
+  - command: pnpm build
+    result: pass_with_warning
+    exit_code: 0
+    duration_ms: 3500
+    details: Vite production build passed; Pixi runtime chunk exceeds the 500 kB warning threshold
+  - command: pnpm exec playwright test e2e/ai-showcase.spec.ts --project=chromium
+    result: pass
+    exit_code: 0
+    duration_ms: 27400
+    details: natural AI-vs-AI round passed the 7-17 second duration and tactical-variation assertions
+  - command: pnpm exec playwright test e2e/ai-showcase.spec.ts --project=firefox
+    result: pass
+    exit_code: 0
+    duration_ms: 30500
+    details: natural AI-vs-AI round passed the 7-17 second duration and tactical-variation assertions
+  - command: pnpm prompts:v2:check
+    result: resolved_contract_failure
+    exit_code: 2
+    duration_ms: 495
+    details: the current lineage intentionally removed the prompt generator but left stale package and CI calls; obsolete calls were removed
+  - command: pnpm release:check
+    result: fail
+    exit_code: 1
+    duration_ms: 167133
+    details: 9 browser tests passed, 8 failed, and 1 was skipped; failures are caused by missing uncommitted Animation v2 sprite assets in the clean release checkout
+artifacts:
+  - path: dist/index.html
+    size_bytes: 2690
+    sha256: 8dd5620cfb5e2be32a54aee6bcf991562e234c668bdd84b09840ec7e0cd1d810
+  - path: dist/assets/arcade-runtime-D9MEd7Yl.js
+    size_bytes: 74911
+    sha256: 91acaf82f64788a7c64304fca64ba5861b6fe329995f9894fbf0d1e9e1021721
+  - path: dist/assets/campaign-CpLIgRa4.js
+    size_bytes: 2576
+    sha256: a5b7201df5e73cfb8fba85730643dde201b61f42615476313893ca1f7f0f9908
+  - path: dist/assets/fighter-content-XRQeWX26.js
+    size_bytes: 195575
+    sha256: 9326a6d51bc4a726a20225f6c8f48c8b0633001d669f0c88f96a5571b6701056
+  - path: dist/assets/index-CvoRsxom.js
+    size_bytes: 83418
+    sha256: f37b7593329e5ed07a37676decf7be97d45bc5bcefce1373464e20deb8c2c839
+  - path: dist/assets/items-hVh3VMOn.js
+    size_bytes: 13465
+    sha256: f1da6effe890dac72a01c2eb4fdf16afcb53187397884226dcb64d663f1decf1
+  - path: dist/assets/pixi-runtime-CVM-gjbu.js
+    size_bytes: 854964
+    sha256: 3ae80d6a15aa787bfe9d87dc346fe851075bd09a080f2f9c84c44b6231378d62
+warnings:
+  - The existing v1.7.0 tag is on sibling commit 9cada3f56 rather than an ancestor of the current sprite lineage; merge base is v1.6.0 commit 517bcd6ea.
+  - The active checkout contains 195 sprite-path changes (108 modified, 87 untracked) that were deliberately not copied into or committed from the isolated release worktree.
+  - The clean candidate contains 14 public Animation v2 PNGs versus 230 in the active checkout, so full sprite validation loads only 3 of 18 coded characters.
+  - The production Pixi runtime bundle is 854964 bytes and emits Vite's existing chunk-size warning.
+  - The local tag is withheld because the mandatory full browser release gate failed.
+side_effects:
+  pushed: false
+  published: false
+  deployed: false
+  state: not_requested
