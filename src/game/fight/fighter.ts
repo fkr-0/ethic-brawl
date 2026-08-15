@@ -97,6 +97,9 @@ export class Fighter {
   hitstunFrames = 0;
   blockstunFrames = 0;
   invulnerableFrames = 0;
+  rollFrames = 0;
+  rollCooldownFrames = 0;
+  rollDirection: Direction | null = null;
 
   // Attack
   currentAttack: AttackData | null = null;
@@ -191,6 +194,35 @@ export class Fighter {
     this.combo = createComboState();
     this.specialMaxCooldown = character.special.cooldown;
     this.specialState = createDefaultSpecialState(characterId as never, this.stats.energy);
+  }
+
+  /**
+   * Commit to a grounded evasive roll. The roll has vulnerable startup and
+   * recovery, with invulnerability only during the authored middle window.
+   */
+  startRoll(): boolean {
+    if (
+      !this.isGrounded ||
+      !this.isRunning ||
+      this.rollFrames > 0 ||
+      this.rollCooldownFrames > 0 ||
+      this.currentAttack ||
+      this.hitstunFrames > 0 ||
+      this.blockstunFrames > 0
+    ) {
+      return false;
+    }
+
+    this.rollFrames = FRAME_DATA.ROLL_DURATION;
+    this.rollCooldownFrames = FRAME_DATA.ROLL_COOLDOWN;
+    this.rollDirection = this.lastDirection ?? this.facing;
+    this.isBlocking = false;
+    this.isRunning = false;
+    this.moveVelocityX = 0;
+    this.velocityX = (this.rollDirection === 'right' ? 1 : -1) * FRAME_DATA.ROLL_SPEED;
+    this.externalVelocityDecay = 0.94;
+    this.forceState('running');
+    return true;
   }
 
   bufferNormalAttack(): void {
@@ -635,9 +667,22 @@ export class Fighter {
       this.blockstunFrames--;
     }
 
-    // Update invulnerability
-    if (this.invulnerableFrames > 0) {
+    if (this.rollFrames > 0) {
+      const rollFrame = FRAME_DATA.ROLL_DURATION - this.rollFrames;
+      this.invulnerableFrames =
+        rollFrame >= FRAME_DATA.ROLL_INVULN_START && rollFrame < FRAME_DATA.ROLL_INVULN_END ? 1 : 0;
+      this.rollFrames--;
+      if (this.rollFrames === 0) {
+        this.rollDirection = null;
+        this.invulnerableFrames = 0;
+        if (this.state === 'running') this.forceState('idle');
+      }
+    } else if (this.invulnerableFrames > 0) {
       this.invulnerableFrames--;
+    }
+
+    if (this.rollCooldownFrames > 0) {
+      this.rollCooldownFrames--;
     }
 
     // Update special cooldown
@@ -687,6 +732,10 @@ export class Fighter {
       this.resetAttackPresentation();
       this.hitstunFrames = 0;
       this.blockstunFrames = 0;
+      this.invulnerableFrames = Math.max(
+        this.invulnerableFrames,
+        FRAME_DATA.KNOCKDOWN_DURATION + FRAME_DATA.GET_UP_DURATION
+      );
       this.isBlocking = false;
       this.moveVelocityX = 0;
       this.velocityX = 0;

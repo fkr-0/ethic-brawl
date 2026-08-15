@@ -15,6 +15,15 @@ describe('runtime sprite asset catalog', () => {
     expect(assets.filter(({ category }) => category === 'item-icons')).toHaveLength(2);
     expect(
       assets.filter(
+        ({ category, required }) =>
+          (category === 'item-overlay' || category === 'item-body-pose') && required
+      )
+    ).toHaveLength(0);
+    expect(
+      assets.filter(({ category, required }) => category === 'item-icons' && required)
+    ).toHaveLength(2);
+    expect(
+      assets.filter(
         ({ category, sourceContract }) =>
           category === 'fighter' && sourceContract === 'legacy-roster'
       ).length

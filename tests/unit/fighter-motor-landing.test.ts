@@ -58,15 +58,14 @@ describe('fighter motor landing transition', () => {
     expect(fighter.velocityY).toBeGreaterThan(0);
   });
 
-  it('settles grounded locomotion during authored attacks instead of foot-skating', () => {
+  it('settles grounded locomotion while preserving a bounded authored attack lunge', () => {
     const runtime = createFightRuntime();
     const state = runtime.getState();
     if (!state) throw new Error('Missing fight state fixture');
     const fighter = state.player1;
 
-    fighter.moveVelocityX = 6;
+    fighter.moveVelocityX = 0;
     expect(fighter.startAttack(0, 0)).toBe(true);
-    const before = fighter.moveVelocityX;
     updateFighterMotorFromInput(fighter, {
       horizontalDirection: 1,
       horizontalPressed: true,
@@ -76,9 +75,24 @@ describe('fighter motor landing transition', () => {
       currentFrame: 1,
     });
 
-    expect(fighter.moveVelocityX).toBeLessThan(before);
+    expect(fighter.moveVelocityX).toBeGreaterThan(0);
+    expect(fighter.moveVelocityX).toBeLessThan(3);
     expect(fighter.isRunning).toBe(false);
     expect(fighter.laneChangeTimer).toBe(0);
     expect(fighter.isGrounded).toBe(true);
+
+    fighter.attackPhaseState = fighter.attackPhaseState
+      ? { ...fighter.attackPhaseState, phase: 'recovery' }
+      : null;
+    const startupLunge = fighter.moveVelocityX;
+    updateFighterMotorFromInput(fighter, {
+      horizontalDirection: 1,
+      horizontalPressed: true,
+      verticalDirection: 0,
+      verticalPressed: false,
+      jumpPressed: false,
+      currentFrame: 2,
+    });
+    expect(fighter.moveVelocityX).toBeLessThan(startupLunge);
   });
 });

@@ -2,14 +2,13 @@
   "schema_version": 1,
   "summary": {
     "assets": 298,
-    "assets_with_errors": 30,
-    "assets_with_warnings": 235,
-    "errors": {
-      "missing_source": 30
-    },
+    "assets_with_errors": 0,
+    "assets_with_warnings": 265,
+    "errors": {},
     "warnings": {
       "duplicate_cells": 39,
       "edge_contact": 209,
+      "missing_optional": 30,
       "partial_alpha": 103
     },
     "categories": {
@@ -126,7 +125,7 @@
     {
       "path": "assets/sprites/items/bat.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -137,15 +136,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/bat.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/boulder_carry_heavy.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -156,15 +155,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/boulder_carry_heavy.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/boulder_throw_body.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -175,15 +174,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/boulder_throw_body.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/boulder.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -194,15 +193,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/boulder.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/bow_draw.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -213,15 +212,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/bow_draw.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/bow.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -232,15 +231,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/bow.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/civic_mace.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -251,15 +250,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/civic_mace.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/computer_terminal_hack.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -270,15 +269,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/computer_terminal_hack.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/computer_terminal_ion_cannon_deploy.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -289,15 +288,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/computer_terminal_ion_cannon_deploy.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/computer_terminal_smash.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -308,15 +307,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/computer_terminal_smash.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/computer_terminal.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -327,15 +326,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/computer_terminal.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/foldable_chair_smash.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -346,15 +345,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/foldable_chair_smash.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/foldable_chair.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -365,15 +364,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/foldable_chair.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/grenade.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -384,10 +383,10 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/grenade.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/icons-1.png",
@@ -477,7 +476,7 @@
     {
       "path": "assets/sprites/items/katana_signature_flourish.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -488,15 +487,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/katana_signature_flourish.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/katana.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -507,15 +506,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/katana.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/minidrone.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -526,15 +525,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/minidrone.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/molotov_cocktail.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -545,15 +544,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/molotov_cocktail.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/neon_duelist_sword.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -564,15 +563,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/neon_duelist_sword.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/pipe.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -583,15 +582,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/pipe.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/riot_breaker_mace.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -602,15 +601,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/riot_breaker_mace.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/rocket_launcher_bracing.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -621,15 +620,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/rocket_launcher_bracing.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/rocket_launcher_fire.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -640,15 +639,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/rocket_launcher_fire.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/rocket_launcher.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -659,15 +658,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/rocket_launcher.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/rusted_short_sword.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -678,15 +677,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/rusted_short_sword.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/shovel.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -697,15 +696,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/shovel.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/sniper_rifle_bracing.png",
       "category": "item-body-pose",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 1,
         "rows": 1
@@ -716,15 +715,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/body-poses/sniper_rifle_bracing.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/sniper_rifle.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -735,15 +734,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/sniper_rifle.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/street_argument_bat.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -754,15 +753,15 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/street_argument_bat.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/items/uzi.png",
       "category": "item-overlay",
-      "required": true,
+      "required": false,
       "grid": {
         "columns": 4,
         "rows": 2
@@ -773,10 +772,10 @@
       },
       "exists": false,
       "prompt_job": "docs/prompts/item-sprites/render-jobs/overlays/uzi.md",
-      "errors": [
-        "missing_source"
-      ],
-      "warnings": []
+      "errors": [],
+      "warnings": [
+        "missing_optional"
+      ]
     },
     {
       "path": "assets/sprites/roster/anselm/source/animation-v2/anselm_advanced_guard_4x4.png",

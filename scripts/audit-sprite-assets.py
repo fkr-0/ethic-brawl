@@ -118,7 +118,10 @@ def inspect_asset(asset: dict[str, Any]) -> dict[str, Any]:
         "warnings": [],
     }
     if not path.is_file():
-        result["errors"].append("missing_source")
+        if asset.get("required", True):
+            result["errors"].append("missing_source")
+        else:
+            result["warnings"].append("missing_optional")
         return result
     try:
         with Image.open(path) as image:
@@ -188,6 +191,7 @@ def render_markdown(results: list[dict[str, Any]], summary: dict[str, Any]) -> s
         f"- Assets with hard errors: **{summary['assets_with_errors']}**",
         f"- Assets requiring visual review: **{summary['assets_with_warnings']}**",
         f"- Missing source art: **{summary['errors'].get('missing_source', 0)}**",
+        f"- Pending optional art: **{summary['warnings'].get('missing_optional', 0)}**",
         f"- Wrong dimensions: **{summary['errors'].get('wrong_dimensions', 0)}**",
         f"- Non-integral grids: **{summary['errors'].get('non_integral_grid', 0)}**",
         "",

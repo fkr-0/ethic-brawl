@@ -197,6 +197,7 @@ export const FRAME_DATA = {
   ROLL_INVULN_START: 5,
   ROLL_INVULN_END: 17,
   ROLL_COOLDOWN: 60,
+  ROLL_SPEED: 9,
 
   // Combo
   COMBO_WINDOW: 30,

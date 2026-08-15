@@ -13,6 +13,7 @@ import type { Fighter } from './fighter';
 import { FRAME_DATA, type Lane } from './fighter-state';
 
 const MOVE_STATE_EPSILON = 0.05;
+const ATTACK_LUNGE_SPEED = 2.25;
 const MIN_X = 50;
 const MAX_X = 910;
 
@@ -78,6 +79,7 @@ function getWalkSpeed(fighter: Fighter, movement: CharacterMovementProfile): num
 export function updateFighterMotorFromInput(fighter: Fighter, input: FighterMotorInput): void {
   const tuning = calculateMovementTuning(fighter.stats.agility, fighter.movement);
   const movementLocked =
+    fighter.rollFrames > 0 ||
     fighter.state === 'knockdown' ||
     fighter.state === 'gettingUp' ||
     fighter.state === 'defeat' ||
@@ -93,6 +95,7 @@ export function updateFighterMotorFromInput(fighter: Fighter, input: FighterMoto
   fighter.jumpGraceState = jumpGrace.state;
 
   if (
+    fighter.rollFrames > 0 ||
     fighter.state === 'knockdown' ||
     fighter.state === 'gettingUp' ||
     fighter.state === 'defeat' ||
@@ -129,10 +132,18 @@ export function updateFighterMotorFromInput(fighter: Fighter, input: FighterMoto
   // grounded strike is committed.
   if (fighter.isGrounded && fighter.currentAttack) {
     fighter.isRunning = false;
+    const phase = fighter.attackPhaseState?.phase;
+    const lungeDirection = (fighter.attackFacing ?? fighter.facing) === 'right' ? 1 : -1;
+    const targetVelocity =
+      fighter.currentAttack.type !== 'special' && (phase === 'startup' || phase === 'active')
+        ? ATTACK_LUNGE_SPEED * lungeDirection
+        : 0;
     fighter.moveVelocityX = stepGroundedVelocity(
       fighter.moveVelocityX,
-      0,
-      tuning.acceleration,
+      targetVelocity,
+      targetVelocity === 0
+        ? tuning.acceleration
+        : Math.max(tuning.acceleration, ATTACK_LUNGE_SPEED),
       tuning.deceleration * 1.35
     );
     return;

@@ -46,6 +46,15 @@ const COMBO_TEST_CONFIG: AIConfig = {
 };
 
 describe('tactical AI controller', () => {
+  it('scales defensive reliability with difficulty instead of granting universal reads', () => {
+    expect(AI_DIFFICULTY_CONFIG.easy.defenseChance).toBeLessThan(
+      AI_DIFFICULTY_CONFIG.medium.defenseChance
+    );
+    expect(AI_DIFFICULTY_CONFIG.medium.defenseChance).toBeLessThan(
+      AI_DIFFICULTY_CONFIG.hard.defenseChance
+    );
+  });
+
   it('cycles every authored normal in every coded fighter chain', () => {
     const failures: string[] = [];
 
@@ -93,7 +102,7 @@ describe('tactical AI controller', () => {
     });
     const seen = new Set<string>();
 
-    for (let frame = 1; frame <= 40; frame++) {
+    for (let frame = 1; frame <= 100; frame++) {
       ai.update(fighter, target, frame);
       const diagnostics = ai.getDiagnostics();
       if (diagnostics.currentAction === 'command_special') {
@@ -106,18 +115,57 @@ describe('tactical AI controller', () => {
     );
   });
 
-  it('reacts immediately to close attacks with block or lane evasion', () => {
+  it('respects authored reaction latency before defending against a close attack', () => {
     const fighter = new Fighter('p1', 'camus', 1, getCharacter('camus'), 430, 1);
     const target = new Fighter('p2', 'socrates', 2, getCharacter('socrates'), 480, 1);
     target.setState('attacking');
-    const ai = createAIController(AI_DIFFICULTY_CONFIG.medium);
+    const ai = createAIController({ ...AI_DIFFICULTY_CONFIG.medium, defenseChance: 1 });
 
-    const input = ai.update(fighter, target, 1);
-    const action = ai.getCurrentAction();
+    const firstInput = ai.update(fighter, target, 1);
+    expect(ai.getCurrentAction()).toBe('idle');
+    expect(
+      firstInput.block ||
+        firstInput.moveUp ||
+        firstInput.moveDown ||
+        firstInput.moveLeft ||
+        firstInput.moveRight
+    ).toBe(false);
 
-    expect(['block', 'evade_lane']).toContain(action);
-    expect(input.block || input.moveUp || input.moveDown || input.moveLeft || input.moveRight).toBe(
-      true
-    );
+    let reacted = false;
+    for (let frame = 2; frame <= 1 + AI_DIFFICULTY_CONFIG.medium.reactionTime; frame++) {
+      const input = ai.update(fighter, target, frame);
+      reacted ||=
+        ['block', 'evade_lane'].includes(ai.getCurrentAction()) &&
+        (input.block || input.moveUp || input.moveDown || input.moveLeft || input.moveRight);
+    }
+
+    expect(reacted).toBe(true);
+  });
+
+  it('prevents command specials from starving during a readable close-range fight', () => {
+    const fighter = new Fighter('p1', 'camus', 1, getCharacter('camus'), 430, 1);
+    const target = new Fighter('p2', 'socrates', 2, getCharacter('socrates'), 492, 1);
+    const ai = createAIController({
+      ...AI_DIFFICULTY_CONFIG.medium,
+      reactionTime: 0,
+      aggressiveness: 0,
+      blockChance: 0,
+      specialUsage: 0,
+      comboAbility: 0,
+      retreatThreshold: 0,
+    });
+    let firstSpecialFrame: number | null = null;
+
+    for (let frame = 1; frame <= 240; frame++) {
+      ai.update(fighter, target, frame);
+      if (ai.getCurrentAction() === 'command_special') {
+        firstSpecialFrame = frame;
+        break;
+      }
+    }
+
+    expect(firstSpecialFrame).not.toBeNull();
+    expect(firstSpecialFrame).toBeGreaterThanOrEqual(180);
+    expect(firstSpecialFrame).toBeLessThanOrEqual(190);
   });
 });

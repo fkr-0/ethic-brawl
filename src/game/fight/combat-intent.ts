@@ -58,6 +58,7 @@ const SPECIAL_TIMINGS: Record<
 
 function canStartGroundedAction(fighter: Fighter): boolean {
   return (
+    fighter.rollFrames === 0 &&
     fighter.isGrounded &&
     fighter.hitstunFrames === 0 &&
     fighter.blockstunFrames === 0 &&
@@ -72,6 +73,7 @@ export function canStartBlock(fighter: Fighter): boolean {
 
 export function canStartAttack(fighter: Fighter): boolean {
   return (
+    fighter.rollFrames === 0 &&
     fighter.hitstunFrames === 0 &&
     fighter.blockstunFrames === 0 &&
     fighter.currentAttack === null &&
@@ -167,7 +169,7 @@ export function createSpecialAttack(characterId: string, special: CharacterSpeci
 }
 
 export function applyCombatIntent(fighter: Fighter, input: CombatIntentInput): void {
-  if (fighter.blockstunFrames > 0) {
+  if (fighter.blockstunFrames > 0 || fighter.rollFrames > 0) {
     return;
   }
 

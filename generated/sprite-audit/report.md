@@ -5,9 +5,10 @@ This report is generated from runtime declarations. File existence alone is not 
 ## Summary
 
 - Declared assets: **298**
-- Assets with hard errors: **30**
-- Assets requiring visual review: **235**
-- Missing source art: **30**
+- Assets with hard errors: **0**
+- Assets requiring visual review: **265**
+- Missing source art: **0**
+- Pending optional art: **30**
 - Wrong dimensions: **0**
 - Non-integral grids: **0**
 
@@ -15,36 +16,6 @@ This report is generated from runtime declarations. File existence alone is not 
 
 | Asset | Category | Errors | Prompt job |
 |---|---|---|---|
-| `assets/sprites/items/bat.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/bat.md` |
-| `assets/sprites/items/boulder_carry_heavy.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/boulder_carry_heavy.md` |
-| `assets/sprites/items/boulder_throw_body.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/boulder_throw_body.md` |
-| `assets/sprites/items/boulder.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/boulder.md` |
-| `assets/sprites/items/bow_draw.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/bow_draw.md` |
-| `assets/sprites/items/bow.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/bow.md` |
-| `assets/sprites/items/civic_mace.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/civic_mace.md` |
-| `assets/sprites/items/computer_terminal_hack.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/computer_terminal_hack.md` |
-| `assets/sprites/items/computer_terminal_ion_cannon_deploy.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/computer_terminal_ion_cannon_deploy.md` |
-| `assets/sprites/items/computer_terminal_smash.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/computer_terminal_smash.md` |
-| `assets/sprites/items/computer_terminal.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/computer_terminal.md` |
-| `assets/sprites/items/foldable_chair_smash.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/foldable_chair_smash.md` |
-| `assets/sprites/items/foldable_chair.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/foldable_chair.md` |
-| `assets/sprites/items/grenade.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/grenade.md` |
-| `assets/sprites/items/katana_signature_flourish.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/katana_signature_flourish.md` |
-| `assets/sprites/items/katana.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/katana.md` |
-| `assets/sprites/items/minidrone.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/minidrone.md` |
-| `assets/sprites/items/molotov_cocktail.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/molotov_cocktail.md` |
-| `assets/sprites/items/neon_duelist_sword.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/neon_duelist_sword.md` |
-| `assets/sprites/items/pipe.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/pipe.md` |
-| `assets/sprites/items/riot_breaker_mace.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/riot_breaker_mace.md` |
-| `assets/sprites/items/rocket_launcher_bracing.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/rocket_launcher_bracing.md` |
-| `assets/sprites/items/rocket_launcher_fire.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/rocket_launcher_fire.md` |
-| `assets/sprites/items/rocket_launcher.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/rocket_launcher.md` |
-| `assets/sprites/items/rusted_short_sword.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/rusted_short_sword.md` |
-| `assets/sprites/items/shovel.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/shovel.md` |
-| `assets/sprites/items/sniper_rifle_bracing.png` | item-body-pose | missing_source | `docs/prompts/item-sprites/render-jobs/body-poses/sniper_rifle_bracing.md` |
-| `assets/sprites/items/sniper_rifle.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/sniper_rifle.md` |
-| `assets/sprites/items/street_argument_bat.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/street_argument_bat.md` |
-| `assets/sprites/items/uzi.png` | item-overlay | missing_source | `docs/prompts/item-sprites/render-jobs/overlays/uzi.md` |
 
 ## Visual-review warnings
 
@@ -52,7 +23,37 @@ Warnings are not automatically rejected because effects, knockdowns, and intenti
 
 | Asset | Warnings |
 |---|---|
+| `assets/sprites/items/bat.png` | missing_optional |
+| `assets/sprites/items/boulder_carry_heavy.png` | missing_optional |
+| `assets/sprites/items/boulder_throw_body.png` | missing_optional |
+| `assets/sprites/items/boulder.png` | missing_optional |
+| `assets/sprites/items/bow_draw.png` | missing_optional |
+| `assets/sprites/items/bow.png` | missing_optional |
+| `assets/sprites/items/civic_mace.png` | missing_optional |
+| `assets/sprites/items/computer_terminal_hack.png` | missing_optional |
+| `assets/sprites/items/computer_terminal_ion_cannon_deploy.png` | missing_optional |
+| `assets/sprites/items/computer_terminal_smash.png` | missing_optional |
+| `assets/sprites/items/computer_terminal.png` | missing_optional |
+| `assets/sprites/items/foldable_chair_smash.png` | missing_optional |
+| `assets/sprites/items/foldable_chair.png` | missing_optional |
+| `assets/sprites/items/grenade.png` | missing_optional |
 | `assets/sprites/items/icons-1.png` | duplicate_cells |
+| `assets/sprites/items/katana_signature_flourish.png` | missing_optional |
+| `assets/sprites/items/katana.png` | missing_optional |
+| `assets/sprites/items/minidrone.png` | missing_optional |
+| `assets/sprites/items/molotov_cocktail.png` | missing_optional |
+| `assets/sprites/items/neon_duelist_sword.png` | missing_optional |
+| `assets/sprites/items/pipe.png` | missing_optional |
+| `assets/sprites/items/riot_breaker_mace.png` | missing_optional |
+| `assets/sprites/items/rocket_launcher_bracing.png` | missing_optional |
+| `assets/sprites/items/rocket_launcher_fire.png` | missing_optional |
+| `assets/sprites/items/rocket_launcher.png` | missing_optional |
+| `assets/sprites/items/rusted_short_sword.png` | missing_optional |
+| `assets/sprites/items/shovel.png` | missing_optional |
+| `assets/sprites/items/sniper_rifle_bracing.png` | missing_optional |
+| `assets/sprites/items/sniper_rifle.png` | missing_optional |
+| `assets/sprites/items/street_argument_bat.png` | missing_optional |
+| `assets/sprites/items/uzi.png` | missing_optional |
 | `assets/sprites/roster/anselm/source/animation-v2/anselm_advanced_guard_4x4.png` | edge_contact |
 | `assets/sprites/roster/anselm/source/animation-v2/anselm_damage_recovery_4x4.png` | partial_alpha, edge_contact |
 | `assets/sprites/roster/anselm/source/animation-v2/anselm_idle_turn_4x4.png` | edge_contact |

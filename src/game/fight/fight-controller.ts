@@ -398,6 +398,12 @@ export function createFightController() {
     const horizontalPressed = horizontalDirection !== 0 && fighter.previousHorizontalInput === 0;
     const verticalPressed = verticalDirection !== 0 && fighter.previousVerticalInput === 0;
 
+    if (input.blockPressed && fighter.isRunning && fighter.isGrounded && fighter.startRoll()) {
+      fighter.previousHorizontalInput = horizontalDirection;
+      fighter.previousVerticalInput = verticalDirection;
+      return;
+    }
+
     updateFighterMotorFromInput(fighter, {
       horizontalDirection,
       horizontalPressed,
@@ -426,11 +432,6 @@ export function createFightController() {
       command,
       currentFrame,
     });
-
-    // Roll (run + block)
-    if (fighter.isRunning && input.block && fighter.isGrounded) {
-      // TODO: Implement roll
-    }
 
     fighter.previousHorizontalInput = horizontalDirection;
     fighter.previousVerticalInput = verticalDirection;
@@ -811,6 +812,10 @@ export function createFightController() {
     for (const projectile of state.projectiles) {
       const attacker = projectile.ownerId === state.player1.id ? state.player1 : state.player2;
       const defender = projectile.ownerId === state.player1.id ? state.player2 : state.player1;
+
+      if (defender.invulnerableFrames > 0) {
+        continue;
+      }
 
       if (
         !projectileHitsTarget(projectile, {

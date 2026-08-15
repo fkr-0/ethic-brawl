@@ -17,6 +17,7 @@ export interface AIConfig {
   difficulty: AIDifficulty;
   reactionTime: number;
   aggressiveness: number;
+  defenseChance: number;
   blockChance: number;
   specialUsage: number;
   comboAbility: number;
@@ -27,18 +28,20 @@ export interface AIConfig {
 export const AI_DIFFICULTY_CONFIG: Record<AIDifficulty, AIConfig> = {
   easy: {
     difficulty: 'easy',
-    reactionTime: 14,
-    aggressiveness: 0.48,
-    blockChance: 0.28,
-    specialUsage: 0.2,
-    comboAbility: 0.45,
-    optimalRange: 72,
+    reactionTime: 18,
+    aggressiveness: 0.34,
+    defenseChance: 0.28,
+    blockChance: 0.35,
+    specialUsage: 0.14,
+    comboAbility: 0.18,
+    optimalRange: 76,
     retreatThreshold: 0.2,
   },
   medium: {
     difficulty: 'medium',
     reactionTime: 7,
     aggressiveness: 0.78,
+    defenseChance: 0.72,
     blockChance: 0.48,
     specialUsage: 0.46,
     comboAbility: 0.86,
@@ -49,6 +52,7 @@ export const AI_DIFFICULTY_CONFIG: Record<AIDifficulty, AIConfig> = {
     difficulty: 'hard',
     reactionTime: 3,
     aggressiveness: 0.9,
+    defenseChance: 0.92,
     blockChance: 0.62,
     specialUsage: 0.64,
     comboAbility: 0.96,
@@ -74,13 +78,18 @@ interface AIState {
   currentAction: AIAction;
   actionTimer: number;
   actionAge: number;
+  actionCommitted: boolean;
   lastDecisionFrame: number;
   evadeLaneDirection: -1 | 1;
   commandIndex: number;
   activeCommandSlot: CommandSlot;
+  lastCommandSpecialFrame: number;
+  threatObservedFrame: number | null;
   randomState: number;
   initialized: boolean;
 }
+
+const COMMAND_SPECIAL_STARVATION_FRAMES = 180;
 
 const COMMAND_SEQUENCE: readonly CommandSlot[] = [
   'BFA',
@@ -100,10 +109,13 @@ function createInitialState(): AIState {
     currentAction: 'idle',
     actionTimer: 0,
     actionAge: 0,
+    actionCommitted: false,
     lastDecisionFrame: Number.NEGATIVE_INFINITY,
     evadeLaneDirection: 1,
     commandIndex: 0,
     activeCommandSlot: COMMAND_SEQUENCE[0] ?? 'BFA',
+    lastCommandSpecialFrame: 0,
+    threatObservedFrame: null,
     randomState: 0,
     initialized: false,
   };
@@ -209,12 +221,13 @@ export function createAIController(config: AIConfig) {
     return state.randomState / 0x1_0000_0000;
   }
 
-  function initialize(ai: Fighter, player: Fighter): void {
+  function initialize(ai: Fighter, player: Fighter, currentFrame: number): void {
     if (state.initialized) return;
     state.randomState = hashSeed(
       `${config.difficulty}:${ai.id}:${ai.characterId}:${player.characterId}:${ai.playerId}`
     );
     state.evadeLaneDirection = ai.lane >= 2 ? -1 : 1;
+    state.lastCommandSpecialFrame = currentFrame;
     state.initialized = true;
   }
 
@@ -222,6 +235,7 @@ export function createAIController(config: AIConfig) {
     state.currentAction = action;
     state.actionTimer = Math.max(1, duration);
     state.actionAge = 0;
+    state.actionCommitted = false;
     state.lastDecisionFrame = currentFrame;
   }
 
@@ -239,6 +253,11 @@ export function createAIController(config: AIConfig) {
   }
 
   function reactToThreat(ai: Fighter, currentFrame: number): void {
+    if (nextRandom() >= config.defenseChance) {
+      setAction('idle', Math.max(3, Math.floor(config.reactionTime / 3)), currentFrame);
+      return;
+    }
+
     if (nextRandom() < config.blockChance) {
       setAction('block', 5 + Math.round(nextRandom() * 4), currentFrame);
       return;
@@ -251,18 +270,17 @@ export function createAIController(config: AIConfig) {
   function chooseCommandSpecial(currentFrame: number): void {
     state.activeCommandSlot = COMMAND_SEQUENCE[state.commandIndex] ?? 'BFA';
     state.commandIndex = (state.commandIndex + 1) % COMMAND_SEQUENCE.length;
-    setAction('command_special', 4, currentFrame);
+    state.lastCommandSpecialFrame = currentFrame;
+    // Keep the tactical label visible long enough for spectators and 10 Hz
+    // diagnostics to observe the command, while the actual command input still
+    // fires only on action ages 0 and 1 below.
+    setAction('command_special', 10, currentFrame);
   }
 
   function makeDecision(ai: Fighter, player: Fighter, currentFrame: number): void {
     const distance = Math.abs(ai.x - player.x);
     const healthPercent = ai.health / Math.max(1, ai.stats.maxHealth);
     const laneAligned = ai.lane === player.lane;
-
-    if (isImmediateThreat(ai, player)) {
-      reactToThreat(ai, currentFrame);
-      return;
-    }
 
     if (distance > config.optimalRange + 34) {
       setAction('dash_approach', 9 + Math.round(nextRandom() * 4), currentFrame);
@@ -279,15 +297,14 @@ export function createAIController(config: AIConfig) {
       return;
     }
 
-    if (ai.specialCooldown === 0 && nextRandom() < config.specialUsage) {
+    const commandSpecialStarved =
+      currentFrame - state.lastCommandSpecialFrame >= COMMAND_SPECIAL_STARVATION_FRAMES;
+    if (ai.specialCooldown === 0 && (commandSpecialStarved || nextRandom() < config.specialUsage)) {
       chooseCommandSpecial(currentFrame);
       return;
     }
 
-    if (
-      (ai.attackChainIndex > 0 || ai.combo.isActive || nextRandom() < config.comboAbility) &&
-      nextRandom() < config.aggressiveness
-    ) {
+    if (nextRandom() < config.comboAbility && nextRandom() < config.aggressiveness) {
       const chainLength = getCharacterNormalChainLength(ai.character);
       setAction('combo', Math.max(72, chainLength * 38), currentFrame);
       return;
@@ -333,6 +350,16 @@ export function createAIController(config: AIConfig) {
         break;
 
       case 'attack':
+        if (shouldClose) {
+          moveToward(input, ai, player);
+        } else if (!state.actionCommitted && ai.currentAttack === null) {
+          input.attack = true;
+          input.attackPressed = true;
+          state.actionCommitted = true;
+        }
+        alignLane(input, ai, player);
+        break;
+
       case 'combo':
         if (shouldClose) moveToward(input, ai, player);
         alignLane(input, ai, player);
@@ -382,14 +409,36 @@ export function createAIController(config: AIConfig) {
   }
 
   function update(aiFighter: Fighter, playerFighter: Fighter, currentFrame: number): PlayerInput {
-    initialize(aiFighter, playerFighter);
+    initialize(aiFighter, playerFighter, currentFrame);
     const input = createEmptyInput();
+    const immediateThreat = isImmediateThreat(aiFighter, playerFighter);
     const canInterrupt = currentFrame - state.lastDecisionFrame >= config.reactionTime;
+    const commandSpecialStarved =
+      currentFrame - state.lastCommandSpecialFrame >= COMMAND_SPECIAL_STARVATION_FRAMES;
+    const canAttemptStarvedSpecial =
+      commandSpecialStarved &&
+      aiFighter.specialCooldown === 0 &&
+      aiFighter.currentAttack === null &&
+      aiFighter.hitstunFrames === 0 &&
+      aiFighter.blockstunFrames === 0 &&
+      aiFighter.rollFrames === 0 &&
+      state.actionTimer <= 0;
 
-    if (isImmediateThreat(aiFighter, playerFighter) && canInterrupt) {
-      reactToThreat(aiFighter, currentFrame);
-    } else if (state.actionTimer <= 0) {
-      makeDecision(aiFighter, playerFighter, currentFrame);
+    if (canAttemptStarvedSpecial) {
+      chooseCommandSpecial(currentFrame);
+      state.threatObservedFrame = null;
+    } else if (immediateThreat) {
+      state.threatObservedFrame ??= currentFrame;
+      const reactionReady = currentFrame - state.threatObservedFrame >= config.reactionTime;
+      if (reactionReady && canInterrupt) {
+        reactToThreat(aiFighter, currentFrame);
+        state.threatObservedFrame = currentFrame;
+      }
+    } else {
+      state.threatObservedFrame = null;
+      if (state.actionTimer <= 0) {
+        makeDecision(aiFighter, playerFighter, currentFrame);
+      }
     }
 
     executeAction(input, aiFighter, playerFighter);
