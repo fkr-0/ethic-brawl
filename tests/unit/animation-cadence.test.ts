@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   resolveAnimationPlaybackTarget,
   resolveClipTransitionFrames,
+  resolveRemainingStateProgress,
   shouldRestartAnimationClip,
   smoothAnimationPlaybackSpeed,
 } from '@/render/sprites/animation-cadence';
@@ -20,7 +21,15 @@ describe('sprite animation cadence', () => {
     expect(shouldRestartAnimationClip('idle', 'run')).toBe(true);
     expect(resolveClipTransitionFrames('idle', 'run')).toBe(7);
     expect(resolveClipTransitionFrames('run', 'idle')).toBe(7);
-    expect(resolveClipTransitionFrames('run', 'attack_light_startup')).toBe(4);
+    expect(resolveClipTransitionFrames('run', 'attack_light_startup')).toBe(2);
+    expect(resolveClipTransitionFrames('foucault_hook_active', 'foucault_hook_recovery')).toBe(2);
+    expect(resolveClipTransitionFrames('hitstun', 'idle')).toBe(4);
+  });
+
+  it('maps a timed state across its full authored pose range instead of freezing early', () => {
+    expect(resolveRemainingStateProgress(0, 20)).toBe(0);
+    expect(resolveRemainingStateProgress(10, 10)).toBe(0.5);
+    expect(resolveRemainingStateProgress(20, 0)).toBe(1);
   });
 
   it('keeps Animation v2 locomotion inside the continuous motion family', () => {

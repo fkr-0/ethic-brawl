@@ -110,8 +110,8 @@ export const STATE_TRANSITIONS: Record<FighterStateName, FighterStateName[]> = {
   walking: ['idle', 'running', 'jumping', 'attacking', 'blocking', 'hitstun', 'special'],
   running: ['idle', 'walking', 'jumping', 'attacking', 'blocking', 'hitstun', 'special'],
   jumping: ['falling', 'attacking', 'hitstun', 'special'],
-  falling: ['idle', 'walking', 'hitstun', 'knockdown'],
-  attacking: ['idle', 'walking', 'hitstun', 'knockdown'],
+  falling: ['idle', 'walking', 'attacking', 'hitstun', 'knockdown'],
+  attacking: ['idle', 'walking', 'special', 'hitstun', 'knockdown'],
   blocking: ['idle', 'walking', 'hitstun'],
   hitstun: ['idle', 'knockdown', 'hitstun'],
   knockdown: ['gettingUp', 'victory', 'defeat'],
@@ -201,6 +201,11 @@ export const FRAME_DATA = {
   // Combo
   COMBO_WINDOW: 30,
   COMBO_BREAK_GROUND_FRAMES: 45,
+
+  // Attack input forgiveness. A press made near the end of a normal attack is
+  // retained long enough to start the next authored strike instead of being
+  // lost between animation phases.
+  ATTACK_BUFFER_WINDOW: 6,
 
   // Input timing
   RUN_DOUBLE_TAP_WINDOW: 18,

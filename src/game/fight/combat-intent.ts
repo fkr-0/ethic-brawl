@@ -71,11 +71,28 @@ export function canStartBlock(fighter: Fighter): boolean {
 }
 
 export function canStartAttack(fighter: Fighter): boolean {
-  return canStartGroundedAction(fighter) && !fighter.isBlocking;
+  return (
+    fighter.hitstunFrames === 0 &&
+    fighter.blockstunFrames === 0 &&
+    fighter.currentAttack === null &&
+    fighter.state !== 'special' &&
+    !fighter.isBlocking &&
+    (fighter.isGrounded || fighter.state === 'jumping' || fighter.state === 'falling')
+  );
 }
 
 export function canStartSpecial(fighter: Fighter): boolean {
-  return canStartGroundedAction(fighter) && !fighter.isBlocking && fighter.specialCooldown === 0;
+  const confirmedRecoveryCancel =
+    fighter.isGrounded &&
+    fighter.state === 'attacking' &&
+    fighter.currentAttack?.type !== 'special' &&
+    fighter.attackPhaseState?.phase === 'recovery' &&
+    fighter.attackPhaseState.hitConfirmed;
+  return (
+    !fighter.isBlocking &&
+    fighter.specialCooldown === 0 &&
+    (canStartGroundedAction(fighter) || confirmedRecoveryCancel)
+  );
 }
 
 function applyCommandSpecial(
@@ -175,5 +192,7 @@ export function applyCombatIntent(fighter: Fighter, input: CombatIntentInput): v
 
   if (input.attackPressed && canStartAttack(fighter)) {
     fighter.startAttack(undefined, input.currentFrame);
+  } else if (input.attackPressed) {
+    fighter.bufferNormalAttack();
   }
 }

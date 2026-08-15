@@ -122,6 +122,22 @@ export function updateFighterMotorFromInput(fighter: Fighter, input: FighterMoto
     return;
   }
 
+  // Authored attack sheets already contain their own lunges and weight shifts.
+  // Driving the world-space motor at walking/running speed at the same time
+  // makes feet slide across the arena and lets lane changes cut through poses.
+  // Keep external knockback intact, but settle player locomotion while a
+  // grounded strike is committed.
+  if (fighter.isGrounded && fighter.currentAttack) {
+    fighter.isRunning = false;
+    fighter.moveVelocityX = stepGroundedVelocity(
+      fighter.moveVelocityX,
+      0,
+      tuning.acceleration,
+      tuning.deceleration * 1.35
+    );
+    return;
+  }
+
   updateRunIntent(fighter, input);
 
   if (fighter.isGrounded) {

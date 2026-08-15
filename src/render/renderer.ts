@@ -38,6 +38,7 @@ import {
   resolveAttackPhase,
   resolveAttackPhaseProgress,
   resolveClipTransitionFrames,
+  resolveRemainingStateProgress,
   resolveFighterSpriteRenderScale,
   seekToProgress,
   setPlaybackSpeed,
@@ -465,13 +466,28 @@ function renderFighterWithSprite(
         fighter.currentAttack.active,
         fighter.currentAttack.recovery
       );
-      targetClip = getAttackPhaseClip(
-        animMap,
-        fighter.currentAttack.id,
-        attackPhase,
-        fighter.currentAttack.type
-      );
-      poseProgress = attackPhaseProgress;
+      const airAttackClip = !fighter.isGrounded
+        ? getNamedAnimationClip(animMap, 'air_attack_v2')
+        : null;
+      if (airAttackClip) {
+        const totalAttackFrames =
+          fighter.currentAttack.startup +
+          fighter.currentAttack.active +
+          fighter.currentAttack.recovery;
+        targetClip = airAttackClip;
+        poseProgress = Math.max(
+          0,
+          Math.min(1, fighter.attackFrame / Math.max(1, totalAttackFrames - 1))
+        );
+      } else {
+        targetClip = getAttackPhaseClip(
+          animMap,
+          fighter.currentAttack.id,
+          attackPhase,
+          fighter.currentAttack.type
+        );
+        poseProgress = attackPhaseProgress;
+      }
     }
   }
 
@@ -513,6 +529,8 @@ function renderFighterWithSprite(
     targetClip ??= getStateClip(animMap, fighter.state);
     if (fighter.state === 'gettingUp') {
       poseProgress = Math.min(1, fighter.stateFrame / Math.max(1, FRAME_DATA.GET_UP_DURATION - 1));
+    } else if (fighter.state === 'hitstun' && fighter.hitstunFrames > 0) {
+      poseProgress = resolveRemainingStateProgress(fighter.stateFrame, fighter.hitstunFrames);
     } else if (fighter.state === 'knockdown') {
       poseProgress = Math.min(
         1,

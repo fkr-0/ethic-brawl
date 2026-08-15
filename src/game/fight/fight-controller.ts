@@ -205,7 +205,6 @@ export function createFightController() {
     () => {
       if (!state || state.hitFreezeFrames <= 0) return;
       state.hitFreezeFrames--;
-      checkHits();
       updateCombos(false);
       return { halt: true };
     },

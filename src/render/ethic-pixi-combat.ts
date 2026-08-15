@@ -12,6 +12,9 @@ import {
   getStateClip,
   playClip,
   resolveAttackPhase,
+  resolveAttackPhaseProgress,
+  resolveRemainingStateProgress,
+  seekToProgress,
   setPlaybackSpeed,
   updateAnimationPlayer,
 } from './sprites';
@@ -140,6 +143,7 @@ export function createEthicPixiCombat(options: { actors: Container; projectiles:
     if (!animMap?.atlas) return renderFallback();
     let state = animationStates.get(fighter.id) ?? createAnimationPlayerState();
     let clip = null;
+    let poseProgress: number | null = null;
     if ((fighter.state === 'attacking' || fighter.state === 'special') && fighter.currentAttack) {
       const phase = resolveAttackPhase(
         fighter.attackFrame,
@@ -147,17 +151,45 @@ export function createEthicPixiCombat(options: { actors: Container; projectiles:
         fighter.currentAttack.active,
         fighter.currentAttack.recovery
       );
-      clip = getAttackPhaseClip(
-        animMap,
-        fighter.currentAttack.id,
-        phase,
-        fighter.currentAttack.type
-      );
+      const totalAttackFrames =
+        fighter.currentAttack.startup +
+        fighter.currentAttack.active +
+        fighter.currentAttack.recovery;
+      const airAttackClip = !fighter.isGrounded
+        ? (animMap.manifest.clips.find((candidate) => candidate.id === 'air_attack_v2') ?? null)
+        : null;
+      if (airAttackClip) {
+        clip = airAttackClip;
+        poseProgress = Math.max(
+          0,
+          Math.min(1, fighter.attackFrame / Math.max(1, totalAttackFrames - 1))
+        );
+      } else {
+        clip = getAttackPhaseClip(
+          animMap,
+          fighter.currentAttack.id,
+          phase,
+          fighter.currentAttack.type
+        );
+        poseProgress = resolveAttackPhaseProgress(
+          fighter.attackFrame,
+          fighter.currentAttack.startup,
+          fighter.currentAttack.active,
+          fighter.currentAttack.recovery
+        );
+      }
     }
     clip ??= getStateClip(animMap, fighter.state);
+    if (fighter.state === 'hitstun' && fighter.hitstunFrames > 0) {
+      poseProgress = resolveRemainingStateProgress(fighter.stateFrame, fighter.hitstunFrames);
+    }
     if (!clip) return renderFallback();
     if (state.currentClip?.id !== clip.id) state = playClip(state, clip, 1);
-    else state = updateAnimationPlayer(setPlaybackSpeed(state, 1), 1);
+    if (poseProgress !== null) {
+      state = { ...seekToProgress(state, poseProgress), isPlaying: true };
+    } else if (state.currentClip?.id === clip.id) {
+      state = updateAnimationPlayer(setPlaybackSpeed(state, 1), 1);
+    }
     animationStates.set(fighter.id, state);
 
     const clipFrame = clip.frames[state.currentFrame];

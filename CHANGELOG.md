@@ -8,7 +8,15 @@ All notable changes to Ethic Brawl are documented here.
 
 ## [1.7.3] - Unreleased
 
-- No changes yet.
+### Changed
+
+- Combat now accepts authored air attacks, buffers late normal inputs, permits confirmed recovery cancels into the next normal or a special, and settles grounded locomotion during committed strikes.
+- Canvas and optional Pixi rendering now synchronize attack poses to simulation phase progress, use authored airborne attack clips when available, and shorten attack-phase crossfades for more fluid motion.
+
+### Fixed
+
+- Hitstop no longer creates new melee contacts while the simulation is frozen.
+- Authored attacks without explicit hitbox metadata now use type- and range-aware fallback geometry instead of collapsing to the light-jab hitbox.
 
 ## [1.7.2] - Release candidate
 

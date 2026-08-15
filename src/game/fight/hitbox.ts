@@ -152,17 +152,31 @@ export function createActiveHitbox(
     | 'knockbackX'
     | 'knockbackY'
     | 'hitstun'
+    | 'range'
     | 'type'
     | 'hitbox'
     | 'moveClass'
     | 'moveClassPreset'
   >
 ): ActiveHitbox {
-  const config =
-    attack.hitbox ??
-    ATTACK_HITBOXES[attack.id] ??
-    ATTACK_HITBOXES.attack_1 ??
-    FALLBACK_ATTACK_HITBOX;
+  const fallbackByType =
+    attack.type === 'medium'
+      ? ATTACK_HITBOXES.attack_2
+      : attack.type === 'heavy'
+        ? ATTACK_HITBOXES.attack_3
+        : attack.type === 'special'
+          ? ATTACK_HITBOXES.special
+          : ATTACK_HITBOXES.attack_1;
+  const rangeAwareFallback = fallbackByType
+    ? {
+        ...fallbackByType,
+        width: Math.max(
+          fallbackByType.width,
+          Math.round(Math.max(0, attack.range - fallbackByType.offsetX))
+        ),
+      }
+    : FALLBACK_ATTACK_HITBOX;
+  const config = attack.hitbox ?? ATTACK_HITBOXES[attack.id] ?? rangeAwareFallback;
   const aabb = createHitbox(position.x, position.y, config, facing);
 
   // Apply facing to knockback

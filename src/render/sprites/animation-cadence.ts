@@ -9,6 +9,22 @@ const LOCOMOTION_CLIPS = new Set([
   'run_stop_v2',
 ]);
 
+function isAttackPhaseClip(clipId: string): boolean {
+  return /(?:attack|strike|jab|hook|sweep).*(?:startup|active|recovery)|(?:startup|active|recovery).*?(?:attack|strike|jab|hook|sweep)/i.test(
+    clipId
+  );
+}
+
+export function resolveRemainingStateProgress(
+  elapsedFrames: number,
+  remainingFrames: number
+): number {
+  const elapsed = Number.isFinite(elapsedFrames) ? Math.max(0, elapsedFrames) : 0;
+  const remaining = Number.isFinite(remainingFrames) ? Math.max(0, remainingFrames) : 0;
+  const total = elapsed + remaining;
+  return total <= 0 ? 1 : Math.max(0, Math.min(1, elapsed / total));
+}
+
 export function resolveAnimationPlaybackTarget(state: string, locomotionSpeed: number): number {
   const speed = Number.isFinite(locomotionSpeed) ? Math.max(0, locomotionSpeed) : 0;
 
@@ -44,5 +60,7 @@ export function shouldRestartAnimationClip(
 }
 
 export function resolveClipTransitionFrames(previousClipId: string, nextClipId: string): number {
-  return LOCOMOTION_CLIPS.has(previousClipId) && LOCOMOTION_CLIPS.has(nextClipId) ? 7 : 4;
+  if (LOCOMOTION_CLIPS.has(previousClipId) && LOCOMOTION_CLIPS.has(nextClipId)) return 7;
+  if (isAttackPhaseClip(previousClipId) || isAttackPhaseClip(nextClipId)) return 2;
+  return 4;
 }

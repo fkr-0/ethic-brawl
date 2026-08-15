@@ -57,4 +57,28 @@ describe('fighter motor landing transition', () => {
     expect(fighter.state).toBe('jumping');
     expect(fighter.velocityY).toBeGreaterThan(0);
   });
+
+  it('settles grounded locomotion during authored attacks instead of foot-skating', () => {
+    const runtime = createFightRuntime();
+    const state = runtime.getState();
+    if (!state) throw new Error('Missing fight state fixture');
+    const fighter = state.player1;
+
+    fighter.moveVelocityX = 6;
+    expect(fighter.startAttack(0, 0)).toBe(true);
+    const before = fighter.moveVelocityX;
+    updateFighterMotorFromInput(fighter, {
+      horizontalDirection: 1,
+      horizontalPressed: true,
+      verticalDirection: 1,
+      verticalPressed: true,
+      jumpPressed: true,
+      currentFrame: 1,
+    });
+
+    expect(fighter.moveVelocityX).toBeLessThan(before);
+    expect(fighter.isRunning).toBe(false);
+    expect(fighter.laneChangeTimer).toBe(0);
+    expect(fighter.isGrounded).toBe(true);
+  });
 });

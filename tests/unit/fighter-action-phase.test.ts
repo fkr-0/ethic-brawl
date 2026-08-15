@@ -30,4 +30,43 @@ describe('fighter shared action phases', () => {
     expect(fighter.attackPhaseState).toBeNull();
     expect(fighter.attackFrame).toBe(0);
   });
+
+  it('buffers a normal press and cancels confirmed recovery into the next authored strike', () => {
+    const fighter = new Fighter('buffer-fighter', 'foucault', 1, getCharacter('foucault'), 240, 1);
+    expect(fighter.startAttack(0, 0)).toBe(true);
+    const first = fighter.currentAttack;
+    if (!first) throw new Error('missing first attack fixture');
+
+    for (let frame = 1; frame <= first.startup; frame++) fighter.update(1000 / 60, frame);
+    fighter.markAttackOutcome('hit');
+    fighter.bufferNormalAttack();
+
+    let frame = first.startup;
+    while (fighter.currentAttack?.id === first.id && frame < 120) {
+      frame++;
+      fighter.update(1000 / 60, frame);
+    }
+
+    expect(fighter.currentAttack?.id).toBe('foucault_archive_hook');
+    expect(fighter.attackFrame).toBe(0);
+    expect(fighter.state).toBe('attacking');
+    expect(fighter.bufferedAttackFrames).toBe(0);
+  });
+
+  it('retains a late whiff press through recovery and starts the next strike on completion', () => {
+    const fighter = new Fighter('whiff-buffer', 'foucault', 1, getCharacter('foucault'), 240, 1);
+    expect(fighter.startAttack(0, 0)).toBe(true);
+    const first = fighter.currentAttack;
+    if (!first) throw new Error('missing first attack fixture');
+
+    const totalFrames = first.startup + first.active + first.recovery;
+    for (let frame = 1; frame < totalFrames - 2; frame++) fighter.update(1000 / 60, frame);
+    fighter.bufferNormalAttack();
+    fighter.update(1000 / 60, totalFrames - 1);
+    fighter.update(1000 / 60, totalFrames);
+    fighter.update(1000 / 60, totalFrames + 1);
+
+    expect(fighter.currentAttack?.id).toBe('foucault_archive_hook');
+    expect(fighter.state).toBe('attacking');
+  });
 });

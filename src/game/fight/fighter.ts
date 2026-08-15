@@ -104,6 +104,7 @@ export class Fighter {
   attackPhaseState: ActionPhaseState | null = null;
   attackChainIndex = 0;
   attackChainTimeout = 0;
+  bufferedAttackFrames = 0;
 
   // Special
   specialCooldown = 0;
@@ -190,6 +191,53 @@ export class Fighter {
     this.combo = createComboState();
     this.specialMaxCooldown = character.special.cooldown;
     this.specialState = createDefaultSpecialState(characterId as never, this.stats.energy);
+  }
+
+  bufferNormalAttack(): void {
+    if (
+      !this.currentAttack ||
+      this.currentAttack.type === 'special' ||
+      this.state !== 'attacking'
+    ) {
+      return;
+    }
+    this.bufferedAttackFrames = FRAME_DATA.ATTACK_BUFFER_WINDOW;
+  }
+
+  private beginNormalAttack(index: number, currentFrame: number, chained: boolean): boolean {
+    const attack = createCharacterAttack(this.character, index);
+    if (!attack) return false;
+
+    this.currentAttack = this.applyStatFrameScaling(attack);
+    this.attackFacing = this.facing;
+    this.attackFrame = 0;
+    this.attackPhaseState = createActionPhaseState(this.currentAttack);
+    this.attackContacts.clear();
+    this.configureAttackPresentation(this.currentAttack);
+    this.queuePresentationCues(-1, 0, currentFrame);
+    this.attackChainIndex = (index + 1) % getCharacterNormalChainLength(this.character);
+    this.attackChainTimeout = FRAME_DATA.COMBO_WINDOW;
+    this.bufferedAttackFrames = 0;
+    if (chained) {
+      this.forceState('attacking');
+    } else {
+      this.setState('attacking');
+    }
+    return true;
+  }
+
+  private tryConsumeConfirmedAttackBuffer(currentFrame: number): boolean {
+    if (
+      this.bufferedAttackFrames <= 0 ||
+      !this.currentAttack ||
+      this.currentAttack.type === 'special' ||
+      this.attackPhaseState?.phase !== 'recovery' ||
+      !this.attackPhaseState.hitConfirmed
+    ) {
+      return false;
+    }
+
+    return this.beginNormalAttack(this.attackChainIndex, currentFrame, true);
   }
 
   /**
@@ -386,21 +434,7 @@ export class Fighter {
     if (!this.canTransitionTo('attacking')) return false;
 
     const index = chainIndex ?? this.attackChainIndex;
-    const attack = createCharacterAttack(this.character, index);
-
-    if (!attack) return false;
-
-    this.currentAttack = this.applyStatFrameScaling(attack);
-    this.attackFacing = this.facing;
-    this.attackFrame = 0;
-    this.attackPhaseState = createActionPhaseState(this.currentAttack);
-    this.attackContacts.clear();
-    this.configureAttackPresentation(this.currentAttack);
-    this.queuePresentationCues(-1, 0, currentFrame);
-    this.attackChainIndex = (index + 1) % getCharacterNormalChainLength(this.character);
-    this.attackChainTimeout = FRAME_DATA.COMBO_WINDOW;
-    this.setState('attacking');
-    return true;
+    return this.beginNormalAttack(index, currentFrame, false);
   }
 
   startSpecial(currentFrame = 0): boolean {
@@ -557,7 +591,11 @@ export class Fighter {
       this.attackFrame = stepped.state.elapsed;
       this.queuePresentationCues(previousAttackFrame, this.attackFrame, currentFrame);
 
-      if (stepped.finished) {
+      if (this.tryConsumeConfirmedAttackBuffer(currentFrame)) {
+        // The chained attack owns the newly reset action state from here on.
+      } else if (stepped.finished) {
+        const shouldConsumeBufferedAttack = this.bufferedAttackFrames > 0;
+
         this.currentAttack = null;
         this.attackFacing = null;
         this.attackFrame = 0;
@@ -567,7 +605,14 @@ export class Fighter {
         if (this.state === 'attacking' || this.state === 'special') {
           this.setState('idle');
         }
+        if (shouldConsumeBufferedAttack && this.state === 'idle') {
+          this.startAttack(undefined, currentFrame);
+        }
       }
+    }
+
+    if (this.bufferedAttackFrames > 0) {
+      this.bufferedAttackFrames--;
     }
 
     // Update attack chain timeout
