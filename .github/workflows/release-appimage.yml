@@ -70,6 +70,9 @@ jobs:
           node-version: '24'
           cache: pnpm
 
+      - name: Install desktop icon Python dependency
+        run: python3 -m pip install --disable-pip-version-check -r scripts/requirements.txt
+
       - name: Validate tagged release metadata
         shell: bash
         env:
@@ -79,6 +82,7 @@ jobs:
           node -e "const p=require('./package.json'); if (p.version !== process.env.RELEASE_VERSION) throw new Error('package version ' + p.version + ' differs from tag ' + process.env.RELEASE_VERSION)"
           node scripts/verify-release-train.mjs
           node scripts/verify-runtime-consumption.mjs
+          pnpm desktop:icon:check
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

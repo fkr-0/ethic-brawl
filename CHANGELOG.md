@@ -8,6 +8,14 @@ All notable changes to Ethic Brawl are documented here.
 
 ## [1.7.5] - Unreleased
 
+### Added
+
+- Added a deterministic 512×512 Ethic Brawl desktop icon using the game's established cyan/magenta terminal palette, plus a reproducibility check so packaged Linux builds cannot silently drift from the tracked icon source.
+
+### Changed
+
+- Electron/AppImage Linux packaging now uses the project-owned Ethic Brawl icon instead of Electron's default application icon.
+
 ## [1.7.4] - 2026-08-20
 
 ### Added

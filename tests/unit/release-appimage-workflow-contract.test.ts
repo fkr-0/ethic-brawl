@@ -16,8 +16,12 @@ describe('AppImage release workflow', () => {
     expect(workflow).toContain('workflow_dispatch:');
     expect(workflow).toContain('must be an annotated tag');
     expect(workflow).toContain('git checkout --detach "refs/tags/$RELEASE_TAG"');
+    expect(workflow).toContain(
+      'python3 -m pip install --disable-pip-version-check -r scripts/requirements.txt'
+    );
     expect(workflow).toContain('node scripts/verify-release-train.mjs');
     expect(workflow).toContain('node scripts/verify-runtime-consumption.mjs');
+    expect(workflow).toContain('pnpm desktop:icon:check');
     expect(workflow).toContain('pnpm build');
     expect(workflow).toContain('electron-builder --linux AppImage --publish never');
     expect(packageJson.scripts['desktop:appimage']).toMatch(/--publish never$/);

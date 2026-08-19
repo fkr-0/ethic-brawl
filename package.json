@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vite",
     "desktop:dev": "node desktop/dev.mjs",
+    "desktop:icon": "python3 scripts/generate-desktop-icon.py",
+    "desktop:icon:check": "python3 scripts/generate-desktop-icon.py --check",
     "desktop:dir": "pnpm build && electron-builder --dir --linux",
     "desktop:appimage": "pnpm build && electron-builder --linux AppImage --publish never",
     "build": "tsc && vite build",
@@ -87,6 +89,7 @@
       "target": [
         "AppImage"
       ],
+      "icon": "desktop/icon.png",
       "category": "Game",
       "syncDesktopName": true
     }
