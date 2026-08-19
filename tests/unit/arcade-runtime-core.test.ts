@@ -4,11 +4,8 @@ import {
   createArcadePixiRuntime,
   createCanvasTexturePass,
   defineArcadeRenderPlan,
-} from '../../vendor/arcade-runtime.mjs';
-import type {
-  ArcadePixiNamespace,
-  ArcadePixiRuntimeOptions,
-} from '../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/pixi';
+import type { ArcadePixiNamespace, ArcadePixiRuntimeOptions } from '@arcade/runtime';
 
 class MockContainer {
   label = '';

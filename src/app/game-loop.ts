@@ -3,7 +3,7 @@
  */
 
 import { clamp } from '@/utils/math';
-import { createFixedStepLoop } from '../../vendor/arcade-runtime.mjs';
+import { createFixedStepLoop } from '@arcade/runtime/core';
 import { FIXED_TIMESTEP } from './config';
 
 export type UpdateCallback = (deltaTime: number) => void;

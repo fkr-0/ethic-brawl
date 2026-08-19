@@ -9,7 +9,7 @@ import {
   inspectArcadeSpriteFrame,
   resolveArcadeSpriteVisibleScale,
   type ArcadeSpritePixelData,
-} from '../../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/sprites';
 import { markSpriteFallback, shouldUseSpriteFallback } from './sprite-fallback';
 import type {
   AnimationClip,

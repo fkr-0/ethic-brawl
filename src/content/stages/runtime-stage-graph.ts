@@ -3,7 +3,7 @@ import {
   createStageGraph,
   type ArcadeEncounterPlan,
   type ArcadeStageGraph,
-} from '../../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/stages';
 import {
   STORY_STAGE_ORDER,
   STORY_STAGES,

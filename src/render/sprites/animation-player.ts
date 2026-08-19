@@ -7,7 +7,7 @@ import {
   advanceArcadeAnimationClock,
   createArcadeAnimationClock,
   playArcadeAnimationClock,
-} from '../../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime';
 
 /**
  * Create initial animation player state

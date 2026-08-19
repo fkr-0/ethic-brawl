@@ -2,14 +2,14 @@
  * Shared arcade-runtime semantic input adapter for both Ethic Brawl players.
  */
 
-import {
-  type ActionBinding,
-  type ActionState,
-  type ArcadeCommandStream,
-  type SnapshotValue,
-  createActionInput,
-  createCommandRecorder,
-} from '../../../vendor/arcade-runtime.mjs';
+import { createActionInput } from '@arcade/runtime/core';
+import { createCommandRecorder } from '@arcade/runtime/testing';
+import type {
+  ActionBinding,
+  ActionState,
+  ArcadeCommandStream,
+  SnapshotValue,
+} from '@arcade/runtime';
 import {
   GAME_ACTIONS,
   type GameAction,

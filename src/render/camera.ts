@@ -4,7 +4,8 @@
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { Vector2 } from '@/utils/math';
-import { createCameraRig, type CameraRig } from '../../vendor/arcade-runtime.mjs';
+import { createCameraRig } from '@arcade/runtime/core';
+import type { CameraRig } from '@arcade/runtime';
 
 /**
  * Camera configuration

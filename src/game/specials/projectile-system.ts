@@ -1,5 +1,5 @@
 import type { ProjectileDefinition } from '@/content/specials';
-import { resolveHitboxContacts } from '../../../vendor/arcade-runtime.mjs';
+import { resolveHitboxContacts } from '@arcade/runtime/core';
 
 export interface ProjectileState {
   id: string;

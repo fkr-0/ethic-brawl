@@ -19,17 +19,19 @@ import type { ActiveStatusEffect } from '@/game/specials/status-effects';
 import { sign } from '@/utils/math';
 import {
   createActionPhaseState,
-  createActionGraceState,
   createTimelineQueue,
   isActionPhaseActive,
   markActionOutcome,
   stepActionPhase,
   stepTimelineQueue,
-  type ActionOutcome,
-  type ArcadeActionGraceState,
-  type ActionPhaseState,
-  type TimelineQueueState,
-} from '../../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/core';
+import { createActionGraceState } from '@arcade/runtime/gameplay';
+import type {
+  ActionOutcome,
+  ArcadeActionGraceState,
+  ActionPhaseState,
+  TimelineQueueState,
+} from '@arcade/runtime';
 import {
   type AttackMotionVariation,
   type AttackPresentationCue,

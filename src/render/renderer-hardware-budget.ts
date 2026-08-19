@@ -3,7 +3,7 @@ import {
   detectArcadeHardwareTier,
   type ArcadeHardwareBudgetProfile,
   type ArcadeHardwareTier,
-} from '../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime';
 
 export const ETHIC_HARDWARE_BUDGETS: Readonly<
   Record<ArcadeHardwareTier, ArcadeHardwareBudgetProfile>

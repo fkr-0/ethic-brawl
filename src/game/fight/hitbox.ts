@@ -3,7 +3,7 @@
  */
 
 import type { AABB, Vector2 } from '@/utils/math';
-import { resolveHitboxContacts } from '../../../vendor/arcade-runtime.mjs';
+import { resolveHitboxContacts } from '@arcade/runtime/core';
 import type { AttackData } from './fighter-state';
 import { resolveAttackMoveClass } from './move-class-presets';
 

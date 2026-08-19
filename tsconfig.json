@@ -17,7 +17,9 @@
     "exactOptionalPropertyTypes": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@arcade/runtime": ["vendor/arcade-runtime.d.mts"],
+      "@arcade/runtime/*": ["vendor/arcade-runtime.d.mts"]
     }
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],

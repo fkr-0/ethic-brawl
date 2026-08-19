@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { ARCADE_RUNTIME_VERSION as SHARED_RUNTIME_VERSION } from '@arcade/runtime/core';
 import {
   ETHIC_ARCADE_RUNTIME_VERSION,
   ETHIC_CANVAS_PASS_TO_PIXI_LAYER,
@@ -9,7 +10,14 @@ import {
   ETHIC_PIXI_LAYERS,
   ETHIC_PIXI_RENDER_PLAN,
 } from '../../src/render/arcade-runtime-contract';
-import { ARCADE_RUNTIME_VERSION as SHARED_RUNTIME_VERSION } from '../../vendor/arcade-runtime.mjs';
+
+function collectTypeScriptFiles(root: string): string[] {
+  return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(root, entry.name);
+    if (entry.isDirectory()) return collectTypeScriptFiles(path);
+    return entry.isFile() && /\.(?:ts|tsx)$/.test(entry.name) ? [path] : [];
+  });
+}
 
 describe('shared Pixi runtime contract', () => {
   it('pins the common runtime and preserves deterministic pass order', () => {
@@ -71,5 +79,15 @@ describe('shared Pixi runtime contract', () => {
     ).toContain("export * from './arcade-runtime.mjs'");
     expect(existsSync(resolve(process.cwd(), 'vendor/arcade-core.meta.json'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'vendor/arcade-pixi-runtime.meta.json'))).toBe(false);
+  });
+
+  it('keeps production source on capability-oriented runtime imports', () => {
+    const sourceFiles = collectTypeScriptFiles(resolve(process.cwd(), 'src'));
+    const source = sourceFiles.map((path) => readFileSync(path, 'utf8')).join('\n');
+
+    expect(source).not.toContain('vendor/arcade-runtime.mjs');
+    expect(source).toMatch(
+      /from ['"]@arcade\/runtime\/(?:core|pixi|sprites|ui|gameplay|stages|testing)['"]/
+    );
   });
 });

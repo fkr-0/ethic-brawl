@@ -3,7 +3,7 @@
  */
 
 import type { AABB, Vector2 } from '@/utils/math';
-import { aabbOverlap, computeCollisionManifold } from '../../../vendor/arcade-runtime.mjs';
+import { aabbOverlap, computeCollisionManifold } from '@arcade/runtime/core';
 
 /**
  * Collision layers

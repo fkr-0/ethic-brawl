@@ -8,7 +8,7 @@ import {
   stepGroundedVelocity,
 } from '@/game/physics/movement';
 import { clamp } from '@/utils/math';
-import { stepActionGrace } from '../../../vendor/arcade-runtime.mjs';
+import { stepActionGrace } from '@arcade/runtime/gameplay';
 import type { Fighter } from './fighter';
 import { FRAME_DATA, type Lane } from './fighter-state';
 

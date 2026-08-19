@@ -6,11 +6,7 @@ import {
   getSpecialMove,
 } from '@/content/specials';
 import type { CommandSlot } from '@/game/fight/command-input';
-import {
-  isCooldownReady,
-  startCooldown,
-  stepCooldownState,
-} from '../../../vendor/arcade-runtime.mjs';
+import { isCooldownReady, startCooldown, stepCooldownState } from '@arcade/runtime';
 
 export type SpecialResolveRejectReason = 'no_special' | 'locked' | 'not_enough_energy' | 'cooldown';
 

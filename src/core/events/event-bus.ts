@@ -1,6 +1,6 @@
 /** Type-safe compatibility facade over the shared arcade-runtime event engine. */
 
-import { createEventBus as createArcadeEventBus } from '../../../vendor/arcade-runtime.mjs';
+import { createEventBus as createArcadeEventBus } from '@arcade/runtime/core';
 
 export function createEventBus<TEvents extends object>() {
   return createArcadeEventBus<TEvents>();

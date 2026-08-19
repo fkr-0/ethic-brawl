@@ -5,8 +5,8 @@ import {
   createBufferedInputQueue,
   pruneBufferedInputQueue,
   pushBufferedInput,
-  type BufferedInputQueue,
-} from '../../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/core';
+import type { BufferedInputQueue } from '@arcade/runtime';
 
 export type CommandDirection = 'left' | 'right' | 'up' | 'down' | 'neutral';
 export type RelativeCommandDirection = 'forward' | 'back' | 'up' | 'down' | 'neutral';

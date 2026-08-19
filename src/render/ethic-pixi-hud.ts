@@ -1,7 +1,7 @@
 import { CHARACTERS } from '@/content/characters/character-data';
 import type { FightState } from '@/game/fight/fight-controller';
 import { Container, Graphics, Text } from 'pixi.js';
-import { createPixiHudGauge } from '../../vendor/arcade-runtime.mjs';
+import { createPixiHudGauge } from '@arcade/runtime/pixi';
 
 export interface EthicPixiHudFighterModel {
   name: string;

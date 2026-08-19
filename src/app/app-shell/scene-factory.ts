@@ -17,11 +17,8 @@ import { type Scene, type SceneName, createScene } from '@/core';
 import { resetBindingForPlayer, updateBindingForAction } from '@/core/input/input-binding';
 import type { InputState } from '@/core/input/input-manager';
 import type { FightPresentationOptions } from '@/render';
-import {
-  createUiNavigationRepeater,
-  resolveGridFocusIndex,
-  type ArcadeGridDirection,
-} from '../../../vendor/arcade-runtime.mjs';
+import { createUiNavigationRepeater, resolveGridFocusIndex } from '@arcade/runtime/ui';
+import type { ArcadeGridDirection } from '@arcade/runtime';
 import {
   renderCharacterSelect,
   renderLoading,

@@ -1,6 +1,23 @@
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
+const arcadeRuntimeModule = path.resolve(__dirname, './vendor/arcade-runtime.mjs');
+const arcadeRuntimeCapabilities = [
+  'core',
+  'pixi',
+  'testing',
+  'sprites',
+  'assets',
+  'audio',
+  'ui',
+  'gameplay',
+  'stages',
+  'storage',
+  'compat',
+  'netcode',
+  'tooling',
+] as const;
+
 export default defineConfig({
   test: {
     globals: true,
@@ -21,8 +38,13 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+    alias: [
+      ...arcadeRuntimeCapabilities.map((capability) => ({
+        find: `@arcade/runtime/${capability}`,
+        replacement: arcadeRuntimeModule,
+      })),
+      { find: '@arcade/runtime', replacement: arcadeRuntimeModule },
+      { find: '@', replacement: path.resolve(__dirname, './src') },
+    ],
   },
 });

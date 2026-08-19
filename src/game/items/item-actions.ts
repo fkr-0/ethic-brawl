@@ -1,4 +1,4 @@
-import { integrateAcceleration } from '../../../vendor/arcade-runtime.mjs';
+import { integrateAcceleration } from '@arcade/runtime/core';
 import type { ItemDefinition, ItemEffect } from './item-system';
 
 export type ItemActionKind = 'pickup' | 'equip' | 'consume' | 'throw' | 'use';

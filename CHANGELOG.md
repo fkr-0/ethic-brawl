@@ -6,15 +6,19 @@ All notable changes to Ethic Brawl are documented here.
 
 - Add physical-device and sustained-session evidence before considering a native-renderer default change.
 
-## [1.7.3] - Unreleased
+## [1.7.3] - 2026-08-19
 
 ### Changed
 
+- Runtime consumption now uses capability-oriented `@arcade/runtime/*` imports for core, Pixi, sprites, UI, gameplay, stages, and testing APIs while retaining root imports only for Runtime 1.12 symbols that are not exposed by a capability subpath.
+- AI Showcase title fitting now delegates to the Runtime 1.12 measured-text primitive instead of maintaining a local `measureText()` shrink loop.
 - Combat now accepts authored air attacks, buffers late normal inputs, permits confirmed recovery cancels into the next normal or a special, and settles grounded locomotion during committed strikes.
 - Canvas and optional Pixi rendering now synchronize attack poses to simulation phase progress, use authored airborne attack clips when available, and shorten attack-phase crossfades for more fluid motion.
 
 ### Fixed
 
+- Sprite auditing now treats planned item/body-pose artwork as optional release evidence instead of hard missing-source failures.
+- Verified CI installs the pinned Pillow dependency before sprite validation and deploys the built `dist/` tree to GitHub Pages only after the release checks pass.
 - Hitstop no longer creates new melee contacts while the simulation is frozen.
 - Authored attacks without explicit hitbox metadata now use type- and range-aware fallback geometry instead of collapsing to the light-jab hitbox.
 

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { installEthicCanvasBridgePasses } from '../../src/render/arcade-runtime-adapter';
-import type { ArcadePixiNamespace, ArcadePixiRuntime } from '../../vendor/arcade-runtime.mjs';
+import type { ArcadePixiNamespace, ArcadePixiRuntime } from '@arcade/runtime';
 
 describe('Ethic Brawl shared-runtime bridge adapter', () => {
   it('installs only supplied ready Canvas passes in the canonical layers', () => {

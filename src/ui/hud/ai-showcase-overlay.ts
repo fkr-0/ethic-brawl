@@ -1,6 +1,6 @@
 import type { SpectatorDetailLevel } from '@/app/app-shell/types';
 import { CANVAS_WIDTH } from '@/app/config';
-import { ARCADE_UI_FONT, ETHIC_UI } from '@/ui/arcade-ui';
+import { ARCADE_UI_FONT, ETHIC_UI, fitArcadeText } from '@/ui/arcade-ui';
 
 export interface UiRectangle {
   x: number;
@@ -75,14 +75,10 @@ export function renderAiShowcaseStatus(
   ctx.lineWidth = 1;
   ctx.strokeRect(layout.title.x, layout.title.y, layout.title.width, layout.title.height);
   ctx.textAlign = 'center';
-  let fontSize = 11;
-  do {
-    ctx.font = `700 ${fontSize}px ${ARCADE_UI_FONT}`;
-    if (ctx.measureText(label).width <= layout.title.width - 24) break;
-    fontSize--;
-  } while (fontSize > 8);
+  ctx.font = `700 11px ${ARCADE_UI_FONT}`;
+  const fittedLabel = fitArcadeText(ctx, label, layout.title.width - 24);
   ctx.fillStyle = ETHIC_UI.text;
-  ctx.fillText(label, CANVAS_WIDTH / 2, layout.title.y + 18);
+  ctx.fillText(fittedLabel, CANVAS_WIDTH / 2, layout.title.y + 18);
 
   if (layout.player1 && layout.player2) {
     const drawTelemetryPanel = (

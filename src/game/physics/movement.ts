@@ -3,7 +3,8 @@
  */
 
 import type { CharacterMovementProfile } from '@/content/characters/character-data';
-import { approach, clampNumber, integrateAcceleration } from '../../../vendor/arcade-runtime.mjs';
+import { approach, integrateAcceleration } from '@arcade/runtime/core';
+import { clampNumber } from '@arcade/runtime';
 import { FRAME_DATA } from '../fight/fighter-state';
 
 export interface MovementTuning {

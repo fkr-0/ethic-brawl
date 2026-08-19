@@ -2,7 +2,7 @@ import type { SceneName } from '@/core';
 import type { FighterAnimationSnapshot } from '@/render';
 import type { EthicPixiBridgeRuntimeStatus } from '@/render';
 import type { SpriteValidationReport } from '@/render/sprites';
-import type { ArcadePerformanceSummary } from '../../vendor/arcade-runtime.mjs';
+import type { ArcadePerformanceSummary } from '@arcade/runtime';
 import type { AppShellState } from './app-shell/scene-factory';
 
 export interface E2EProbeSnapshot {

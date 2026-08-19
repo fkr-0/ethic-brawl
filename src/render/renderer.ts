@@ -9,7 +9,7 @@ import { type FightState, getLaneGroundY } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
 import { FRAME_DATA } from '@/game/fight/fighter-state';
 import { ARCADE_UI_FONT } from '@/ui/arcade-ui';
-import { createArcadeCameraTransform } from '../../vendor/arcade-runtime.mjs';
+import { createArcadeCameraTransform } from '@arcade/runtime/pixi';
 import type { Camera } from './camera';
 import {
   type FightGraphicsProfile,
@@ -46,7 +46,7 @@ import {
   smoothAnimationPlaybackSpeed,
   updateAnimationPlayer,
 } from './sprites';
-import { resolveHudGauge } from '../../vendor/arcade-runtime.mjs';
+import { resolveHudGauge } from '@arcade/runtime/gameplay';
 import { collectAmbientEffectsForFighter, renderAmbientEffect, renderVisualEffect } from './vfx';
 
 /**

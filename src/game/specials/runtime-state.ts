@@ -6,8 +6,8 @@ import {
   getResourcePool,
   payResourceCosts,
   setResourceValue,
-  stepCooldownState,
-} from '../../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/gameplay';
+import { stepCooldownState } from '@arcade/runtime';
 
 export const ENERGY_PER_STAT_POINT = 5;
 

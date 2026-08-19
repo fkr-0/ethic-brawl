@@ -1,6 +1,6 @@
 /** Renderer-neutral arcade-runtime transition manager adapted to Ethic Brawl scenes. */
 
-import { createTransitionSceneManager } from '../../../vendor/arcade-runtime.mjs';
+import { createTransitionSceneManager } from '@arcade/runtime/core';
 
 export type SceneName =
   | 'loading'

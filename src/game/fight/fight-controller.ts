@@ -38,8 +38,8 @@ import {
   queueEntityReplace,
   queueEntitySpawn,
   createSystemPipeline,
-  type EntityCommandBuffer,
-} from '../../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/core';
+import type { EntityCommandBuffer } from '@arcade/runtime';
 import { type FightCameraEffect, stepFightCameraEffects } from './attack-presentation-presets';
 import { type HitResult, resolveHit } from './combat';
 import { applyCombatIntent } from './combat-intent';

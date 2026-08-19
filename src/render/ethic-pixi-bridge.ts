@@ -8,12 +8,9 @@ import {
   Texture,
   TextureStyle,
 } from 'pixi.js';
-import {
-  createArcadeCameraTransform,
-  createArcadePixiRuntime,
-  createBrowserPerformanceSampler,
-} from '../../vendor/arcade-runtime.mjs';
-import type { ArcadePixiNamespace } from '../../vendor/arcade-runtime.mjs';
+import { createArcadeCameraTransform, createArcadePixiRuntime } from '@arcade/runtime/pixi';
+import { createBrowserPerformanceSampler } from '@arcade/runtime';
+import type { ArcadePixiNamespace } from '@arcade/runtime';
 import { ETHIC_PIXI_LAYERS } from './arcade-runtime-contract';
 import { createEthicPixiHud } from './ethic-pixi-hud';
 import { createEthicPixiCombat } from './ethic-pixi-combat';

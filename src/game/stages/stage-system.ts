@@ -1,5 +1,5 @@
 import type { AABB, Vector2 } from '@/utils/math';
-import { aabbOverlap, resolveOneWayPlatforms } from '../../../vendor/arcade-runtime.mjs';
+import { aabbOverlap, resolveOneWayPlatforms } from '@arcade/runtime/core';
 
 export type StageSurfaceKind = 'floor' | 'platform' | 'wall' | 'hazard';
 export type StageObstacleKind = 'solid' | 'jump_through' | 'pickup_blocker' | 'hazard';

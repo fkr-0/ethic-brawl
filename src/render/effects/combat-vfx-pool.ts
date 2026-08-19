@@ -1,4 +1,5 @@
-import { createRecyclingPool, type RecyclingPool } from '../../../vendor/arcade-runtime.mjs';
+import { createRecyclingPool } from '@arcade/runtime/core';
+import type { RecyclingPool } from '@arcade/runtime';
 
 export type CombatParticleKind = 'spark' | 'guard' | 'special' | 'dust';
 

@@ -4,7 +4,7 @@ import {
   advanceStageGraph,
   createEncounterState,
   createStageGraphState,
-} from '../../vendor/arcade-runtime.mjs';
+} from '@arcade/runtime/stages';
 import {
   ETHIC_STORY_ENCOUNTER_PLANS,
   ETHIC_STORY_STAGE_GRAPH,

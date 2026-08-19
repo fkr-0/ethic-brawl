@@ -2,6 +2,23 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import { runtimeSpriteProjection } from './scripts/vite-runtime-sprite-plugin.mjs';
 
+const arcadeRuntimeModule = resolve(__dirname, 'vendor/arcade-runtime.mjs');
+const arcadeRuntimeCapabilities = [
+  'core',
+  'pixi',
+  'testing',
+  'sprites',
+  'assets',
+  'audio',
+  'ui',
+  'gameplay',
+  'stages',
+  'storage',
+  'compat',
+  'netcode',
+  'tooling',
+] as const;
+
 export default defineConfig({
   // The artifacts hub mounts this build below /ethic-brawl/. Relative bundle
   // URLs keep both the standalone preview and the deployed subpath working.
@@ -9,9 +26,14 @@ export default defineConfig({
   publicDir: false,
   plugins: [runtimeSpriteProjection()],
   resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
-    },
+    alias: [
+      ...arcadeRuntimeCapabilities.map((capability) => ({
+        find: `@arcade/runtime/${capability}`,
+        replacement: arcadeRuntimeModule,
+      })),
+      { find: '@arcade/runtime', replacement: arcadeRuntimeModule },
+      { find: '@', replacement: resolve(__dirname, 'src') },
+    ],
   },
   server: {
     port: 3000,

@@ -3,7 +3,7 @@ import type { FightState } from '@/game/fight/fight-controller';
 import type { Fighter } from '@/game/fight/fighter';
 import type { ProjectileState } from '@/game/specials/projectile-system';
 import { type Container, Graphics, Sprite, Texture } from 'pixi.js';
-import { createPixiFramePool } from '../../vendor/arcade-runtime.mjs';
+import { createPixiFramePool } from '@arcade/runtime/pixi';
 import { createFighterAnimationView } from './fighter-animation-view';
 import {
   createAnimationPlayerState,
