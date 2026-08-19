@@ -5,6 +5,8 @@ import { runtimeSpriteProjection } from './scripts/vite-runtime-sprite-plugin.mj
 const arcadeRuntimeModule = resolve(__dirname, 'vendor/arcade-runtime.mjs');
 const arcadeRuntimeCapabilities = [
   'core',
+  'compute',
+  'animation',
   'pixi',
   'testing',
   'sprites',

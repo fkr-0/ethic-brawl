@@ -1,6 +1,10 @@
 import type { StatusEffectDefinition, StatusEffectId } from '@/content/specials';
-import { applyTimedEffect, hasTimedEffect, stepTimedEffects } from '@arcade/runtime/core';
-import type { TimedEffectState } from '@arcade/runtime';
+import {
+  applyTimedEffect,
+  hasTimedEffect,
+  stepTimedEffects,
+  type TimedEffectState,
+} from '@arcade/runtime/core';
 
 export interface ActiveStatusEffect extends StatusEffectDefinition {
   sourceId: string;

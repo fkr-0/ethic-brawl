@@ -51,6 +51,7 @@ Thumbs.db
 # Ignore build output directories
 build/
 dist/
+release/
 public
 
 # python

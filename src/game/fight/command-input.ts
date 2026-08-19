@@ -1,12 +1,12 @@
 import type { Fighter } from './fighter';
 import type { Direction } from './fighter-state';
 import {
+  type BufferedInputQueue,
   consumeBufferedInput,
   createBufferedInputQueue,
   pruneBufferedInputQueue,
   pushBufferedInput,
 } from '@arcade/runtime/core';
-import type { BufferedInputQueue } from '@arcade/runtime';
 
 export type CommandDirection = 'left' | 'right' | 'up' | 'down' | 'neutral';
 export type RelativeCommandDirection = 'forward' | 'back' | 'up' | 'down' | 'neutral';

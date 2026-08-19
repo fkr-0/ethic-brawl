@@ -14,6 +14,7 @@ interface EthicPixiBridgeModule {
 
 export interface EthicPixiBridgeLoaderDependencies {
   search?: string;
+  importCspShim?: () => Promise<unknown>;
   importBridge?: () => Promise<EthicPixiBridgeModule>;
 }
 
@@ -51,6 +52,9 @@ export async function loadEthicPixiBridge(
   }
 
   try {
+    // PixiJS uses generated sync functions on its fast path. Under a strict CSP,
+    // install Pixi's bundled CSP-safe fallback only when the optional bridge is requested.
+    await (dependencies.importCspShim ?? (() => import('pixi.js/unsafe-eval')))();
     const module = await (dependencies.importBridge ?? (() => import('./ethic-pixi-bridge')))();
     const controller = await module.createEthicPixiBridge({ ...options, mount: options.mount });
     return { status: 'ready', controller, errorMessage: null };

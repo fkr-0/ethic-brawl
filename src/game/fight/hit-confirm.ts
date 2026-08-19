@@ -1,7 +1,6 @@
 import type { AttackData } from './fighter-state';
 import { resolveAttackHitPolicySource } from './hit-policy-presets';
-import { createHitContactLedger } from '@arcade/runtime/core';
-import type { HitContactLedger } from '@arcade/runtime';
+import { createHitContactLedger, type HitContactLedger } from '@arcade/runtime/core';
 
 export interface AttackContactRecord {
   hits: number;

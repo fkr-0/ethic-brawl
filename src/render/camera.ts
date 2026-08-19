@@ -4,8 +4,7 @@
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/app/config';
 import type { Vector2 } from '@/utils/math';
-import { createCameraRig } from '@arcade/runtime/core';
-import type { CameraRig } from '@arcade/runtime';
+import { createCameraRig, type CameraRig } from '@arcade/runtime/core';
 
 /**
  * Camera configuration

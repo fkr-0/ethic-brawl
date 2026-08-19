@@ -4,6 +4,7 @@
 
 import type { AttackType } from '@/game/fight/fighter-state';
 import { getAtlas, getManifest } from './sprite-assets';
+import { normalizeEthicSpriteManifest } from './runtime-manifest';
 import type {
   AnimationClip,
   AttackPhase,
@@ -53,10 +54,17 @@ export function buildCharacterAnimationMap(
   }
 
   const fallbackClip = manifest.fallbackClip ? (clipMap.get(manifest.fallbackClip) ?? null) : null;
+  const runtimeManifest = normalizeEthicSpriteManifest(manifest);
+  const runtimeSheet = runtimeManifest.sheets[0];
+  if (!runtimeSheet) {
+    throw new Error(`Runtime sprite manifest contains no sheet for ${manifest.characterId}`);
+  }
 
   return {
     characterId: manifest.characterId,
     manifest,
+    runtimeManifest,
+    runtimeSheet,
     atlas,
     stateToClip,
     attackPhaseToClip,

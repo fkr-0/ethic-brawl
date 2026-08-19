@@ -31,6 +31,8 @@ import {
   setSpriteScaleFactor,
   validateAllCharacterSprites,
 } from '@/render/sprites';
+import { createEthicNoticeModel, drawEthicNotice } from '@/runtime/notices';
+import { ETHIC_UI } from '@/ui/arcade-ui';
 import {
   renderDebugInfo,
   renderHelpOverlay,
@@ -47,6 +49,7 @@ async function main() {
   if (!ctx) {
     throw new Error('Failed to get 2D context');
   }
+  const notices = createEthicNoticeModel({ defaultDuration: 150 });
 
   showLoading('PREPARING BABYLON...');
   let spriteValidationReport = validateAllCharacterSprites();
@@ -68,6 +71,13 @@ async function main() {
   let pixiBridgeError = bridgeLoad.errorMessage;
   if (pixiBridgeStatus === 'failed') {
     console.warn(`Native renderer unavailable; continuing with Canvas2D: ${pixiBridgeError}`);
+    notices.push({
+      topic: 'renderer',
+      title: 'RENDERER FALLBACK',
+      message: 'NATIVE RENDERER UNAVAILABLE // CANVAS2D ACTIVE',
+      kind: 'warning',
+      duration: 240,
+    });
   }
   const appState = createInitialAppShellState();
   appState.settings = loadAppSettings(appState.settings);
@@ -118,7 +128,12 @@ async function main() {
         onSettingsChanged: (settings) => {
           inputManager.setBindings(settings.bindings);
           fightRuntime.setPresentationPolicy(resolveFightPresentationPolicy(settings));
-          saveAppSettings(settings);
+          const saved = saveAppSettings(settings);
+          notices.push({
+            topic: 'settings',
+            message: saved ? 'SETTINGS SAVED' : 'SETTINGS SAVE FAILED',
+            kind: saved ? 'success' : 'danger',
+          });
         },
         getFightPresentationOverrides: () =>
           pixiBridge
@@ -164,7 +179,12 @@ async function main() {
         ]);
         if (keyCode && captureKeybindingEdit(appState.settings, keyCode)) {
           inputManager.setBindings(appState.settings.bindings);
-          saveAppSettings(appState.settings);
+          const saved = saveAppSettings(appState.settings);
+          notices.push({
+            topic: 'input',
+            message: saved ? `KEY BINDING SAVED // ${keyCode}` : 'KEY BINDING SAVE FAILED',
+            kind: saved ? 'success' : 'danger',
+          });
         }
       }
 
@@ -178,58 +198,79 @@ async function main() {
       if (keyboard.wasJustPressed('F1')) {
         spriteRenderingEnabled = !spriteRenderingEnabled;
         setSpriteRendering(spriteRenderingEnabled);
+        notices.push({
+          topic: 'sprites',
+          message: `SPRITE RENDERING ${spriteRenderingEnabled ? 'ON' : 'OFF'}`,
+          kind: spriteRenderingEnabled ? 'success' : 'warning',
+        });
         console.info(
           `🎨 Sprite rendering ${spriteRenderingEnabled ? 'enabled' : 'disabled'} (press F1 to toggle)`
         );
       }
 
       if (keyboard.wasJustPressed('F2')) {
-        console.info('🔍 Sprite validation:', validateAllCharacterSprites());
+        const report = validateAllCharacterSprites();
+        notices.push({
+          topic: 'sprites',
+          message: report.valid ? 'SPRITE VALIDATION PASS' : 'SPRITE VALIDATION FAILED',
+          kind: report.valid ? 'success' : 'danger',
+        });
+        console.info('🔍 Sprite validation:', report);
       }
 
       if (keyboard.wasJustPressed('F3')) {
         const newScale = Math.max(0.6, getSpriteScaleFactor() - 0.05);
         setSpriteScaleFactor(newScale);
+        notices.push({ topic: 'sprites', message: `SPRITE SCALE ${newScale.toFixed(2)}` });
         console.info(`🔍 Sprite scale factor: ${newScale.toFixed(2)}`);
       }
 
       if (keyboard.wasJustPressed('F4')) {
         const newScale = Math.min(1.5, getSpriteScaleFactor() + 0.05);
         setSpriteScaleFactor(newScale);
+        notices.push({ topic: 'sprites', message: `SPRITE SCALE ${newScale.toFixed(2)}` });
         console.info(`🔍 Sprite scale factor: ${newScale.toFixed(2)}`);
       }
 
       if (keyboard.wasJustPressed('F11')) {
         const newSpacing = Math.max(0, getGridSpacing() - 1);
         setGridSpacing(newSpacing);
+        notices.push({ topic: 'sprites', message: `GRID SPACING ${newSpacing}px // RELOAD` });
         console.info(`🔍 Grid spacing: ${newSpacing}px - reload page to see effect`);
       }
 
       if (keyboard.wasJustPressed('F12')) {
         const newSpacing = Math.min(10, getGridSpacing() + 1);
         setGridSpacing(newSpacing);
+        notices.push({ topic: 'sprites', message: `GRID SPACING ${newSpacing}px // RELOAD` });
         console.info(`🔍 Grid spacing: ${newSpacing}px - reload page to see effect`);
       }
 
       if (keyboard.wasJustPressed('F7')) {
         setChromaKey(true, 255, 255, 255, 46, 'adaptive-edge');
+        notices.push({ topic: 'debug', message: 'ADAPTIVE EDGE KEY ON', kind: 'success' });
         console.info('🎨 Adaptive edge key enabled (F8 to disable, enabled by default)');
       }
 
       if (keyboard.wasJustPressed('F8')) {
         setChromaKey(false);
+        notices.push({ topic: 'debug', message: 'CHROMA KEY OFF', kind: 'warning' });
         console.info('🎨 Chroma key disabled (F7 to enable, was enabled by default)');
       }
 
       if (keyboard.wasJustPressed('F9')) {
         setDebugFrameBoundaries(true);
+        notices.push({ topic: 'debug', message: 'FRAME BOUNDS ON', kind: 'warning' });
         console.info('🔍 Frame boundaries debug enabled (F10 to disable)');
       }
 
       if (keyboard.wasJustPressed('F10')) {
         setDebugFrameBoundaries(false);
+        notices.push({ topic: 'debug', message: 'FRAME BOUNDS OFF' });
         console.info('🔍 Frame boundaries debug disabled (F9 to enable)');
       }
+
+      notices.step(1);
 
       if (!helpOpen) {
         sceneManager.update(deltaTime);
@@ -253,6 +294,12 @@ async function main() {
         renderHelpOverlay(ctx, appState.settings.bindings);
       }
       renderDebugInfo(ctx, gameLoop.getFPS(), gameLoop.getFrameCount());
+      drawEthicNotice(
+        ctx,
+        notices,
+        { x: canvas.width - 338, y: 14, width: 320, height: 68, maxLines: 2 },
+        ETHIC_UI
+      );
       if (currentScene === 'fight') {
         renderProfiler.record(
           pixiBridge ? 'bridge:fight' : 'canvas:fight',
@@ -275,10 +322,14 @@ async function main() {
     const stageReaction = resolveFightStageReaction(fightState, stageEvent);
     const particleStats = fightState?.particlePool.getStats();
     const presentationOptions = fightRuntime.getPresentationOptions();
+    const currentNotice = notices.current();
     return {
       ready: sceneManager.getCurrentScene() !== 'loading',
       currentScene: sceneManager.getCurrentScene(),
       helpOpen,
+      notice: currentNotice
+        ? { id: currentNotice.id, message: currentNotice.message, kind: currentNotice.kind }
+        : null,
       frameCount: gameLoop.getFrameCount(),
       fps: gameLoop.getFPS(),
       canvas: {

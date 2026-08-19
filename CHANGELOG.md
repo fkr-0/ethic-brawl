@@ -6,19 +6,50 @@ All notable changes to Ethic Brawl are documented here.
 
 - Add physical-device and sustained-session evidence before considering a native-renderer default change.
 
+## [1.7.5] - Unreleased
+
+## [1.7.4] - 2026-08-20
+
+### Added
+
+- Added an experimental Electron desktop shell with `desktop:dev`, unpacked Linux packaging, and AppImage export commands.
+- Added tag-triggered and manually dispatchable GitHub AppImage release automation that checks out the exact annotated tag, validates release/runtime metadata, builds without electron-builder implicit publishing, smoke-checks and hashes the AppImage, retains it as a workflow artifact, and attaches it to the matching GitHub Release.
+- Added a release-workflow contract test covering immutable tag checkout, explicit publication boundaries, AppImage smoke validation, checksum generation, workflow artifact retention, and GitHub Release upload.
+- Added a restricted `arcade://` production bundle protocol, CSP, renderer permission denial, sandbox/context-isolation defaults, and navigation/window guards.
+- Added PixiJS's bundled strict-CSP fallback loader for the opt-in native renderer, keeping `script-src 'self'` without permitting `'unsafe-eval'`.
+- Pinned electron-builder's static AppImage toolset `1.0.3` so the Linux package does not depend on the legacy FUSE2 runtime.
+- Added an executable Runtime-consumption audit that verifies vendored hashes, official capability aliases, source import policy, and a shrinking allowlist of unavoidable Runtime 1.12 root exports.
+- Added Runtime-backed transient notices for renderer fallback, settings/keybinding saves, sprite controls, chroma-key state, and frame-boundary debugging, including browser-observable notice state.
+- Added a legacy-compatible Runtime versioned-store adapter that upgrades existing raw settings JSON in place while preserving the original payload as the Runtime backup.
+
+### Changed
+
+- Completed the migration away from `@arcade/runtime` root imports: animation, Pixi, tooling, gameplay, testing, and core dependencies now resolve through their official Runtime 1.12 capability subpaths, and the Runtime-consumption audit rejects any future root-import regression.
+- Promoted the Runtime 1.12 sprite projection to a first-class `runtimeManifest`/`runtimeSheet` on every character animation map instead of using it only as a construction-time assertion.
+- Added roster-wide verification that Runtime frame resolution reproduces every legacy clip frame index exactly while the mixed-resolution authored atlas remains renderer-owned until it is deliberately repacked.
+- Special-move energy payment, cooldown start/step, and queue semantics now use Runtime 1.12 gameplay-action state; the duplicate combat-intent energy spend path is removed.
+- Start-menu, settings-row, and character-select movement now delegate to Runtime's stateful grid-focus navigator while retaining integer focus mirrors for rendering and E2E observability.
+- Settings persistence now stores the existing Ethic settings schema inside Runtime's checksummed versioned envelope with backup/corruption recovery semantics.
+- Sprite-manifest projection now validates local frame timing, duplicate mappings, pivots, frame indices, and dangling references before Runtime normalization, explicitly marking lossy variable-timing projection.
+- Bumped the package version to 1.7.4.
+
+### Fixed
+
+- Hardened browser release certification around transient combat input, character-select navigation, and locomotion sampling by polling observable simulation state and normalizing movement by authoritative frame progression instead of assuming fixed wall-clock delivery.
+- Split renderer upload certification into cumulative diagnostics and a per-frame steady-state signal: context restoration may legitimately recreate GPU textures, while release E2E now requires the settled renderer to return to zero current-frame upload traffic in both Chromium and Firefox.
+
 ## [1.7.3] - 2026-08-19
 
 ### Changed
 
 - Runtime consumption now uses capability-oriented `@arcade/runtime/*` imports for core, Pixi, sprites, UI, gameplay, stages, and testing APIs while retaining root imports only for Runtime 1.12 symbols that are not exposed by a capability subpath.
+- Every authored character sprite manifest is projected into the renderer-neutral Runtime schema and passed through `normalizeArcadeSpriteManifest()` before use, with local clip-reference validation preventing mapping drift.
 - AI Showcase title fitting now delegates to the Runtime 1.12 measured-text primitive instead of maintaining a local `measureText()` shrink loop.
 - Combat now accepts authored air attacks, buffers late normal inputs, permits confirmed recovery cancels into the next normal or a special, and settles grounded locomotion during committed strikes.
 - Canvas and optional Pixi rendering now synchronize attack poses to simulation phase progress, use authored airborne attack clips when available, and shorten attack-phase crossfades for more fluid motion.
 
 ### Fixed
 
-- Sprite auditing now treats planned item/body-pose artwork as optional release evidence instead of hard missing-source failures.
-- Verified CI installs the pinned Pillow dependency before sprite validation and deploys the built `dist/` tree to GitHub Pages only after the release checks pass.
 - Hitstop no longer creates new melee contacts while the simulation is frozen.
 - Authored attacks without explicit hitbox metadata now use type- and range-aware fallback geometry instead of collapsing to the light-jab hitbox.
 

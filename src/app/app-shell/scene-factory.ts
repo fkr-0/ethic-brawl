@@ -17,8 +17,12 @@ import { type Scene, type SceneName, createScene } from '@/core';
 import { resetBindingForPlayer, updateBindingForAction } from '@/core/input/input-binding';
 import type { InputState } from '@/core/input/input-manager';
 import type { FightPresentationOptions } from '@/render';
+import {
+  createIndexedGridFocus,
+  type IndexedGridFocus,
+  type RuntimeGridDirection,
+} from '@/runtime/grid-focus';
 import { createUiNavigationRepeater, resolveGridFocusIndex } from '@arcade/runtime/ui';
-import type { ArcadeGridDirection } from '@arcade/runtime';
 import {
   renderCharacterSelect,
   renderLoading,
@@ -47,9 +51,12 @@ interface SceneUpdateContext {
   getFightPresentationOverrides?: () => Partial<FightPresentationOptions>;
   navigation: {
     start: ReturnType<typeof createUiNavigationRepeater>;
+    startFocus: IndexedGridFocus;
     settingsRows: ReturnType<typeof createUiNavigationRepeater>;
+    settingsFocus: IndexedGridFocus;
     settingsTabs: ReturnType<typeof createUiNavigationRepeater>;
     character: ReturnType<typeof createUiNavigationRepeater>;
+    characterFocus: IndexedGridFocus;
   };
 }
 
@@ -62,13 +69,9 @@ function updateStartScene(ctx: SceneUpdateContext): void {
     up: input.player1.moveUp,
     down: input.player1.moveDown,
   });
+  ctx.navigation.startFocus.syncIndex(appState.startMenuIndex);
   for (const direction of directions) {
-    appState.startMenuIndex = resolveGridFocusIndex(
-      appState.startMenuIndex,
-      direction as ArcadeGridDirection,
-      4,
-      { columns: 1, wrapY: true }
-    );
+    appState.startMenuIndex = ctx.navigation.startFocus.move(direction as RuntimeGridDirection);
   }
 
   if (input.player1.confirm || input.player1.attack) {
@@ -133,12 +136,16 @@ function updateSettingsScene(ctx: SceneUpdateContext): void {
     up: input.player1.moveUp,
     down: input.player1.moveDown,
   });
+  ctx.navigation.settingsFocus.replaceItems(
+    Array.from({ length: rowCount }, (_, index) => ({
+      id: `${appState.settings.menuTab}:${index}`,
+    })),
+    1
+  );
+  ctx.navigation.settingsFocus.syncIndex(appState.settings.selectedIndex);
   for (const direction of rowDirections) {
-    appState.settings.selectedIndex = resolveGridFocusIndex(
-      appState.settings.selectedIndex,
-      direction as ArcadeGridDirection,
-      rowCount,
-      { columns: 1, wrapY: true }
+    appState.settings.selectedIndex = ctx.navigation.settingsFocus.move(
+      direction as RuntimeGridDirection
     );
   }
 
@@ -179,17 +186,14 @@ function updateCharacterSelectScene(ctx: SceneUpdateContext, characterIds: Chara
     up: input.player1.moveUp,
     down: input.player1.moveDown,
   });
+  ctx.navigation.characterFocus.replaceItems(
+    characterIds.map((id) => ({ id })),
+    CHARACTER_SELECT_COLUMNS
+  );
+  ctx.navigation.characterFocus.syncIndex(appState[activeIndexKey]);
   for (const direction of directions) {
-    appState[activeIndexKey] = resolveGridFocusIndex(
-      appState[activeIndexKey],
-      direction as ArcadeGridDirection,
-      characterIds.length,
-      {
-        columns: CHARACTER_SELECT_COLUMNS,
-        horizontalMode: 'sequence',
-        wrapX: true,
-        wrapY: true,
-      }
+    appState[activeIndexKey] = ctx.navigation.characterFocus.move(
+      direction as RuntimeGridDirection
     );
   }
 
@@ -510,11 +514,25 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
       repeatInterval: 5,
       mode: 'dominant',
     }),
+    startFocus: createIndexedGridFocus({
+      items: ['versus', 'showcase', 'stage', 'settings'].map((id) => ({ id })),
+      columns: 1,
+      initialIndex: appState.startMenuIndex,
+      wrapY: true,
+    }),
     settingsRows: createUiNavigationRepeater({
       directions: ['up', 'down'],
       initialDelay: 18,
       repeatInterval: 5,
       mode: 'dominant',
+    }),
+    settingsFocus: createIndexedGridFocus({
+      items: Array.from({ length: getSettingsRowCount(appState.settings) }, (_, index) => ({
+        id: `${appState.settings.menuTab}:${index}`,
+      })),
+      columns: 1,
+      initialIndex: appState.settings.selectedIndex,
+      wrapY: true,
     }),
     settingsTabs: createUiNavigationRepeater({
       directions: ['left', 'right'],
@@ -527,6 +545,14 @@ export function buildAppScenes(deps: BuildScenesDeps, appState: AppShellState): 
       initialDelay: 14,
       repeatInterval: 4,
       mode: 'dominant',
+    }),
+    characterFocus: createIndexedGridFocus({
+      items: getActiveCharacterIds().map((id) => ({ id })),
+      columns: CHARACTER_SELECT_COLUMNS,
+      initialIndex: appState.player1SelectIndex,
+      horizontalMode: 'sequence',
+      wrapX: true,
+      wrapY: true,
     }),
   };
 

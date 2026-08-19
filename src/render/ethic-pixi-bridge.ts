@@ -8,9 +8,12 @@ import {
   Texture,
   TextureStyle,
 } from 'pixi.js';
-import { createArcadeCameraTransform, createArcadePixiRuntime } from '@arcade/runtime/pixi';
-import { createBrowserPerformanceSampler } from '@arcade/runtime';
-import type { ArcadePixiNamespace } from '@arcade/runtime';
+import {
+  createArcadeCameraTransform,
+  createArcadePixiRuntime,
+  type ArcadePixiNamespace,
+} from '@arcade/runtime/pixi';
+import { createBrowserPerformanceSampler } from '@arcade/runtime/tooling';
 import { ETHIC_PIXI_LAYERS } from './arcade-runtime-contract';
 import { createEthicPixiHud } from './ethic-pixi-hud';
 import { createEthicPixiCombat } from './ethic-pixi-combat';
@@ -178,6 +181,7 @@ export async function createEthicPixiBridge(
         canvas.dataset.hardwareViolations = budget.violations
           .map((entry) => entry.metric)
           .join(',');
+        canvas.dataset.uploadLastBytes = String(Math.round(textureDelta));
         canvas.dataset.uploadP95Bytes = String(Math.round(budget.summary.upload.p95));
         canvas.dataset.heapMaxBytes = String(Math.round(budget.summary.heap.max));
       }

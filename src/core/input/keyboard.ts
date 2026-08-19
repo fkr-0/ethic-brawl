@@ -1,7 +1,6 @@
 /** Shared arcade-runtime keyboard adapter preserving Ethic Brawl's public API. */
 
-import { createKeyboardDevice } from '@arcade/runtime/core';
-import type { KeyboardDevice } from '@arcade/runtime';
+import { createKeyboardDevice, type KeyboardDevice } from '@arcade/runtime/core';
 
 export interface KeyState {
   isPressed: boolean;

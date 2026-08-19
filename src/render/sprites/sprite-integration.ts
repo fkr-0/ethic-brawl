@@ -21,6 +21,7 @@ import type {
   SpriteAtlas,
   SpriteManifest,
 } from './types';
+import { assertRuntimeSpriteManifestCompatible } from './runtime-manifest';
 
 /**
  * Character sprite asset paths
@@ -1218,9 +1219,10 @@ export function createCharacterSpriteManifest(
 
   addAuthoredActionSheets(manifest, characterId, actionSheets);
   const hasAuthoredSpecialSheet = actionSheets.some(({ kind }) => kind === 'specials');
-  return hasAuthoredSpecialSheet
+  const completeManifest = hasAuthoredSpecialSheet
     ? manifest
     : addAuthoredSpecialClips(manifest, characterId, hasExtended, legacySpecialFrameOffset);
+  return assertRuntimeSpriteManifestCompatible(completeManifest);
 }
 
 async function buildCharacterAtlas(

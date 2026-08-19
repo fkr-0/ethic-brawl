@@ -7,7 +7,7 @@ import {
   advanceArcadeAnimationClock,
   createArcadeAnimationClock,
   playArcadeAnimationClock,
-} from '@arcade/runtime';
+} from '@arcade/runtime/animation';
 
 /**
  * Create initial animation player state

@@ -2,7 +2,7 @@
 
 A 2.5D cyberpunk philosophical arena-brawler with absurdist humor. Battle as neon-cyberpunk versions of historical philosophers in a futuristic dystopia where ideas are fought with fists.
 
-**Current release: 1.5.1. Next prepared patch: 1.5.2; next prepared minor: 1.6.0.** Local Versus and the complete three-encounter Babylon Story route are playable. Five later story routes are authored previews and remain locked.
+**Current release: 1.7.4. Next prepared patch: 1.7.5; next prepared minor: 1.8.0.** Local Versus and the complete three-encounter Babylon Story route are playable. Five later story routes are authored previews and remain locked.
 
 ## Quick Start
 
@@ -150,7 +150,7 @@ The in-game **Configuration Lab** uses a declarative settings model rather than 
 
 ## Graphics Architecture and PixiJS
 
-Canvas2D remains the authoritative production backend. The shared Arcade Runtime 1.10.0 module is vendored with declarations and checksum metadata, and Ethic Brawl's ordered pass contract is executable rather than documentary.
+Canvas2D remains the authoritative production backend. The shared Arcade Runtime 1.12.0 module is vendored with declarations and checksum metadata, and Ethic Brawl's ordered pass contract is executable rather than documentary.
 
 `src/render/arcade-runtime-contract.ts` defines the exact backdrop, stage-depth, arena, fighter, projectile, VFX, foreground, HUD, and scene-UI pass order. Existing Canvas stage drawing is bridge-ready; fighters, projectiles, and combat VFX remain the first native-Pixi conversion targets. The renderer-neutral fight-presentation contract in `src/render/fight-presentation.ts` continues to carry stage themes and encounter profiles independently from either backend.
 
@@ -204,6 +204,20 @@ ethic-brawl/
 - **Web Audio API** - Procedural audio synthesis
 - **Biome** - Fast linting and formatting
 
+## Runtime sprite contract and desktop export
+
+Ethic Brawl keeps its mixed-resolution authored fighter atlas as a renderer-owned compatibility layer, but every `CharacterAnimationMap` also carries a canonical `ArcadeSpriteManifest` / `ArcadeSpriteSheet` projection validated by `@arcade/runtime/sprites`. Runtime frame addressing is tested roster-wide against every local clip frame, so game logic can migrate toward the shared contract without pretending the legacy 512/1024px source banks are one uniform texture grid.
+
+The repository also contains an experimental hardened Electron shell around the normal Vite build:
+
+```bash
+pnpm desktop:dev       # Vite + Electron
+pnpm desktop:dir       # unpacked Linux package
+pnpm desktop:appimage  # standalone AppImage
+```
+
+Production assets are served through the restricted `arcade://` protocol with Node integration disabled, context isolation and Chromium sandboxing enabled, renderer permission requests denied, and navigation/window creation constrained. When the optional Pixi bridge is requested, PixiJS's bundled strict-CSP fallback module is loaded before the bridge, so `script-src 'self'` remains intact without `'unsafe-eval'`. Desktop build tooling requires Node 22.12+; AppImage packaging uses electron-builder's static toolset `1.0.3` rather than the legacy FUSE2 runtime, and the produced AppImage does not require a separately installed Node.js runtime. The browser deployment remains the same relative-base `dist/` bundle.
+
 ## Development
 
 ### Architecture Principles
@@ -234,7 +248,7 @@ ethic-brawl/
 - No save state for mid-campaign progress
 - Stage campaign currently contains the Babylon vertical slice; later stages remain data-authored but are not yet connected to multi-enemy runtime encounters
 - Heuristic AI now has encounter-specific difficulty profiles, but does not yet learn or adapt across matches
-- PixiJS/WebGL is not yet active; the renderer-neutral presentation seam is prepared, but Canvas2D remains the only production backend
+- Canvas2D remains the default production backend; the retained PixiJS/WebGL renderer is an explicit opt-in capability used for certification and migration work until physical-device and sustained-session evidence justify any default change
 
 ## Future Extensions
 

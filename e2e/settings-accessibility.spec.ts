@@ -51,10 +51,14 @@ test('persists accessibility policy and spectator density through the real setti
     return stored ? JSON.parse(stored) : null;
   });
   expect(persisted).toMatchObject({
-    schemaVersion: 2,
-    impactMotion: 'reduced',
-    combatFlashes: 'reduced',
-    spectatorDetail: 'lab',
+    format: 1,
+    version: 1,
+    data: {
+      schemaVersion: 2,
+      impactMotion: 'reduced',
+      combatFlashes: 'reduced',
+      spectatorDetail: 'lab',
+    },
   });
 
   await page.reload();

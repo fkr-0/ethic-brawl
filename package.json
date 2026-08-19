@@ -1,11 +1,16 @@
 {
   "name": "ethic-brawl",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "A 2.5D cyberpunk philosophical arena-brawler with absurd humor",
   "type": "module",
+  "main": "desktop/main.mjs",
+  "desktopName": "dev.arcade.ethic-brawl",
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "vite",
+    "desktop:dev": "node desktop/dev.mjs",
+    "desktop:dir": "pnpm build && electron-builder --dir --linux",
+    "desktop:appimage": "pnpm build && electron-builder --linux AppImage --publish never",
     "build": "tsc && vite build",
     "bundle:check": "node scripts/check-bundle-budget.mjs",
     "preview": "vite preview",
@@ -62,6 +67,30 @@
     "prompts:items:check": "python3 docs/prompts/item-sprites/render-prompts.py --check",
     "release:plan:check": "node scripts/verify-release-train.mjs"
   },
+  "build": {
+    "appId": "dev.arcade.ethic-brawl",
+    "productName": "Ethic Brawl",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop/main.mjs",
+      "package.json"
+    ],
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "toolsets": {
+      "appimage": "1.0.3"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Game",
+      "syncDesktopName": true
+    }
+  },
   "keywords": [
     "game",
     "brawler",
@@ -79,6 +108,8 @@
     "@playwright/test": "1.60.0",
     "@types/node": "^24.13.3",
     "@vitest/ui": "^2.1.9",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3",
     "jsdom": "^29.1.1",
     "typescript": "^5.5.3",
     "vite": "^5.4.2",

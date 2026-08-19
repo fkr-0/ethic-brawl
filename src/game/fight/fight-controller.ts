@@ -30,6 +30,7 @@ import { CombatVfxPool, type HitSparkConfig } from '@/render/effects/combat-vfx-
 import type { ScreenEffect } from '@/render/effects/screen-effects';
 import { createFlashEffect, createGlitchEffect } from '@/render/effects/screen-effects';
 import {
+  type EntityCommandBuffer,
   createEntityCommandBuffer,
   createEntityWorld,
   entityWorldValues,
@@ -39,7 +40,6 @@ import {
   queueEntitySpawn,
   createSystemPipeline,
 } from '@arcade/runtime/core';
-import type { EntityCommandBuffer } from '@arcade/runtime';
 import { type FightCameraEffect, stepFightCameraEffects } from './attack-presentation-presets';
 import { type HitResult, resolveHit } from './combat';
 import { applyCombatIntent } from './combat-intent';

@@ -3,7 +3,6 @@ import type {
   CharacterSpecial,
   SpecialType,
 } from '@/content/characters/character-data';
-import { spendSpecialEnergy } from '@/game/specials/runtime-state';
 import { resolveCommandSpecial, specialMoveToAttackData } from '@/game/specials/special-resolver';
 import type { CombatCommand } from './command-input';
 import type { Fighter } from './fighter';
@@ -131,11 +130,10 @@ function applyCommandSpecial(
   }
   fighter.queueSpecialSpawn(resolved.special);
   fighter.specialState = {
-    currentEnergy: spendSpecialEnergy(fighter.specialState, resolved.special.energyCost)
-      .currentEnergy,
+    currentEnergy: resolved.next.energy,
     maxEnergy: fighter.specialState.maxEnergy,
     unlockedNodeIds: [...fighter.specialState.unlockedNodeIds],
-    cooldowns: resolved.next.cooldowns,
+    cooldowns: { ...resolved.next.cooldowns },
   };
   return true;
 }

@@ -18,6 +18,9 @@ import {
 import type { ActiveStatusEffect } from '@/game/specials/status-effects';
 import { sign } from '@/utils/math';
 import {
+  type ActionOutcome,
+  type ActionPhaseState,
+  type TimelineQueueState,
   createActionPhaseState,
   createTimelineQueue,
   isActionPhaseActive,
@@ -25,13 +28,7 @@ import {
   stepActionPhase,
   stepTimelineQueue,
 } from '@arcade/runtime/core';
-import { createActionGraceState } from '@arcade/runtime/gameplay';
-import type {
-  ActionOutcome,
-  ArcadeActionGraceState,
-  ActionPhaseState,
-  TimelineQueueState,
-} from '@arcade/runtime';
+import { createActionGraceState, type ArcadeActionGraceState } from '@arcade/runtime/gameplay';
 import {
   type AttackMotionVariation,
   type AttackPresentationCue,

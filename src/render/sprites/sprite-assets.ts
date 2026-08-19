@@ -11,6 +11,7 @@ import type {
   SpriteAtlas,
   SpriteManifest,
 } from './types';
+import { assertRuntimeSpriteManifestCompatible } from './runtime-manifest';
 
 /**
  * Default frame dimensions for 4x4 sprite sheets
@@ -308,7 +309,7 @@ export async function buildAtlasFrom4x4Sheet(
 export function createDefaultManifest(characterId: string): SpriteManifest {
   const clips = createDefaultClips();
 
-  return {
+  const manifest: SpriteManifest = {
     characterId,
     frames: createDefaultFrameMetadata(),
     clips,
@@ -348,6 +349,7 @@ export function createDefaultManifest(characterId: string): SpriteManifest {
     ],
     fallbackClip: 'idle',
   };
+  return assertRuntimeSpriteManifestCompatible(manifest);
 }
 
 /**
@@ -380,8 +382,9 @@ export function loadManifest(
     ...metadata,
   };
 
-  manifestCache.set(cacheKey, manifest);
-  return manifest;
+  const normalizedManifest = assertRuntimeSpriteManifestCompatible(manifest);
+  manifestCache.set(cacheKey, normalizedManifest);
+  return normalizedManifest;
 }
 
 /**

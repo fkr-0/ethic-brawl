@@ -4,6 +4,8 @@ import { defineConfig } from 'vitest/config';
 const arcadeRuntimeModule = path.resolve(__dirname, './vendor/arcade-runtime.mjs');
 const arcadeRuntimeCapabilities = [
   'core',
+  'compute',
+  'animation',
   'pixi',
   'testing',
   'sprites',

@@ -2,6 +2,8 @@
  * Sprite system type definitions
  */
 
+import type { ArcadeSpriteManifest, ArcadeSpriteSheet } from '@arcade/runtime/sprites';
+
 /**
  * Frame label for identifying animation frames
  */
@@ -184,6 +186,9 @@ export interface SpriteRenderOptions {
 export interface CharacterAnimationMap {
   characterId: string;
   manifest: SpriteManifest;
+  /** Canonical Runtime 1.12 semantic projection of the legacy clip bank. */
+  runtimeManifest: ArcadeSpriteManifest;
+  runtimeSheet: ArcadeSpriteSheet;
   atlas: SpriteAtlas | null;
   stateToClip: Map<FighterStateName, AnimationClip>;
   attackPhaseToClip: Map<string, Map<AttackPhase, AnimationClip>>;

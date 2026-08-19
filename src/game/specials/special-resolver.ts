@@ -6,7 +6,11 @@ import {
   getSpecialMove,
 } from '@/content/specials';
 import type { CommandSlot } from '@/game/fight/command-input';
-import { isCooldownReady, startCooldown, stepCooldownState } from '@arcade/runtime';
+import {
+  defineRuntimeSpecialAction,
+  stepRuntimeAction,
+  tryStartRuntimeAction,
+} from '@/runtime/gameplay-actions';
 
 export type SpecialResolveRejectReason = 'no_special' | 'locked' | 'not_enough_energy' | 'cooldown';
 
@@ -30,9 +34,27 @@ export function resolveCommandSpecial(
 
   const unlockedSpecialIds = getUnlockedSpecials(state.characterId, state.unlockedNodeIds);
   if (!unlockedSpecialIds.includes(special.id)) return { ok: false, reason: 'locked', special };
-  if (state.energy < special.energyCost) return { ok: false, reason: 'not_enough_energy', special };
-  if (!isCooldownReady(state.cooldowns, special.id)) {
-    return { ok: false, reason: 'cooldown', special };
+  const started = tryStartRuntimeAction(
+    {
+      ownerId: state.characterId,
+      resourceId: 'energy',
+      resourceValue: state.energy,
+      resourceMax: Math.max(state.energy, special.energyCost),
+      cooldowns: state.cooldowns,
+    },
+    defineRuntimeSpecialAction({
+      id: special.id,
+      energyCost: special.energyCost,
+      cooldown: special.cooldownFrames,
+    }),
+    { reason: `special:${special.id}` }
+  );
+  if (!started.ok) {
+    return {
+      ok: false,
+      reason: started.reason === 'resource' ? 'not_enough_energy' : 'cooldown',
+      special,
+    };
   }
 
   return {
@@ -40,8 +62,8 @@ export function resolveCommandSpecial(
     special,
     next: {
       ...state,
-      energy: state.energy - special.energyCost,
-      cooldowns: startCooldown(state.cooldowns, special.id, special.cooldownFrames),
+      energy: started.resourceValue,
+      cooldowns: started.cooldowns,
     },
   };
 }
@@ -49,7 +71,18 @@ export function resolveCommandSpecial(
 export function tickSpecialCooldowns(
   cooldowns: Readonly<Record<string, number>>
 ): Record<string, number> {
-  return stepCooldownState(cooldowns);
+  return {
+    ...stepRuntimeAction(
+      {
+        ownerId: 'special-cooldowns',
+        resourceId: 'energy',
+        resourceValue: 0,
+        resourceMax: 1,
+        cooldowns,
+      },
+      1
+    ).cooldowns,
+  };
 }
 
 export function resolveSpecialById(

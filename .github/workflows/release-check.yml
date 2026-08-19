@@ -3,6 +3,7 @@ name: Ethic Brawl Release Check
 on:
   push:
     branches: [main]
+    tags: ['v*.*.*']
   pull_request:
   workflow_dispatch:
 
@@ -25,6 +26,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -51,6 +54,9 @@ jobs:
 
       - name: Verify release train
         run: pnpm release:plan:check
+
+      - name: Verify Runtime capability consumption
+        run: node scripts/verify-runtime-consumption.mjs
 
       - name: Lint
         run: pnpm lint

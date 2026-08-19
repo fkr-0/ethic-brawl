@@ -2,13 +2,18 @@ import type { SceneName } from '@/core';
 import type { FighterAnimationSnapshot } from '@/render';
 import type { EthicPixiBridgeRuntimeStatus } from '@/render';
 import type { SpriteValidationReport } from '@/render/sprites';
-import type { ArcadePerformanceSummary } from '@arcade/runtime';
+import type { ArcadePerformanceSummary } from '@arcade/runtime/tooling';
 import type { AppShellState } from './app-shell/scene-factory';
 
 export interface E2EProbeSnapshot {
   ready: boolean;
   currentScene: SceneName | null;
   helpOpen: boolean;
+  notice: {
+    id: string;
+    message: string;
+    kind: string;
+  } | null;
   frameCount: number;
   fps: number;
   canvas: {
@@ -158,6 +163,8 @@ export function updateE2EStatus(snapshot: E2EProbeSnapshot): void {
   element.dataset.ready = String(snapshot.ready);
   element.dataset.scene = snapshot.currentScene ?? 'none';
   element.dataset.helpOpen = String(snapshot.helpOpen);
+  element.dataset.noticeMessage = snapshot.notice?.message ?? '';
+  element.dataset.noticeKind = snapshot.notice?.kind ?? 'none';
   element.dataset.startMenuIndex = String(snapshot.app.startMenuIndex);
   element.dataset.characterSelectPhase = String(snapshot.app.characterSelectPhase);
   element.dataset.gameMode = snapshot.app.gameMode;

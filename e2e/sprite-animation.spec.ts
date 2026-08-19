@@ -165,7 +165,11 @@ function playerOneAnimations(samples: E2EProbeSnapshot[]) {
 async function enterFoucaultVersusMatch(page: Page): Promise<void> {
   await tapKey(page, 'Enter');
   await waitForScene(page, 'character-select');
-  for (let index = 0; index < 4; index += 1) await tapKey(page, 'd');
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    const currentIndex = (await getSnapshot(page)).app.player1SelectIndex;
+    if (currentIndex === 4) break;
+    await tapKey(page, currentIndex < 4 ? 'd' : 'a', 10);
+  }
   expect((await getSnapshot(page)).app.player1SelectIndex).toBe(4);
   await tapKey(page, 'Enter');
   expect((await getSnapshot(page)).app.characterSelectPhase).toBe(2);
@@ -318,9 +322,7 @@ test('validates every sprite cell and exercises fluid browser animation transiti
   const movementAnimations = playerOneAnimations(movementSamples).filter(
     ({ clipId }) => clipId === 'walk_forward_v2' || clipId === 'run_v2'
   );
-  const movementPositions = movementSamples.flatMap((sample) =>
-    sample.fight.player1X === null ? [] : [sample.fight.player1X]
-  );
+  const movementPositions = movementSamples.filter((sample) => sample.fight.player1X !== null);
   expect(movementAnimations.length).toBeGreaterThanOrEqual(6);
   expect(
     new Set(movementAnimations.map(({ atlasFrameIndex }) => atlasFrameIndex)).size
@@ -329,9 +331,23 @@ test('validates every sprite cell and exercises fluid browser animation transiti
     movementAnimations.every(({ playbackSpeed }) => playbackSpeed >= 0.72 && playbackSpeed <= 1.28)
   ).toBe(true);
   for (let index = 1; index < movementPositions.length; index += 1) {
-    const delta = (movementPositions[index] ?? 0) - (movementPositions[index - 1] ?? 0);
+    const previous = movementPositions[index - 1];
+    const current = movementPositions[index];
+    if (
+      !previous ||
+      !current ||
+      previous.fight.player1X === null ||
+      current.fight.player1X === null
+    ) {
+      continue;
+    }
+    const delta = current.fight.player1X - previous.fight.player1X;
+    const frameDelta = Math.max(1, current.frameCount - previous.frameCount);
     expect(delta).toBeGreaterThanOrEqual(-0.01);
-    expect(delta).toBeLessThan(40);
+    // Browser sampling may be delayed by rendering or CI scheduling. Normalize
+    // by authoritative simulation frames so the assertion detects teleports
+    // without conflating a late observation with excessive movement speed.
+    expect(delta / frameDelta).toBeLessThan(12);
   }
 
   const lightAttackSamples = await observeAttackClipSequence(page, 'j', 'attack_light');

@@ -1,8 +1,11 @@
 import type { SerializableSettingsState, SettingsState } from '@/app/app-shell/types';
 import { deserializeInputBinding, serializeInputBinding } from '@/core/input/input-binding';
+import { createLegacyCompatibleVersionedStore } from '@/runtime/versioned-storage';
+import { createStorageAdapter } from '@arcade/runtime/storage';
 import { STORAGE_KEYS } from './config';
 
 const SETTINGS_SCHEMA_VERSION = 2 as const;
+const SETTINGS_STORE_VERSION = 1 as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -67,11 +70,24 @@ export function applySerializableSettings(
   };
 }
 
+function createSettingsStore(base: SettingsState) {
+  const adapter = createStorageAdapter(localStorage);
+  return createLegacyCompatibleVersionedStore<Partial<SerializableSettingsState>>({
+    adapter,
+    key: STORAGE_KEYS.SETTINGS,
+    version: SETTINGS_STORE_VERSION,
+    defaults: toSerializableSettings(base),
+    validate: (value) => parseSerializableSettings(value) !== null,
+    parseLegacy: (raw) => parseSerializableSettings(JSON.parse(raw)),
+    onCorruption: (context) => {
+      console.error('Failed to read versioned settings store:', context);
+    },
+  });
+}
+
 export function loadAppSettings(base: SettingsState): SettingsState {
   try {
-    const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    if (!stored) return base;
-    return applySerializableSettings(base, parseSerializableSettings(JSON.parse(stored)));
+    return applySerializableSettings(base, createSettingsStore(base).load().data);
   } catch (error) {
     console.error('Failed to load app settings:', error);
     return base;
@@ -80,7 +96,7 @@ export function loadAppSettings(base: SettingsState): SettingsState {
 
 export function saveAppSettings(settings: SettingsState): boolean {
   try {
-    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(toSerializableSettings(settings)));
+    createSettingsStore(settings).save(toSerializableSettings(settings));
     return true;
   } catch (error) {
     console.error('Failed to save app settings:', error);

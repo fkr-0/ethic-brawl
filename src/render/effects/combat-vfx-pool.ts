@@ -1,5 +1,4 @@
-import { createRecyclingPool } from '@arcade/runtime/core';
-import type { RecyclingPool } from '@arcade/runtime';
+import { createRecyclingPool, type RecyclingPool } from '@arcade/runtime/core';
 
 export type CombatParticleKind = 'spark' | 'guard' | 'special' | 'dust';
 

@@ -1,5 +1,5 @@
 import type { FightRuntime } from '@/app/fight-runtime';
-import type { ArcadePixiRuntime } from '@arcade/runtime';
+import type { ArcadePixiRuntime } from '@arcade/runtime/pixi';
 import type { FightPresentationOptions } from './fight-presentation';
 
 export interface EthicPixiBridgeOptions {

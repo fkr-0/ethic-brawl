@@ -1,9 +1,11 @@
 import {
+  type ArcadePixiFrame,
+  type ArcadePixiNamespace,
+  type ArcadePixiRuntime,
   createCanvasTexturePass,
   createCanvasTexturePassOptions,
   installArcadeRenderPlan,
 } from '@arcade/runtime/pixi';
-import type { ArcadePixiFrame, ArcadePixiNamespace, ArcadePixiRuntime } from '@arcade/runtime';
 import { ETHIC_PIXI_BRIDGE_PASSES } from './arcade-runtime-contract';
 
 export type EthicCanvasBridgePassName =

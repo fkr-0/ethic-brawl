@@ -1,13 +1,7 @@
 import type { CharacterId } from '@/content/characters/character-data';
 import { getSkillNodesForCharacter } from '@/content/skill-tree';
-import {
-  createResourcePoolState,
-  gainResource,
-  getResourcePool,
-  payResourceCosts,
-  setResourceValue,
-} from '@arcade/runtime/gameplay';
-import { stepCooldownState } from '@arcade/runtime';
+import { createResourcePoolState, gainResource, getResourcePool } from '@arcade/runtime/gameplay';
+import { stepRuntimeAction } from '@/runtime/gameplay-actions';
 
 export const ENERGY_PER_STAT_POINT = 5;
 
@@ -38,27 +32,6 @@ export function energyStatToMaxEnergy(energyStat: number): number {
   return Math.max(0, Math.round(energyStat * ENERGY_PER_STAT_POINT));
 }
 
-export function spendSpecialEnergy(
-  state: FighterSpecialState,
-  amount: number
-): FighterSpecialState {
-  const resources = createResourcePoolState('fighter-special', [
-    { id: 'energy', value: state.currentEnergy, max: state.maxEnergy },
-  ]);
-  const paid = payResourceCosts(resources, [{ id: 'energy', amount }], {
-    reason: 'special',
-  });
-  const next = paid.ok
-    ? paid.state
-    : setResourceValue(resources, 'energy', state.currentEnergy - amount, {
-        reason: 'special-clamped',
-      }).state;
-  return {
-    ...state,
-    currentEnergy: getResourcePool(next, 'energy')?.value ?? 0,
-  };
-}
-
 export function restoreSpecialEnergy(
   state: FighterSpecialState,
   amount: number
@@ -74,8 +47,19 @@ export function restoreSpecialEnergy(
 }
 
 export function tickFighterSpecialState(state: FighterSpecialState): FighterSpecialState {
+  const stepped = stepRuntimeAction(
+    {
+      ownerId: 'fighter-special',
+      resourceId: 'energy',
+      resourceValue: state.currentEnergy,
+      resourceMax: state.maxEnergy,
+      cooldowns: state.cooldowns,
+    },
+    1
+  );
   return {
     ...state,
-    cooldowns: stepCooldownState(state.cooldowns),
+    currentEnergy: stepped.resourceValue,
+    cooldowns: { ...stepped.cooldowns },
   };
 }
